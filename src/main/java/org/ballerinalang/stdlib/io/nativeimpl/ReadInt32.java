@@ -22,61 +22,68 @@ import org.ballerinalang.bre.Context;
 import org.ballerinalang.bre.bvm.CallableUnitCallback;
 import org.ballerinalang.model.NativeCallableUnit;
 import org.ballerinalang.model.types.TypeKind;
+import org.ballerinalang.model.values.BInteger;
 import org.ballerinalang.model.values.BStruct;
 import org.ballerinalang.natives.annotations.BallerinaFunction;
 import org.ballerinalang.natives.annotations.Receiver;
-import org.ballerinalang.natives.annotations.ReturnType;
-import org.ballerinalang.stdlib.io.channels.base.CharacterChannel;
+import org.ballerinalang.stdlib.io.channels.base.DataChannel;
+import org.ballerinalang.stdlib.io.channels.base.Representation;
 import org.ballerinalang.stdlib.io.events.EventContext;
+import org.ballerinalang.stdlib.io.events.EventManager;
 import org.ballerinalang.stdlib.io.events.EventResult;
+import org.ballerinalang.stdlib.io.events.data.ReadIntegerEvent;
 import org.ballerinalang.stdlib.io.utils.IOConstants;
 import org.ballerinalang.stdlib.io.utils.IOUtils;
 
+import java.util.concurrent.CompletableFuture;
+
 /**
- * Native function ballerina.io#closeCharacterChannel.
+ * Native function ballerina.io#readInt32.
  *
- * @since 0.95
+ * @since 0.973.1
  */
 @BallerinaFunction(
         orgName = "ballerina", packageName = "io",
-        functionName = "close",
-        receiver = @Receiver(type = TypeKind.OBJECT, structType = "CharacterChannel", structPackage = "ballerina.io"),
-        returnType = {@ReturnType(type = TypeKind.RECORD, structType = "IOError", structPackage = "ballerina.io")},
+        functionName = "readInt32",
+        receiver = @Receiver(type = TypeKind.OBJECT, structType = "DataChannel", structPackage = "ballerina.io"),
         isPublic = true
 )
-public class CloseCharacterChannel implements NativeCallableUnit {
+public class ReadInt32 implements NativeCallableUnit {
+    /**
+     * Represents data channel.
+     */
+    private static final int DATA_CHANNEL_INDEX = 0;
 
     /**
-     * The index of the CharacterChannel in ballerina.io#closeCharacterChannel().
+     * Triggers upon receiving the response.
+     *
+     * @param result the response received after reading int.
+     * @return read int value.
      */
-    private static final int CHARACTER_CHANNEL_INDEX = 0;
-
-    private static EventResult closeResponse(EventResult<Boolean, EventContext> result) {
+    private static EventResult readResponse(EventResult<Long, EventContext> result) {
         EventContext eventContext = result.getContext();
         Context context = eventContext.getContext();
-        CallableUnitCallback callback = eventContext.getCallback();
         Throwable error = eventContext.getError();
+        CallableUnitCallback callback = eventContext.getCallback();
         if (null != error) {
             BStruct errorStruct = IOUtils.createError(context, error.getMessage());
             context.setReturnValues(errorStruct);
+        } else {
+            Long readLong = result.getResponse();
+            context.setReturnValues(new BInteger(readLong));
         }
         callback.notifySuccess();
         return result;
     }
 
-    /**
-     * <p>
-     * Closes a character channel.
-     * </p>
-     * <p>
-     * {@inheritDoc}
-     */
     @Override
     public void execute(Context context, CallableUnitCallback callback) {
-        BStruct channel = (BStruct) context.getRefArgument(CHARACTER_CHANNEL_INDEX);
-        CharacterChannel charChannel = (CharacterChannel) channel.getNativeData(IOConstants.CHARACTER_CHANNEL_NAME);
+        BStruct dataChannelStruct = (BStruct) context.getRefArgument(DATA_CHANNEL_INDEX);
+        DataChannel channel = (DataChannel) dataChannelStruct.getNativeData(IOConstants.DATA_CHANNEL_NAME);
         EventContext eventContext = new EventContext(context, callback);
-        IOUtils.close(charChannel, eventContext, CloseCharacterChannel::closeResponse);
+        ReadIntegerEvent event = new ReadIntegerEvent(channel, Representation.BIT_32, eventContext);
+        CompletableFuture<EventResult> publish = EventManager.getInstance().publish(event);
+        publish.thenApply(ReadInt32::readResponse);
     }
 
     @Override
