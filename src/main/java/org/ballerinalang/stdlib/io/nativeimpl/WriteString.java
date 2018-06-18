@@ -22,45 +22,52 @@ import org.ballerinalang.bre.Context;
 import org.ballerinalang.bre.bvm.CallableUnitCallback;
 import org.ballerinalang.model.NativeCallableUnit;
 import org.ballerinalang.model.types.TypeKind;
-import org.ballerinalang.model.values.BInteger;
 import org.ballerinalang.model.values.BStruct;
+import org.ballerinalang.nativeimpl.io.channels.base.DataChannel;
+import org.ballerinalang.nativeimpl.io.events.EventContext;
+import org.ballerinalang.nativeimpl.io.events.EventManager;
+import org.ballerinalang.nativeimpl.io.events.EventResult;
+import org.ballerinalang.nativeimpl.io.events.data.WriteStringEvent;
+import org.ballerinalang.nativeimpl.io.utils.IOUtils;
+import org.ballerinalang.natives.annotations.Argument;
 import org.ballerinalang.natives.annotations.BallerinaFunction;
 import org.ballerinalang.natives.annotations.Receiver;
-import org.ballerinalang.stdlib.io.channels.base.DataChannel;
-import org.ballerinalang.stdlib.io.channels.base.Representation;
-import org.ballerinalang.stdlib.io.events.EventContext;
-import org.ballerinalang.stdlib.io.events.EventManager;
-import org.ballerinalang.stdlib.io.events.EventResult;
-import org.ballerinalang.stdlib.io.events.data.ReadIntegerEvent;
-import org.ballerinalang.stdlib.io.utils.IOConstants;
-import org.ballerinalang.stdlib.io.utils.IOUtils;
 
 import java.util.concurrent.CompletableFuture;
 
 /**
- * Native function ballerina/io#readInt64.
+ * Native function ballerina.io#writeString.
  *
- * @since 0.973.1
+ * @since 0.974.1
  */
 @BallerinaFunction(
         orgName = "ballerina", packageName = "io",
-        functionName = "readInt64",
-        receiver = @Receiver(type = TypeKind.OBJECT, structType = "DataChannel", structPackage = "ballerina/io"),
+        functionName = "writeString",
+        receiver = @Receiver(type = TypeKind.OBJECT, structType = "DataChannel", structPackage = "ballerina.io"),
+        args = {@Argument(name = "value", type = TypeKind.STRING),
+                @Argument(name = "encoding", type = TypeKind.STRING)},
         isPublic = true
 )
-public class ReadInt64 implements NativeCallableUnit {
+public class WriteString implements NativeCallableUnit {
     /**
      * Represents data channel.
      */
     private static final int DATA_CHANNEL_INDEX = 0;
+    /**
+     * Index which holds the value of the data to be written.
+     */
+    private static final int VALUE_INDEX = 0;
+    /**
+     * Index which will hold the string encoding.
+     */
+    private static final int ENCODING_INDEX = 1;
 
     /**
      * Triggers upon receiving the response.
      *
-     * @param result the response received after reading int.
-     * @return read int value.
+     * @param result the response received after writing string.
      */
-    private static EventResult readResponse(EventResult<Long, EventContext> result) {
+    private static EventResult writeResponse(EventResult<Long, EventContext> result) {
         EventContext eventContext = result.getContext();
         Context context = eventContext.getContext();
         Throwable error = eventContext.getError();
@@ -68,9 +75,6 @@ public class ReadInt64 implements NativeCallableUnit {
         if (null != error) {
             BStruct errorStruct = IOUtils.createError(context, error.getMessage());
             context.setReturnValues(errorStruct);
-        } else {
-            Long readLong = result.getResponse();
-            context.setReturnValues(new BInteger(readLong));
         }
         callback.notifySuccess();
         return result;
@@ -80,14 +84,17 @@ public class ReadInt64 implements NativeCallableUnit {
     public void execute(Context context, CallableUnitCallback callback) {
         BStruct dataChannelStruct = (BStruct) context.getRefArgument(DATA_CHANNEL_INDEX);
         DataChannel channel = (DataChannel) dataChannelStruct.getNativeData(IOConstants.DATA_CHANNEL_NAME);
+        String value = context.getStringArgument(VALUE_INDEX);
+        String encoding = context.getStringArgument(ENCODING_INDEX);
         EventContext eventContext = new EventContext(context, callback);
-        ReadIntegerEvent event = new ReadIntegerEvent(channel, Representation.BIT_64, eventContext);
-        CompletableFuture<EventResult> publish = EventManager.getInstance().publish(event);
-        publish.thenApply(ReadInt64::readResponse);
+        WriteStringEvent writeIntegerEvent = new WriteStringEvent(channel, value, encoding, eventContext);
+        CompletableFuture<EventResult> publish = EventManager.getInstance().publish(writeIntegerEvent);
+        publish.thenApply(WriteString::writeResponse);
     }
 
     @Override
     public boolean isBlocking() {
         return false;
     }
+
 }

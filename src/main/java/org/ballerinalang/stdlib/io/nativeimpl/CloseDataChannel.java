@@ -22,68 +22,70 @@ import org.ballerinalang.bre.Context;
 import org.ballerinalang.bre.bvm.CallableUnitCallback;
 import org.ballerinalang.model.NativeCallableUnit;
 import org.ballerinalang.model.types.TypeKind;
-import org.ballerinalang.model.values.BInteger;
 import org.ballerinalang.model.values.BStruct;
+import org.ballerinalang.nativeimpl.io.channels.base.DataChannel;
+import org.ballerinalang.nativeimpl.io.events.EventContext;
+import org.ballerinalang.nativeimpl.io.events.EventManager;
+import org.ballerinalang.nativeimpl.io.events.EventResult;
+import org.ballerinalang.nativeimpl.io.events.data.CloseDataChannelEvent;
+import org.ballerinalang.nativeimpl.io.utils.IOUtils;
 import org.ballerinalang.natives.annotations.BallerinaFunction;
 import org.ballerinalang.natives.annotations.Receiver;
-import org.ballerinalang.stdlib.io.channels.base.DataChannel;
-import org.ballerinalang.stdlib.io.channels.base.Representation;
-import org.ballerinalang.stdlib.io.events.EventContext;
-import org.ballerinalang.stdlib.io.events.EventManager;
-import org.ballerinalang.stdlib.io.events.EventResult;
-import org.ballerinalang.stdlib.io.events.data.ReadIntegerEvent;
-import org.ballerinalang.stdlib.io.utils.IOConstants;
-import org.ballerinalang.stdlib.io.utils.IOUtils;
+import org.ballerinalang.natives.annotations.ReturnType;
 
 import java.util.concurrent.CompletableFuture;
 
 /**
- * Native function ballerina/io#readInt64.
+ * Native function ballerina.io#DataChannel.close().
  *
- * @since 0.973.1
+ * @since 0.974.1
  */
 @BallerinaFunction(
         orgName = "ballerina", packageName = "io",
-        functionName = "readInt64",
-        receiver = @Receiver(type = TypeKind.OBJECT, structType = "DataChannel", structPackage = "ballerina/io"),
+        functionName = "close",
+        receiver = @Receiver(type = TypeKind.OBJECT, structType = "DataChannel", structPackage = "ballerina.io"),
+        returnType = {@ReturnType(type = TypeKind.RECORD, structType = "IOError", structPackage = "ballerina.io")},
         isPublic = true
 )
-public class ReadInt64 implements NativeCallableUnit {
+public class CloseDataChannel implements NativeCallableUnit {
     /**
-     * Represents data channel.
+     * The index of the DataChannel.
      */
     private static final int DATA_CHANNEL_INDEX = 0;
 
     /**
-     * Triggers upon receiving the response.
+     * Close data channel.
      *
-     * @param result the response received after reading int.
-     * @return read int value.
+     * @param result the response received after the channel is closed.
+     * @return the result of the close response.
      */
-    private static EventResult readResponse(EventResult<Long, EventContext> result) {
+    private static EventResult closeResponse(EventResult<Boolean, EventContext> result) {
         EventContext eventContext = result.getContext();
         Context context = eventContext.getContext();
-        Throwable error = eventContext.getError();
         CallableUnitCallback callback = eventContext.getCallback();
+        Throwable error = eventContext.getError();
         if (null != error) {
             BStruct errorStruct = IOUtils.createError(context, error.getMessage());
             context.setReturnValues(errorStruct);
-        } else {
-            Long readLong = result.getResponse();
-            context.setReturnValues(new BInteger(readLong));
         }
         callback.notifySuccess();
         return result;
     }
-
+    /**
+     * <p>
+     * Close data channel.
+     * </p>
+     * <p>
+     * {@inheritDoc}
+     */
     @Override
     public void execute(Context context, CallableUnitCallback callback) {
         BStruct dataChannelStruct = (BStruct) context.getRefArgument(DATA_CHANNEL_INDEX);
         DataChannel channel = (DataChannel) dataChannelStruct.getNativeData(IOConstants.DATA_CHANNEL_NAME);
         EventContext eventContext = new EventContext(context, callback);
-        ReadIntegerEvent event = new ReadIntegerEvent(channel, Representation.BIT_64, eventContext);
-        CompletableFuture<EventResult> publish = EventManager.getInstance().publish(event);
-        publish.thenApply(ReadInt64::readResponse);
+        CloseDataChannelEvent dataChannelCloseEvt = new CloseDataChannelEvent(channel, eventContext);
+        CompletableFuture<EventResult> publish = EventManager.getInstance().publish(dataChannelCloseEvt);
+        publish.thenApply(CloseDataChannel::closeResponse);
     }
 
     @Override

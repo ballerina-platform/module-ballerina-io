@@ -6,35 +6,34 @@
  * in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *    http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
+ * KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations
  * under the License.
- *
  */
 
 package org.ballerinalang.stdlib.io.events.data;
 
-import org.ballerinalang.stdlib.io.channels.base.DataChannel;
-import org.ballerinalang.stdlib.io.events.Event;
-import org.ballerinalang.stdlib.io.events.EventContext;
-import org.ballerinalang.stdlib.io.events.EventResult;
-import org.ballerinalang.stdlib.io.events.result.NumericResult;
+import org.ballerinalang.nativeimpl.io.channels.base.DataChannel;
+import org.ballerinalang.nativeimpl.io.events.Event;
+import org.ballerinalang.nativeimpl.io.events.EventContext;
+import org.ballerinalang.nativeimpl.io.events.EventResult;
+import org.ballerinalang.nativeimpl.io.events.result.NumericResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
 /**
- * Writes boolean to a given source.
+ * Represents the event to write string.
  */
-public class WriteBoolEvent implements Event {
+public class WriteStringEvent implements Event {
     /**
-     * Will be used to write bool.
+     * Will be used to write string.
      */
     private DataChannel channel;
     /**
@@ -44,14 +43,19 @@ public class WriteBoolEvent implements Event {
     /**
      * Represents the value which will be written.
      */
-    private boolean value;
+    private String value;
+    /**
+     * Represents the encoding of the string.
+     */
+    private String encoding;
 
-    private static final Logger log = LoggerFactory.getLogger(WriteBoolEvent.class);
+    private static final Logger log = LoggerFactory.getLogger(WriteStringEvent.class);
 
-    public WriteBoolEvent(DataChannel dataChannel, boolean value, EventContext context) {
+    public WriteStringEvent(DataChannel dataChannel, String value, String encoding, EventContext context) {
         this.channel = dataChannel;
         this.context = context;
         this.value = value;
+        this.encoding = encoding;
     }
 
     /**
@@ -61,14 +65,14 @@ public class WriteBoolEvent implements Event {
     public EventResult get() {
         NumericResult result;
         try {
-            channel.writeBoolean(value);
+            channel.writeString(value, encoding);
             result = new NumericResult(context);
         } catch (IOException e) {
-            log.error("Error occurred while writing boolean", e);
+            log.error("Error occurred while writing string", e);
             context.setError(e);
             result = new NumericResult(context);
         } catch (Throwable e) {
-            log.error("Unidentified error occurred while writing boolean", e);
+            log.error("Unidentified error occurred while writing string", e);
             context.setError(e);
             result = new NumericResult(context);
         }
