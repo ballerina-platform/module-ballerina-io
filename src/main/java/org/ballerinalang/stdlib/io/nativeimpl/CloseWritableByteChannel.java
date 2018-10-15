@@ -23,69 +23,64 @@ import org.ballerinalang.bre.Context;
 import org.ballerinalang.bre.bvm.CallableUnitCallback;
 import org.ballerinalang.model.NativeCallableUnit;
 import org.ballerinalang.model.types.TypeKind;
-import org.ballerinalang.model.values.BInteger;
 import org.ballerinalang.model.values.BMap;
 import org.ballerinalang.model.values.BValue;
 import org.ballerinalang.natives.annotations.BallerinaFunction;
 import org.ballerinalang.natives.annotations.Receiver;
-import org.ballerinalang.stdlib.io.channels.base.DataChannel;
-import org.ballerinalang.stdlib.io.channels.base.Representation;
+import org.ballerinalang.natives.annotations.ReturnType;
+import org.ballerinalang.stdlib.io.channels.base.Channel;
 import org.ballerinalang.stdlib.io.events.EventContext;
 import org.ballerinalang.stdlib.io.events.EventRegister;
 import org.ballerinalang.stdlib.io.events.EventResult;
 import org.ballerinalang.stdlib.io.events.Register;
-import org.ballerinalang.stdlib.io.events.data.ReadIntegerEvent;
+import org.ballerinalang.stdlib.io.events.bytes.CloseByteChannelEvent;
 import org.ballerinalang.stdlib.io.utils.IOConstants;
 import org.ballerinalang.stdlib.io.utils.IOUtils;
 
 /**
- * Extern function ballerina/io#readInt16.
+ * Extern function ballerina/io#close.
  *
- * @since 0.973.1
+ * @since 0.982.0
  */
 @BallerinaFunction(
         orgName = "ballerina", packageName = "io",
-        functionName = "readInt16",
-        receiver = @Receiver(type = TypeKind.OBJECT, structType = "ReadableDataChannel",
-                structPackage = "ballerina/io"),
+        functionName = "close",
+        receiver = @Receiver(type = TypeKind.OBJECT, structType = "WritableByteChannel", structPackage =
+                "ballerina/io"),
+        returnType = {@ReturnType(type = TypeKind.OBJECT, structType = "IOError", structPackage = "ballerina/io")},
         isPublic = true
 )
-public class ReadInt16 implements NativeCallableUnit {
-    /**
-     * Represents data channel.
-     */
-    private static final int DATA_CHANNEL_INDEX = 0;
+public class CloseWritableByteChannel implements NativeCallableUnit {
 
     /**
-     * Triggers upon receiving the response.
-     *
-     * @param result the response received after reading int.
-     * @return read int value.
+     * The index of the ByteChannel in ballerina/io#close().
      */
-    private static EventResult readResponse(EventResult<Long, EventContext> result) {
+    private static final int BYTE_CHANNEL_INDEX = 0;
+
+    private static EventResult closeResponse(EventResult<Boolean, EventContext> result) {
         EventContext eventContext = result.getContext();
         Context context = eventContext.getContext();
-        Throwable error = eventContext.getError();
         CallableUnitCallback callback = eventContext.getCallback();
+        Throwable error = eventContext.getError();
         if (null != error) {
             BMap<String, BValue> errorStruct = IOUtils.createError(context, error.getMessage());
             context.setReturnValues(errorStruct);
-        } else {
-            Long readLong = result.getResponse();
-            context.setReturnValues(new BInteger(readLong));
         }
-        IOUtils.validateChannelState(eventContext);
         callback.notifySuccess();
         return result;
     }
 
+    /**
+     * Closes the byte channel.
+     * {@inheritDoc}
+     */
     @Override
     public void execute(Context context, CallableUnitCallback callback) {
-        BMap<String, BValue> dataChannelStruct = (BMap<String, BValue>) context.getRefArgument(DATA_CHANNEL_INDEX);
-        DataChannel channel = (DataChannel) dataChannelStruct.getNativeData(IOConstants.DATA_CHANNEL_NAME);
+        BMap<String, BValue> channel = (BMap<String, BValue>) context.getRefArgument(BYTE_CHANNEL_INDEX);
+        Channel byteChannel = (Channel) channel.getNativeData(IOConstants.BYTE_CHANNEL_NAME);
         EventContext eventContext = new EventContext(context, callback);
-        ReadIntegerEvent event = new ReadIntegerEvent(channel, Representation.BIT_16, eventContext);
-        Register register = EventRegister.getFactory().register(event, ReadInt16::readResponse);
+        CloseByteChannelEvent closeEvent = new CloseByteChannelEvent(byteChannel, eventContext);
+        Register register = EventRegister.getFactory().register(closeEvent, CloseWritableByteChannel::closeResponse);
         eventContext.setRegister(register);
         register.submit();
     }
