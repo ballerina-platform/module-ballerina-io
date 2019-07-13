@@ -74,6 +74,8 @@ public class IOConstants {
      */
     public static final long VAR_INT_MIN = (0xFFFFFFFFFFFFFL * -1);
 
+    public static final String DETAIL_RECORD_TYPE_NAME = "Detail";
+
 
     /**
      * Specifies the error code for i/o.
