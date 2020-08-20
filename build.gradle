@@ -14,53 +14,88 @@
  * limitations under the License.
  *
  */
- 
-apply from: "$rootDir/gradle/balNativeLibProject.gradle"
-apply from: "$rootDir/gradle/baseNativeStdLibProject.gradle"
 
-configurations.testCompileClasspath {
-    resolutionStrategy {
-        preferProjectModules()
+plugins {
+    id "com.github.spotbugs" version "4.0.5"
+    id "com.github.johnrengelman.shadow" version "5.2.0"
+    id "de.undercouch.download" version "4.0.4"
+    id "net.researchgate.release" version "2.6.0"
+}
+
+ext.ballerinaLangVersion = project.ballerinaLangVersion
+ext.puppycrawlCheckstyleVersion = "8.18"
+ext.testngVersion = "6.14.3"
+ext.slf4jVersion = "1.7.30"
+
+allprojects {
+    group = 'org.ballerinalang'
+    version = project.version
+
+    apply plugin: 'jacoco'
+    apply plugin: 'maven-publish'
+
+    repositories {
+        mavenLocal()
+        maven {
+            url = 'https://maven.wso2.org/nexus/content/repositories/releases/'
+        }
+
+        maven {
+            url = 'https://maven.wso2.org/nexus/content/repositories/snapshots/'
+        }
+
+        maven {
+            url = 'https://maven.wso2.org/nexus/content/groups/wso2-public/'
+        }
+
+        maven {
+            url = 'https://maven.wso2.org/nexus/content/repositories/orgballerinalang-1614'
+        }
+
+        maven {
+            url = 'https://repo.maven.apache.org/maven2'
+        }
+
+        maven {
+            url = 'https://maven.pkg.github.com/ballerina-platform/module-ballerina-io'
+        }
     }
 }
 
-dependencies {
-    baloImplementation project(path: ':ballerina-runtime-api', configuration: 'baloImplementation')
-    baloImplementation project(path: ':ballerina-time', configuration: 'baloImplementation')
-    baloImplementation project(path: ':ballerina-java', configuration: 'baloImplementation')
+subprojects {
+    apply plugin: 'java'
 
-    baloCreat project(':lib-creator')
-    implementation project(':ballerina-lang')
-    implementation project(':ballerina-runtime')
-    implementation project(':ballerina-logging')
-    implementation project(':ballerina-runtime-api')
-
-    testCompile project(path: ':ballerina-test-common', configuration: 'tests')
-    testCompile project(path: ':ballerina-test-utils', configuration: 'shadow')
-    testCompile project(':ballerina-reflect')
-    testCompile project(':ballerina-core')
-    testCompile 'org.testng:testng'
-    testCompile 'org.slf4j:slf4j-jdk14'
-    testCompile 'commons-codec:commons-codec'
-    testCompile 'org.apache.ws.commons.axiom:axiom-dom'
-    testCompile 'com.h2database:h2'
-    testCompile project(':ballerina-file')
-
-    bir project(path: ':ballerina-time', configuration: 'bir')
+    release {
+        // Disable check snapshots temporarily
+        buildTasks = []
+        failOnSnapshotDependencies = false
+        failOnCommitNeeded = false
+        versionPropertyFile = 'gradle.properties'
+        tagTemplate = 'v${version}'
+        git {
+            // To release from any branch
+            requireBranch = null
+        }
+    }
 }
 
-createBalo {
-    jvmTarget = 'true'
-}
+task codeCoverageReport(type: JacocoReport) {
+    executionData fileTree(project.rootDir.absolutePath).include("**/build/coverage-reports/*.exec")
 
-description = 'Ballerina - I/O'
+    subprojects.each {
+        sourceSets it.sourceSets.main
+    }
 
-configurations {
-    testCompile.exclude group: 'org.slf4j', module: 'slf4j-log4j12'
-    testCompile.exclude group: 'org.slf4j', module: 'slf4j-simple'
-    testCompile.exclude group: 'org.ops4j.pax.logging', module: 'pax-logging-api'
-}
+    reports {
+        xml.enabled = true
+        html.enabled = true
+        csv.enabled = true
+        xml.destination = new File("${buildDir}/reports/jacoco/report.xml")
+        html.destination = new File("${buildDir}/reports/jacoco/report.html")
+        csv.destination = new File("${buildDir}/reports/jacoco/report.csv")
+    }
 
-configurations.all {
-    resolutionStrategy.preferProjectModules()
+    onlyIf = {
+        true
+    }
 }
