@@ -14,34 +14,32 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import ballerina/io;
+ReadableCharacterChannel? rch = ();
+WritableCharacterChannel? wch = ();
+WritableCharacterChannel? wca = ();
 
-io:ReadableCharacterChannel? rch = ();
-io:WritableCharacterChannel? wch = ();
-io:WritableCharacterChannel? wca = ();
-
-function initReadableChannel(string filePath, string encoding) returns io:Error? {
-    var byteChannel = io:openReadableFile(filePath);
-    if (byteChannel is io:ReadableByteChannel) {
-        rch = new io:ReadableCharacterChannel(byteChannel, encoding);
+function initReadableChannel(string filePath, string encoding) returns Error? {
+    var byteChannel = openReadableFile(filePath);
+    if (byteChannel is ReadableByteChannel) {
+        rch = new ReadableCharacterChannel(byteChannel, encoding);
     } else {
         return byteChannel;
     }
 }
 
-function initWritableChannel(string filePath, string encoding) returns io:Error? {
-    io:WritableByteChannel byteChannel = check io:openWritableFile(filePath);
-    wch = new io:WritableCharacterChannel(byteChannel, encoding);
+function initWritableChannel(string filePath, string encoding) returns Error? {
+    WritableByteChannel byteChannel = check openWritableFile(filePath);
+    wch = new WritableCharacterChannel(byteChannel, encoding);
 }
 
-function initWritableChannelToAppend(string filePath, string encoding) returns io:Error? {
-    io:WritableByteChannel byteChannel = check io:openWritableFile(filePath, true);
-    wca = new io:WritableCharacterChannel(byteChannel, encoding);
+function initWritableChannelToAppend(string filePath, string encoding) returns Error? {
+    WritableByteChannel byteChannel = check openWritableFile(filePath, true);
+    wca = new WritableCharacterChannel(byteChannel, encoding);
 }
 
 function readCharacters(int numberOfCharacters) returns @tainted string|error {
     var rCha = rch;
-    if(rCha is io:ReadableCharacterChannel){
+    if(rCha is ReadableCharacterChannel){
         var result = rCha.read(numberOfCharacters);
         if (result is string) {
             return result;
@@ -53,7 +51,7 @@ function readCharacters(int numberOfCharacters) returns @tainted string|error {
     return e;
 }
 
-function readAllCharacters() returns @tainted string|io:Error? {
+function readAllCharacters() returns @tainted string|Error? {
     int fixedSize = 500;
     boolean isDone = false;
     string result = "";
@@ -63,10 +61,10 @@ function readAllCharacters() returns @tainted string|io:Error? {
             result = result + readResult;
         } else {
             error e = readResult;
-            if (e is io:EofError) {
+            if (e is EofError) {
                 isDone = true;
             } else {
-                io:GenericError readError = io:GenericError("Error while reading the content", readResult);
+                GenericError readError = GenericError("Error while reading the content", readResult);
                 return readError;
             }
         }
@@ -74,9 +72,9 @@ function readAllCharacters() returns @tainted string|io:Error? {
     return result;
 }
 
-function writeCharacters(string content, int startOffset) returns int|io:Error? {
+function writeCharacters(string content, int startOffset) returns int|Error? {
     var wCha = wch;
-    if(wCha is io:WritableCharacterChannel){
+    if(wCha is WritableCharacterChannel){
         var result = wCha.write(content, startOffset);
         if (result is int) {
             return result;
@@ -85,13 +83,13 @@ function writeCharacters(string content, int startOffset) returns int|io:Error? 
         }
     }
     // error e = error("Character channel not initialized properly");
-    io:GenericError e = io:GenericError("Character channel not initialized properly");
+    GenericError e = GenericError("Character channel not initialized properly");
     return e;
 }
 
-function appendCharacters(string content, int startOffset) returns int|io:Error? {
+function appendCharacters(string content, int startOffset) returns int|Error? {
     var wCha = wca;
-    if(wCha is io:WritableCharacterChannel){
+    if(wCha is WritableCharacterChannel){
         var result = wCha.write(content, startOffset);
         if (result is int) {
             return result;
@@ -99,13 +97,13 @@ function appendCharacters(string content, int startOffset) returns int|io:Error?
             return result;
         }
     }
-    io:GenericError e = io:GenericError("Character channel not initialized properly");
+    GenericError e = GenericError("Character channel not initialized properly");
     return e;
 }
 
 function readJson() returns @tainted json|error {
     var rCha = rch;
-    if(rCha is io:ReadableCharacterChannel){
+    if(rCha is ReadableCharacterChannel){
         var result = rCha.readJson();
         if (result is json) {
             return result;
@@ -118,7 +116,7 @@ function readJson() returns @tainted json|error {
 
 function readXml() returns @tainted xml|error {
     var rCha = rch;
-    if(rCha is io:ReadableCharacterChannel){
+    if(rCha is ReadableCharacterChannel){
         var result = rCha.readXml();
         if (result is xml) {
             return result;
@@ -126,23 +124,23 @@ function readXml() returns @tainted xml|error {
             return result;
         }
     }
-    io:GenericError e = io:GenericError("Character channel not initialized properly");
+    GenericError e = GenericError("Character channel not initialized properly");
     return e;
 }
 
 function readAvailableProperty(string key) returns @tainted string?|error {
     var rCha = rch;
-    if(rCha is io:ReadableCharacterChannel) {
+    if(rCha is ReadableCharacterChannel) {
         var result = rCha.readProperty(key);
         return result;
     }
-    io:GenericError e = io:GenericError("Character channel not initialized properly");
+    GenericError e = GenericError("Character channel not initialized properly");
     return e;
 }
 
 function readAllProperties() returns boolean {
     var rCha = rch;
-    if(rCha is io:ReadableCharacterChannel) {
+    if(rCha is ReadableCharacterChannel) {
         var results = rCha.readAllProperties();
         if (results is map<string>) {
             return true;
@@ -153,7 +151,7 @@ function readAllProperties() returns boolean {
 
 function readUnavailableProperty(string key) returns boolean {
     var rCha = rch;
-    if(rCha is io:ReadableCharacterChannel) {
+    if(rCha is ReadableCharacterChannel) {
         string defaultValue = "Default";
         var results = rCha.readProperty(key, defaultValue);
         if (results is string) {
@@ -167,14 +165,14 @@ function readUnavailableProperty(string key) returns boolean {
 
 function writePropertiesFromMap() returns boolean {
     var wCha = wch;
-    if (wCha is io:WritableCharacterChannel) {
+    if (wCha is WritableCharacterChannel) {
         map<string> properties = {
             name: "Anna Johnson",
             age: "25",
             occupation: "Banker"
         };
         var writeResults = wCha.writeProperties(properties, "Comment");
-        if !(writeResults is io:Error) {
+        if !(writeResults is Error) {
             return true;
         }
     }
@@ -183,7 +181,7 @@ function writePropertiesFromMap() returns boolean {
 
 function writeJson(json content) {
     var wCha = wch;
-    if(wCha is io:WritableCharacterChannel){
+    if(wCha is WritableCharacterChannel){
         var result = wCha.writeJson(content);
     }
 }
@@ -193,7 +191,7 @@ function writeJsonWithHigherUnicodeRange() {
         "loop": "É"
     };
     var wCha = wch;
-    if(wCha is io:WritableCharacterChannel){
+    if(wCha is WritableCharacterChannel){
         var result = wCha.writeJson(content);
         if (result is error) {
             panic <error>result;
@@ -203,28 +201,28 @@ function writeJsonWithHigherUnicodeRange() {
 
 function writeXml(xml content) {
     var wCha = wch;
-    if(wCha is io:WritableCharacterChannel){
+    if(wCha is WritableCharacterChannel){
         var result = wCha.writeXml(content);
     }
 }
 
 function closeReadableChannel() {
     var rCha = rch;
-    if(rCha is io:ReadableCharacterChannel){
+    if(rCha is ReadableCharacterChannel){
         var err = rCha.close();
     }
 }
 
 function closeWritableChannel() {
     var wCha = wch;
-    if(wCha is io:WritableCharacterChannel){
+    if(wCha is WritableCharacterChannel){
         var err = wCha.close();
     }
 }
 
 function closeWritableChannelToAppend() {
     var wCha = wch;
-    if(wCha is io:WritableCharacterChannel){
+    if(wCha is WritableCharacterChannel){
         var err = wCha.close();
     }
 }

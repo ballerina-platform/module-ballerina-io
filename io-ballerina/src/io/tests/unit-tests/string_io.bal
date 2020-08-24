@@ -14,10 +14,8 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import ballerina/io;
-
 function getJson(string content, string encoding) returns @tainted json|error {
-    io:StringReader reader = new io:StringReader(content, encoding);
+    StringReader reader = new StringReader(content, encoding);
     var readResult = reader.readJson();
     var closeResult = reader.close();
     if (readResult is json) {
@@ -28,7 +26,7 @@ function getJson(string content, string encoding) returns @tainted json|error {
 }
 
 function getXml(string content, string encoding) returns @tainted xml?|error {
-    io:StringReader reader = new io:StringReader(content, encoding);
+    StringReader reader = new StringReader(content, encoding);
     var readResult = reader.readXml();
     var closeResult = reader.close();
     if (readResult is xml?) {
