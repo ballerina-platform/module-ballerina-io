@@ -24,5 +24,13 @@ description = 'Ballerina - I/O Java Utils'
 dependencies {
     compile group: 'org.ballerinalang', name: 'ballerina-lang', version: "${ballerinaLangVersion}"
     compile group: 'org.ballerinalang', name: 'ballerina-runtime', version: "${ballerinaLangVersion}"
+    compile group: 'org.ballerinalang', name: 'ballerina-core', version: "${ballerinaLangVersion}"
+    compile group: 'org.ballerinalang', name: 'ballerina-runtime-api', version: "${ballerinaLangVersion}"
     compile group: 'org.slf4j', name: 'slf4j-jdk14', version: "${slf4jVersion}"
+    compile group: 'commons-codec', name: 'commons-codec', version: '1.9'
+    compile 'org.testng:testng:6.14.3'
+}
+
+test {
+    useTestNG() {}
 }
