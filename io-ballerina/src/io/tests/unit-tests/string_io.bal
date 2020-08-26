@@ -14,6 +14,37 @@
 // specific language governing permissions and limitations
 // under the License.
 
+import ballerina/test;
+
+@test:Config {}
+function testStrToJsonConvert() {
+    string content = "{\n" + "  \"test\": { \"name\": \"Foo\" }\n" + "}";
+    json expectedJson = {
+        test: {
+            name: "Foo"
+        }
+    };
+    var result = getJson(content, "UTF-8");
+    if (result is json) {
+        test:assertEquals(result, expectedJson, msg = "Found unexpected output");
+    } else {
+        test:assertFail(msg = result.message());
+    }
+}
+
+@test:Config {}
+function testXmlToJsonConvert() {
+    string content = "<test>" + "<name>Foo</name>" + "</test>";
+    xml expectedXml = xml `<test><name>Foo</name></test>`;
+
+    var result = getXml(content, "UTF-8");
+    if (result is xml) {
+        test:assertEquals(result, expectedXml, msg = "Found unexpected output");
+    } else {
+        test:assertFail(msg = (result is error)? result.message(): "Unexpected error");
+    }
+}
+
 function getJson(string content, string encoding) returns @tainted json|error {
     StringReader reader = new StringReader(content, encoding);
     var readResult = reader.readJson();

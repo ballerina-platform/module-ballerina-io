@@ -14,8 +14,116 @@
 // specific language governing permissions and limitations
 // under the License.
 
+import ballerina/test;
+
 ReadableTextRecordChannel? recordReadCh = ();
 WritableTextRecordChannel? recordWriteCh = ();
+
+@test:Config {}
+function testReadRecords() {
+    string filePath = RESOURCES_BASE_PATH + "datafiles/io/records/sample.csv";
+    error? initResult = initReadableRecordChannel(filePath, "UTF-8", "\n", ",");
+    if (initResult is error) {
+        test:assertFail(msg = initResult.message());
+    }
+
+    int expectedRecordLength = 3;
+    var result = hasNextTextRecord();
+    if (result is boolean) {
+        test:assertTrue(result, msg = "Found unexpected output");
+        var recordResult = nextTextRecord();
+        if (recordResult is string[]) {
+            test:assertEquals(recordResult.length(), expectedRecordLength, msg = "Found unexpected output");
+        } else {
+            test:assertFail(msg = "Unexpected result");
+        }
+    } else {
+        test:assertFail(msg = "Unexpected result");
+    }
+
+    result = hasNextTextRecord();
+    if (result is boolean) {
+        test:assertTrue(result, msg = "Found unexpected output");
+        var recordResult = nextTextRecord();
+        if (recordResult is string[]) {
+            test:assertEquals(recordResult.length(), expectedRecordLength, msg = "Found unexpected output");
+        } else {
+            test:assertFail(msg = "Unexpected result");
+        }
+    } else {
+        test:assertFail(msg = "Unexpected result");
+    }
+
+    result = hasNextTextRecord();
+    if (result is boolean) {
+        test:assertTrue(result, msg = "Found unexpected output");
+        var recordResult = nextTextRecord();
+        if (recordResult is string[]) {
+            test:assertEquals(recordResult.length(), expectedRecordLength, msg = "Found unexpected output");
+        } else {
+            test:assertFail(msg = "Unexpected result");
+        }
+    } else {
+        test:assertFail(msg = "Unexpected result");
+    }
+
+    var endResult = nextTextRecord();
+    if (endResult is error) {
+        test:assertEquals(endResult.message(), "EoF when reading from the channel", msg = "Found unexpected output");
+        var hasResult = hasNextTextRecord();
+        if (hasResult is boolean) {
+            test:assertFalse(hasResult, msg = "Found unexpected output");
+        } else {
+            test:assertFail(msg = "Unexpected result");
+        }
+    } else {
+        test:assertFail(msg = "Unexpected result");
+    }
+
+    closeReadableRecordChannel();
+}
+
+@test:Config {
+    dependsOn: ["testReadRecords"]
+}
+function testWriteRecords() {
+    string filePath = TEMP_DIR + "recordsFile.csv";
+    string[] content = [ "Name", "Email", "Telephone"];
+    Error? initWritableResult = initWritableRecordChannel(filePath, "UTF-8", "\n", ",");
+    if (initWritableResult is Error) {
+        test:assertFail(msg = initWritableResult.message());
+    }
+    writeTextRecord(content);
+
+    error? initReadableResult = initReadableRecordChannel(filePath, "UTF-8", "\n", ",");
+    if (initReadableResult is error) {
+        test:assertFail(msg = initReadableResult.message());
+    }
+
+    var result = hasNextTextRecord();
+    if (result is boolean) {
+        test:assertTrue(result, msg = "Found unexpected output");
+        var recordResult = nextTextRecord();
+        if (recordResult is string[]) {
+            test:assertEquals(recordResult[0], content[0], msg = "Found unexpected output");
+            test:assertEquals(recordResult[1], content[1], msg = "Found unexpected output");
+            test:assertEquals(recordResult[2], content[2], msg = "Found unexpected output");
+        } else {
+            test:assertFail(msg = "Unexpected result");
+        }
+    } else {
+        test:assertFail(msg = "Unexpected result");
+    }
+
+
+    var hasResult = hasNextTextRecord();
+    if (hasResult is boolean) {
+        test:assertFalse(hasResult, msg = "Found unexpected output");
+    } else {
+        test:assertFail(msg = "Unexpected result");
+    }
+    closeWritableBytesChannel();
+}
 
 function initReadableRecordChannel(string filePath, string encoding, string recordSeparator,
                                     string fieldSeparator) returns error? {
@@ -38,20 +146,16 @@ function initWritableRecordChannel(string filePath, string encoding, string reco
 
 function nextTextRecord() returns @tainted string[]|error {
     var cha = recordReadCh;
-    if(cha is io:ReadableTextRecordChannel) {
+    if(cha is ReadableTextRecordChannel) {
         var result = cha.getNext();
-        if (result is string[]) {
-            return result;
-        } else {
-            return result;
-        }
+        return result;
     }
-    return io:GenericError("Record channel not initialized properly");
+    return GenericError("Record channel not initialized properly");
 }
 
 function writeTextRecord(string[] fields) {
     var cha = recordWriteCh;
-    if(cha is io:WritableTextRecordChannel){
+    if(cha is WritableTextRecordChannel){
         var result = cha.write(fields);
     }
 }

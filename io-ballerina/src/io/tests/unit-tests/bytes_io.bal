@@ -19,11 +19,56 @@ import ballerina/test;
 ReadableByteChannel? bytesReadCh = ();
 WritableByteChannel? bytesWriteCh = ();
 
+
+@test:Config {}
 function testReadBytes() {
-    Error? initResult = initReadableChannel("../io-native/src/test/resources/datafiles/io/text/6charfile.txt");
+    string filePath = RESOURCES_BASE_PATH + "datafiles/io/text/6charfile.txt";
+    Error? initResult = initReadableBytesChannel(filePath);
     if (initResult is Error) {
         test:assertFail(msg = initResult.message());
     }
+
+    int numberOfBytesToRead = 3;
+    var result = readBytes(numberOfBytesToRead);
+    string expectedString = "123";
+    if (result is byte[]) {
+        test:assertEquals(result, expectedString.toBytes(), msg = "Found unexpected output");
+    } else {
+        test:assertFail(msg = result.message());
+    }
+
+    result = readBytes(numberOfBytesToRead);
+    expectedString = "456";
+    if (result is byte[]) {
+        test:assertEquals(result, expectedString.toBytes(), msg = "Found unexpected output");
+    } else {
+        test:assertFail(msg = result.message());
+    }
+
+    result = readBytes(numberOfBytesToRead);
+    expectedString = "";
+    if (result is byte[]) {
+        test:assertEquals(result, expectedString.toBytes(), msg = "Found unexpected output");
+    } else {
+        test:assertFail(msg = result.message());
+    }
+    closeReadableBytesChannel();
+}
+
+@test:Config {}
+function testWriteBytes() {
+    string filePath = TEMP_DIR + "bytesFile.txt";
+    byte[] content = [ 1, 46, 77, 90, 38 ];
+    Error? initResult = initWritableBytesChannel(filePath);
+    if (initResult is Error) {
+        test:assertFail(msg = initResult.message());
+    }
+
+    var result = writeBytes(content, 0);
+    if (result is Error) {
+        test:assertFail(msg = result.message());
+    }
+    closeWritableBytesChannel();
 }
 
 function initReadableBytesChannel(string filePath) returns Error? {
@@ -54,11 +99,7 @@ function writeBytes(byte[] content, int startOffset) returns int|Error {
     WritableByteChannel? wChannel = bytesWriteCh;
     if (wChannel is WritableByteChannel) {
         var result = wChannel.write(content, startOffset);
-        if (result is int) {
-            return result;
-        } else {
-            return result;
-        }
+        return result;
     } else {
        GenericError e = GenericError("WritableByteChannel not initialized");
        return e;
