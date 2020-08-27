@@ -177,5 +177,6 @@ publishing {
 
 ballerinaBuild.dependsOn ":io-native:build"
 ballerinaBuild.dependsOn ":io-native:test"
+ballerinaBuild.dependsOn ":io-test-utils:build"
 ballerinaBuild.dependsOn unpackJballerinaTools
 build.dependsOn ballerinaBuild
