@@ -13,7 +13,7 @@ plugins {
 
 rootProject.name = 'io'
 include(':build-config:checkstyle')
-include ':io-native', ':io-ballerina'
+include ':io-native', ':io-test-utils', ':io-ballerina'
 
 gradleEnterprise {
     buildScan {
