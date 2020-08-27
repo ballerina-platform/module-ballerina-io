@@ -19,7 +19,9 @@ import ballerina/test;
 ReadableTextRecordChannel? recordReadCh = ();
 WritableTextRecordChannel? recordWriteCh = ();
 
-@test:Config {}
+@test:Config {
+    dependsOn: ["testSprintfNilFloat"]
+}
 function testReadRecords() {
     string filePath = RESOURCES_BASE_PATH + "datafiles/io/records/sample.csv";
     error? initResult = initReadableRecordChannel(filePath, "UTF-8", "\n", ",");

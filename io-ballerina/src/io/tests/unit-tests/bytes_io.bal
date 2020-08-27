@@ -55,7 +55,9 @@ function testReadBytes() {
     closeReadableBytesChannel();
 }
 
-@test:Config {}
+@test:Config {
+    dependsOn: ["testReadBytes"]
+}
 function testWriteBytes() {
     string filePath = TEMP_DIR + "bytesFile.txt";
     byte[] content = [ 1, 46, 77, 90, 38 ];

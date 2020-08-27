@@ -56,7 +56,9 @@ type CommonApp record {
 ReadableCSVChannel? csvReadCh = ();
 WritableCSVChannel? csvWriteCh = ();
 
-@test:Config {}
+@test:Config {
+    dependsOn: ["testWriteProperties"]
+}
 function testReadCsvTest() {
     string filePath = RESOURCES_BASE_PATH + "datafiles/io/records/sample.csv";
     error? initResult = initReadableCsvChannel(filePath, "UTF-8", ",");

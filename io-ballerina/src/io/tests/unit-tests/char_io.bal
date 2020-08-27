@@ -20,7 +20,9 @@ ReadableCharacterChannel? rch = ();
 WritableCharacterChannel? wch = ();
 WritableCharacterChannel? wca = ();
 
-@test:Config {}
+@test:Config {
+    dependsOn: ["testWriteBytes"]
+}
 function testReadCharacters() {
     string filePath = RESOURCES_BASE_PATH + "datafiles/io/text/utf8file.txt";
     Error? initResult = initReadableCharChannel(filePath, "UTF-8");

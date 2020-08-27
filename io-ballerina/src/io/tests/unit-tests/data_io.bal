@@ -16,8 +16,9 @@
 
 import ballerina/test;
 
-
-@test:Config {}
+@test:Config {
+    dependsOn: ["testTableWithHeader"]
+}
 function testWriteFixedSignedInt() {
     int value = 123;
     ByteOrder byteOrder = BIG_ENDIAN;
