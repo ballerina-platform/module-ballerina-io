@@ -29,7 +29,6 @@ import java.nio.channels.WritableByteChannel;
 public class BlobChannel implements ByteChannel {
 
     private ReadableByteChannel readableChannel;
-    
     private WritableByteChannel writableChannel;
 
     public BlobChannel(ReadableByteChannel channel) {
