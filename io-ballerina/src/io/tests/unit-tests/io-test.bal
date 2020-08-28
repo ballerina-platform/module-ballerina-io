@@ -154,7 +154,7 @@ function testPrintMixVarargs() {
     int i1 = 123456789;
     float f1 = 123456789.123456789;
     boolean b1 = true;
-    string expectedOutput = "Hello World...!!! 123456789 123456789.123456789 true";
+    string expectedOutput = "Hello World...!!!1234567891.2345678912345679E8true";
     print(s1, i1, f1, b1);
     test:assertEquals(readOutputStream(), expectedOutput);
 }
