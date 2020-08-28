@@ -27,3 +27,4 @@ jobs:
           echo "New version: ${NEW_VERSION}"
           echo "Github username: ${GITHUB_ACTOR}"
           ./gradlew -PpublishToCentral=true -Pversion=${NEW_VERSION} publish
+          
