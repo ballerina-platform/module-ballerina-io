@@ -47,7 +47,7 @@ function testReadFixedSignedInt() {
         ReadableDataChannel dataChannel = new(ch, byteOrder);
         var result = dataChannel.readInt64();
         if (result is int) {
-            test:assertEquals(result, value, msg = "Found unexpected output");
+            test:assertEquals(result, value);
         } else {
             test:assertFail(msg = result.message());
         }
@@ -88,7 +88,7 @@ function testReadVarInt() {
         ReadableDataChannel dataChannel = new(ch, byteOrder);
         var result = dataChannel.readInt64();
         if (result is int) {
-            test:assertEquals(result, value, msg = "Found unexpected output");
+            test:assertEquals(result, value);
         } else {
             test:assertFail(msg = result.message());
         }
@@ -129,7 +129,7 @@ function testReadFixedFloat() {
         ReadableDataChannel dataChannel = new(ch, byteOrder);
         var result = dataChannel.readFloat64();
         if (result is float) {
-            test:assertEquals(result, value, msg = "Found unexpected output");
+            test:assertEquals(result, value);
         } else {
             test:assertFail(msg = result.message());
         }
@@ -170,7 +170,7 @@ function testReadBool() {
         ReadableDataChannel dataChannel = new(ch, byteOrder);
         var result = dataChannel.readBool();
         if (result is boolean) {
-            test:assertTrue(result, msg = "Found unexpected output");
+            test:assertTrue(result);
         } else {
             test:assertFail(msg = result.message());
         }
@@ -214,7 +214,7 @@ function testReadString() {
         ReadableDataChannel dataChannel = new(ch, byteOrder);
         var result = dataChannel.readString(nBytes, encoding);
         if (result is string) {
-            test:assertEquals(result, value, msg = "Found unexpected output");
+            test:assertEquals(result, value);
         } else {
             test:assertFail(msg = result.message());
         }
