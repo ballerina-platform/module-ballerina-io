@@ -26,82 +26,116 @@ function beforePrint() {
 @test:Config {
     dependsOn: ["testReadString"]
 }
-function testPrintAndPrintlnString() {
-    // output is equal to s1\ns2
-    string s1 = "Hello World...!!!";
-    string s2 = "A Greeting from Ballerina...!!!";
-    string expectedOutput = s1 + "\n" + s2;
-    println(s1);
-    print(s2);
-    test:assertEquals(readOutputStream(), expectedOutput, "Found unexpected output");
+function testPrintString() {
+    string s = "A Greeting from Ballerina...!!!";
+    print(s);
+    test:assertEquals(readOutputStream(), s);
+}
+
+@test:Config {
+    dependsOn: ["testPrintString"]
+}
+function testPrintlnString() {
+    string s = "Hello World...!!!";
+    string expectedOutput = s + "\n";
+    println(s);
+    test:assertEquals(readOutputStream(), expectedOutput);
 }
 
 @test:Config{
-    dependsOn: ["testPrintAndPrintlnString"]
+    dependsOn: ["testPrintlnString"]
 }
-function testPrintAndPrintlnInt() {
-    // output is equal to v1\nv2
-    int v1 = 1000;
-    int v2 = 1;
-    string expectedOutput = v1.toString() + "\n" + v2.toString();
-    println(v1);
-    print(v2);
-    test:assertEquals(readOutputStream(), expectedOutput, "Found unexpected output");
+function testPrintInt() {
+    int v = 1000;
+    print(v);
+    test:assertEquals(readOutputStream(), "1000");
 }
 
 @test:Config{
-    dependsOn: ["testPrintAndPrintlnInt"]
+    dependsOn: ["testPrintInt"]
 }
-function testPrintAndPrintlnFloat() {
-    // output is equal to v1\nv2
-    float v1 = 1000;
-    float v2 = 1;
-    string expectedOutput = v1.toString() + "\n" + v2.toString();
-    println(v1);
-    print(v2);
-    test:assertEquals(readOutputStream(), expectedOutput, "Found unexpected output");
+function testPrintlnInt() {
+    int v = 1;
+    println(v);
+    test:assertEquals(readOutputStream(), "1\n");
 }
 
 @test:Config{
-    dependsOn: ["testPrintAndPrintlnFloat"]
+    dependsOn: ["testPrintlnInt"]
 }
-function testPrintAndPrintlnBoolean() {
-    // output is equal to v1\nv2
-    boolean v1 = false;
-    boolean v2 = true;
-    string expectedOutput = v1.toString() + "\n" + v2.toString();
-    println(v1);
-    print(v2);
-    test:assertEquals(readOutputStream(), expectedOutput, "Found unexpected output");
+function testPrintFloat() {
+    float v = 1000;
+    print(v);
+    test:assertEquals(readOutputStream(), "1000.0");
 }
 
 @test:Config{
-    dependsOn: ["testPrintAndPrintlnBoolean"]
+    dependsOn: ["testPrintFloat"]
 }
-function testPrintAndPrintlnConnector() {
-    string expectedOutput = "object io:Foo\nobject io:Foo";
-    Foo f1 = new Foo();
-    Foo f2 = new Foo();
-    println(f1);
-    print(f2);
-    test:assertEquals(readOutputStream(), expectedOutput, "Found unexpected output");
+function testPrintlnFloat() {
+    float v = 1;
+    println(v);
+    test:assertEquals(readOutputStream(), "1.0\n");
+}
+
+@test:Config{
+    dependsOn: ["testPrintlnFloat"]
+}
+function testPrintBoolean() {
+    boolean b = false;
+    print(b);
+    test:assertEquals(readOutputStream(), "false");
+}
+
+@test:Config{
+    dependsOn: ["testPrintBoolean"]
+}
+function testPrintlnBoolean() {
+    boolean b = true;
+    println(b);
+    test:assertEquals(readOutputStream(), "true\n");
+}
+
+@test:Config{
+    dependsOn: ["testPrintlnBoolean"]
+}
+function testPrintConnector() {
+    Foo f = new Foo();
+    print(f);
+    test:assertEquals(readOutputStream(), "object io:Foo");
 
 }
 
 @test:Config{
-    dependsOn: ["testPrintAndPrintlnConnector"]
+    dependsOn: ["testPrintConnector"]
 }
-function testPrintAndPrintlnFunctionPointer() {
-    string expectedOutput = "function function (int,int) returns (int)\n" +
-                        "function function (int,int) returns (int)";
+function testPrintlnConnector() {
+    Foo f = new Foo();
+    println(f);
+    test:assertEquals(readOutputStream(), "object io:Foo\n");
+
+}
+
+@test:Config{
+    dependsOn: ["testPrintlnConnector"]
+}
+function testPrintFunctionPointer() {
+    function (int, int) returns (int) addFunction = func1;
+    print(addFunction);
+    test:assertEquals(readOutputStream(), "function function (int,int) returns (int)");
+}
+
+@test:Config{
+    dependsOn: ["testPrintFunctionPointer"]
+}
+function testPrintlnFunctionPointer() {
     function (int, int) returns (int) addFunction = func1;
     println(addFunction);
-    print(addFunction);
-    test:assertEquals(readOutputStream(), expectedOutput, "Found unexpected output");
+    test:assertEquals(readOutputStream(), "function function (int,int) returns (int)\n");
 }
 
 @test:Config{
-    dependsOn: ["testPrintAndPrintlnFunctionPointer"]
+    dependsOn: ["testPrintlnFunctionPointer"]
 }
 function testPrintVarargs() {
     string s1 = "Hello World...!!!";
@@ -109,7 +143,7 @@ function testPrintVarargs() {
     string s3 = "Adios";
     string expectedOutput = s1 + s2 + s3;
     print(s1, s2, s3);
-    test:assertEquals(readOutputStream(), expectedOutput, "Found unexpected output");
+    test:assertEquals(readOutputStream(), expectedOutput);
 }
 
 @test:Config{
@@ -120,9 +154,9 @@ function testPrintMixVarargs() {
     int i1 = 123456789;
     float f1 = 123456789.123456789;
     boolean b1 = true;
-    string expectedOutput = s1 + i1.toString() + f1.toString() + b1.toString();
+    string expectedOutput = "Hello World...!!! 123456789 123456789.123456789 true";
     print(s1, i1, f1, b1);
-    test:assertEquals(readOutputStream(), expectedOutput, "Found unexpected output");
+    test:assertEquals(readOutputStream(), expectedOutput);
 }
 
 @test:Config{
@@ -134,7 +168,7 @@ function testPrintlnVarargs() {
     string s3 = "Adios";
     string expectedOutput = s1 + s2 + s3 + "\n";
     println(s1, s2, s3);
-    test:assertEquals(readOutputStream(), expectedOutput, "Found unexpected output");
+    test:assertEquals(readOutputStream(), expectedOutput);
 }
 
 @test:Config{
@@ -143,7 +177,7 @@ function testPrintlnVarargs() {
 function testPrintNewline() {
     string expectedOutput = "hello\n";
     print("hello\n");
-    test:assertEquals(readOutputStream(), expectedOutput, "Found unexpected output");
+    test:assertEquals(readOutputStream(), expectedOutput);
 }
 
 @test:Config{
@@ -153,7 +187,7 @@ function testSprintfTrue() {
     string fmtStr = "%b";
     boolean b = true;
     string output = sprintf(fmtStr, b);
-    test:assertEquals(output, "true", "Found unexpected output");
+    test:assertEquals(output, "true");
 }
 
 @test:Config{
@@ -163,7 +197,7 @@ function testSprintfFalse() {
     string fmtStr = "%b";
     boolean b = false;
     string output = sprintf(fmtStr, b);
-    test:assertEquals(output, "false", "Found unexpected output");
+    test:assertEquals(output, "false");
 }
 
 @test:Config{
@@ -173,7 +207,7 @@ function testSprintfInt() {
     string fmtStr = "%d";
     int i = 65;
     string output = sprintf(fmtStr, i);
-    test:assertEquals(output, "65", "Found unexpected output");
+    test:assertEquals(output, "65");
 }
 
 @test:Config{
@@ -183,7 +217,7 @@ function testSprintfFloat() {
     string fmtStr = "%f";
     float f = 3.25;
     string output = sprintf(fmtStr, f);
-    test:assertEquals(output, "3.250000", "Found unexpected output");
+    test:assertEquals(output, "3.250000");
 }
 
 @test:Config{
@@ -193,7 +227,7 @@ function testSprintfString() {
     string fmtStr = "%s";
     string s = "John";
     string output = sprintf(fmtStr, s);
-    test:assertEquals(output, "John", "Found unexpected output");
+    test:assertEquals(output, "John");
 }
 
 @test:Config{
@@ -203,7 +237,7 @@ function testSprintfHex() {
     string fmtStr = "%x";
     int i = 57005;
     string output = sprintf(fmtStr, i);
-    test:assertEquals(output, "dead", "Found unexpected output");
+    test:assertEquals(output, "dead");
 }
 
 @test:Config{
@@ -213,7 +247,7 @@ function testSprintfArray() {
     string fmtStr = "%s";
     int[] arr = [111, 222, 333];
     string output = sprintf(fmtStr, arr);
-    test:assertEquals(output, "111 222 333", "Found unexpected output");
+    test:assertEquals(output, "111 222 333");
 }
 
 @test:Config{
@@ -223,7 +257,7 @@ function testSprintfLiteralPercentChar() {
     string fmtStr = "%% %s";
     string s = "test";
     string output = sprintf(fmtStr, s);
-    test:assertEquals(output, "% test", "Found unexpected output");
+    test:assertEquals(output, "% test");
 }
 
 @test:Config{
@@ -233,7 +267,7 @@ function testSprintfStringWithPadding() {
     string fmtStr = "%9.2s";
     string s = "Hello Ballerina";
     string output = sprintf(fmtStr, s);
-    test:assertEquals(output, "       He", "Found unexpected output");
+    test:assertEquals(output, "       He");
 }
 
 @test:Config{
@@ -243,7 +277,7 @@ function testSprintfFloatWithPadding() {
     string fmtStr = "%5.4f";
     float f = 123456789.9876543;
     string output = sprintf(fmtStr, f);
-    test:assertEquals(output, "123456789.9877", "Found unexpected output");
+    test:assertEquals(output, "123456789.9877");
 }
 
 @test:Config{
@@ -253,7 +287,7 @@ function testSprintfDecimalWithPadding() {
     string fmtStr = "%15d";
     int i = 12345;
     string output = sprintf(fmtStr, i);
-    test:assertEquals(output, "          12345", "Found unexpected output");
+    test:assertEquals(output, "          12345");
 }
 
 @test:Config{
@@ -266,7 +300,7 @@ function testSprintfIllegalFormatConversion() {
 
     if (output is error) {
         string expectedErrorMsg = "illegal format conversion 'x != string'";
-        test:assertEquals(output.message(), expectedErrorMsg, "Found unexpected output");
+        test:assertEquals(output.message(), expectedErrorMsg);
     } else {
         test:assertFail(msg = "Unexpected output");
     }
@@ -283,7 +317,7 @@ function testSprintfMix() {
     int i1 = 2;
     string output = sprintf(fmtStr, s1, s2, i1);
     string expectedOutput = "the cow jumped over the moon, 2 times";
-    test:assertEquals(output, expectedOutput, "Found unexpected output");
+    test:assertEquals(output, expectedOutput);
 }
 
 @test:Config{
@@ -291,7 +325,7 @@ function testSprintfMix() {
 }
 function testSprintfNilString() {
     string output = sprintf("%s", ());
-    test:assertEquals(output, "", "Found unexpected output");
+    test:assertEquals(output, "");
 }
 
 @test:Config{
@@ -302,7 +336,7 @@ function testSprintfNilFloat() {
 
     if (output is error) {
         string expectedErrorMsg = "illegal format conversion 'f != ()'";
-        test:assertEquals(output.message(), expectedErrorMsg, "Found unexpected output");
+        test:assertEquals(output.message(), expectedErrorMsg);
     } else {
         test:assertFail(msg = "Unexpected output");
     }
