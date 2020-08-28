@@ -38,3 +38,4 @@ jobs:
           packageUser: ${{ github.actor }}
           packagePAT: ${{ secrets.BALLERINA_STDLIB_TOKEN }}
         run: ./gradlew.bat build
+        
