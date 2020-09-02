@@ -28,7 +28,7 @@ ext.testngVersion = "6.14.3"
 ext.slf4jVersion = "1.7.30"
 
 allprojects {
-    group = 'org.ballerinalang'
+    group = project.group
     version = project.version
 
     apply plugin: 'jacoco'
