@@ -59,16 +59,69 @@ def tomlVersion = project.version.split("-")[0]
 def ballerinaCentralAccessToken = System.getenv('BALLERINA_CENTRAL_ACCESS_TOKEN')
 def targetBallerinaJar = file("$project.projectDir/target/caches/jar_cache/${moduleOrg}/${moduleName}/${tomlVersion}/${moduleOrg}-${moduleName}-${tomlVersion}.jar")
 def targetNativeJar = file("$project.rootDir/${moduleName}-native/build/libs/${moduleName}-native-${project.version}.jar")
+def distributionBinPath =  project.projectDir.absolutePath + "/build/target/extracted-distributions/jballerina-tools-zip/jballerina-tools-${ballerinaLangVersion}/bin"
+def originalConfig = ballerinaConfigFile.text
+
+task updateTomlFile {
+    doLast {
+        def newConfig = ballerinaConfigFile.text.replace("@project.version@", project.version)
+        newConfig = newConfig.replace("@toml.version@", tomlVersion)
+
+        ballerinaConfigFile.text = newConfig
+    }
+}
+
+task revertTomlFile {
+    doLast {
+        ballerinaConfigFile.text = originalConfig
+    }
+}
+
+task ballerinaTest {
+    dependsOn(":io-native:build")
+    dependsOn(":io-native:test")
+    dependsOn(":io-test-utils:build")
+    dependsOn(unpackJballerinaTools)
+    dependsOn(updateTomlFile)
+    finalizedBy(revertTomlFile)
+
+    def groupParams = ""
+    if (project.hasProperty("groups")) {
+        groupParams = "--groups ${project.findProperty("groups")}"
+    }
+
+    def debugParams = ""
+    if (project.hasProperty("debug")) {
+        debugParams = "--debug ${project.findProperty("debug")}"
+    }
+
+    doLast {
+        exec {
+            workingDir project.projectDir
+            environment "JAVA_OPTS", "-DBALLERINA_DEV_COMPILE_BALLERINA_ORG=true"
+            if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+                commandLine 'cmd', '/c', "$distributionBinPath/ballerina.bat test ${groupParams} --all ${debugParams}"
+            } else {
+                commandLine 'sh', '-c', "$distributionBinPath/ballerina test ${groupParams} --all ${debugParams}"
+            }
+        }
+    }
+}
+
+test {
+    dependsOn(ballerinaTest)
+}
 
 task ballerinaBuild {
     inputs.dir file(project.projectDir)
-    doLast {
-        def originalConfig = ballerinaConfigFile.text
-        def newConfig = ballerinaConfigFile.text.replace("@project.version@", project.version)
-        newConfig = newConfig.replace("@toml.version@", tomlVersion)
-        ballerinaConfigFile.text = newConfig
+    dependsOn(":io-native:build")
+    dependsOn(":io-native:test")
+    dependsOn(":io-test-utils:build")
+    dependsOn(unpackJballerinaTools)
+    dependsOn(updateTomlFile)
+    finalizedBy(revertTomlFile)
 
-        def distributionBinPath =  project.projectDir.absolutePath + "/build/target/extracted-distributions/jballerina-tools-zip/jballerina-tools-${ballerinaLangVersion}/bin"
+    doLast {
         def additionalBuildParams = ""
 
         if (project.hasProperty("skipBallerinaTests")) {
@@ -80,9 +133,9 @@ task ballerinaBuild {
             workingDir project.projectDir
             environment "JAVA_OPTS", "-DBALLERINA_DEV_COMPILE_BALLERINA_ORG=true"
             if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-                commandLine 'cmd', '/c', "$distributionBinPath/ballerina.bat build ${additionalBuildParams} --code-coverage -c ${moduleName}"
+                commandLine 'cmd', '/c', "$distributionBinPath/ballerina.bat build ${additionalBuildParams} --skip-tests -c ${moduleName}"
             } else {
-                commandLine 'sh', '-c', "$distributionBinPath/ballerina build ${additionalBuildParams} --code-coverage -c ${moduleName}"
+                commandLine 'sh', '-c', "$distributionBinPath/ballerina build ${additionalBuildParams} --skip-tests -c ${moduleName}"
             }
         }
         copy {
@@ -180,8 +233,6 @@ publishing {
     }
 }
 
-ballerinaBuild.dependsOn ":io-native:build"
-ballerinaBuild.dependsOn ":io-native:test"
-ballerinaBuild.dependsOn ":io-test-utils:build"
-ballerinaBuild.dependsOn unpackJballerinaTools
-build.dependsOn ballerinaBuild
+build {
+    dependsOn(ballerinaBuild)
+}
