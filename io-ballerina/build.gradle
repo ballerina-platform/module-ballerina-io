@@ -85,11 +85,6 @@ task ballerinaTest {
     dependsOn(updateTomlFile)
     finalizedBy(revertTomlFile)
 
-    def groupParams = ""
-    if (project.hasProperty("groups")) {
-        groupParams = "--groups ${project.findProperty("groups")}"
-    }
-
     def debugParams = ""
     if (project.hasProperty("debug")) {
         debugParams = "--debug ${project.findProperty("debug")}"
@@ -100,9 +95,9 @@ task ballerinaTest {
             workingDir project.projectDir
             environment "JAVA_OPTS", "-DBALLERINA_DEV_COMPILE_BALLERINA_ORG=true"
             if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-                commandLine 'cmd', '/c', "$distributionBinPath/ballerina.bat test ${groupParams} --all ${debugParams}"
+                commandLine 'cmd', '/c', "$distributionBinPath/ballerina.bat test --all ${debugParams}"
             } else {
-                commandLine 'sh', '-c', "$distributionBinPath/ballerina test ${groupParams} --all ${debugParams}"
+                commandLine 'sh', '-c', "$distributionBinPath/ballerina test --all ${debugParams}"
             }
         }
     }
