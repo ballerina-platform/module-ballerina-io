@@ -38,20 +38,6 @@ Execute the commands below to build from source.
 
         ./gradlew clean build -x test
 
-4. To run only specific tests:
-
-        ./gradlew clean build -Pgroups=<Comma separated groups/test cases>
-
-   **Tip:** The following groups of test cases are available.<br>
-   Groups | Test Cases
-   ---| ---
-   connection | connection
-   pool | pool
-   transaction | transaction
-   execute | execute-basic <br> execute-params
-   batch-execute | batch-execute 
-   query | query-simple-params<br>query-numeric-params<br>query-complex-params
-
 4. To debug the tests:
 
         ./gradlew clean build -Pdebug=<port>
