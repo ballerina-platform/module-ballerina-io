@@ -38,12 +38,12 @@ public class ReadableCSVChannel {
         self.skipHeaders(nHeaders);
     }
 
-# Skips the given number of headers.
-# ```ballerina
-# readableCSVChannel.skipHeaders(5);
-# ```
-#
-# + nHeaders - The number of headers, which should be skipped
+    # Skips the given number of headers.
+    # ```ballerina
+    # readableCSVChannel.skipHeaders(5);
+    # ```
+    #
+    # + nHeaders - The number of headers, which should be skipped
     function skipHeaders(int nHeaders) {
         int count = MINIMUM_HEADER_COUNT;
         while (count < nHeaders) {
@@ -52,12 +52,12 @@ public class ReadableCSVChannel {
         }
     }
 
-# Indicates whether there's another record, which could be read.
-# ```ballerina
-# boolean hasNext = readableCSVChannel.hasNext();
-# ```
-#
-# + return - True if there's a record
+    # Indicates whether there's another record, which could be read.
+    # ```ballerina
+    # boolean hasNext = readableCSVChannel.hasNext();
+    # ```
+    #
+    # + return - True if there's a record
     public function hasNext() returns boolean {
         var recordChannel = self.dc;
         if (recordChannel is ReadableTextRecordChannel) {
@@ -68,12 +68,12 @@ public class ReadableCSVChannel {
         }
     }
 
-# Gets the next record from the CSV file.
-# ```ballerina
-# string[]|io:Error? record = readableCSVChannel.getNext();
-# ```
-#
-# + return - List of fields in the CSV or else an `io:Error`
+    # Gets the next record from the CSV file.
+    # ```ballerina
+    # string[]|io:Error? record = readableCSVChannel.getNext();
+    # ```
+    #
+    # + return - List of fields in the CSV or else an `io:Error`
     public function getNext() returns @tainted string[]|Error? {
         if(self.dc is ReadableTextRecordChannel){
             var result = <ReadableTextRecordChannel> self.dc;
@@ -82,12 +82,12 @@ public class ReadableCSVChannel {
         return ();
     }
 
-# Closes a given `CSVChannel`.
-# ```ballerina
-# io:Error? err = readableCSVChannel.close();
-# ```
-#
-# + return - `io:Error` if any error occurred
+    # Closes a given `CSVChannel`.
+    # ```ballerina
+    # io:Error? err = readableCSVChannel.close();
+    # ```
+    #
+    # + return - `io:Error` if any error occurred
     public function close() returns Error? {
         if(self.dc is ReadableTextRecordChannel){
             var result = <ReadableTextRecordChannel> self.dc;
@@ -96,15 +96,15 @@ public class ReadableCSVChannel {
         return ();
     }
 
-# Returns a table, which corresponds to the CSV records.
-# ```ballerina
-# var tblResult1 = readableCSVChannel.getTable(Employee);
-# var tblResult2 = readableCSVChannel.getTable(Employee, ["id", "name"]);
-# ```
-#
-# + structType - The object in which the CSV records should be deserialized
-# + fieldNames - The names of the fields used as the (composite)key of the table
-# + return - Table, which represents the CSV records or else an `io:Error`
+    # Returns a table, which corresponds to the CSV records.
+    # ```ballerina
+    # var tblResult1 = readableCSVChannel.getTable(Employee);
+    # var tblResult2 = readableCSVChannel.getTable(Employee, ["id", "name"]);
+    # ```
+    #
+    # + structType - The object in which the CSV records should be deserialized
+    # + fieldNames - The names of the fields used as the (composite)key of the table
+    # + return - Table, which represents the CSV records or else an `io:Error`
     public function getTable(typedesc<record {}> structType, string[] fieldNames = [])
     returns @tainted table<record {}>|Error {
         return getTableExtern(self, structType, fieldNames);

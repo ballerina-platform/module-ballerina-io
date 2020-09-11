@@ -47,13 +47,13 @@ public class WritableCSVChannel {
         }
     }
 
-# Writes the record to a given CSV file.
-# ```ballerina
-# io:Error err = csvChannel.write(record);
-# ```
-# 
-# + csvRecord - A record to be written to the channel
-# + return - An `io:Error` if the record could not be written properly
+    # Writes the record to a given CSV file.
+    # ```ballerina
+    # io:Error err = csvChannel.write(record);
+    # ```
+    #
+    # + csvRecord - A record to be written to the channel
+    # + return - An `io:Error` if the record could not be written properly
     public function write(string[] csvRecord) returns Error? {
         if(self.dc is WritableTextRecordChannel){
             var result = <WritableTextRecordChannel> self.dc;
@@ -62,12 +62,12 @@ public class WritableCSVChannel {
         return ();
     }
 
-# Closes a given `CSVChannel`.
-# ```ballerina
-# io:Error? err = csvChannel.close();
-# ```
-# 
-# + return - `()` or else `io:Error` if any error occurred
+    # Closes a given `CSVChannel`.
+    # ```ballerina
+    # io:Error? err = csvChannel.close();
+    # ```
+    #
+    # + return - `()` or else `io:Error` if any error occurred
     public function close() returns Error? {
         if(self.dc is WritableTextRecordChannel){
             var result = <WritableTextRecordChannel> self.dc;

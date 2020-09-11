@@ -39,23 +39,23 @@ public class WritableTextRecordChannel {
         initWritableTextRecordChannel(self, characterChannel, fs, rs, fmt);
     }
 
-# Writes records to a given output resource.
-# ```ballerina
-# io:Error? err = writableChannel.write(records);
-# ```
-# 
-# + textRecord - List of fields to be written
-# + return - An `io:Error` if the records could not be written properly or else `()`
+    # Writes records to a given output resource.
+    # ```ballerina
+    # io:Error? err = writableChannel.write(records);
+    # ```
+    #
+    # + textRecord - List of fields to be written
+    # + return - An `io:Error` if the records could not be written properly or else `()`
     public function write(string[] textRecord) returns Error? {
         return writeRecordExtern(self, textRecord);
     }
 
-# Closes a given record channel.
-# ```ballerina
-# io:Error? err = writableChannel.close();
-# ```
-# 
-# + return - An `io:Error` if the record channel could not be closed properly or else `()`
+    # Closes a given record channel.
+    # ```ballerina
+    # io:Error? err = writableChannel.close();
+    # ```
+    #
+    # + return - An `io:Error` if the record channel could not be closed properly or else `()`
     public function close() returns Error? {
         return closeWritableTextRecordChannelExtern(self);
     }

@@ -36,32 +36,32 @@ public class ReadableTextRecordChannel {
         initReadableTextRecordChannel(self, charChannel, fs, rs, fmt);
     }
 
-# Checks whether there's a record left to be read.
-# ```ballerina
-# boolean hasNext = readableRecChannel.hasNext();
-# ```
-#
-# + return - True if there's a record left to be read
+    # Checks whether there's a record left to be read.
+    # ```ballerina
+    # boolean hasNext = readableRecChannel.hasNext();
+    # ```
+    #
+    # + return - True if there's a record left to be read
     public function hasNext() returns boolean {
         return hasNextExtern(self);
     }
 
-# Get the next record from the input/output resource.
-# ```ballerina
-# string[]|io:Error record = readableRecChannel.getNext();
-# ```
-#
-# + return - Set of fields included in the record or else `io:Error`
+    # Get the next record from the input/output resource.
+    # ```ballerina
+    # string[]|io:Error record = readableRecChannel.getNext();
+    # ```
+    #
+    # + return - Set of fields included in the record or else `io:Error`
     public function getNext() returns @tainted string[]|Error {
         return getNextExtern(self);
     }
 
-# Closes a given record channel.
-# ```ballerina
-# io:Error err = readableRecChannel.close();
-# ```
-#
-# + return - An `io:Error` if the record channel could not be closed properly
+    # Closes a given record channel.
+    # ```ballerina
+    # io:Error err = readableRecChannel.close();
+    # ```
+    #
+    # + return - An `io:Error` if the record channel could not be closed properly
     public function close() returns Error? {
         return closeReadableTextRecordChannelExtern(self);
     }
