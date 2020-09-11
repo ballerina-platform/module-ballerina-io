@@ -247,7 +247,7 @@ function testSprintfArray() {
     string fmtStr = "%s";
     int[] arr = [111, 222, 333];
     string output = sprintf(fmtStr, arr);
-    test:assertEquals(output, "111 222 333");
+    test:assertEquals(output, "[111,222,333]");
 }
 
 @test:Config{
@@ -347,23 +347,23 @@ function func1(int a, int b) returns (int) {
     return c;
 }
 
-type Foo object {
+class Foo {
     function bar() returns (int) {
         return 5;
     }
-};
+}
 
 public function initOutputStream() = @java:Method {
     name: "initOutputStream",
-    class: "org.ballerinalang.stdlib.io.testutils.PrintTestUtils"
+    'class: "org.ballerinalang.stdlib.io.testutils.PrintTestUtils"
 } external;
 
 public function readOutputStream() returns string = @java:Method {
     name: "readOutputStream",
-    class: "org.ballerinalang.stdlib.io.testutils.PrintTestUtils"
+    'class: "org.ballerinalang.stdlib.io.testutils.PrintTestUtils"
 } external;
 
 public function resetOutputStream() = @java:Method {
     name: "resetOutputStream",
-    class: "org.ballerinalang.stdlib.io.testutils.PrintTestUtils"
+    'class: "org.ballerinalang.stdlib.io.testutils.PrintTestUtils"
 } external;
