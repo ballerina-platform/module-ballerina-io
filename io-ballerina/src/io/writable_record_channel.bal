@@ -17,7 +17,7 @@
 import ballerina/java;
 
 # Represents a channel, which will allow to write records through a given WritableCharacterChannel.
-public type WritableTextRecordChannel object {
+public class WritableTextRecordChannel {
     private WritableCharacterChannel characterChannel;
     private string fs;
     private string rs;
@@ -59,20 +59,20 @@ public type WritableTextRecordChannel object {
     public function close() returns Error? {
         return closeWritableTextRecordChannelExtern(self);
     }
-};
+}
 
 function initWritableTextRecordChannel(WritableTextRecordChannel textChannel, WritableCharacterChannel charChannel,
                                        string fs, string rs, string fmt) = @java:Method {
     name: "initRecordChannel",
-    class: "org.ballerinalang.stdlib.io.nativeimpl.RecordChannelUtils"
+    'class: "org.ballerinalang.stdlib.io.nativeimpl.RecordChannelUtils"
 } external;
 
 function writeRecordExtern(WritableTextRecordChannel textChannel, string[] textRecord) returns Error? = @java:Method {
     name: "write",
-    class: "org.ballerinalang.stdlib.io.nativeimpl.RecordChannelUtils"
+    'class: "org.ballerinalang.stdlib.io.nativeimpl.RecordChannelUtils"
 } external;
 
 function closeWritableTextRecordChannelExtern(WritableTextRecordChannel textChannel) returns Error? = @java:Method {
     name: "close",
-    class: "org.ballerinalang.stdlib.io.nativeimpl.RecordChannelUtils"
+    'class: "org.ballerinalang.stdlib.io.nativeimpl.RecordChannelUtils"
 } external;
