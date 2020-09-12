@@ -17,7 +17,7 @@
 import ballerina/java;
 
 # Represents a channel, which will allow to write records through a given WritableCharacterChannel.
-public type WritableTextRecordChannel object {
+public class WritableTextRecordChannel {
     private WritableCharacterChannel characterChannel;
     private string fs;
     private string rs;
@@ -39,40 +39,40 @@ public type WritableTextRecordChannel object {
         initWritableTextRecordChannel(self, characterChannel, fs, rs, fmt);
     }
 
-# Writes records to a given output resource.
-# ```ballerina
-# io:Error? err = writableChannel.write(records);
-# ```
-# 
-# + textRecord - List of fields to be written
-# + return - An `io:Error` if the records could not be written properly or else `()`
+    # Writes records to a given output resource.
+    # ```ballerina
+    # io:Error? err = writableChannel.write(records);
+    # ```
+    #
+    # + textRecord - List of fields to be written
+    # + return - An `io:Error` if the records could not be written properly or else `()`
     public function write(string[] textRecord) returns Error? {
         return writeRecordExtern(self, textRecord);
     }
 
-# Closes a given record channel.
-# ```ballerina
-# io:Error? err = writableChannel.close();
-# ```
-# 
-# + return - An `io:Error` if the record channel could not be closed properly or else `()`
+    # Closes a given record channel.
+    # ```ballerina
+    # io:Error? err = writableChannel.close();
+    # ```
+    #
+    # + return - An `io:Error` if the record channel could not be closed properly or else `()`
     public function close() returns Error? {
         return closeWritableTextRecordChannelExtern(self);
     }
-};
+}
 
 function initWritableTextRecordChannel(WritableTextRecordChannel textChannel, WritableCharacterChannel charChannel,
                                        string fs, string rs, string fmt) = @java:Method {
     name: "initRecordChannel",
-    class: "org.ballerinalang.stdlib.io.nativeimpl.RecordChannelUtils"
+    'class: "org.ballerinalang.stdlib.io.nativeimpl.RecordChannelUtils"
 } external;
 
 function writeRecordExtern(WritableTextRecordChannel textChannel, string[] textRecord) returns Error? = @java:Method {
     name: "write",
-    class: "org.ballerinalang.stdlib.io.nativeimpl.RecordChannelUtils"
+    'class: "org.ballerinalang.stdlib.io.nativeimpl.RecordChannelUtils"
 } external;
 
 function closeWritableTextRecordChannelExtern(WritableTextRecordChannel textChannel) returns Error? = @java:Method {
     name: "close",
-    class: "org.ballerinalang.stdlib.io.nativeimpl.RecordChannelUtils"
+    'class: "org.ballerinalang.stdlib.io.nativeimpl.RecordChannelUtils"
 } external;

@@ -28,7 +28,7 @@ public const int MINIMUM_HEADER_COUNT = 0;
 
 
 # Represents a WritableCSVChannel, which could be used to write records from the CSV file.
-public type WritableCSVChannel object {
+public class WritableCSVChannel {
     private WritableTextRecordChannel? dc;
 
     # Constructs a CSV channel from a `CharacterChannel` to read/write CSV records.
@@ -47,13 +47,13 @@ public type WritableCSVChannel object {
         }
     }
 
-# Writes the record to a given CSV file.
-# ```ballerina
-# io:Error err = csvChannel.write(record);
-# ```
-# 
-# + csvRecord - A record to be written to the channel
-# + return - An `io:Error` if the record could not be written properly
+    # Writes the record to a given CSV file.
+    # ```ballerina
+    # io:Error err = csvChannel.write(record);
+    # ```
+    #
+    # + csvRecord - A record to be written to the channel
+    # + return - An `io:Error` if the record could not be written properly
     public function write(string[] csvRecord) returns Error? {
         if(self.dc is WritableTextRecordChannel){
             var result = <WritableTextRecordChannel> self.dc;
@@ -62,12 +62,12 @@ public type WritableCSVChannel object {
         return ();
     }
 
-# Closes a given `CSVChannel`.
-# ```ballerina
-# io:Error? err = csvChannel.close();
-# ```
-# 
-# + return - `()` or else `io:Error` if any error occurred
+    # Closes a given `CSVChannel`.
+    # ```ballerina
+    # io:Error? err = csvChannel.close();
+    # ```
+    #
+    # + return - `()` or else `io:Error` if any error occurred
     public function close() returns Error? {
         if(self.dc is WritableTextRecordChannel){
             var result = <WritableTextRecordChannel> self.dc;
@@ -75,4 +75,4 @@ public type WritableCSVChannel object {
         }
         return ();
     }
-};
+}

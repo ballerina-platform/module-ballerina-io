@@ -17,42 +17,42 @@
 import ballerina/java;
 
 # WritableByteChannel represents an output resource (i.e file). which could be used to sink bytes.
-public type WritableByteChannel object {
+public class WritableByteChannel {
 
     # Adding default init function to prevent object getting initialized from the user code.
     function init() {}
 
-# Sinks bytes from a given input/output resource.
-#
-# This operation will be asynchronous. Writing might return without writing all the content.
-# ```ballerina
-# int|io:Error result = writableByteChannel.write(record, 0);
-# ```
-#
-# + content - Block of bytes, which should be written
-# + offset - Offset, which should be kept when writing bytes.
-# + return - Number of bytes written or else `io:Error`
+    # Sinks bytes from a given input/output resource.
+    #
+    # This operation will be asynchronous. Writing might return without writing all the content.
+    # ```ballerina
+    # int|io:Error result = writableByteChannel.write(record, 0);
+    # ```
+    #
+    # + content - Block of bytes, which should be written
+    # + offset - Offset, which should be kept when writing bytes.
+    # + return - Number of bytes written or else `io:Error`
     public function write(byte[] content, int offset) returns int|Error {
         return byteWriteExtern(self, content, offset);
     }
 
-# Closes a given byte channel.
-# ```ballerina
-# io:Error err = writableByteChannel.close();
-# ```
-#
-# + return - `io:Error` or else `()`
+    # Closes a given byte channel.
+    # ```ballerina
+    # io:Error err = writableByteChannel.close();
+    # ```
+    #
+    # + return - `io:Error` or else `()`
     public function close() returns Error? {
         return closeWritableByteChannelExtern(self);
     }
-};
+}
 
 function byteWriteExtern(WritableByteChannel byteChannel, byte[] content, int offset) returns int|Error = @java:Method {
     name: "write",
-    class: "org.ballerinalang.stdlib.io.nativeimpl.ByteChannelUtils"
+    'class: "org.ballerinalang.stdlib.io.nativeimpl.ByteChannelUtils"
 } external;
 
 function closeWritableByteChannelExtern(WritableByteChannel byteChannel) returns Error? = @java:Method {
     name: "closeByteChannel",
-    class: "org.ballerinalang.stdlib.io.nativeimpl.ByteChannelUtils"
+    'class: "org.ballerinalang.stdlib.io.nativeimpl.ByteChannelUtils"
 } external;
