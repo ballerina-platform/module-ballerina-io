@@ -37,5 +37,5 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.BALLERINA_STDLIB_TOKEN }}
           packageUser: ${{ github.actor }}
           packagePAT: ${{ secrets.BALLERINA_STDLIB_TOKEN }}
-        run: ./gradlew.bat build --scan
+        run: ./gradlew.bat build -x test --scan
         
