@@ -84,7 +84,8 @@ public class CharacterChannelUtils {
         CharacterChannel charChannel = (CharacterChannel) channel.getNativeData(CHARACTER_CHANNEL_NAME);
         CharacterChannelReader reader = new CharacterChannelReader(charChannel);
         try {
-            Object returnValue = JSONParser.parse(reader);
+            Object returnValue = JSONParser.parse(reader,
+                    JSONParser.NonStringValueProcessingMode.FROM_JSON_STRING);
             if (returnValue instanceof String) {
 
                 return org.ballerinalang.jvm.api.BStringUtils.fromString((String) returnValue);
