@@ -38,10 +38,6 @@ Execute the commands below to build from source.
 
         ./gradlew clean build -x test
 
-4. To debug the tests:
-
-        ./gradlew clean build -Pdebug=<port>
-
 ## Contributing to Ballerina
 
 As an open source project, Ballerina welcomes contributions from the community. 
