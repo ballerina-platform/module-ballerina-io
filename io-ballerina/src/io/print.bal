@@ -22,7 +22,7 @@ import ballerina/java;
 #```
 # 
 # + values - The value(s) to be printed.
-public function print((any|error)... values) = @java:Method {
+public isolated function print((any|error)... values) = @java:Method {
     name: "print",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.PrintUtils"
 } external;
@@ -33,7 +33,7 @@ public function print((any|error)... values) = @java:Method {
 #```
 #  
 # + values - The value(s) to be printed.
-public function println((any|error)... values) = @java:Method {
+public isolated function println((any|error)... values) = @java:Method {
     name: "println",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.PrintUtils"
 } external;
@@ -62,7 +62,7 @@ public function println((any|error)... values) = @java:Method {
 # + format - A format string
 # + args   - Arguments referred by the format specifiers in the format string
 # + return - The formatted string
-public function sprintf(string format, (any|error)... args) returns string = @java:Method {
+public isolated function sprintf(string format, (any|error)... args) returns string = @java:Method {
     name: "sprintf",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.Sprintf"
 } external;
