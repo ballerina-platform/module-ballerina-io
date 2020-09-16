@@ -18,8 +18,8 @@
 
 package org.ballerinalang.stdlib.io.testutils;
 
-import org.ballerinalang.jvm.StringUtils;
-import org.ballerinalang.jvm.values.api.BString;
+import org.ballerinalang.jvm.api.BStringUtils;
+import org.ballerinalang.jvm.api.values.BString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,7 +43,7 @@ public class PrintTestUtils {
 
     // Read output and return it as a ballerina string
     public static BString readOutputStream() {
-        return StringUtils.fromString(outContent.toString().replace("\r", ""));
+        return BStringUtils.fromString(outContent.toString().replace("\r", ""));
     }
 
     // Reset output stream

@@ -18,8 +18,9 @@
 
 package org.ballerinalang.stdlib.io.nativeimpl;
 
-import org.ballerinalang.jvm.BallerinaValues;
-import org.ballerinalang.jvm.StringUtils;
+import org.ballerinalang.jvm.api.BStringUtils;
+import org.ballerinalang.jvm.api.BValueCreator;
+import org.ballerinalang.jvm.api.values.BObject;
 import org.ballerinalang.jvm.types.BField;
 import org.ballerinalang.jvm.types.BStructureType;
 import org.ballerinalang.jvm.types.BTableType;
@@ -28,8 +29,6 @@ import org.ballerinalang.jvm.types.BUnionType;
 import org.ballerinalang.jvm.types.TypeTags;
 import org.ballerinalang.jvm.util.exceptions.BallerinaException;
 import org.ballerinalang.jvm.values.ArrayValue;
-import org.ballerinalang.jvm.values.MapValueImpl;
-import org.ballerinalang.jvm.values.ObjectValue;
 import org.ballerinalang.jvm.values.TableValue;
 import org.ballerinalang.jvm.values.TableValueImpl;
 import org.ballerinalang.jvm.values.TypedescValue;
@@ -41,6 +40,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -58,10 +58,10 @@ public class GetTable {
     private GetTable() {
     }
 
-    public static Object getTable(ObjectValue csvChannel, TypedescValue typedescValue, ArrayValue key) {
+    public static Object getTable(BObject csvChannel, TypedescValue typedescValue, ArrayValue key) {
         try {
-            final ObjectValue delimitedObj =
-                    (ObjectValue) csvChannel.get(StringUtils.fromString(CSV_CHANNEL_DELIMITED_STRUCT_FIELD));
+            final BObject delimitedObj =
+                    (BObject) csvChannel.get(BStringUtils.fromString(CSV_CHANNEL_DELIMITED_STRUCT_FIELD));
             DelimitedRecordChannel delimitedChannel = (DelimitedRecordChannel) delimitedObj
                     .getNativeData(IOConstants.TXT_RECORD_CHANNEL_NAME);
             if (delimitedChannel.hasReachedEnd()) {
@@ -89,22 +89,22 @@ public class GetTable {
         TableValue table = new TableValueImpl(newTableType);
         BStructureType structType = (BStructureType) describingType;
         for (String[] fields : records) {
-            final MapValueImpl<String, Object> struct = getStruct(fields, structType);
+            final Map<String, Object> struct = getStruct(fields, structType);
             if (struct != null) {
-                table.add(BallerinaValues.createRecordValue(describingType.getPackage(), describingType.getName(),
+                table.add(BValueCreator.createRecordValue(describingType.getPackage(), describingType.getName(),
                         struct));
             }
         }
         return table;
     }
 
-    private static MapValueImpl<String, Object> getStruct(String[] fields, final BStructureType structType) {
+    private static Map<String, Object> getStruct(String[] fields, final BStructureType structType) {
         Map<String, BField> internalStructFields = structType.getFields();
         int fieldLength = internalStructFields.size();
-        MapValueImpl<String, Object> struct = null;
+        Map<String, Object> struct = null;
         if (fields.length > 0) {
             Iterator<Map.Entry<String, BField>> itr = internalStructFields.entrySet().iterator();
-            struct = new MapValueImpl<>(structType);
+            struct = new HashMap<>();
             for (int i = 0; i < fieldLength; i++) {
                 final BField internalStructField = itr.next().getValue();
                 final int type = internalStructField.getFieldType().getTag();
@@ -141,7 +141,7 @@ public class GetTable {
         return struct;
     }
 
-    private static void populateRecord(int type, MapValueImpl<String, Object> struct, String fieldName, String value) {
+    private static void populateRecord(int type, Map<String, Object> struct, String fieldName, String value) {
         switch (type) {
             case TypeTags.INT_TAG:
                 struct.put(fieldName, (value == null || value.isEmpty()) ? null : Long.parseLong(value));
