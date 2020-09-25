@@ -27,21 +27,28 @@ For example demonstrations of the usage, go to [Ballerina By Examples](https://b
 Execute the commands below to build from source.
 
 1. To build the library:
-        
-        ./gradlew clean build
+   ```    
+   ./gradlew clean build
+   ```
 
-2. To run the integration tests:
-
-        ./gradlew clean test
-
-3. To build the module without the tests:
-
-        ./gradlew clean build -x test
-
-4. To debug the tests:
-
-        ./gradlew clean build -Pdebug=<port>
-
+1. To run the integration tests:
+   ```
+   ./gradlew clean test
+   ```
+1. To build the module without the tests:
+   ```
+   ./gradlew clean build -x test
+   ```
+1. To debug module implementation:
+   ```
+   ./gradlew clean build -Pdebug=<port>
+   ./gradlew clean test -Pdebug=<port>
+   ```
+1. To debug the module with Ballerina language:
+   ```
+   ./gradlew clean build -PbalJavaDebug=<port>
+   ./gradlew clean test -PbalJavaDebug=<port>
+   ```
 ## Contributing to Ballerina
 
 As an open source project, Ballerina welcomes contributions from the community. 
