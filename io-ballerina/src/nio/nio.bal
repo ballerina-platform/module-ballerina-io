@@ -78,6 +78,19 @@ public function readCsv(@untainted string path,
                         Separator fs = ",", 
                         int nHeaders = 0) returns @tainted table<record {}>|Error {}
 
+
+# Read file content as a CSV.
+# ```ballerina
+# stream<string[]|Error>|io:Error content = io:readCsvAsStream("./resources/myfile.csv");
+# ```
+# + path - File path
+# + fs - Field separator, which will separate between the records in the CSV file
+# + nHeaders - Number of headers, which should be skipped prior to reading records
+# + return - Either a stream of string array or `io:Error`
+public function readCsvAsStream(@untainted string path,
+                        Separator fs = ",",
+                        int nHeaders = 0) returns @tainted stream<string[]|Error>|Error {}
+                        
 # Reads a property from a .properties file with a default value.
 # ```ballerina
 # string|io:Error result = io:readProperty(key, defaultValue);
