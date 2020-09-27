@@ -16,14 +16,14 @@
 
 import ballerina/time;
 
-# FileInfo record contains metadata information of a file.
+# Stat record contains metadata information of a file.
 # This record is returned by getFileInfo function in file module.
 # + name - Name of the file
 # + size - Size of the file(in bytes)
 # + modifiedTime - The last modified time of the file
 # + dir - Whether the file is a directory or not
 # + absPath -  Absolute path of the file
-public type FileInfo record {|
+public type Stat record {|
     string name;
     int size;
     time:Time modifiedTime;
