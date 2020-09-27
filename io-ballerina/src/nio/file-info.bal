@@ -17,62 +17,16 @@
 import ballerina/time;
 
 # FileInfo record contains metadata information of a file.
-# This record is returned by getFileInfo function is os module.
-public class FileInfo {
-
+# This record is returned by getFileInfo function in file module.
+# + name - Name of the file
+# + size - Size of the file(in bytes)
+# + modifiedTime - The last modified time of the file
+# + dir - Whether the file is a directory or not
+# + absPath -  Absolute path of the file
+public type FileInfo record {|
     string name;
     int size;
     time:Time modifiedTime;
     boolean dir;
-    string path;
-
-    # Creates a FileInfo object.
-    #
-    # + name - Name of the file
-    # + size - Size of the file (in bytes)
-    # + modifiedTime - The last modified time of the file
-    # + dir - Whether the file is a directory or not
-    # + path - Absolute path of the file
-    public function init(string name, int size, time:Time modifiedTime, boolean dir, string path) {
-        self.name = name;
-        self.size = size;
-        self.modifiedTime = modifiedTime;
-        self.dir = dir;
-        self.path = path;
-    }
-
-    # Returns the file name.
-    #
-    # + return - the file name
-    public isolated function getName() returns string {
-        return self.name;
-    }
-
-    # Returns the file size.
-    #
-    # + return - the file size
-    public isolated function getSize() returns int {
-        return self.size;
-    }
-
-    # Returns the last-modified time of the file.
-    #
-    # + return - Last-modified time of the file
-    public isolated function getLastModifiedTime() returns time:Time {
-        return self.modifiedTime;
-    }
-
-    # Returns whether the file is a directory or not.
-    #
-    # + return - File is a directory or not
-    public isolated function isDir() returns boolean {
-        return self.dir;
-    }
-
-    # Returns the absolute file path.
-    #
-    # + return - The file path
-    public isolated function getPath() returns string {
-        return self.path;
-    }
-}
+    string absPath;
+|}

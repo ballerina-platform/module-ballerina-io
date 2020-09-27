@@ -141,3 +141,19 @@ public function writeXml(@untainted string path, xml content) returns Error? {}
 # + path - File path
 # + return - `io:Error` or else `()`
 public function writeCsv(@untainted string path, table<record {}> content) returns Error? {}
+
+# Splits the content based on the specific delimiter.
+# TODO: better name for the function
+#
+# + path - File path
+# + delimiter - delimiter to split the content
+# + return - `io:Error` or else `strema<string>`
+public function scanString(string path, string delimiter) returns stream<String>|Error {}
+
+# Splits the content based on the specific delimiter.
+# TODO: better name for the function
+#
+# + path - File path
+# + delimiter - delimiter to split the content
+# + return - `io:Error` or else `strema<byte[]>`
+public function scanBytes(string path, string delimiter) returns stream<byte[]>|Error {}

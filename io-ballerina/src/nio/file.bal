@@ -89,7 +89,7 @@ public function createFile(@untainted string path) returns string|Error {}
 #
 # + path - String value of the file path.
 # + return - The `FileInfo` instance with the file metadata or else an `io:Error`
-public isolated function getFileInfo(@untainted string path) returns FileInfo|Error {}
+public isolated function getFileInfo(@untainted string path) returns readonly & FileInfo|Error {}
 
 # Reads the directory and returns a list of files and directories 
 # inside the specified directory.
@@ -100,7 +100,7 @@ public isolated function getFileInfo(@untainted string path) returns FileInfo|Er
 # + path - String value of the directory path.
 # + maxDepth - The maximum number of directory levels to visit. -1 to indicate that all levels should be visited
 # + return - The `FileInfo` array or else an `io:Error` if there is an error while changing the mode.
-public function readDir(@untainted string path, int maxDepth = -1) returns FileInfo[]|Error {}
+public function readDir(@untainted string path, int maxDepth = -1) returns readonly & FileInfo[]|Error {}
 
 # Copy the file/directory in the old path to the new path.
 # If a file already exists in the new path, this replaces that file.
@@ -114,3 +114,21 @@ public function readDir(@untainted string path, int maxDepth = -1) returns FileI
 # + return - An `io:Error` if failed to rename
 public function copy(@untainted string sourcePath, @untainted string destinationPath,
                      boolean replaceExisting = false) returns Error? {}
+
+# Truncates the file.
+# ```ballerina
+# io:Error? results = io:truncate("/A/B/C");
+# ```
+#
+# + path - String value of the file path.
+# + return - An `io:Error` if failed to truncate.
+public function truncate(@untainted string path) returns Error? {}
+
+# Creates new path as a symbolic link to old path.
+# ```ballerina
+# io:Error? results = io:symlink("/A/B/C", "/A/B/D");
+# ```
+#
+# + oldpath - String value of the old file path
+# + newpath - String value of the new file path
+public function symlink(@untainted string oldpath, @untainted string newpath) returns Error? {}
