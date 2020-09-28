@@ -1,6 +1,8 @@
 name: Build
 
 on:
+  repository_dispatch:
+    types: [ stdlib-publish-snapshot ]
   push:
     branches:
       - master
@@ -20,9 +22,20 @@ jobs:
         run: chmod +x gradlew
       - name: Build with Gradle
         env:
-          GITHUB_TOKEN: ${{ secrets.BALLERINA_STDLIB_TOKEN }}
-          packageUser: ${{ github.actor }}
-          packagePAT: ${{ secrets.BALLERINA_STDLIB_TOKEN }}
+          packageUser: ${{ secrets.BALLERINA_BOT_USERNAME }}
+          packagePAT: ${{ secrets.BALLERINA_BOT_PAT }}
         run: |
           ./gradlew publish --scan
-          
+      - name: Dispatch Dependent Module Builds
+        if: github.event.action != 'stdlib-publish-snapshot'
+        run: |
+          echo "Triggering dependent module builds..." && \
+          curl -X POST https://api.github.com/repos/ballerina-platform/ThisaruGuruge/dispatches \
+          -H 'Accept: application/vnd.github.v3+json' \
+          -H 'Authorization: Bearer ${{ secrets.BALLERINA_BOT_TOKEN }}' \
+          --data '{
+            "event_type": "stdlib-module-push",
+            "client_payload": {
+              "module": "${{ github.repository }}"
+            }
+          }'
