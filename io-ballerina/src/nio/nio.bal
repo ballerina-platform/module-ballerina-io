@@ -312,7 +312,8 @@ public function symlink(@untainted string oldpath, @untainted string newpath) re
 # Watches the changes of a given directory and execute the given callback.
 # ```ballerina
 # var callaback = function(FileEvent event) => {
-# }
+# 
+#                 }
 # io:Error? results = io:watch("foo/bar", callaback);
 # ```
 #
