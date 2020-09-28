@@ -20,7 +20,7 @@
 # ```
 # + path - File path
 # + return - Either a string or `io:Error`
-public function fileReadString(@untainted string path) returns @tainted string|Error {}
+public function fileReadString(@untainted string path) returns @tainted readonly & string|Error {}
 
 # Read the entire file content as a list of lines.
 # ```ballerina
@@ -28,7 +28,7 @@ public function fileReadString(@untainted string path) returns @tainted string|E
 # ```
 # + path - File path
 # + return - Either a string array or `io:Error`
-public function fileReadLines(@untainted string path) returns @tainted string[]|Error {}
+public function fileReadLines(@untainted string path) returns @tainted readonly & string[]|Error {}
 
 # Read file content as a stream of lines.
 # ```ballerina
@@ -36,7 +36,7 @@ public function fileReadLines(@untainted string path) returns @tainted string[]|
 # ```
 # + path - File path
 # + return - Either a string array or `io:Error`
-public function fileReadLinesAsStream(@untainted string path) returns @tainted stream<string, Error>|Error {}
+public function fileReadLinesAsStream(@untainted string path) returns @tainted readonly & stream<string, Error>|Error {}
 
 # Write a string content to a file.
 # ```ballerina

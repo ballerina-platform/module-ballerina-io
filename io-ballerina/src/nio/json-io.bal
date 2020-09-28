@@ -20,7 +20,7 @@
 # ```
 # + path - File path
 # + return - Either a JSON or `io:Error`
-public function fileReadJson(@untainted string path) returns @tainted json|Error {}
+public function fileReadJson(@untainted string path) returns @tainted readonly & json|Error {}
 
 # Write a JSON to a file.
 # ```ballerina

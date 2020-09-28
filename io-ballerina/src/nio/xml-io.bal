@@ -20,7 +20,7 @@
 # ```
 # + path - File path
 # + return - Either a XML or `io:Error`
-public function fileReadXml(@untainted string path) returns @tainted xml|Error {}
+public function fileReadXml(@untainted string path) returns @tainted readonly & xml|Error {}
 
 # Write XML content to a file.
 # ```ballerina

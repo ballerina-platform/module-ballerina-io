@@ -26,7 +26,7 @@
 public function fileReadCsv(@untainted string path, 
                         Separator fs = ",", 
                         Separator rs = "\n", 
-                        int nHeaders = 0) returns @tainted string[][]|Error {}
+                        int nHeaders = 0) returns @tainted readonly & string[][]|Error {}
 
 # Read file content as a CSV.
 # ```ballerina
@@ -40,7 +40,7 @@ public function fileReadCsv(@untainted string path,
 public function fileReadCsvAsStream(@untainted string path,
                                 Separator fs = ",",
                                 Separator rs = "\n", 
-                                int nHeaders = 0) returns @tainted stream<string[], Error>|Error, {}
+                                int nHeaders = 0) returns @tainted readonly & stream<string[], Error>|Error, {}
 
 # Write CSV content to a file.
 # ```ballerina

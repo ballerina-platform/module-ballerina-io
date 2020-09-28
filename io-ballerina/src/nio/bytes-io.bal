@@ -20,7 +20,7 @@
 # ```
 # + path - File path
 # + return - Either a byte array or `io:Error`
-public function fileReadBlocks(@untainted string path) returns @tainted byte[]|Error {}
+public function fileReadBlocks(@untainted string path) returns @tainted readonly & byte[]|Error {}
 
 # Read the entire file content as a stream of chunks.
 # ```ballerina
@@ -30,7 +30,7 @@ public function fileReadBlocks(@untainted string path) returns @tainted byte[]|E
 # + n - Chunk size
 # + return - Either a byte chunk stream or `io:Error`
 public function fileReadBlocksAsStream(@untainted string path, 
-                                       @untainted int n = 4096) returns @tainted stream<byte[], Error>|Error {}
+                                       @untainted int n = 4096) returns @tainted readonly & stream<byte[], Error>|Error {}
 
 # Write a set of bytes to a file.
 # ```ballerina
