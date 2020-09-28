@@ -36,7 +36,7 @@ public function fileReadLines(@untainted string path) returns @tainted string[]|
 # ```
 # + path - File path
 # + return - Either a string array or `io:Error`
-public function fileReadLinesAsStream(@untainted string path) returns @tainted string[]|Error {}
+public function fileReadLinesAsStream(@untainted string path) returns @tainted stream<string, Error>|Error {}
 
 # Write a string content to a file.
 # ```ballerina
