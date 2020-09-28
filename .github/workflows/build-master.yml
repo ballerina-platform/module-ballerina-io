@@ -31,9 +31,9 @@ jobs:
         if: github.event.action != 'stdlib-publish-snapshot'
         run: |
           echo "Triggering dependent module builds..." && \
-          curl -X POST https://api.github.com/repos/ballerina-platform/ThisaruGuruge/dispatches \
+          curl -u ${{ secrets.BALLERINA_BOT_USERNAME }} -X POST https://api.github.com/repos/ThisaruGuruge/ballerina-lang/dispatches \
           -H 'Accept: application/vnd.github.v3+json' \
-          -H 'Authorization: Bearer ${{ secrets.BALLERINA_BOT_TOKEN }}' \
+          -H 'Authorization: token ${{ secrets.BALLERINA_BOT_PAT }}' \
           --data '{
             "event_type": "stdlib-module-push",
             "client_payload": {
