@@ -30,7 +30,7 @@ public function readBytesAsStream(@untainted string path,
 # ```
 # + path - File path
 # + return - Either a byte array or `io:Error`
-public function readAllBytes(@untainted string path) returns byte[]|Error {}
+public function readAllBytes(@untainted string path) returns @tainted byte[]|Error {}
 
 # Read file lines as a stream.
 # ```ballerina
