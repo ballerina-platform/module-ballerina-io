@@ -32,16 +32,6 @@ public function readBytesAsStream(@untainted string path,
 # + return - Either a byte array or `io:Error`
 public function readAllBytes(@untainted string path) returns byte[]|Error {}
 
-# Read given number of characters from a file.
-# ```ballerina
-# byte[]|io:Error content = io:readNCharacters("./resources/myfile.txt", 10);
-# ```
-# + path - File path
-# + n - The number of characters to read
-# + return - Either a string or `io:Error`
-public function readNCharacters(@untainted string path, 
-                                @untainted int n) returns string|Error {}
-
 # Read file lines as a stream.
 # ```ballerina
 # stream<string, io:Error>|io:Error content = io:readLinesAsStream("./resources/myfile.txt");
@@ -319,15 +309,14 @@ public function truncate(@untainted string path) returns Error? {}
 # + newpath - String value of the new file path
 public function symlink(@untainted string oldpath, @untainted string newpath) returns Error? {}
 
-# Watches the changes of a given file and execute the given callback.
+# Watches the changes of a given directory and execute the given callback.
 # ```ballerina
-# var callaback = function(string content) => {
-#   io:println(content);
+# var callaback = function(FileEvent event) => {
 # }
-# io:Error? results = io:watch("./resources/myfile.txt", callaback);
+# io:Error? results = io:watch("foo/bar", callaback);
 # ```
 #
 # + path - File path to be watched
 # + callback - The callback function
-public function watch(@untainted string path, function callback) returns Error? {}
+public function watchDir(@untainted string path, function callback) returns Error? {}
 
