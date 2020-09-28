@@ -30,7 +30,7 @@ public function readBytesAsStream(@untainted string path,
 # ```
 # + path - File path
 # + return - Either a byte array or `io:Error`
-public function readAllBytes(@untainted string path) returns byte[]|Error {}
+public function readAllBytes(@untainted string path) returns @tainted byte[]|Error {}
 
 # Read given number of characters from a file.
 # ```ballerina
@@ -40,7 +40,7 @@ public function readAllBytes(@untainted string path) returns byte[]|Error {}
 # + n - The number of characters to read
 # + return - Either a string or `io:Error`
 public function readNCharacters(@untainted string path, 
-                                @untainted int n) returns string|Error {}
+                                @untainted int n) returns @tainted string|Error {}
 
 # Read file lines as a stream.
 # ```ballerina
