@@ -30,3 +30,12 @@ public type Stat record {|
     boolean dir;
     string absPath;
 |}
+
+# Represents an event which will trigger when there is a changes to listining direcotry.
+#
+# + name - Absolute file path for triggerd event
+# + operation - Triggered event action. This can be create, delete or modify
+public type FileEvent record {|
+    string name;
+    string operation;
+|};
