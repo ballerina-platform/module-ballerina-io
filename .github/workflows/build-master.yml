@@ -24,16 +24,17 @@ jobs:
       - name: Build with Gradle
         env:
           packageUser: ${{ secrets.BALLERINA_BOT_USERNAME }}
-          packagePAT: ${{ secrets.BALLERINA_BOT_PAT }}
+          packagePAT: ${{ secrets.BALLERINA_BOT_TOKEN }}
         run: |
           ./gradlew publish --scan
       - name: Dispatch Dependent Module Builds
         if: github.event.action != 'stdlib-publish-snapshot'
         run: |
           echo "Triggering dependent module builds..." && \
-          curl -u ${{ secrets.BALLERINA_BOT_USERNAME }} -X POST https://api.github.com/repos/ThisaruGuruge/ballerina-lang/dispatches \
+          curl -u ${{ secrets.BALLERINA_BOT_USERNAME }} -X POST \
+          https://api.github.com/repos/ballerina-platform/ballerina-lang/dispatches \
           -H 'Accept: application/vnd.github.v3+json' \
-          -H 'Authorization: token ${{ secrets.BALLERINA_BOT_PAT }}' \
+          -H 'Authorization: token ${{ secrets.BALLERINA_BOT_TOKEN }}' \
           --data '{
             "event_type": "stdlib-module-push",
             "client_payload": {
