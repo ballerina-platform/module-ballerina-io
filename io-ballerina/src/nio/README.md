@@ -41,4 +41,3 @@
 - copy
 - truncate
 - symlink
-- watchDir
