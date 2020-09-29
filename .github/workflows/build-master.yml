@@ -23,7 +23,6 @@ jobs:
         run: chmod +x gradlew
       - name: Build with Gradle
         env:
-          GITHUB_TOKEN: ${{ secrets.BALLERINA_BOT_TOKEN }}
           packageUser: ${{ secrets.BALLERINA_BOT_USERNAME }}
           packagePAT: ${{ secrets.BALLERINA_BOT_TOKEN }}
         run: |
