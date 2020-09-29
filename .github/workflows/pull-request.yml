@@ -15,9 +15,9 @@ jobs:
           java-version: 1.8
       - name: Build with Gradle
         env:
-          GITHUB_TOKEN: ${{ secrets.BALLERINA_STDLIB_TOKEN }}
-          packageUser: ${{ github.actor }}
-          packagePAT: ${{ secrets.BALLERINA_STDLIB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.BALLERINA_BOT_TOKEN }}
+          packageUser: ${{ secrets.BALLERINA_BOT_USERNAME }}
+          packagePAT: ${{ secrets.BALLERINA_BOT_TOKEN }}
         run: ./gradlew build --scan
 
   windows-build:
@@ -32,8 +32,8 @@ jobs:
           java-version: 1.8
       - name: Build with Gradle
         env:
-          GITHUB_TOKEN: ${{ secrets.BALLERINA_STDLIB_TOKEN }}
-          packageUser: ${{ github.actor }}
-          packagePAT: ${{ secrets.BALLERINA_STDLIB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.BALLERINA_BOT_TOKEN }}
+          packageUser: ${{ secrets.BALLERINA_BOT_USERNAME }}
+          packagePAT: ${{ secrets.BALLERINA_BOT_TOKEN }}
         run: ./gradlew.bat build -x test --scan
         
