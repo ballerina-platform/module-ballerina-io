@@ -16,11 +16,11 @@
 
 # Read the entire file content as a byte array.
 # ```ballerina
-# byte[]|io:Error content = io:fileReadBlocks("./resources/myfile.txt");
+# byte[]|io:Error content = io:fileReadBytes("./resources/myfile.txt");
 # ```
 # + path - File path
 # + return - Either a byte array or `io:Error`
-public function fileReadBlocks(@untainted string path) returns @tainted readonly & byte[]|Error {}
+public function fileReadBytes(@untainted string path) returns @tainted readonly & byte[]|Error {}
 
 # Read the entire file content as a stream of chunks.
 # ```ballerina
@@ -35,12 +35,12 @@ public function fileReadBlocksAsStream(@untainted string path,
 # Write a set of bytes to a file.
 # ```ballerina
 # byte[] content = [60, 78, 39, 28];
-# io:Error? result = io:fileWriteBlocks("./resources/myfile.txt", content);
+# io:Error? result = io:fileWriteBytes("./resources/myfile.txt", content);
 # ```
 # + path - File path
 # + content - Byte content to write
 # + return - `io:Error` or else `()`
-public function fileWriteBlocks(@untainted string path, byte[] content) returns Error? {}
+public function fileWriteBytes(@untainted string path, byte[] content) returns Error? {}
 
 # Write a byte stream to a file.
 # ```ballerina

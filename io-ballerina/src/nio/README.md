@@ -2,10 +2,8 @@
 
 ## Blocks - bytes
 - fileReadBytes
-- fileReadBlocks
 - fileReadBlocksAsStream
 - fileWriteBytes
-- fileWriteBlocks
 - fileWriteBlocksFromStream
 
 ## Strings
@@ -29,17 +27,3 @@
 - fileReadCsvAsStream
 - fileWriteCsv
 - fileWriteCsvFromStream
-
-## File Utils
-- getCurrentDirectory
-- exists
-- createDir
-- remove
-- rename
-- tempDir
-- createFile
-- stat
-- readDir
-- copy
-- truncate
-- symlink
