@@ -1,6 +1,6 @@
 # API Summary
 
-## Blocks - bytes
+## Bytes
 - fileReadBytes
 - fileReadBlocksAsStream
 - fileWriteBytes
