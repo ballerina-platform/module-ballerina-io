@@ -57,10 +57,7 @@ publishing {
     }
 }
 
-ext.moduleName = 'io'
-
 compileJava {
-    inputs.property("moduleName", moduleName)
     doFirst {
         options.compilerArgs = [
                 '--module-path', classpath.asPath,

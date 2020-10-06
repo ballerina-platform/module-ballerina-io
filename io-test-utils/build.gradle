@@ -27,10 +27,7 @@ dependencies {
     compile project(":io-native")
 }
 
-ext.moduleName = 'io.testutils'
-
 compileJava {
-    inputs.property("moduleName", moduleName)
     doFirst {
         options.compilerArgs = [
                 '--module-path', classpath.asPath,
