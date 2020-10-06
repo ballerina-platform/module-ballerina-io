@@ -149,7 +149,7 @@ function testAppendCharacters() {
     dependsOn: ["testAppendCharacters"]
 }
 function testWriteJson() {
-    string filePath = TEMP_DIR + "jsonCharsFile.json";
+    string filePath = TEMP_DIR + "jsonCharsFile1.json";
     json content = {
         "web-app": {
             "servlet-mapping": {
@@ -174,7 +174,7 @@ function testWriteJson() {
     dependsOn: ["testWriteJson"]
 }
 function testReadJson() {
-    string filePath = TEMP_DIR + "jsonCharsFile.json";
+    string filePath = TEMP_DIR + "jsonCharsFile1.json";
     Error? initResult = initReadableCharChannel(filePath, "UTF-8");
     if (initResult is Error) {
         test:assertFail(msg = initResult.message());
@@ -203,6 +203,52 @@ function testReadJson() {
 
 @test:Config {
     dependsOn: ["testReadJson"]
+}
+function testFileWriteJson() {
+    string filePath = TEMP_DIR + "jsonCharsFile2.json";
+    json content = {
+        "web-app": {
+            "servlet-mapping": {
+                    "cofaxCDS": "/",
+                    "cofaxEmail": "/cofaxutil/aemail/*",
+                    "cofaxAdmin": "/admin/*",
+                    "fileServlet": "/static/*",
+                    "cofaxTools": ["/tools1/*", "/tools2/*", "/tools3/*"]
+                }
+            }
+    };
+    var result = fileWriteJson(filePath, content);
+    if (result is Error) {
+        test:assertFail(msg = result.message());
+    }
+}
+
+@test:Config {
+    dependsOn: ["testFileWriteJson"]
+}
+function testFileReadJson() {
+    string filePath = TEMP_DIR + "jsonCharsFile2.json";
+    json expectedJson = {
+        "web-app": {
+            "servlet-mapping": {
+                    "cofaxCDS": "/",
+                    "cofaxEmail": "/cofaxutil/aemail/*",
+                    "cofaxAdmin": "/admin/*",
+                    "fileServlet": "/static/*",
+                    "cofaxTools": ["/tools1/*", "/tools2/*", "/tools3/*"]
+                }
+            }
+    };
+    var result = fileReadJson(filePath);
+    if (result is json & readonly) {
+        test:assertEquals(result, expectedJson, msg = "Found unexpected output");
+    } else {
+        test:assertFail(msg = result.message());
+    }
+}
+
+@test:Config {
+    dependsOn: ["testFileReadJson"]
 }
 function testWriteHigherUnicodeJson() {
     string filePath = TEMP_DIR + "higherUniJsonCharsFile.json";
@@ -242,7 +288,7 @@ function testReadHigherUnicodeJson() {
     dependsOn: ["testReadHigherUnicodeJson"]
 }
 function testWriteXml() {
-    string filePath = TEMP_DIR + "xmlCharsFile.xml";
+    string filePath = TEMP_DIR + "xmlCharsFile1.xml";
     Error? initResult = initWritableCharChannel(filePath, "UTF-8");
     if (initResult is Error) {
         test:assertFail(msg = initResult.message());
@@ -282,7 +328,7 @@ function testWriteXml() {
     dependsOn: ["testWriteXml"]
 }
 function testReadXml() {
-    string filePath = TEMP_DIR + "xmlCharsFile.xml";
+    string filePath = TEMP_DIR + "xmlCharsFile1.xml";
     Error? initResult = initReadableCharChannel(filePath, "UTF-8");
     if (initResult is Error) {
         test:assertFail(msg = initResult.message());
@@ -326,6 +372,82 @@ function testReadXml() {
 
 @test:Config {
     dependsOn: ["testReadXml"]
+}
+function testFileWriteXml() {
+    string filePath = TEMP_DIR + "xmlCharsFile2.xml";
+    xml content = xml `<CATALOG>
+                       <CD>
+                           <TITLE>Empire Burlesque</TITLE>
+                           <ARTIST>Bob Dylan</ARTIST>
+                           <COUNTRY>USA</COUNTRY>
+                           <COMPANY>Columbia</COMPANY>
+                           <PRICE>10.90</PRICE>
+                           <YEAR>1985</YEAR>
+                       </CD>
+                       <CD>
+                           <TITLE>Hide your heart</TITLE>
+                           <ARTIST>Bonnie Tyler</ARTIST>
+                           <COUNTRY>UK</COUNTRY>
+                           <COMPANY>CBS Records</COMPANY>
+                           <PRICE>9.90</PRICE>
+                           <YEAR>1988</YEAR>
+                       </CD>
+                       <CD>
+                           <TITLE>Greatest Hits</TITLE>
+                           <ARTIST>Dolly Parton</ARTIST>
+                           <COUNTRY>USA</COUNTRY>
+                           <COMPANY>RCA</COMPANY>
+                           <PRICE>9.90</PRICE>
+                           <YEAR>1982</YEAR>
+                       </CD>
+                   </CATALOG>`;
+    var result = fileWriteXml(filePath, content);
+    if (result is Error) {
+        test:assertFail(msg = result.message());
+    }
+}
+
+@test:Config {
+    dependsOn: ["testFileWriteXml"]
+}
+function testFileReadXml() {
+    string filePath = TEMP_DIR + "xmlCharsFile2.xml";
+    xml expectedXml = xml `<CATALOG>
+                       <CD>
+                           <TITLE>Empire Burlesque</TITLE>
+                           <ARTIST>Bob Dylan</ARTIST>
+                           <COUNTRY>USA</COUNTRY>
+                           <COMPANY>Columbia</COMPANY>
+                           <PRICE>10.90</PRICE>
+                           <YEAR>1985</YEAR>
+                       </CD>
+                       <CD>
+                           <TITLE>Hide your heart</TITLE>
+                           <ARTIST>Bonnie Tyler</ARTIST>
+                           <COUNTRY>UK</COUNTRY>
+                           <COMPANY>CBS Records</COMPANY>
+                           <PRICE>9.90</PRICE>
+                           <YEAR>1988</YEAR>
+                       </CD>
+                       <CD>
+                           <TITLE>Greatest Hits</TITLE>
+                           <ARTIST>Dolly Parton</ARTIST>
+                           <COUNTRY>USA</COUNTRY>
+                           <COMPANY>RCA</COMPANY>
+                           <PRICE>9.90</PRICE>
+                           <YEAR>1982</YEAR>
+                       </CD>
+                   </CATALOG>`;
+    var result = fileReadXml(filePath);
+    if (result is xml & readonly) {
+        test:assertEquals(result, expectedXml, msg = "Found unexpected output");
+    } else if (result is Error) {
+        test:assertFail(msg = result.message());
+    }
+}
+
+@test:Config {
+    dependsOn: ["testFileReadXml"]
 }
 function testReadAvailableProperty() {
     string filePath = RESOURCES_BASE_PATH + "datafiles/io/text/person.properties";
