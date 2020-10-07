@@ -14,6 +14,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
+import ballerina/java;
 import ballerina/test;
 
 ReadableByteChannel? bytesReadCh = ();
@@ -55,11 +56,9 @@ function testReadBytes() {
     closeReadableBytesChannel();
 }
 
-@test:Config {
-    dependsOn: ["testReadBytes"]
-}
+@test:Config {}
 function testWriteBytes() {
-    string filePath = TEMP_DIR + "bytesFile.txt";
+    string filePath = TEMP_DIR + "bytesFile1.txt";
     byte[] content = [ 1, 46, 77, 90, 38 ];
     Error? initResult = initWritableBytesChannel(filePath);
     if (initResult is Error) {
@@ -71,6 +70,33 @@ function testWriteBytes() {
         test:assertFail(msg = result.message());
     }
     closeWritableBytesChannel();
+}
+
+@test:Config {}
+function testFileWriteBytes() {
+    string filePath = TEMP_DIR + "bytesFile2.txt";
+    createDirectoryExtern(TEMP_DIR);
+    string content = "Sheldon Cooper";
+    var result = fileWriteBytes(filePath, content.toBytes());
+    
+    if (result is Error) {
+        test:assertFail(msg = result.message());
+    }
+}
+
+@test:Config {
+    dependsOn: ["testFileWriteBytes"]
+}
+function testFileReadBytes() {
+    string filePath = TEMP_DIR + "bytesFile2.txt";
+    var result = fileReadBytes(filePath);
+    string expectedString = "Sheldon Cooper";
+    
+    if (result is byte[]) {
+        test:assertEquals(result, expectedString.toBytes(), msg = "Found unexpected output");
+    } else {
+        test:assertFail(msg = result.message());
+    }
 }
 
 function initReadableBytesChannel(string filePath) returns Error? {
@@ -129,3 +155,8 @@ function testBase64EncodeByteChannel(ReadableByteChannel contentToBeEncoded) ret
 function testBase64DecodeByteChannel(ReadableByteChannel contentToBeDecoded) returns ReadableByteChannel|Error {
     return contentToBeDecoded.base64Decode();
 }
+
+function createDirectoryExtern(string path) = @java:Method {
+    name: "createDirectory",
+    'class: "org.ballerinalang.stdlib.io.testutils.FileTestUtils"
+} external;
