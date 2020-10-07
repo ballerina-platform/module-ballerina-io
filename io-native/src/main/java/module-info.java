@@ -1,6 +1,6 @@
 module io.ballerina.stdlib.io {
-    requires org.slf4j;
     requires io.ballerina.jvm;
+    requires org.slf4j;
     exports org.ballerinalang.stdlib.io.channels;
     exports org.ballerinalang.stdlib.io.channels.base;
     exports org.ballerinalang.stdlib.io.channels.base.data;
