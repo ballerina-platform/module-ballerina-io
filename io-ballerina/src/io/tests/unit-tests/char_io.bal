@@ -441,7 +441,7 @@ function testFileReadXml() {
     var result = fileReadXml(filePath);
     if (result is xml & readonly) {
         test:assertEquals(result, expectedXml, msg = "Found unexpected output");
-    } else if (result is Error) {
+    } else {
         test:assertFail(msg = result.message());
     }
 }
