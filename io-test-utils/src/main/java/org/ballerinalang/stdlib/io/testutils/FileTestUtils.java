@@ -26,6 +26,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+/**
+ * This class holds test utility APIs related to file API test cases.
+ *
+ */
 public class FileTestUtils {
     private static final Logger log = LoggerFactory.getLogger(FileTestUtils.class);
 

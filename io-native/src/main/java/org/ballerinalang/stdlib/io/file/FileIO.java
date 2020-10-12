@@ -32,6 +32,10 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * This class holds all the Java File read and write related APIs.
+ *
+ */
 public class FileIO {
 
     private static final Logger log = LoggerFactory.getLogger(FileIO.class);
