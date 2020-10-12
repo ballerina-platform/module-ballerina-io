@@ -60,7 +60,8 @@ public class FileIO {
         Path filePath = Paths.get(path.getValue());
         try {
             List<String> lines = Files.readAllLines(filePath);
-            return BStringUtils.fromStringArray(lines.toArray(String[]::new));
+            return BValueCreator.createArrayValue(
+                    BStringUtils.fromStringArray(lines.toArray(String[]::new)));
         } catch (IOException e) {
             log.error("Error occurred while reading the byte content from " + path.getValue(), e);
             return IOUtils.createError(e.getMessage());
