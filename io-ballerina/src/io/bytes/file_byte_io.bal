@@ -22,8 +22,13 @@ import ballerina/java;
 # ```
 # + path - File path
 # + return - Either a byte array or `io:Error`
-public function fileReadBytes(@untainted string path) returns @tainted byte[]|Error {
-    return fileReadBytesExtern(path);
+public function fileReadBytes(@untainted string path) returns @tainted readonly & byte[]|Error {
+    var fileReadResult = fileReadBytesExtern(path);
+    if (fileReadResult is byte[]) {
+        return <readonly & byte[]> fileReadResult.cloneReadOnly();
+    } else {
+        return fileReadResult;
+    }
 }
 
 # Write a set of bytes to a file.
