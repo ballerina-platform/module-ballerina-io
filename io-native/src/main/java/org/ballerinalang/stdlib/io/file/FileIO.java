@@ -17,6 +17,7 @@
 
 package org.ballerinalang.stdlib.io.file;
 
+import org.ballerinalang.jvm.api.BStringUtils;
 import org.ballerinalang.jvm.api.BValueCreator;
 import org.ballerinalang.jvm.api.values.BString;
 import org.ballerinalang.jvm.values.ArrayValue;
@@ -28,6 +29,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.List;
 
 public class FileIO {
 
@@ -36,8 +39,28 @@ public class FileIO {
     public static Object readBytes(BString path) {
         Path filePath = Paths.get(path.getValue());
         try {
-            byte[] content = Files.readAllBytes(filePath);
-            return BValueCreator.createArrayValue(content);
+            return BValueCreator.createArrayValue(Files.readAllBytes(filePath));
+        } catch (IOException e) {
+            log.error("Error occurred while reading the byte content from " + path.getValue(), e);
+            return IOUtils.createError(e.getMessage());
+        }
+    }
+
+    public static Object readString(BString path) {
+        Path filePath = Paths.get(path.getValue());
+        try {
+            return BStringUtils.fromString(Files.readString(filePath));
+        } catch (IOException e) {
+            log.error("Error occurred while reading the byte content from " + path.getValue(), e);
+            return IOUtils.createError(e.getMessage());
+        }
+    }
+
+    public static Object readLines(BString path) {
+        Path filePath = Paths.get(path.getValue());
+        try {
+            List<String> lines = Files.readAllLines(filePath);
+            return BStringUtils.fromStringArray(lines.toArray(String[]::new));
         } catch (IOException e) {
             log.error("Error occurred while reading the byte content from " + path.getValue(), e);
             return IOUtils.createError(e.getMessage());
@@ -48,6 +71,28 @@ public class FileIO {
         Path filePath = Paths.get(path.getValue());
         try {
             Files.write(filePath, content.getBytes());
+            return null;
+        } catch (IOException e) {
+            log.error("Error occurred while writing the byte content to " + path.getValue(), e);
+            return IOUtils.createError(e.toString());
+        }
+    }
+
+    public static Object writeString(BString path, BString content) {
+        Path filePath = Paths.get(path.getValue());
+        try {
+            Files.writeString(filePath, content.getValue());
+            return null;
+        } catch (IOException e) {
+            log.error("Error occurred while writing the byte content to " + path.getValue(), e);
+            return IOUtils.createError(e.toString());
+        }
+    }
+
+    public static Object writeLines(BString path, ArrayValue content) {
+        Path filePath = Paths.get(path.getValue());
+        try {
+            Files.write(filePath, Arrays.asList(content.getStringArray()));
             return null;
         } catch (IOException e) {
             log.error("Error occurred while writing the byte content to " + path.getValue(), e);
