@@ -145,9 +145,7 @@ function testAppendCharacters() {
     closeWritableCharChannelToAppend();
 }
 
-@test:Config {
-    dependsOn: ["testAppendCharacters"]
-}
+@test:Config {}
 function testWriteJson() {
     string filePath = TEMP_DIR + "jsonCharsFile1.json";
     json content = {
@@ -201,9 +199,7 @@ function testReadJson() {
     closeReadableCharChannel();
 }
 
-@test:Config {
-    dependsOn: ["testReadJson"]
-}
+@test:Config {}
 function testFileWriteJson() {
     string filePath = TEMP_DIR + "jsonCharsFile2.json";
     json content = {
@@ -247,9 +243,7 @@ function testFileReadJson() {
     }
 }
 
-@test:Config {
-    dependsOn: ["testFileReadJson"]
-}
+@test:Config {}
 function testWriteHigherUnicodeJson() {
     string filePath = TEMP_DIR + "higherUniJsonCharsFile.json";
     Error? initResult = initWritableCharChannel(filePath, "UTF-8");
@@ -284,9 +278,7 @@ function testReadHigherUnicodeJson() {
     closeReadableCharChannel();
 }
 
-@test:Config {
-    dependsOn: ["testReadHigherUnicodeJson"]
-}
+@test:Config {}
 function testWriteXml() {
     string filePath = TEMP_DIR + "xmlCharsFile1.xml";
     Error? initResult = initWritableCharChannel(filePath, "UTF-8");
@@ -370,9 +362,7 @@ function testReadXml() {
     closeReadableCharChannel();
 }
 
-@test:Config {
-    dependsOn: ["testReadXml"]
-}
+@test:Config {}
 function testFileWriteXml() {
     string filePath = TEMP_DIR + "xmlCharsFile2.xml";
     xml content = xml `<CATALOG>
@@ -446,9 +436,7 @@ function testFileReadXml() {
     }
 }
 
-@test:Config {
-    dependsOn: ["testFileReadXml"]
-}
+@test:Config {}
 function testReadAvailableProperty() {
     string filePath = RESOURCES_BASE_PATH + "datafiles/io/text/person.properties";
     Error? initResult = initReadableCharChannel(filePath, "UTF-8");
@@ -504,6 +492,60 @@ function testWriteProperties() {
     }
     test:assertTrue(writePropertiesFromMap(), msg = "Found unexpected output");
     closeWritableBytesChannel();
+}
+
+@test:Config {}
+function testFileWriteString() {
+    string filePath = TEMP_DIR + "stringContent.txt";
+    string content = "The Big Bang Theory";
+    var result = fileWriteString(filePath, content);
+    if (result is Error) {
+        test:assertFail(msg = result.message());
+    }
+}
+
+@test:Config {
+    dependsOn: ["testFileWriteString"]
+}
+function testFileReadString() {
+    string filePath = TEMP_DIR + "stringContent.txt";
+    string expectedString = "The Big Bang Theory";
+    var result = fileReadString(filePath);
+    if (result is readonly & string) {
+        test:assertEquals(result, expectedString);
+    } else {
+        test:assertFail(msg = result.message());
+    }
+}
+
+@test:Config {}
+function testFileWriteLines() {
+    string filePath = TEMP_DIR + "stringContentAsLines.txt";
+    string[] content = ["The Big Bang Theory", "F.R.I.E.N.D.S",
+                        "Game of Thrones", "LOST"];
+    var result = fileWriteLines(filePath, content);
+    if (result is Error) {
+        test:assertFail(msg = result.message());
+    }
+}
+
+@test:Config {
+    dependsOn: ["testFileWriteLines"]
+}
+function testFileReadLines() {
+    string filePath = TEMP_DIR + "stringContentAsLines.txt";
+    string[] expectedLines = ["The Big Bang Theory", "F.R.I.E.N.D.S",
+                            "Game of Thrones", "LOST"];
+    var result = fileReadLines(filePath);
+    if (result is readonly & string[]) {
+        int i = 0;
+        foreach string line in result {
+            test:assertEquals(line, expectedLines[i]);
+            i += 1;
+        }
+    } else {
+        test:assertFail(msg = result.message());
+    }
 }
 
 function initReadableCharChannel(string filePath, string encoding) returns Error? {
