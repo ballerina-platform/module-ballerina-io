@@ -654,6 +654,126 @@ function testTableWithHeader() {
     }
 }
 
+@test:Config{}
+function testFileCsvWrite() {
+    string[][] content = [
+        ["Anne Hamiltom", "Software Engineer", "Microsoft", "26 years", "New York"],
+        ["John Thomson", "Software Architect", "WSO2", "38 years", "Colombo"],
+        ["Mary Thompson", "Banker", "Sampath Bank", "30 years", "Colombo"]
+    ];
+    string filePath = TEMP_DIR + "workers1.csv";
+    var result = fileWriteCsv(filePath, content);
+    if (result is Error) {
+        test:assertFail(msg = result.message());
+    }
+}
+
+@test:Config{
+    dependsOn: ["testFileCsvWrite"]
+}
+function testFileCsvRead() {
+    string[][] expectedContent = [
+        ["Anne Hamiltom", "Software Engineer", "Microsoft", "26 years", "New York"],
+        ["John Thomson", "Software Architect", "WSO2", "38 years", "Colombo"],
+        ["Mary Thompson", "Banker", "Sampath Bank", "30 years", "Colombo"]
+    ];
+    string filePath = TEMP_DIR + "workers1.csv";
+    var result = fileReadCsv(filePath);
+    if (result is string[][]) {
+        int i = 0;
+        foreach string[] r in expectedContent {
+            int j = 0;
+            foreach string s in r {
+                test:assertEquals(s, expectedContent[i][j]);
+                j += 1;
+            }
+            i += 1;
+        }
+    } else {
+        test:assertFail(msg = result.message());
+    }
+}
+
+@test:Config{}
+function testFileCsvWriteWithSkipHeaders() {
+    string[][] content = [
+        ["Name", "Occupation", "Company", "Age", "Hometown"],
+        ["Ross Meton", "Civil Engineer", "ABC Construction", "26 years", "Sydney"],
+        ["Matt Jason", "Architect", "Typer", "38 years", "Colombo"]
+    ];
+    string filePath = TEMP_DIR + "workers2.csv";
+    var result = fileWriteCsv(filePath, content, COMMA, 1);
+    if (result is Error) {
+        test:assertFail(msg = result.message());
+    }
+}
+
+@test:Config{
+    dependsOn: ["testFileCsvWriteWithSkipHeaders"]
+}
+function testFileCsvReadWithSkipHeaders() {
+    string[][] expectedContent = [
+        ["Name", "Occupation", "Company", "Age", "Hometown"],
+        ["Ross Meton", "Civil Engineer", "ABC Construction", "26 years", "Sydney"],
+        ["Matt Jason", "Architect", "Typer", "38 years", "Colombo"]
+    ];
+    string filePath = TEMP_DIR + "workers1.csv";
+    var result = fileReadCsv(filePath, COMMA, 1);
+    if (result is string[][]) {
+        int i = 0;
+        foreach string[] r in expectedContent {
+            int j = 0;
+            foreach string s in r {
+                test:assertEquals(s, expectedContent[i][j]);
+                j += 1;
+            }
+            i += 1;
+        }
+    } else {
+        test:assertFail(msg = result.message());
+    }
+}
+
+@test:Config{}
+function testFileCsvWriteWithColon() {
+    string[][] content = [
+        ["Anne Hamiltom", "Software Engineer", "Microsoft", "26 years", "New York"],
+        ["John Thomson", "Software Architect", "WSO2", "38 years", "Colombo"],
+        ["Mary Thompson", "Banker", "Sampath Bank", "30 years", "Colombo"]
+    ];
+    string filePath = TEMP_DIR + "workers3.csv";
+    var result = fileWriteCsv(filePath, content, COLON);
+    if (result is Error) {
+        test:assertFail(msg = result.message());
+    }
+}
+
+@test:Config{
+    dependsOn: ["testFileCsvWriteWithColon"]
+}
+function testFileCsvReadWithColon() {
+    string[][] expectedContent = [
+        ["Anne Hamiltom", "Software Engineer", "Microsoft", "26 years", "New York"],
+        ["John Thomson", "Software Architect", "WSO2", "38 years", "Colombo"],
+        ["Mary Thompson", "Banker", "Sampath Bank", "30 years", "Colombo"]
+    ];
+    string filePath = TEMP_DIR + "workers1.csv";
+    var result = fileReadCsv(filePath, COLON);
+    if (result is string[][]) {
+        int i = 0;
+        foreach string[] r in expectedContent {
+            int j = 0;
+            foreach string s in r {
+                test:assertEquals(s, expectedContent[i][j]);
+                j += 1;
+            }
+            i += 1;
+        }
+    } else {
+        test:assertFail(msg = result.message());
+    }
+}
+
 function initReadableCsvChannel(string filePath, string encoding, Separator fieldSeparator) returns error? {
     var byteChannel = openReadableFile(filePath);
     if (byteChannel is ReadableByteChannel) {
