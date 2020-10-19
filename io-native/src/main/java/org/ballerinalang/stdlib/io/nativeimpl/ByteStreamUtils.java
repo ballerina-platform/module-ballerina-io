@@ -21,14 +21,12 @@ package org.ballerinalang.stdlib.io.nativeimpl;
 import org.ballerinalang.jvm.api.BValueCreator;
 import org.ballerinalang.jvm.api.values.BObject;
 import org.ballerinalang.jvm.api.values.BString;
+import org.ballerinalang.jvm.values.ArrayValue;
 import org.ballerinalang.stdlib.io.utils.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,7 +38,9 @@ import static org.ballerinalang.stdlib.io.utils.IOConstants.IO_PACKAGE_ID;
  */
 public class ByteStreamUtils {
     private static final String READ_BYTE_STREAM_CLASS = "ReadableByteStream";
+    private static final String WRITE_BYTE_STREAM_CLASS = "WritableByteStream";
     private static final String BUFFERED_INPUT_STREAM_ENTRY = "bufferedInputSource";
+    private static final String BUFFERED_OUTPUT_STREAM_ENTRY = "bufferedOutputSource";
     private static final String BLOCK_SIZE_ENTRY = "blockSize";
     private static final String STREAM_BLOCK_ENTRY = "value";
     private static final Logger log = LoggerFactory.getLogger(ByteStreamUtils.class);
@@ -57,6 +57,19 @@ public class ByteStreamUtils {
             BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream, blockSize);
             byteStreamObj.addNativeData(BUFFERED_INPUT_STREAM_ENTRY, bufferedInputStream);
             byteStreamObj.addNativeData(BLOCK_SIZE_ENTRY, blockSizeLong);
+            return byteStreamObj;
+        } catch (FileNotFoundException e) {
+            log.error(e.toString());
+            return IOUtils.createError(e);
+        }
+    }
+
+    public static Object openWritableFileBufferedStream(BString filePath) {
+        BObject byteStreamObj = BValueCreator.createObjectValue(IO_PACKAGE_ID, ByteStreamUtils.WRITE_BYTE_STREAM_CLASS);
+        try {
+            FileOutputStream fileOutputStream = new FileOutputStream(filePath.getValue());
+            BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(fileOutputStream);
+            byteStreamObj.addNativeData(BUFFERED_OUTPUT_STREAM_ENTRY, bufferedOutputStream);
             return byteStreamObj;
         } catch (FileNotFoundException e) {
             log.error(e.toString());
@@ -85,4 +98,28 @@ public class ByteStreamUtils {
         }
     }
 
+    public static Object writeBlock(BObject writableByteStreamObj, ArrayValue content) {
+        BufferedOutputStream bufferedOutputStream = (BufferedOutputStream)
+                writableByteStreamObj.getNativeData(BUFFERED_OUTPUT_STREAM_ENTRY);
+        byte[] byteContent = content.getBytes();
+        try {
+            bufferedOutputStream.write(byteContent);
+            return null;
+        } catch (IOException e) {
+            log.error(e.toString());
+            return IOUtils.createError(e.toString());
+        }
+    }
+
+    public static Object closeWritableFileBufferedStream(BObject writableByteStreamObj) {
+        BufferedOutputStream bufferedOutputStream = (BufferedOutputStream)
+                writableByteStreamObj.getNativeData(BUFFERED_OUTPUT_STREAM_ENTRY);
+        try {
+            bufferedOutputStream.close();
+            return null;
+        } catch (IOException e) {
+            log.error(e.toString());
+            return IOUtils.createError(e.toString());
+        }
+    }
 }
