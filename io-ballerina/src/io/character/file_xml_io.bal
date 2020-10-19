@@ -26,13 +26,7 @@ public function fileReadXml(@untainted string path) returns @tainted readonly & 
 		ReadableCharacterChannel readableCharacterChannel = new (fileOpenResult, DEFAULT_ENCODING);
         var fileReadResult = readableCharacterChannel.readXml();
         var closeResult = fileOpenResult.close();
-        if (closeResult is Error) {
-            return closeResult;
-        }
         closeResult = readableCharacterChannel.close();
-        if (closeResult is Error) {
-            return closeResult;
-        }
         if (fileReadResult is xml) {
             return <xml & readonly> fileReadResult.cloneReadOnly();
         } else {

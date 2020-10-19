@@ -42,9 +42,6 @@ public function fileReadCsv(@untainted string path,
 	        }
 	    }
 	    var fileClosingResult = csvFileOpenResult.close();
-	    if (fileClosingResult is Error) {
-	        return fileClosingResult;
-	    }
 	    return <readonly & string[][]> results.cloneReadOnly();
 	} else {
 	    return csvFileOpenResult;
