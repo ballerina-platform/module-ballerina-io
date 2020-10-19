@@ -59,6 +59,37 @@ public function fileWriteBytes(@untainted string path, byte[] content) returns E
 	return fileWriteBytesExtern(path, content);
 }
 
+# Write a byte stream to a file.
+# ```ballerina
+# byte[] content = [[60, 78, 39, 28]];
+# stream<byte[], io:Error> byteStream = content.toStream();
+# io:Error? result = io:fileWriteBlocksFromStream("./resources/myfile.txt", byteStream);
+# ```
+# + path - File path
+# + byteStream - Byte stream to write
+# + return - `io:Error` or else `()`
+public function fileWriteBlocksFromStream(@untainted string path,
+                                          stream<byte[]> byteStream) returns Error? {
+
+    var fileOpenResult = openWritableByteStreamFromFile(path);
+    if (fileOpenResult is WritableByteStream) {
+        error? e = byteStream.forEach(function (byte[] byteContent) {
+            if (fileOpenResult is WritableByteStream) {
+                var r = fileOpenResult.write(byteContent);
+            }
+        });
+        var fileCloseResult = fileOpenResult.close();
+        if (e is Error) {
+            return e;
+        }
+        if (fileCloseResult is Error) {
+            return fileCloseResult;
+        }
+    } else {
+        return fileOpenResult;
+    }
+}
+
 function fileReadBytesExtern(string path) returns @tainted byte[]|Error = @java:Method {
     name: "readBytes",
     'class: "org.ballerinalang.stdlib.io.file.FileIO"
