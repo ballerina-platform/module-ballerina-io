@@ -31,6 +31,22 @@ public function fileReadBytes(@untainted string path) returns @tainted readonly 
     }
 }
 
+# Read the entire file content as a stream of blocks.
+# ```ballerina
+# stream<io:Block>|io:Error content = io:fileReadBlocksAsStream("./resources/myfile.txt", 1000);
+# ```
+# + path - File path
+# + n - Block size
+# + return - Either a byte block stream or `io:Error`
+public function fileReadBlocksAsStream(string path, int blockSize) returns stream<byte[]>|Error? {
+    var fileOpenResult = openReadableByteStreamFromFile(path, blockSize);
+    if (fileOpenResult is ReadableByteStream) {
+        return fileOpenResult.byteStream();
+    } else {
+        return fileOpenResult;
+    }
+}
+
 # Write a set of bytes to a file.
 # ```ballerina
 # byte[] content = [60, 78, 39, 28];
