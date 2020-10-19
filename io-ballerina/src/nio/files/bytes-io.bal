@@ -14,43 +14,43 @@
 // specific language governing permissions and limitations
 // under the License.
 
-# Read the entire file content as a byte array.
+# Read the entire channel content as a byte array.
 # ```ballerina
-# byte[]|io:Error content = io:fileReadBytes("./resources/myfile.txt");
+# byte[]|io:Error content = io:channelReadBytes(readableChannel);
 # ```
-# + path - File path
+# + channel - Readable channel
 # + return - Either a byte array or `io:Error`
-public function fileReadBytes(@untainted string path) returns @tainted readonly & byte[]|Error {}
+public function channelReadBytes(ReadableChannel channel) returns @tainted readonly & byte[]|Error {}
 
-# Read the entire file content as a stream of chunks.
+# Read the entire channel content as a stream of chunks.
 # ```ballerina
-# stream<byte[], io:Error>|io:Error content = io:fileReadBlocksAsStream("./resources/myfile.txt", 1000);
+# stream<byte[], io:Error>|io:Error content = io:channelReadBlocksAsStream(readableChannel, 1000);
 # ```
-# + path - File path
+# + channel - Readable channel
 # + n - Chunk size
 # + return - Either a byte chunk stream or `io:Error`
-public function fileReadBlocksAsStream(@untainted string path, 
+public function channelReadBlocksAsStream(ReadableChannel channel, 
                                        @untainted int n = 4096) returns @tainted readonly & stream<byte[], Error>|Error {}
 
-# Write a set of bytes to a file.
+# Write a set of bytes to a channel.
 # ```ballerina
 # byte[] content = [60, 78, 39, 28];
-# io:Error? result = io:fileWriteBytes("./resources/myfile.txt", content);
+# io:Error? result = io:channelWriteBytes(writableChannel, content);
 # ```
-# + path - File path
+# + channel - Writable channel
 # + content - Byte content to write
 # + return - `io:Error` or else `()`
-public function fileWriteBytes(@untainted string path, byte[] content) returns Error? {}
+public function channelWriteBytes(WritableChannel channel, byte[] content) returns Error? {}
 
-# Write a byte stream to a file.
+# Write a byte stream to a channel.
 # ```ballerina
 # byte[] content = [[60, 78, 39, 28]];
 # stream<byte[], io:Error> byteStream = content.toStream();
-# io:Error? result = io:fileWriteBlocksFromStream("./resources/myfile.txt", byteStream);
+# io:Error? result = io:channelWriteBlocksFromStream(writableChannel, byteStream);
 # ```
-# + path - File path
+# + channel - Writable channel
 # + content - Byte content to write
 # + return - `io:Error` or else `()`
-public function fileWriteBlocksFromStream(@untainted string path, 
+public function channelWriteBlocksFromStream(WritableChannel channel, 
                                           stream<byte[], Error>) returns Error? {}
 

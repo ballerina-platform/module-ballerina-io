@@ -19,13 +19,9 @@
 # string[][]|io:Error content = io:fileReadCsv("./resources/myfile.csv");
 # ```
 # + path - File path
-# + fs - Field separator (this could be a regex)
-# + rs - Record separator (this could be a regex)
 # + nHeaders - Number of headers, which should be skipped prior to reading records
 # + return - Either an array of string arrays or `io:Error`
 public function fileReadCsv(@untainted string path, 
-                        Separator fs = ",", 
-                        Separator rs = "\n", 
                         int nHeaders = 0) returns @tainted readonly & string[][]|Error {}
 
 # Read file content as a CSV.
@@ -33,13 +29,9 @@ public function fileReadCsv(@untainted string path,
 # stream<string[]|Error>|io:Error content = io:fileReadCsvAsStream("./resources/myfile.csv");
 # ```
 # + path - File path
-# + fs - Field separator (this could be a regex)
-# + rs - Record separator (this could be a regex)
 # + nHeaders - Number of headers, which should be skipped prior to reading records
 # + return - Either a stream of string array or `io:Error`
 public function fileReadCsvAsStream(@untainted string path,
-                                Separator fs = ",",
-                                Separator rs = "\n", 
                                 int nHeaders = 0) returns @tainted readonly & stream<string[], Error>|Error, {}
 
 # Write CSV content to a file.
@@ -49,13 +41,9 @@ public function fileReadCsvAsStream(@untainted string path,
 # ```
 # + path - File path
 # + content - CSV content as an array of string arrays
-# + fs - Field separator (this could be a regex)
-# + rs - Record separator (this could be a regex)
 # + return - `io:Error` or else `()`
 public function fileWriteCsv(@untainted string path, 
-                         string[][] content, 
-                         Separator fs = ",", 
-                         Separator rs = "\n") returns Error? {}
+                         string[][] content) returns Error? {}
 
 # Write CSV record stream to a file.
 # ```ballerina
@@ -69,6 +57,4 @@ public function fileWriteCsv(@untainted string path,
 # + rs - Record separator (this could be a regex)
 # + return - `io:Error` or else `()`
 public function fileWriteCsvFromStream(@untainted string path, 
-                         stream<byte[], Error> content, 
-                         Separator fs = ",", 
-                         Separator rs = "\n") returns Error? {}
+                         stream<byte[], Error> content) returns Error? {}
