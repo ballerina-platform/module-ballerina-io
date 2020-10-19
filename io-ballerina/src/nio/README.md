@@ -1,12 +1,14 @@
 # API Summary
 
-## Bytes
+## File APIs
+
+### Bytes
 - fileReadBytes
 - fileReadBlocksAsStream
 - fileWriteBytes
 - fileWriteBlocksFromStream
 
-## Strings
+### Strings
 - fileReadString
 - fileReadLines
 - fileReadLinesAsStream
@@ -14,16 +16,46 @@
 - fileWriteLines
 - fileWriteLinesFromStream
 
-## JSON
+### JSON
 - fileReadJson
 - fileWriteJson
 
-## XML
+### XML
 - fileReadXml
 - fileWriteXml
 
-## CSV
+### CSV
 - fileReadCsv
 - fileReadCsvAsStream
 - fileWriteCsv
 - fileWriteCsvFromStream
+
+## Channel APIs
+
+### Bytes
+- channelReadBytes
+- channelReadBlocksAsStream
+- channelWriteBytes
+- channelWriteBlocksFromStream
+
+### Strings
+- channelReadString
+- channelReadLines
+- channelReadLinesAsStream
+- channelWriteString
+- channelWriteLines
+- channelWriteLinesFromStream
+
+### JSON
+- channelReadJson
+- channelWriteJson
+
+### XML
+- channelReadXml
+- channelWriteXml
+
+### CSV
+- channelReadCsv
+- channelReadCsvAsStream
+- channelWriteCsv
+- channelWriteCsvFromStream
