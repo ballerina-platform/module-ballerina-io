@@ -101,10 +101,27 @@ function testFileReadBytes() {
 }
 
 @test:Config {
-    dependsOn: ["testFileWriteBytes"]
+}
+function testFileWriteBytesFromStream() {
+    string filePath = TEMP_DIR + "bytesFile3.txt";
+    string[] stringContent = ["Sheldon", " ", "Cooper"];
+    byte[][] byteContent = [];
+    int i = 0;
+    foreach string s in stringContent {
+        byteContent[i] = s.toBytes();
+        i += 1;
+    }
+    var result = fileWriteBlocksFromStream(filePath, byteContent.toStream());
+    if (result is Error) {
+        test:assertFail(msg = result.message());
+    }
+}
+
+@test:Config {
+    dependsOn: ["testFileWriteBytesFromStream"]
 }
 function testFileReadBytesAsStream() {
-    string filePath = TEMP_DIR + "bytesFile2.txt";
+    string filePath = TEMP_DIR + "bytesFile3.txt";
     var result = fileReadBlocksAsStream(filePath, 2);
     string expectedString = "Sheldon Cooper";
     byte[] byteArr = [];
