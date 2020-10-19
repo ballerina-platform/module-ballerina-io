@@ -26,13 +26,7 @@ public function fileReadJson(@untainted string path) returns @tainted readonly &
 		ReadableCharacterChannel readableCharacterChannel = new (fileOpenResult, DEFAULT_ENCODING);
         var fileReadResult = readableCharacterChannel.readJson();
         var closeResult = fileOpenResult.close();
-        if (closeResult is Error) {
-            return closeResult;
-        }
         closeResult = readableCharacterChannel.close();
-        if (closeResult is Error) {
-            return closeResult;
-        }
         if (fileReadResult is json) {
             return <json & readonly> fileReadResult.cloneReadOnly();
         } else {
