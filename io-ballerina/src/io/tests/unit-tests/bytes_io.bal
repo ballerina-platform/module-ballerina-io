@@ -16,6 +16,7 @@
 
 import ballerina/java;
 import ballerina/test;
+import ballerina/lang.'string as mystring;
 
 ReadableByteChannel? bytesReadCh = ();
 WritableByteChannel? bytesWriteCh = ();
@@ -96,6 +97,33 @@ function testFileReadBytes() {
         test:assertEquals(result, expectedString.toBytes(), msg = "Found unexpected output");
     } else {
         test:assertFail(msg = result.message());
+    }
+}
+
+@test:Config {
+    dependsOn: ["testFileWriteBytes"]
+}
+function testFileReadBytesAsStream() {
+    string filePath = TEMP_DIR + "bytesFile2.txt";
+    var result = fileReadBlocksAsStream(filePath, 2);
+    string expectedString = "Sheldon Cooper";
+    byte[] byteArr = [];
+    if (result is stream<Block>) {
+        _ = result.forEach(function(Block val) {
+            foreach byte b in val {
+                byteArr.push(b);
+            }
+        });
+        string|error returnedString = mystring:fromBytes(byteArr);
+        if (returnedString is string) {
+            test:assertEquals(returnedString, expectedString);
+        } else {
+            test:assertFail(msg = returnedString.message());
+        }
+    } else if (result is Error) {
+        test:assertFail(msg = result.message());
+    } else {
+        test:assertFail("Unknown error occured");
     }
 }
 
