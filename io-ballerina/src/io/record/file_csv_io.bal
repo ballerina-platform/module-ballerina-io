@@ -48,6 +48,21 @@ public function fileReadCsv(@untainted string path,
 	}
 }
 
+# Read file content as a CSV.
+# ```ballerina
+# stream<string[]>|io:Error content = io:fileReadCsvAsStream("./resources/myfile.csv");
+# ```
+# + path - File path
+# + return - Either a stream of string array or `io:Error`
+public function fileReadCsvAsStream(@untainted string path) returns @tainted stream<string[]>|Error? {
+    var fileOpenResult = openReadableCharacterStreamFromFile(path);
+    if (fileOpenResult is ReadableCharacterStream) {
+        return fileOpenResult.recordStream();
+    } else {
+        return fileOpenResult;
+    }
+}
+
 # Write CSV content to a file.
 # ```ballerina
 # string[][] content = [["Anne", "Johnson", "SE"], ["John", "Cameron", "QA"]];
@@ -77,5 +92,35 @@ public function fileWriteCsv(@untainted string path,
         }
     } else {
         return csvFileOpenResult;
+    }
+}
+
+# Write CSV record stream to a file.
+# ```ballerina
+# string[][] content = [["Anne", "Johnson", "SE"], ["John", "Cameron", "QA"]];
+# stream<string[]> recordStream = content.toStream();
+# io:Error? result = io:fileWriteCsv("./resources/myfile.csv", recordStream);
+# ```
+# + path - File path
+# + content - A CSV record stream to be written
+# + return - `io:Error` or else `()`
+public function fileWriteCsvFromStream(@untainted string path,
+                         stream<string[]> content) returns Error? {
+    var fileOpenResult = openWritableCharacterStreamFromFile(path);
+    if (fileOpenResult is WritableCharacterStream) {
+        error? e = content.forEach(function (string[] stringContent) {
+            if (fileOpenResult is WritableCharacterStream) {
+                var r = fileOpenResult.writeRecord(stringContent, COMMA);
+            }
+        });
+        var fileCloseResult = fileOpenResult.close();
+        if (e is Error) {
+            return e;
+        }
+        if (fileCloseResult is Error) {
+            return fileCloseResult;
+        }
+    } else {
+        return fileOpenResult;
     }
 }
