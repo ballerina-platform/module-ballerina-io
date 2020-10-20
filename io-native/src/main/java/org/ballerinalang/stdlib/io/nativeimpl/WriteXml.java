@@ -18,8 +18,8 @@
 
 package org.ballerinalang.stdlib.io.nativeimpl;
 
-import org.ballerinalang.jvm.api.values.BObject;
-import org.ballerinalang.jvm.values.XMLValue;
+import io.ballerina.runtime.api.values.BObject;
+import io.ballerina.runtime.values.XMLValue;
 import org.ballerinalang.stdlib.io.channels.base.CharacterChannel;
 import org.ballerinalang.stdlib.io.utils.BallerinaIOException;
 import org.ballerinalang.stdlib.io.utils.IOConstants;
