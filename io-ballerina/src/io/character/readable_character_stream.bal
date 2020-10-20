@@ -24,6 +24,12 @@ public class ReadableCharacterStream {
         LineStream lineStream = new(self);
         return new stream<string>(lineStream);
     }
+
+    # Return a readable stream of records.
+    public function recordStream() returns stream<string[]>|Error? {
+        RecordStream recordStream = new(self);
+        return new stream<string[]>(recordStream);
+    }
 }
 
 # LineStream used to initialize the string stream of lines.
@@ -45,6 +51,25 @@ public class LineStream {
     }
 }
 
+# RecordStream used to initialize the string stream of records.
+public class RecordStream {
+    private ReadableCharacterStream readableCharacterStream;
+
+    public function init(ReadableCharacterStream readableCharacterStream) {
+        self.readableCharacterStream = readableCharacterStream;
+    }
+
+    public isolated function next() returns record {|string[] value;|}? {
+        var recordValue = readRecord(self.readableCharacterStream, COMMA);
+        if (recordValue is string[]) {
+            record {|string[] value;|} value = {value: <string[]> recordValue.cloneReadOnly()};
+            return value;
+        } else {
+            return ();
+        }
+    }
+}
+
 public function openReadableCharacterStreamFromFile(string path) returns ReadableCharacterStream|Error {
     return openBufferedReaderFromFileExtern(path);
 }
@@ -56,6 +81,11 @@ function openBufferedReaderFromFileExtern(string path) returns ReadableCharacter
 
 isolated function readLine(ReadableCharacterStream readableCharacterStream) returns string|Error = @java:Method {
     name: "readLine",
+    'class: "org.ballerinalang.stdlib.io.nativeimpl.CharacterStreamUtils"
+} external;
+
+isolated function readRecord(ReadableCharacterStream readableCharacterStream, string seperator) returns string[]|Error = @java:Method {
+    name: "readRecord",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.CharacterStreamUtils"
 } external;
 
