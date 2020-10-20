@@ -46,6 +46,21 @@ public function fileReadLines(@untainted string path) returns @tainted readonly 
     }
 }
 
+# Read file content as a stream of lines.
+# ```ballerina
+# stream<string>|io:Error content = io:fileReadLinesAsStream("./resources/myfile.txt");
+# ```
+# + path - File path
+# + return - Either a string array or `io:Error`
+public function fileReadLinesAsStream(@untainted string path) returns @tainted stream<string>|Error? {
+    var fileOpenResult = openReadableCharacterStreamFromFile(path);
+    if (fileOpenResult is ReadableCharacterStream) {
+        return fileOpenResult.characterStream();
+    } else {
+        return fileOpenResult;
+    }
+}
+
 # Write a string content to a file.
 # ```ballerina
 # string content = "Hello Universe..!!";
@@ -68,6 +83,35 @@ public function fileWriteString(@untainted string path, string content) returns 
 # + return - Either `io:Error` or `()`
 public function fileWriteLines(@untainted string path, string[] content) returns Error? {
     return fileWriteLinesExtern(path, content);
+}
+
+# Write stream of lines to a file.
+# ```ballerina
+# string content = ["Hello Universe..!!", "How are you?"];
+# stream<string, io:Error> lineStream = content.toStream();
+# io:Error result = io:fileWriteLinesFromStream("./resources/myfile.txt", lineStream);
+# ```
+# + path - File path
+# + content - A stream of lines
+# + return - Either `io:Error` or `()`
+public function fileWriteLinesFromStream(@untainted string path, stream<string> characterStream) returns Error? {
+    var fileOpenResult = openWritableCharacterStreamFromFile(path);
+    if (fileOpenResult is WritableCharacterStream) {
+        error? e = characterStream.forEach(function (string stringContent) {
+            if (fileOpenResult is WritableCharacterStream) {
+                var r = fileOpenResult.writeLine(stringContent);
+            }
+        });
+        var fileCloseResult = fileOpenResult.close();
+        if (e is Error) {
+            return e;
+        }
+        if (fileCloseResult is Error) {
+            return fileCloseResult;
+        }
+    } else {
+        return fileOpenResult;
+    }
 }
 
 function fileReadStringExtern(string path) returns @tainted string|Error = @java:Method {
