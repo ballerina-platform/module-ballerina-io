@@ -16,18 +16,18 @@
 
 import ballerina/java;
 
-# ReadableCharacterStream creates and return a readable byte stream..
+# ReadableCharacterStream creates and return a readable character stream..
 public class ReadableCharacterStream {
 
-    # Return a readable byte stream.
-    public function characterStream() returns stream<string>|Error? {
-        CharacterStream characterStream = new(self);
-        return new stream<string>(characterStream);
+    # Return a readable string stream of line.
+    public function lineStream() returns stream<string>|Error? {
+        LineStream lineStream = new(self);
+        return new stream<string>(lineStream);
     }
 }
 
-# CharacterStream used to initialize the byte stream.
-public class CharacterStream {
+# LineStream used to initialize the string stream of lines.
+public class LineStream {
     private ReadableCharacterStream readableCharacterStream;
 
     public function init(ReadableCharacterStream readableCharacterStream) {

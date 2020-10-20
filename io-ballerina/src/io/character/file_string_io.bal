@@ -55,7 +55,7 @@ public function fileReadLines(@untainted string path) returns @tainted readonly 
 public function fileReadLinesAsStream(@untainted string path) returns @tainted stream<string>|Error? {
     var fileOpenResult = openReadableCharacterStreamFromFile(path);
     if (fileOpenResult is ReadableCharacterStream) {
-        return fileOpenResult.characterStream();
+        return fileOpenResult.lineStream();
     } else {
         return fileOpenResult;
     }
