@@ -16,12 +16,17 @@
 
 import ballerina/java;
 
-# ReadableByteStream creates and return a readable byte stream..
+# WritableCharacterStream creates and return a writable byte stream.
 public class WritableCharacterStream {
 
-    # Return a readable byte stream.
+    # Writes a line.
     public function writeLine(string content) returns Error? {
-        return writeLineExtern(self, content);
+        return writeLine(self, content);
+    }
+
+    # Writes a string record.
+    public function writeRecord(string[] content, string seperator) returns Error? {
+        return writeRecordToStream(self, content, seperator);
     }
 
     public function close() returns Error? {
@@ -38,8 +43,14 @@ function openBufferedWriterFromFileExtern(string path) returns WritableCharacter
     'class: "org.ballerinalang.stdlib.io.nativeimpl.CharacterStreamUtils"
 } external;
 
-isolated function writeLineExtern(WritableCharacterStream writableCharacterStream, string line) returns Error? = @java:Method {
+isolated function writeLine(WritableCharacterStream writableCharacterStream, string line) returns Error? = @java:Method {
     name: "writeLine",
+    'class: "org.ballerinalang.stdlib.io.nativeimpl.CharacterStreamUtils"
+} external;
+
+isolated function writeRecordToStream(WritableCharacterStream writableCharacterStream,
+                                      string[] recordValue, string separator) returns Error? = @java:Method {
+    name: "writeRecord",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.CharacterStreamUtils"
 } external;
 
