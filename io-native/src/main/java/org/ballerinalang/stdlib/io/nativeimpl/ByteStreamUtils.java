@@ -45,7 +45,7 @@ public class ByteStreamUtils {
     private static final String STREAM_BLOCK_ENTRY = "value";
     private static final Logger log = LoggerFactory.getLogger(ByteStreamUtils.class);
 
-    public static Object openReadableFileBufferedStream(BString filePath, long blockSizeLong) {
+    public static Object openBufferedInputStreamFromFile(BString filePath, long blockSizeLong) {
         BObject byteStreamObj = ValueCreator.createObjectValue(IO_PACKAGE_ID, ByteStreamUtils.READ_BYTE_STREAM_CLASS);
         int blockSize = (int) blockSizeLong;
         if (blockSize <= 0) {
@@ -64,7 +64,7 @@ public class ByteStreamUtils {
         }
     }
 
-    public static Object openWritableFileBufferedStream(BString filePath) {
+    public static Object openBufferedOutputStreamFromFile(BString filePath) {
         BObject byteStreamObj = ValueCreator.createObjectValue(IO_PACKAGE_ID, ByteStreamUtils.WRITE_BYTE_STREAM_CLASS);
         try {
             FileOutputStream fileOutputStream = new FileOutputStream(filePath.getValue());
@@ -111,7 +111,7 @@ public class ByteStreamUtils {
         }
     }
 
-    public static Object closeWritableFileBufferedStream(BObject writableByteStreamObj) {
+    public static Object closeBufferedOutputStream(BObject writableByteStreamObj) {
         BufferedOutputStream bufferedOutputStream = (BufferedOutputStream)
                 writableByteStreamObj.getNativeData(BUFFERED_OUTPUT_STREAM_ENTRY);
         try {

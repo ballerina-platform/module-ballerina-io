@@ -25,16 +25,16 @@ public class WritableByteStream {
     }
 
     public function close() returns Error? {
-        return closeWritableByteStreamFromFileExtern(self);
+        return closeWritableByteStreamExtern(self);
     }
 }
 
 public function openWritableByteStreamFromFile(string path) returns WritableByteStream|Error {
-    return openWritableFileBufferedStreamExtern(path);
+    return openBufferedOutputStreamFromFileExtern(path);
 }
 
-function openWritableFileBufferedStreamExtern(string path) returns WritableByteStream|Error = @java:Method {
-    name: "openWritableFileBufferedStream",
+function openBufferedOutputStreamFromFileExtern(string path) returns WritableByteStream|Error = @java:Method {
+    name: "openBufferedOutputStreamFromFile",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.ByteStreamUtils"
 } external;
 
@@ -43,8 +43,8 @@ isolated function writeBlockExtern(WritableByteStream writableByteStream, byte[]
     'class: "org.ballerinalang.stdlib.io.nativeimpl.ByteStreamUtils"
 } external;
 
-isolated function closeWritableByteStreamFromFileExtern(WritableByteStream writableByteStream) returns Error? = @java:Method {
-    name: "closeWritableFileBufferedStream",
+isolated function closeWritableByteStreamExtern(WritableByteStream writableByteStream) returns Error? = @java:Method {
+    name: "closeBufferedOutputStream",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.ByteStreamUtils"
 } external;
 

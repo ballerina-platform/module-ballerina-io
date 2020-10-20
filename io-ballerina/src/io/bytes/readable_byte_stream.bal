@@ -48,11 +48,11 @@ public class ByteStream {
 }
 
 public function openReadableByteStreamFromFile(string path, int blockSize) returns ReadableByteStream|Error {
-    return openReadableFileBufferedStreamExtern(path, blockSize);
+    return openBufferedInputStreamFromFileExtern(path, blockSize);
 }
 
-function openReadableFileBufferedStreamExtern(string path, int blockSize) returns ReadableByteStream|Error = @java:Method {
-    name: "openReadableFileBufferedStream",
+function openBufferedInputStreamFromFileExtern(string path, int blockSize) returns ReadableByteStream|Error = @java:Method {
+    name: "openBufferedInputStreamFromFile",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.ByteStreamUtils"
 } external;
 
