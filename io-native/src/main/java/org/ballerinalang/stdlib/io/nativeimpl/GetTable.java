@@ -18,20 +18,20 @@
 
 package org.ballerinalang.stdlib.io.nativeimpl;
 
-import org.ballerinalang.jvm.api.BStringUtils;
-import org.ballerinalang.jvm.api.BValueCreator;
-import org.ballerinalang.jvm.api.values.BObject;
-import org.ballerinalang.jvm.types.BField;
-import org.ballerinalang.jvm.types.BStructureType;
-import org.ballerinalang.jvm.types.BTableType;
-import org.ballerinalang.jvm.types.BType;
-import org.ballerinalang.jvm.types.BUnionType;
-import org.ballerinalang.jvm.types.TypeTags;
-import org.ballerinalang.jvm.util.exceptions.BallerinaException;
-import org.ballerinalang.jvm.values.ArrayValue;
-import org.ballerinalang.jvm.values.TableValue;
-import org.ballerinalang.jvm.values.TableValueImpl;
-import org.ballerinalang.jvm.values.TypedescValue;
+import io.ballerina.runtime.api.StringUtils;
+import io.ballerina.runtime.api.TypeTags;
+import io.ballerina.runtime.api.ValueCreator;
+import io.ballerina.runtime.api.types.Field;
+import io.ballerina.runtime.api.types.Type;
+import io.ballerina.runtime.api.values.BObject;
+import io.ballerina.runtime.types.BStructureType;
+import io.ballerina.runtime.types.BTableType;
+import io.ballerina.runtime.types.BUnionType;
+import io.ballerina.runtime.util.exceptions.BallerinaException;
+import io.ballerina.runtime.values.ArrayValue;
+import io.ballerina.runtime.values.TableValue;
+import io.ballerina.runtime.values.TableValueImpl;
+import io.ballerina.runtime.values.TypedescValue;
 import org.ballerinalang.stdlib.io.channels.base.DelimitedRecordChannel;
 import org.ballerinalang.stdlib.io.utils.BallerinaIOException;
 import org.ballerinalang.stdlib.io.utils.IOConstants;
@@ -61,7 +61,7 @@ public class GetTable {
     public static Object getTable(BObject csvChannel, TypedescValue typedescValue, ArrayValue key) {
         try {
             final BObject delimitedObj =
-                    (BObject) csvChannel.get(BStringUtils.fromString(CSV_CHANNEL_DELIMITED_STRUCT_FIELD));
+                    (BObject) csvChannel.get(StringUtils.fromString(CSV_CHANNEL_DELIMITED_STRUCT_FIELD));
             DelimitedRecordChannel delimitedChannel = (DelimitedRecordChannel) delimitedObj
                     .getNativeData(IOConstants.TXT_RECORD_CHANNEL_NAME);
             if (delimitedChannel.hasReachedEnd()) {
@@ -79,7 +79,7 @@ public class GetTable {
     }
 
     private static TableValue getTable(TypedescValue typedescValue, ArrayValue key, List<String[]> records) {
-        BType describingType = typedescValue.getDescribingType();
+        Type describingType = typedescValue.getDescribingType();
         BTableType newTableType;
         if (key.size() == 0) {
             newTableType = new BTableType(describingType, false);
@@ -91,7 +91,7 @@ public class GetTable {
         for (String[] fields : records) {
             final Map<String, Object> struct = getStruct(fields, structType);
             if (struct != null) {
-                table.add(BValueCreator.createRecordValue(describingType.getPackage(), describingType.getName(),
+                table.add(ValueCreator.createRecordValue(describingType.getPackage(), describingType.getName(),
                         struct));
             }
         }
@@ -99,14 +99,14 @@ public class GetTable {
     }
 
     private static Map<String, Object> getStruct(String[] fields, final BStructureType structType) {
-        Map<String, BField> internalStructFields = structType.getFields();
+        Map<String, Field> internalStructFields = structType.getFields();
         int fieldLength = internalStructFields.size();
         Map<String, Object> struct = null;
         if (fields.length > 0) {
-            Iterator<Map.Entry<String, BField>> itr = internalStructFields.entrySet().iterator();
+            Iterator<Map.Entry<String, Field>> itr = internalStructFields.entrySet().iterator();
             struct = new HashMap<>();
             for (int i = 0; i < fieldLength; i++) {
-                final BField internalStructField = itr.next().getValue();
+                final Field internalStructField = itr.next().getValue();
                 final int type = internalStructField.getFieldType().getTag();
                 String fieldName = internalStructField.getFieldName();
                 if (fields.length > i) {
@@ -119,7 +119,7 @@ public class GetTable {
                             populateRecord(type, struct, fieldName, value);
                             break;
                         case TypeTags.UNION_TAG:
-                            List<BType> members = ((BUnionType) internalStructField.getFieldType()).getMemberTypes();
+                            List<Type> members = ((BUnionType) internalStructField.getFieldType()).getMemberTypes();
                             if (members.get(0).getTag() == TypeTags.NULL_TAG) {
                                 populateRecord(members.get(1).getTag(), struct, fieldName, value);
                             } else if (members.get(1).getTag() == TypeTags.NULL_TAG) {
