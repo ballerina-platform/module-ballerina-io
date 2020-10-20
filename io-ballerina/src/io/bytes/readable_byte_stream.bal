@@ -22,14 +22,14 @@ type Block readonly & byte[];
 public class ReadableByteStream {
 
     # Return a readable byte stream.
-    public function byteStream() returns stream<Block>|Error? {
-        ByteStream byteStream = new(self);
-        return new stream<Block>(byteStream);
+    public function blockStream() returns stream<Block>|Error? {
+        BlockStream blockStream = new(self);
+        return new stream<Block>(blockStream);
     }
 }
 
-# ByteStream used to initialize the byte stream.
-public class ByteStream {
+# BlockStream used to initialize the byte stream.
+public class BlockStream {
     private ReadableByteStream readableByteStream;
 
     public function init(ReadableByteStream readableByteStream) {

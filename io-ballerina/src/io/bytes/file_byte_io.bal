@@ -41,7 +41,7 @@ public function fileReadBytes(@untainted string path) returns @tainted readonly 
 public function fileReadBlocksAsStream(string path, int blockSize) returns stream<byte[]>|Error? {
     var fileOpenResult = openReadableByteStreamFromFile(path, blockSize);
     if (fileOpenResult is ReadableByteStream) {
-        return fileOpenResult.byteStream();
+        return fileOpenResult.blockStream();
     } else {
         return fileOpenResult;
     }
