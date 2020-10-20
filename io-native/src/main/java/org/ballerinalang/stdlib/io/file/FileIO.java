@@ -17,10 +17,10 @@
 
 package org.ballerinalang.stdlib.io.file;
 
-import org.ballerinalang.jvm.api.BStringUtils;
-import org.ballerinalang.jvm.api.BValueCreator;
-import org.ballerinalang.jvm.api.values.BString;
-import org.ballerinalang.jvm.values.ArrayValue;
+import io.ballerina.runtime.api.StringUtils;
+import io.ballerina.runtime.api.ValueCreator;
+import io.ballerina.runtime.api.values.BString;
+import io.ballerina.runtime.values.ArrayValue;
 import org.ballerinalang.stdlib.io.utils.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,7 +43,7 @@ public class FileIO {
     public static Object readBytes(BString path) {
         Path filePath = Paths.get(path.getValue());
         try {
-            return BValueCreator.createArrayValue(Files.readAllBytes(filePath));
+            return ValueCreator.createArrayValue(Files.readAllBytes(filePath));
         } catch (IOException e) {
             log.error("Error occurred while reading the byte content from " + path.getValue(), e);
             return IOUtils.createError(e.getMessage());
@@ -53,7 +53,7 @@ public class FileIO {
     public static Object readString(BString path) {
         Path filePath = Paths.get(path.getValue());
         try {
-            return BStringUtils.fromString(Files.readString(filePath));
+            return StringUtils.fromString(Files.readString(filePath));
         } catch (IOException e) {
             log.error("Error occurred while reading the byte content from " + path.getValue(), e);
             return IOUtils.createError(e.getMessage());
@@ -64,8 +64,8 @@ public class FileIO {
         Path filePath = Paths.get(path.getValue());
         try {
             List<String> lines = Files.readAllLines(filePath);
-            return BValueCreator.createArrayValue(
-                    BStringUtils.fromStringArray(lines.toArray(String[]::new)));
+            return ValueCreator.createArrayValue(
+                    StringUtils.fromStringArray(lines.toArray(String[]::new)));
         } catch (IOException e) {
             log.error("Error occurred while reading the byte content from " + path.getValue(), e);
             return IOUtils.createError(e.getMessage());
