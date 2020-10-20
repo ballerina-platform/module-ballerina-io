@@ -520,7 +520,7 @@ function testFileReadString() {
 
 @test:Config {}
 function testFileWriteLines() {
-    string filePath = TEMP_DIR + "stringContentAsLines.txt";
+    string filePath = TEMP_DIR + "stringContentAsLines1.txt";
     string[] content = ["The Big Bang Theory", "F.R.I.E.N.D.S",
                         "Game of Thrones", "LOST"];
     var result = fileWriteLines(filePath, content);
@@ -533,7 +533,7 @@ function testFileWriteLines() {
     dependsOn: ["testFileWriteLines"]
 }
 function testFileReadLines() {
-    string filePath = TEMP_DIR + "stringContentAsLines.txt";
+    string filePath = TEMP_DIR + "stringContentAsLines1.txt";
     string[] expectedLines = ["The Big Bang Theory", "F.R.I.E.N.D.S",
                             "Game of Thrones", "LOST"];
     var result = fileReadLines(filePath);
@@ -545,6 +545,38 @@ function testFileReadLines() {
         }
     } else {
         test:assertFail(msg = result.message());
+    }
+}
+
+@test:Config {}
+function testFileWriteLinesFromStream() {
+    string filePath = TEMP_DIR + "stringContentAsLines2.txt";
+    string[] content = ["The Big Bang Theory", "F.R.I.E.N.D.S",
+                        "Game of Thrones", "LOST"];
+    var result = fileWriteLinesFromStream(filePath, content.toStream());
+    if (result is Error) {
+        test:assertFail(msg = result.message());
+    }
+}
+
+@test:Config {
+    dependsOn: ["testFileWriteLinesFromStream"]
+}
+function testFileReadLinesAsStream() {
+    string filePath = TEMP_DIR + "stringContentAsLines2.txt";
+    string[] expectedLines = ["The Big Bang Theory", "F.R.I.E.N.D.S",
+                            "Game of Thrones", "LOST"];
+    var result = fileReadLinesAsStream(filePath);
+    if (result is stream<string>) {
+        int i = 0;
+        _ = result.forEach(function(string val) {
+            test:assertEquals(val, expectedLines[i]);
+            i += 1;
+        });
+    } else if (result is Error) {
+        test:assertFail(msg = result.message());
+    } else {
+        test:assertFail("Unknown error occured");
     }
 }
 
