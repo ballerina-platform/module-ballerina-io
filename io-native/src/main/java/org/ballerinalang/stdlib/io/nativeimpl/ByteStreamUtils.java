@@ -18,10 +18,10 @@
 
 package org.ballerinalang.stdlib.io.nativeimpl;
 
-import org.ballerinalang.jvm.api.BValueCreator;
-import org.ballerinalang.jvm.api.values.BObject;
-import org.ballerinalang.jvm.api.values.BString;
-import org.ballerinalang.jvm.values.ArrayValue;
+import io.ballerina.runtime.api.ValueCreator;
+import io.ballerina.runtime.api.values.BObject;
+import io.ballerina.runtime.api.values.BString;
+import io.ballerina.runtime.values.ArrayValue;
 import org.ballerinalang.stdlib.io.utils.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,7 +46,7 @@ public class ByteStreamUtils {
     private static final Logger log = LoggerFactory.getLogger(ByteStreamUtils.class);
 
     public static Object openReadableFileBufferedStream(BString filePath, long blockSizeLong) {
-        BObject byteStreamObj = BValueCreator.createObjectValue(IO_PACKAGE_ID, ByteStreamUtils.READ_BYTE_STREAM_CLASS);
+        BObject byteStreamObj = ValueCreator.createObjectValue(IO_PACKAGE_ID, ByteStreamUtils.READ_BYTE_STREAM_CLASS);
         int blockSize = (int) blockSizeLong;
         if (blockSize <= 0) {
             return IOUtils.createError("The specified block size is " +
@@ -65,7 +65,7 @@ public class ByteStreamUtils {
     }
 
     public static Object openWritableFileBufferedStream(BString filePath) {
-        BObject byteStreamObj = BValueCreator.createObjectValue(IO_PACKAGE_ID, ByteStreamUtils.WRITE_BYTE_STREAM_CLASS);
+        BObject byteStreamObj = ValueCreator.createObjectValue(IO_PACKAGE_ID, ByteStreamUtils.WRITE_BYTE_STREAM_CLASS);
         try {
             FileOutputStream fileOutputStream = new FileOutputStream(filePath.getValue());
             BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(fileOutputStream);
@@ -90,8 +90,8 @@ public class ByteStreamUtils {
                 return IOUtils.createEoFError();
             }
             Map<String, Object> map = new HashMap<>();
-            map.put(STREAM_BLOCK_ENTRY, BValueCreator.createArrayValue(buffer));
-            return BValueCreator.createArrayValue(buffer);
+            map.put(STREAM_BLOCK_ENTRY, ValueCreator.createArrayValue(buffer));
+            return ValueCreator.createArrayValue(buffer);
         } catch (IOException e) {
             log.error(e.toString());
             return IOUtils.createError(e.toString());
