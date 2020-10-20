@@ -20,11 +20,18 @@ import io.ballerina.runtime.api.StringUtils;
 import io.ballerina.runtime.api.ValueCreator;
 import io.ballerina.runtime.api.values.BObject;
 import io.ballerina.runtime.api.values.BString;
+import io.ballerina.runtime.values.ArrayValue;
 import org.ballerinalang.stdlib.io.utils.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.util.StringJoiner;
 
 import static org.ballerinalang.stdlib.io.utils.IOConstants.IO_PACKAGE_ID;
 
@@ -80,11 +87,47 @@ public class CharacterStreamUtils {
         }
     }
 
+    public static Object readRecord(BObject readableCharacterStreamObj, BString separator) {
+        BufferedReader bufferedReader = (BufferedReader)
+                readableCharacterStreamObj.getNativeData(BUFFERED_READER_ENTRY);
+        try {
+            String line = bufferedReader.readLine();
+            if (line == null) {
+                bufferedReader.close();
+                return IOUtils.createEoFError();
+            }
+            String[] record = line.strip().split(separator.getValue());
+            return ValueCreator.createArrayValue(StringUtils.fromStringArray(record));
+        } catch (IOException e) {
+            log.error(e.toString());
+            return IOUtils.createError(e.toString());
+        }
+    }
+
     public static Object writeLine(BObject readableCharacterStreamObj, BString bLine) {
         BufferedWriter bufferedWriter = (BufferedWriter)
                 readableCharacterStreamObj.getNativeData(BUFFERED_WRITER_ENTRY);
         try {
             String line = bLine.getValue();
+            bufferedWriter.write(line, 0, line.length());
+            bufferedWriter.newLine();
+            return null;
+        } catch (IOException e) {
+            log.error(e.toString());
+            return IOUtils.createError(e.toString());
+        }
+    }
+
+    public static Object writeRecord(BObject readableCharacterStreamObj, ArrayValue record, BString separator) {
+        BufferedWriter bufferedWriter = (BufferedWriter)
+                readableCharacterStreamObj.getNativeData(BUFFERED_WRITER_ENTRY);
+        try {
+            String[] recordStringArray = record.getStringArray();
+            StringJoiner stringJoiner = new StringJoiner(separator.getValue());
+            for(int i = 0; i < recordStringArray.length; i++) {
+                stringJoiner.add(recordStringArray[i]);
+            }
+            String line = stringJoiner.toString();
             bufferedWriter.write(line, 0, line.length());
             bufferedWriter.newLine();
             return null;
