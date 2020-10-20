@@ -717,7 +717,7 @@ function testFileCsvReadWithSkipHeaders() {
         ["Ross Meton", "Civil Engineer", "ABC Construction", "26 years", "Sydney"],
         ["Matt Jason", "Architect", "Typer", "38 years", "Colombo"]
     ];
-    string filePath = TEMP_DIR + "workers1.csv";
+    string filePath = TEMP_DIR + "workers2.csv";
     var result = fileReadCsv(filePath, COMMA, 1);
     if (result is string[][]) {
         int i = 0;
@@ -757,7 +757,7 @@ function testFileCsvReadWithColon() {
         ["John Thomson", "Software Architect", "WSO2", "38 years", "Colombo"],
         ["Mary Thompson", "Banker", "Sampath Bank", "30 years", "Colombo"]
     ];
-    string filePath = TEMP_DIR + "workers1.csv";
+    string filePath = TEMP_DIR + "workers3.csv";
     var result = fileReadCsv(filePath, COLON);
     if (result is string[][]) {
         int i = 0;
@@ -771,6 +771,48 @@ function testFileCsvReadWithColon() {
         }
     } else {
         test:assertFail(msg = result.message());
+    }
+}
+
+@test:Config {}
+function testFileWriteCsvFromStream() {
+    string filePath = TEMP_DIR + "workers4.csv";
+    string[][] content = [
+        ["Anne Hamiltom", "Software Engineer", "Microsoft", "26 years", "New York"],
+        ["John Thomson", "Software Architect", "WSO2", "38 years", "Colombo"],
+        ["Mary Thompson", "Banker", "Sampath Bank", "30 years", "Colombo"]
+    ];
+    var result = fileWriteCsvFromStream(filePath, content.toStream());
+    if (result is Error) {
+        test:assertFail(msg = result.message());
+    }
+}
+
+@test:Config {
+    dependsOn: ["testFileWriteCsvFromStream"]
+}
+function testFileReadCsvAsStream() {
+    string filePath = TEMP_DIR + "workers4.csv";
+    string[][] expectedContent = [
+        ["Anne Hamiltom", "Software Engineer", "Microsoft", "26 years", "New York"],
+        ["John Thomson", "Software Architect", "WSO2", "38 years", "Colombo"],
+        ["Mary Thompson", "Banker", "Sampath Bank", "30 years", "Colombo"]
+    ];
+    var result = fileReadCsvAsStream(filePath);
+    if (result is stream<string[]>) {
+        int i = 0;
+        _ = result.forEach(function(string[] val) {
+            int j = 0;
+            foreach string s in val {
+                test:assertEquals(s, expectedContent[i][j]);
+                j += 1;
+            }
+            i += 1;
+        });
+    } else if (result is Error) {
+        test:assertFail(msg = result.message());
+    } else {
+        test:assertFail("Unknown error occured");
     }
 }
 
