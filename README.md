@@ -2,7 +2,6 @@ Ballerina IO Library
 ===================
 
   [![Build](https://github.com/ballerina-platform/module-ballerina-io/workflows/Build/badge.svg)](https://github.com/ballerina-platform/module-ballerina-io/actions?query=workflow%3ABuild)
-  [![Daily build](https://github.com/ballerina-platform/module-ballerina-io/workflows/Daily%20build/badge.svg)](https://github.com/ballerina-platform/module-ballerina-io/actions?query=workflow%3A%22Daily+build%22)
   [![GitHub Last Commit](https://img.shields.io/github/last-commit/ballerina-platform/module-ballerina-io.svg)](https://github.com/ballerina-platform/module-ballerina-io/commits/master)
   [![Github issues](https://img.shields.io/github/issues/ballerina-platform/ballerina-standard-library/module/io.svg?label=Open%20Issues)](https://github.com/ballerina-platform/ballerina-standard-library/labels/module%2Fio)
   [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
