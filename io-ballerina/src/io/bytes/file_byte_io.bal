@@ -14,8 +14,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import ballerina/java;
-
 # Read the entire file content as a byte array.
 # ```ballerina
 # byte[]|io:Error content = io:fileReadBytes("./resources/myfile.txt");
@@ -23,11 +21,11 @@ import ballerina/java;
 # + path - File path
 # + return - Either a byte array or `io:Error`
 public function fileReadBytes(@untainted string path) returns @tainted readonly & byte[]|Error {
-    var fileReadResult = fileReadBytesExtern(path);
-    if (fileReadResult is byte[]) {
-        return <readonly & byte[]> fileReadResult.cloneReadOnly();
+    var fileOpenResult = openReadableFile(path);
+    if (fileOpenResult is ReadableByteChannel) {
+        return fileOpenResult.readAll();
     } else {
-        return fileReadResult;
+        return fileOpenResult;
     }
 }
 
@@ -39,9 +37,9 @@ public function fileReadBytes(@untainted string path) returns @tainted readonly 
 # + n - Block size
 # + return - Either a byte block stream or `io:Error`
 public function fileReadBlocksAsStream(string path, int blockSize) returns stream<byte[]>|Error? {
-    var fileOpenResult = openReadableByteStreamFromFile(path, blockSize);
-    if (fileOpenResult is ReadableByteStream) {
-        return fileOpenResult.blockStream();
+    var fileOpenResult = openReadableFile(path);
+    if (fileOpenResult is ReadableByteChannel) {
+        return fileOpenResult.blockStream(blockSize);
     } else {
         return fileOpenResult;
     }
@@ -56,7 +54,16 @@ public function fileReadBlocksAsStream(string path, int blockSize) returns strea
 # + content - Byte content to write
 # + return - `io:Error` or else `()`
 public function fileWriteBytes(@untainted string path, byte[] content) returns Error? {
-	return fileWriteBytesExtern(path, content);
+	var fileOpenResult = openWritableFile(path);
+    if (fileOpenResult is WritableByteChannel) {
+        var r = fileOpenResult.write(content, 0);
+        var fileCloseResult = fileOpenResult.close();
+        if (fileCloseResult is Error) {
+            return fileCloseResult;
+        }
+    } else {
+        return fileOpenResult;
+    }
 }
 
 # Write a byte stream to a file.
@@ -71,11 +78,11 @@ public function fileWriteBytes(@untainted string path, byte[] content) returns E
 public function fileWriteBlocksFromStream(@untainted string path,
                                           stream<byte[]> byteStream) returns Error? {
 
-    var fileOpenResult = openWritableByteStreamFromFile(path);
-    if (fileOpenResult is WritableByteStream) {
+    var fileOpenResult = openWritableFile(path);
+    if (fileOpenResult is WritableByteChannel) {
         error? e = byteStream.forEach(function (byte[] byteContent) {
-            if (fileOpenResult is WritableByteStream) {
-                var r = fileOpenResult.write(byteContent);
+            if (fileOpenResult is WritableByteChannel) {
+                var r = fileOpenResult.write(byteContent, 0);
             }
         });
         var fileCloseResult = fileOpenResult.close();
@@ -89,13 +96,3 @@ public function fileWriteBlocksFromStream(@untainted string path,
         return fileOpenResult;
     }
 }
-
-function fileReadBytesExtern(string path) returns @tainted byte[]|Error = @java:Method {
-    name: "readBytes",
-    'class: "org.ballerinalang.stdlib.io.file.FileIO"
-} external;
-
-function fileWriteBytesExtern(string path, byte[] content) returns Error? = @java:Method {
-    name: "writeBytes",
-    'class: "org.ballerinalang.stdlib.io.file.FileIO"
-} external;

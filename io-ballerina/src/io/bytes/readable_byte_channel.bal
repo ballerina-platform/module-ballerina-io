@@ -35,6 +35,21 @@ public class ReadableByteChannel {
         return byteReadExtern(self, nBytes);
     }
 
+    public function readAll() returns @tainted readonly & byte[]|Error {
+        var readResult = readAllBytes(self);
+        if (readResult is byte[]) {
+            return <readonly & byte[]> readResult.cloneReadOnly();
+        } else {
+            return readResult;
+        }
+    }
+
+     # Return a readable byte stream.
+    public function blockStream(int blockSize) returns stream<Block>|Error? {
+        BlockStream blockStream = new(self, blockSize);
+        return new stream<Block>(blockStream);
+    }
+
     # Encodes a given `ReadableByteChannel` using the Base64 encoding scheme.
     # ```ballerina
     # ReadableByteChannel|Error encodedChannel = readableByteChannel.base64Encode();
@@ -68,6 +83,11 @@ public class ReadableByteChannel {
 
 function byteReadExtern(ReadableByteChannel byteChannel, @untainted int nBytes) returns @tainted byte[]|Error = @java:Method {
     name: "read",
+    'class: "org.ballerinalang.stdlib.io.nativeimpl.ByteChannelUtils"
+} external;
+
+function readAllBytes(ReadableByteChannel byteChannel) returns @tainted byte[]|Error = @java:Method {
+    name: "readAll",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.ByteChannelUtils"
 } external;
 
