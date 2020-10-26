@@ -14,8 +14,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import ballerina/java;
-
 # Read the entire file content as a string.
 # ```ballerina
 # string|io:Error content = io:fileReadString("./resources/myfile.txt");
@@ -23,11 +21,17 @@ import ballerina/java;
 # + path - File path
 # + return - Either a string or `io:Error`
 public function fileReadString(@untainted string path) returns @tainted readonly & string|Error {
-	var fileReadResult = fileReadStringExtern(path);
-    if (fileReadResult is string) {
-        return <readonly & string> fileReadResult.cloneReadOnly();
+    var fileOpenResult = openReadableFile(path);
+    if (fileOpenResult is ReadableByteChannel) {
+        ReadableCharacterChannel characterChannel = new (fileOpenResult, DEFAULT_ENCODING);
+        var fileReadResult = characterChannel.readString();
+        if (fileReadResult is string) {
+            return <readonly & string> fileReadResult.cloneReadOnly();
+        } else {
+            return fileReadResult;
+        }
     } else {
-        return fileReadResult;
+        return fileOpenResult;
     }
 }
 
@@ -38,11 +42,17 @@ public function fileReadString(@untainted string path) returns @tainted readonly
 # + path - File path
 # + return - Either a string array or `io:Error`
 public function fileReadLines(@untainted string path) returns @tainted readonly & string[]|Error {
-    var fileReadResult = fileReadLinesExtern(path);
-    if (fileReadResult is string[]) {
-        return <readonly & string[]> fileReadResult.cloneReadOnly();
+    var fileOpenResult = openReadableFile(path);
+    if (fileOpenResult is ReadableByteChannel) {
+        ReadableCharacterChannel characterChannel = new (fileOpenResult, DEFAULT_ENCODING);
+        var fileReadResult = characterChannel.readAllLines();
+        if (fileReadResult is string[]) {
+            return <readonly & string[]> fileReadResult.cloneReadOnly();
+        } else {
+            return fileReadResult;
+        }
     } else {
-        return fileReadResult;
+        return fileOpenResult;
     }
 }
 
@@ -53,9 +63,10 @@ public function fileReadLines(@untainted string path) returns @tainted readonly 
 # + path - File path
 # + return - Either a string array or `io:Error`
 public function fileReadLinesAsStream(@untainted string path) returns @tainted stream<string>|Error? {
-    var fileOpenResult = openReadableCharacterStreamFromFile(path);
-    if (fileOpenResult is ReadableCharacterStream) {
-        return fileOpenResult.lineStream();
+    var fileOpenResult = openReadableFile(path);
+    if (fileOpenResult is ReadableByteChannel) {
+        ReadableCharacterChannel characterChannel = new (fileOpenResult, DEFAULT_ENCODING);
+        return characterChannel.lineStream();
     } else {
         return fileOpenResult;
     }
@@ -70,7 +81,18 @@ public function fileReadLinesAsStream(@untainted string path) returns @tainted s
 # + content - String content to read
 # + return - Either `io:Error` or `()`
 public function fileWriteString(@untainted string path, string content) returns Error? {
-    return fileWriteStringExtern(path, content);
+    var fileOpenResult = openWritableFile(path);
+    if (fileOpenResult is WritableByteChannel) {
+        WritableCharacterChannel characterChannel = new (fileOpenResult, DEFAULT_ENCODING);
+        var writeResult = characterChannel.write(content, 0);
+        if (writeResult is Error) {
+            return writeResult;
+        } else {
+            return ();
+        }
+    } else {
+        return fileOpenResult;
+    }
 }
 
 # Write an array of lines to a file.
@@ -82,7 +104,23 @@ public function fileWriteString(@untainted string path, string content) returns 
 # + content - An array of string lines
 # + return - Either `io:Error` or `()`
 public function fileWriteLines(@untainted string path, string[] content) returns Error? {
-    return fileWriteLinesExtern(path, content);
+    var fileOpenResult = openWritableFile(path);
+    if (fileOpenResult is WritableByteChannel) {
+        WritableCharacterChannel characterChannel = new (fileOpenResult, DEFAULT_ENCODING);
+        string[] reversedContent = content.reverse();
+        string writeContent = "";
+        foreach string line in reversedContent {
+            writeContent = line + "\n";
+        }
+        var writeResult = characterChannel.write(writeContent, 0);
+        if (writeResult is Error) {
+            return writeResult;
+        } else {
+            return ();
+        }
+    } else {
+        return fileOpenResult;
+    }
 }
 
 # Write stream of lines to a file.
@@ -95,12 +133,11 @@ public function fileWriteLines(@untainted string path, string[] content) returns
 # + content - A stream of lines
 # + return - Either `io:Error` or `()`
 public function fileWriteLinesFromStream(@untainted string path, stream<string> characterStream) returns Error? {
-    var fileOpenResult = openWritableCharacterStreamFromFile(path);
-    if (fileOpenResult is WritableCharacterStream) {
+    var fileOpenResult = openWritableFile(path);
+    if (fileOpenResult is WritableByteChannel) {
+        WritableCharacterChannel characterChannel = new (fileOpenResult, DEFAULT_ENCODING);
         error? e = characterStream.forEach(function (string stringContent) {
-            if (fileOpenResult is WritableCharacterStream) {
-                var r = fileOpenResult.writeLine(stringContent);
-            }
+            var r = characterChannel.writeLine(stringContent);
         });
         var fileCloseResult = fileOpenResult.close();
         if (e is Error) {
@@ -114,22 +151,3 @@ public function fileWriteLinesFromStream(@untainted string path, stream<string> 
     }
 }
 
-function fileReadStringExtern(string path) returns @tainted string|Error = @java:Method {
-    name: "readString",
-    'class: "org.ballerinalang.stdlib.io.file.FileIO"
-} external;
-
-function fileReadLinesExtern(string path) returns @tainted string[]|Error = @java:Method {
-    name: "readLines",
-    'class: "org.ballerinalang.stdlib.io.file.FileIO"
-} external;
-
-function fileWriteStringExtern(string path, string content) returns Error? = @java:Method {
-    name: "writeString",
-    'class: "org.ballerinalang.stdlib.io.file.FileIO"
-} external;
-
-function fileWriteLinesExtern(string path, string[] content) returns Error? = @java:Method {
-    name: "writeLines",
-    'class: "org.ballerinalang.stdlib.io.file.FileIO"
-} external;

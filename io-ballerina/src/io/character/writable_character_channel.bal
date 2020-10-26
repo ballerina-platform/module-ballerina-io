@@ -44,6 +44,16 @@ public class WritableCharacterChannel {
         return writeExtern(self, content, startOffset);
     }
 
+    public function writeLine(string content) returns Error? {
+        string lineContent = content + NEW_LINE;
+        var result = writeExtern(self, lineContent, 0);
+        if (result is Error) {
+            return result;
+        } else {
+            return ();
+        }
+    }
+
     # Writes a given JSON to the given channel.
     # ```ballerina
     # io:Error? err = writableCharChannel.writeJson(inputJson, 0);
