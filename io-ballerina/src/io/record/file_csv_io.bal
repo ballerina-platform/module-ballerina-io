@@ -55,9 +55,9 @@ public function fileReadCsv(@untainted string path,
 # + path - File path
 # + return - Either a stream of string array or `io:Error`
 public function fileReadCsvAsStream(@untainted string path) returns @tainted stream<string[]>|Error? {
-    var fileOpenResult = openReadableCharacterStreamFromFile(path);
-    if (fileOpenResult is ReadableCharacterStream) {
-        return fileOpenResult.recordStream();
+    var fileOpenResult = openReadableCsvFile(path);
+    if (fileOpenResult is ReadableCSVChannel) {
+        return fileOpenResult.csvStream();
     } else {
         return fileOpenResult;
     }
@@ -104,13 +104,12 @@ public function fileWriteCsv(@untainted string path,
 # + path - File path
 # + content - A CSV record stream to be written
 # + return - `io:Error` or else `()`
-public function fileWriteCsvFromStream(@untainted string path,
-                         stream<string[]> content) returns Error? {
-    var fileOpenResult = openWritableCharacterStreamFromFile(path);
-    if (fileOpenResult is WritableCharacterStream) {
+public function fileWriteCsvFromStream(@untainted string path, stream<string[]> content) returns Error? {
+    var fileOpenResult = openWritableCsvFile(path);
+    if (fileOpenResult is WritableCSVChannel) {
         error? e = content.forEach(function (string[] stringContent) {
-            if (fileOpenResult is WritableCharacterStream) {
-                var r = fileOpenResult.writeRecord(stringContent, COMMA);
+            if (fileOpenResult is WritableCSVChannel) {
+                var r = fileOpenResult.write(stringContent);
             }
         });
         var fileCloseResult = fileOpenResult.close();
