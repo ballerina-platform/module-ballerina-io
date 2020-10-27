@@ -53,7 +53,7 @@ public class IOConstants {
      */
     public static final int CHANNEL_BUFFER_SIZE = 16384;
 
-    public static final String IO_PACKAGE_VERSION =  "0.5.1";
+    public static final String IO_PACKAGE_VERSION =  "0.5.2";
 
     public static final Module IO_PACKAGE_ID = new Module(BALLERINA_BUILTIN_PKG_PREFIX, "io", IO_PACKAGE_VERSION);
 
