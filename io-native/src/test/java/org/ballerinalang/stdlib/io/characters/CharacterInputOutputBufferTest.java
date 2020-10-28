@@ -140,7 +140,7 @@ public class CharacterInputOutputBufferTest {
     public void readCharacters() throws IOException, URISyntaxException, BallerinaIOException {
         int numberOfCharactersToRead = 2;
         //Number of characters in this file would be 6
-        ByteChannel byteChannel = TestUtil.openForReading("datafiles/io/text/6charfile.txt");
+        ByteChannel byteChannel = TestUtil.openForReading("datafiles/io/text/charfile.txt");
         Channel channel = new MockByteChannel(byteChannel);
         CharacterChannel characterChannel = new CharacterChannel(channel, StandardCharsets.UTF_8.name());
 

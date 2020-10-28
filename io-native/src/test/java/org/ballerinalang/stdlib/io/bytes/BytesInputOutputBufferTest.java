@@ -115,7 +115,7 @@ public class BytesInputOutputBufferTest {
         int thirdLapReadLimitExpected = 0;
 
         //Number of characters in this file would be 6
-        ByteChannel byteChannel = TestUtil.openForReading("datafiles/io/text/6charfile.txt");
+        ByteChannel byteChannel = TestUtil.openForReading("datafiles/io/text/charfile.txt");
         Channel channel = new MockByteChannel(byteChannel);
         byte[] readBytes = read(initialReadLimit, channel).getContent();
 
@@ -211,7 +211,7 @@ public class BytesInputOutputBufferTest {
         int thirdLapReadLimitExpected = 0;
 
         //Number of characters in this file would be 6
-        ByteChannel byteChannel = TestUtil.openForReading("datafiles/io/text/6charfile.txt");
+        ByteChannel byteChannel = TestUtil.openForReading("datafiles/io/text/charfile.txt");
         Channel channel = new MockByteChannel(byteChannel);
         int numberOfBytesRead = read(initialReadLimit, channel).getNumberOfBytesRead();
 
@@ -234,7 +234,7 @@ public class BytesInputOutputBufferTest {
     public void requestForExcessBytes() throws IOException, URISyntaxException {
         int requestedLimit = 10;
         int expectedLimit = 6;
-        ByteChannel byteChannel = TestUtil.openForReading("datafiles/io/text/6charfile.txt");
+        ByteChannel byteChannel = TestUtil.openForReading("datafiles/io/text/charfile.txt");
         Channel channel = new MockByteChannel(byteChannel);
         int numberOfBytes = read(requestedLimit, channel).getNumberOfBytesRead();
         channel.close();
@@ -253,7 +253,7 @@ public class BytesInputOutputBufferTest {
 
     @Test(description = "Get content via InputStream")
     public void getContentViaInputStream() throws IOException, URISyntaxException {
-        ByteChannel byteChannel = TestUtil.openForReading("datafiles/io/text/6charfile.txt");
+        ByteChannel byteChannel = TestUtil.openForReading("datafiles/io/text/charfile.txt");
         Channel channel = new MockByteChannel(byteChannel);
         final InputStream inputStream = channel.getInputStream();
         try (BufferedReader buffer = new BufferedReader(new InputStreamReader(inputStream))) {
@@ -267,7 +267,7 @@ public class BytesInputOutputBufferTest {
             expectedExceptions = IOException.class,
             expectedExceptionsMessageRegExp = "Channel is already closed.")
     public void checkChannelCloseStatus() throws IOException, URISyntaxException {
-        ByteChannel byteChannel = TestUtil.openForReading("datafiles/io/text/6charfile.txt");
+        ByteChannel byteChannel = TestUtil.openForReading("datafiles/io/text/charfile.txt");
         Channel channel = new MockByteChannel(byteChannel);
         final InputStream inputStream = channel.getInputStream();
         try (BufferedReader buffer = new BufferedReader(new InputStreamReader(inputStream))) {
