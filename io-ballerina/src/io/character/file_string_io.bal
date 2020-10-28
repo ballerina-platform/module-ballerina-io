@@ -20,18 +20,12 @@
 # ```
 # + path - File path
 # + return - Either a string or `io:Error`
-public function fileReadString(@untainted string path) returns @tainted readonly & string|Error {
-    var fileOpenResult = openReadableFile(path);
-    if (fileOpenResult is ReadableByteChannel) {
-        ReadableCharacterChannel characterChannel = new (fileOpenResult, DEFAULT_ENCODING);
-        var fileReadResult = characterChannel.readString();
-        if (fileReadResult is string) {
-            return <readonly & string> fileReadResult.cloneReadOnly();
-        } else {
-            return fileReadResult;
-        }
+public function fileReadString(@untainted string path) returns @tainted string|Error {
+    var byteChannel = openReadableFile(path);
+    if (byteChannel is ReadableByteChannel) {
+        return channelReadString(byteChannel);
     } else {
-        return fileOpenResult;
+        return byteChannel;
     }
 }
 
@@ -41,18 +35,12 @@ public function fileReadString(@untainted string path) returns @tainted readonly
 # ```
 # + path - File path
 # + return - Either a string array or `io:Error`
-public function fileReadLines(@untainted string path) returns @tainted readonly & string[]|Error {
-    var fileOpenResult = openReadableFile(path);
-    if (fileOpenResult is ReadableByteChannel) {
-        ReadableCharacterChannel characterChannel = new (fileOpenResult, DEFAULT_ENCODING);
-        var fileReadResult = characterChannel.readAllLines();
-        if (fileReadResult is string[]) {
-            return <readonly & string[]> fileReadResult.cloneReadOnly();
-        } else {
-            return fileReadResult;
-        }
+public function fileReadLines(@untainted string path) returns @tainted string[]|Error {
+    var byteChannel = openReadableFile(path);
+    if (byteChannel is ReadableByteChannel) {
+        return channelReadLines(byteChannel);
     } else {
-        return fileOpenResult;
+        return byteChannel;
     }
 }
 
@@ -63,12 +51,41 @@ public function fileReadLines(@untainted string path) returns @tainted readonly 
 # + path - File path
 # + return - Either a string array or `io:Error`
 public function fileReadLinesAsStream(@untainted string path) returns @tainted stream<string>|Error? {
-    var fileOpenResult = openReadableFile(path);
-    if (fileOpenResult is ReadableByteChannel) {
-        ReadableCharacterChannel characterChannel = new (fileOpenResult, DEFAULT_ENCODING);
-        return characterChannel.lineStream();
+    var byteChannel = openReadableFile(path);
+    if (byteChannel is ReadableByteChannel) {
+        return channelReadLinesAsStream(byteChannel);
     } else {
-        return fileOpenResult;
+        return byteChannel;
+    }
+}
+
+# Read file content as a JSON.
+# ```ballerina
+# json|io:Error content = io:fileReadJson("./resources/myfile.json");
+# ```
+# + path - JSON file path
+# + return - Either a JSON or `io:Error`
+public function fileReadJson(@untainted string path) returns @tainted json|Error {
+    var byteChannel = openReadableFile(path);
+    if (byteChannel is ReadableByteChannel) {
+        return channelReadJson(byteChannel);
+    } else {
+        return byteChannel;
+    }
+}
+
+# Read file content as an XML.
+# ```ballerina
+# xml|io:Error content = io:fileReadXml("./resources/myfile.xml");
+# ```
+# + path - XML file path
+# + return - Either a XML or `io:Error`
+public function fileReadXml(@untainted string path) returns @tainted xml|Error {
+    var byteChannel = openReadableFile(path);
+    if (byteChannel is ReadableByteChannel) {
+        return channelReadXml(byteChannel);
+    } else {
+        return byteChannel;
     }
 }
 
@@ -81,17 +98,11 @@ public function fileReadLinesAsStream(@untainted string path) returns @tainted s
 # + content - String content to read
 # + return - Either `io:Error` or `()`
 public function fileWriteString(@untainted string path, string content) returns Error? {
-    var fileOpenResult = openWritableFile(path);
-    if (fileOpenResult is WritableByteChannel) {
-        WritableCharacterChannel characterChannel = new (fileOpenResult, DEFAULT_ENCODING);
-        var writeResult = characterChannel.write(content, 0);
-        if (writeResult is Error) {
-            return writeResult;
-        } else {
-            return ();
-        }
+    var byteChannel = openWritableFile(path);
+    if (byteChannel is WritableByteChannel) {
+        return channelWriteString(byteChannel, content);
     } else {
-        return fileOpenResult;
+        return byteChannel;
     }
 }
 
@@ -104,22 +115,11 @@ public function fileWriteString(@untainted string path, string content) returns 
 # + content - An array of string lines
 # + return - Either `io:Error` or `()`
 public function fileWriteLines(@untainted string path, string[] content) returns Error? {
-    var fileOpenResult = openWritableFile(path);
-    if (fileOpenResult is WritableByteChannel) {
-        WritableCharacterChannel characterChannel = new (fileOpenResult, DEFAULT_ENCODING);
-        string[] reversedContent = content.reverse();
-        string writeContent = "";
-        foreach string line in reversedContent {
-            writeContent = line + "\n";
-        }
-        var writeResult = characterChannel.write(writeContent, 0);
-        if (writeResult is Error) {
-            return writeResult;
-        } else {
-            return ();
-        }
+    var byteChannel = openWritableFile(path);
+    if (byteChannel is WritableByteChannel) {
+        return channelWriteLines(byteChannel, content);
     } else {
-        return fileOpenResult;
+        return byteChannel;
     }
 }
 
@@ -130,24 +130,47 @@ public function fileWriteLines(@untainted string path, string[] content) returns
 # io:Error result = io:fileWriteLinesFromStream("./resources/myfile.txt", lineStream);
 # ```
 # + path - File path
-# + content - A stream of lines
+# + lineStream - A stream of lines
 # + return - Either `io:Error` or `()`
-public function fileWriteLinesFromStream(@untainted string path, stream<string> characterStream) returns Error? {
-    var fileOpenResult = openWritableFile(path);
-    if (fileOpenResult is WritableByteChannel) {
-        WritableCharacterChannel characterChannel = new (fileOpenResult, DEFAULT_ENCODING);
-        error? e = characterStream.forEach(function (string stringContent) {
-            var r = characterChannel.writeLine(stringContent);
-        });
-        var fileCloseResult = fileOpenResult.close();
-        if (e is Error) {
-            return e;
-        }
-        if (fileCloseResult is Error) {
-            return fileCloseResult;
-        }
+public function fileWriteLinesFromStream(@untainted string path, stream<string> lineStream) returns Error? {
+    var byteChannel = openWritableFile(path);
+    if (byteChannel is WritableByteChannel) {
+        return channelWriteLinesFromStream(byteChannel, lineStream);
     } else {
-        return fileOpenResult;
+        return byteChannel;
     }
 }
 
+# Write a JSON to a file.
+# ```ballerina
+# json content = {"name": "Anne", "age": 30};
+# io:Error? content = io:fileWriteJson("./resources/myfile.json");
+# ```
+# + path - JSON file path
+# + content - JSON content to write
+# + return - `io:Error` or else `()`
+public function fileWriteJson(@untainted string path, json content) returns @tainted Error? {
+    var byteChannel = openWritableFile(path);
+    if (byteChannel is WritableByteChannel) {
+        return channelWriteJson(byteChannel, content);
+    } else {
+        return byteChannel;
+    }
+}
+
+# Write XML content to a file.
+# ```ballerina
+# xml content = xml `<book>The Lost World</book>`;
+# io:Error? result = io:fileWriteXml("./resources/myfile.xml", content);
+# ```
+# + path - XML file path
+# + content - XML content to write
+# + return - `io:Error` or else `()`
+public function fileWriteXml(@untainted string path, xml content) returns Error? {
+    var byteChannel = openWritableFile(path);
+    if (byteChannel is WritableByteChannel) {
+        return channelWriteXml(byteChannel, content);
+    } else {
+        return byteChannel;
+    }
+}

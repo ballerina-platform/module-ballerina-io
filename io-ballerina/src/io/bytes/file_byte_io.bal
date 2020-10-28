@@ -19,13 +19,13 @@
 # byte[]|io:Error content = io:fileReadBytes("./resources/myfile.txt");
 # ```
 # + path - File path
-# + return - Either a byte array or `io:Error`
+# + return - Either a read only byte array or `io:Error`
 public function fileReadBytes(@untainted string path) returns @tainted readonly & byte[]|Error {
-    var fileOpenResult = openReadableFile(path);
-    if (fileOpenResult is ReadableByteChannel) {
-        return fileOpenResult.readAll();
+    var byteChannel = openReadableFile(path);
+    if (byteChannel is ReadableByteChannel) {
+        return channelReadBytes(byteChannel);
     } else {
-        return fileOpenResult;
+        return byteChannel;
     }
 }
 
@@ -34,14 +34,14 @@ public function fileReadBytes(@untainted string path) returns @tainted readonly 
 # stream<io:Block>|io:Error content = io:fileReadBlocksAsStream("./resources/myfile.txt", 1000);
 # ```
 # + path - File path
-# + n - Block size
+# + blockSize - Block size
 # + return - Either a byte block stream or `io:Error`
 public function fileReadBlocksAsStream(string path, int blockSize) returns stream<byte[]>|Error? {
-    var fileOpenResult = openReadableFile(path);
-    if (fileOpenResult is ReadableByteChannel) {
-        return fileOpenResult.blockStream(blockSize);
+    var byteChannel = openReadableFile(path);
+    if (byteChannel is ReadableByteChannel) {
+        return channelReadBlocksAsStream(byteChannel, blockSize);
     } else {
-        return fileOpenResult;
+        return byteChannel;
     }
 }
 
@@ -54,15 +54,11 @@ public function fileReadBlocksAsStream(string path, int blockSize) returns strea
 # + content - Byte content to write
 # + return - `io:Error` or else `()`
 public function fileWriteBytes(@untainted string path, byte[] content) returns Error? {
-	var fileOpenResult = openWritableFile(path);
-    if (fileOpenResult is WritableByteChannel) {
-        var r = fileOpenResult.write(content, 0);
-        var fileCloseResult = fileOpenResult.close();
-        if (fileCloseResult is Error) {
-            return fileCloseResult;
-        }
+    var byteChannel = openWritableFile(path);
+    if (byteChannel is WritableByteChannel) {
+        return channelWriteBytes(byteChannel, content);
     } else {
-        return fileOpenResult;
+        return byteChannel;
     }
 }
 
@@ -75,24 +71,12 @@ public function fileWriteBytes(@untainted string path, byte[] content) returns E
 # + path - File path
 # + byteStream - Byte stream to write
 # + return - `io:Error` or else `()`
-public function fileWriteBlocksFromStream(@untainted string path,
-                                          stream<byte[]> byteStream) returns Error? {
+public function fileWriteBlocksFromStream(@untainted string path, stream<byte[]> byteStream) returns Error? {
 
-    var fileOpenResult = openWritableFile(path);
-    if (fileOpenResult is WritableByteChannel) {
-        error? e = byteStream.forEach(function (byte[] byteContent) {
-            if (fileOpenResult is WritableByteChannel) {
-                var r = fileOpenResult.write(byteContent, 0);
-            }
-        });
-        var fileCloseResult = fileOpenResult.close();
-        if (e is Error) {
-            return e;
-        }
-        if (fileCloseResult is Error) {
-            return fileCloseResult;
-        }
+    var byteChannel = openWritableFile(path);
+    if (byteChannel is WritableByteChannel) {
+        return channelWriteBlocksFromStream(byteChannel, byteStream);
     } else {
-        return fileOpenResult;
+        return byteChannel;
     }
 }

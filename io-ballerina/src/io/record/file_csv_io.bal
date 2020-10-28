@@ -19,33 +19,16 @@
 # string[][]|io:Error content = io:fileReadCsv("./resources/myfile.csv");
 # ```
 # + path - File path
-# + fieldSeparator - Field separator (this could be a regex)
 # + skipHeaders - Number of headers, which should be skipped prior to reading records
 # + return - Either an array of string arrays or `io:Error`
-public function fileReadCsv(@untainted string path,
-                        Separator fieldSeparator = ",",
-                        int skipHeaders = 0) returns @tainted readonly & string[][]|Error {
-	
-	var csvFileOpenResult = openReadableCsvFile(path, fieldSeparator, DEFAULT_ENCODING, skipHeaders);
-	if (csvFileOpenResult is ReadableCSVChannel) {
-	    string[][] results = [];
-	    int i = 0;
-	    
-	    while (csvFileOpenResult.hasNext()) {
-	        var records = csvFileOpenResult.getNext();
-	        if (records is string[]) {
-	            results[i] = records;
-	            i += 1;
-	        } else if (records is Error) {
-	            var fileClosingResult = csvFileOpenResult.close();
-                return records;
-	        }
-	    }
-	    var fileClosingResult = csvFileOpenResult.close();
-	    return <readonly & string[][]> results.cloneReadOnly();
-	} else {
-	    return csvFileOpenResult;
-	}
+public function fileReadCsv(@untainted string path, int skipHeaders = 0) returns @tainted string[][]|Error {
+
+    var csvChannel = openReadableCsvFile(path, COMMA, DEFAULT_ENCODING, skipHeaders);
+    if (csvChannel is ReadableCSVChannel) {
+        return channelReadCsv(csvChannel);
+    } else {
+        return csvChannel;
+    }
 }
 
 # Read file content as a CSV.
@@ -55,11 +38,11 @@ public function fileReadCsv(@untainted string path,
 # + path - File path
 # + return - Either a stream of string array or `io:Error`
 public function fileReadCsvAsStream(@untainted string path) returns @tainted stream<string[]>|Error? {
-    var fileOpenResult = openReadableCsvFile(path);
-    if (fileOpenResult is ReadableCSVChannel) {
-        return fileOpenResult.csvStream();
+    var csvChannel = openReadableCsvFile(path);
+    if (csvChannel is ReadableCSVChannel) {
+        return csvChannel.csvStream();
     } else {
-        return fileOpenResult;
+        return csvChannel;
     }
 }
 
@@ -70,28 +53,14 @@ public function fileReadCsvAsStream(@untainted string path) returns @tainted str
 # ```
 # + path - File path
 # + content - CSV content as an array of string arrays
-# + fieldSeparator - CSV record separator (i.e., comma or tab)
 # + skipHeaders - Number of headers, which should be skipped
 # + return - `io:Error` or else `()`
-public function fileWriteCsv(@untainted string path,
-                         string[][] content,
-                         Separator fieldSeparator = ",",
-                         int skipHeaders = 0) returns Error? {
-	var csvFileOpenResult = openWritableCsvFile(path, fieldSeparator, DEFAULT_ENCODING, skipHeaders);
-	if (csvFileOpenResult is WritableCSVChannel) {
-        foreach string[] r in content {
-            var writeResult = csvFileOpenResult.write(r);
-            if (writeResult is Error) {
-                var fileClosingResult = csvFileOpenResult.close();
-                return writeResult;
-            }
-        }
-        var fileClosingResult = csvFileOpenResult.close();
-        if (fileClosingResult is Error) {
-            return fileClosingResult;
-        }
+public function fileWriteCsv(@untainted string path, string[][] content) returns Error? {
+    var csvChannel = openWritableCsvFile(path);
+    if (csvChannel is WritableCSVChannel) {
+        return channelWriteCsv(csvChannel, content);
     } else {
-        return csvFileOpenResult;
+        return csvChannel;
     }
 }
 
@@ -105,21 +74,10 @@ public function fileWriteCsv(@untainted string path,
 # + content - A CSV record stream to be written
 # + return - `io:Error` or else `()`
 public function fileWriteCsvFromStream(@untainted string path, stream<string[]> content) returns Error? {
-    var fileOpenResult = openWritableCsvFile(path);
-    if (fileOpenResult is WritableCSVChannel) {
-        error? e = content.forEach(function (string[] stringContent) {
-            if (fileOpenResult is WritableCSVChannel) {
-                var r = fileOpenResult.write(stringContent);
-            }
-        });
-        var fileCloseResult = fileOpenResult.close();
-        if (e is Error) {
-            return e;
-        }
-        if (fileCloseResult is Error) {
-            return fileCloseResult;
-        }
+    var csvChannel = openWritableCsvFile(path);
+    if (csvChannel is WritableCSVChannel) {
+        return channelWriteCsvFromStream(csvChannel, content);
     } else {
-        return fileOpenResult;
+        return csvChannel;
     }
 }
