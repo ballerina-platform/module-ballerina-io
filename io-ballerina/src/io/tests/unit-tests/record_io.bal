@@ -16,170 +16,114 @@
 
 import ballerina/test;
 
-ReadableTextRecordChannel? recordReadCh = ();
-WritableTextRecordChannel? recordWriteCh = ();
-
-@test:Config {
-    dependsOn: ["testSprintfNilFloat"]
-}
-function testReadRecords() {
+@test:Config {}
+function testReadRecordLengths() {
     string filePath = RESOURCES_BASE_PATH + "datafiles/io/records/sample.csv";
-    error? initResult = initReadableRecordChannel(filePath, "UTF-8", "\n", ",");
-    if (initResult is error) {
-        test:assertFail(msg = initResult.message());
-    }
-
     int expectedRecordLength = 3;
-    var result = hasNextTextRecord();
-    if (result is boolean) {
-        test:assertTrue(result, msg = "Found unexpected output");
-        var recordResult = nextTextRecord();
+
+    var byteChannel = openReadableFile(filePath);
+    if (byteChannel is ReadableByteChannel) {
+        ReadableCharacterChannel characterChannel = new ReadableCharacterChannel(byteChannel, DEFAULT_ENCODING);
+        ReadableTextRecordChannel recordChannel = new ReadableTextRecordChannel(characterChannel, COMMA, NEW_LINE);
+
+        test:assertTrue(recordChannel.hasNext());
+        var recordResult = recordChannel.getNext();
         if (recordResult is string[]) {
-            test:assertEquals(recordResult.length(), expectedRecordLength, msg = "Found unexpected output");
+            test:assertEquals(recordResult.length(), expectedRecordLength);
         } else {
-            test:assertFail(msg = "Unexpected result");
+            test:assertFail(msg = recordResult.message());
         }
-    } else {
-        test:assertFail(msg = "Unexpected result");
-    }
 
-    result = hasNextTextRecord();
-    if (result is boolean) {
-        test:assertTrue(result, msg = "Found unexpected output");
-        var recordResult = nextTextRecord();
+        test:assertTrue(recordChannel.hasNext());
+        recordResult = recordChannel.getNext();
         if (recordResult is string[]) {
-            test:assertEquals(recordResult.length(), expectedRecordLength, msg = "Found unexpected output");
+            test:assertEquals(recordResult.length(), expectedRecordLength);
         } else {
-            test:assertFail(msg = "Unexpected result");
+            test:assertFail(msg = recordResult.message());
         }
-    } else {
-        test:assertFail(msg = "Unexpected result");
-    }
 
-    result = hasNextTextRecord();
-    if (result is boolean) {
-        test:assertTrue(result, msg = "Found unexpected output");
-        var recordResult = nextTextRecord();
+        test:assertTrue(recordChannel.hasNext());
+        recordResult = recordChannel.getNext();
         if (recordResult is string[]) {
-            test:assertEquals(recordResult.length(), expectedRecordLength, msg = "Found unexpected output");
+            test:assertEquals(recordResult.length(), expectedRecordLength);
+        } else {
+            test:assertFail(msg = recordResult.message());
+        }
+
+        test:assertFalse(recordChannel.hasNext());
+        var endResult = recordChannel.getNext();
+        if (endResult is error) {
+            test:assertEquals(endResult.message(), "EoF when reading from the channel", msg = "Found unexpected output");
         } else {
             test:assertFail(msg = "Unexpected result");
         }
-    } else {
-        test:assertFail(msg = "Unexpected result");
-    }
 
-    var endResult = nextTextRecord();
-    if (endResult is error) {
-        test:assertEquals(endResult.message(), "EoF when reading from the channel", msg = "Found unexpected output");
-        var hasResult = hasNextTextRecord();
-        if (hasResult is boolean) {
-            test:assertFalse(hasResult, msg = "Found unexpected output");
-        } else {
-            test:assertFail(msg = "Unexpected result");
+        var closeResult = recordChannel.close();
+        if (closeResult is Error) {
+            test:assertFail(msg = closeResult.message());
         }
     } else {
-        test:assertFail(msg = "Unexpected result");
+        test:assertFail(msg = byteChannel.message());
     }
-
-    closeReadableRecordChannel();
 }
 
-@test:Config {
-    dependsOn: ["testReadRecords"]
-}
+@test:Config {}
 function testWriteRecords() {
     string filePath = TEMP_DIR + "recordsFile.csv";
-    string[] content = [ "Name", "Email", "Telephone"];
-    Error? initWritableResult = initWritableRecordChannel(filePath, "UTF-8", "\n", ",");
-    if (initWritableResult is Error) {
-        test:assertFail(msg = initWritableResult.message());
-    }
-    writeTextRecord(content);
+    string[] content = ["Name", "Email", "Telephone"];
 
-    error? initReadableResult = initReadableRecordChannel(filePath, "UTF-8", "\n", ",");
-    if (initReadableResult is error) {
-        test:assertFail(msg = initReadableResult.message());
-    }
+    var byteChannel = openWritableFile(filePath);
+    if (byteChannel is WritableByteChannel) {
+        WritableCharacterChannel charChannel = new WritableCharacterChannel(byteChannel, DEFAULT_ENCODING);
+        WritableTextRecordChannel recordChannel = new WritableTextRecordChannel(charChannel, NEW_LINE, COMMA);
 
-    var result = hasNextTextRecord();
-    if (result is boolean) {
-        test:assertTrue(result, msg = "Found unexpected output");
-        var recordResult = nextTextRecord();
+        var result = recordChannel.write(content);
+        if (result is Error) {
+            test:assertFail(msg = result.message());
+        }
+
+        var closeResult = recordChannel.close();
+        if (closeResult is Error) {
+            test:assertFail(msg = closeResult.message());
+        }
+    } else {
+        test:assertFail(msg = byteChannel.message());
+    }
+}
+
+@test:Config {dependsOn: ["testWriteRecords"]}
+function testReadRecordContent() {
+    string filePath = TEMP_DIR + "recordsFile.csv";
+    string[] expectedContent = ["Name", "Email", "Telephone"];
+
+    var byteChannel = openReadableFile(filePath);
+    if (byteChannel is ReadableByteChannel) {
+        ReadableCharacterChannel characterChannel = new ReadableCharacterChannel(byteChannel, DEFAULT_ENCODING);
+        ReadableTextRecordChannel recordChannel = new ReadableTextRecordChannel(characterChannel, NEW_LINE, COMMA);
+
+        test:assertTrue(recordChannel.hasNext());
+        var recordResult = recordChannel.getNext();
         if (recordResult is string[]) {
-            test:assertEquals(recordResult[0], content[0], msg = "Found unexpected output");
-            test:assertEquals(recordResult[1], content[1], msg = "Found unexpected output");
-            test:assertEquals(recordResult[2], content[2], msg = "Found unexpected output");
+            test:assertEquals(recordResult[0], expectedContent[0]);
+            test:assertEquals(recordResult[1], expectedContent[1]);
+            test:assertEquals(recordResult[2], expectedContent[2]);
+        } else {
+            test:assertFail(msg = recordResult.message());
+        }
+
+        test:assertFalse(recordChannel.hasNext());
+        var endResult = recordChannel.getNext();
+        if (endResult is error) {
+            test:assertEquals(endResult.message(), "EoF when reading from the channel", msg = "Found unexpected output");
         } else {
             test:assertFail(msg = "Unexpected result");
         }
+
+        var closeResult = recordChannel.close();
+        if (closeResult is Error) {
+            test:assertFail(msg = closeResult.message());
+        }
     } else {
-        test:assertFail(msg = "Unexpected result");
-    }
-
-
-    var hasResult = hasNextTextRecord();
-    if (hasResult is boolean) {
-        test:assertFalse(hasResult, msg = "Found unexpected output");
-    } else {
-        test:assertFail(msg = "Unexpected result");
-    }
-    closeWritableBytesChannel();
-}
-
-function initReadableRecordChannel(string filePath, string encoding, string recordSeparator,
-                                    string fieldSeparator) returns error? {
-    var byteChannel = openReadableFile(filePath);
-    if (byteChannel is error) {
-        return byteChannel;
-    } else {
-        ReadableCharacterChannel charChannel = new ReadableCharacterChannel(byteChannel, encoding);
-        recordReadCh = <ReadableTextRecordChannel> new ReadableTextRecordChannel(charChannel, fieldSeparator, recordSeparator);
-    }
-}
-
-function initWritableRecordChannel(string filePath, string encoding, string recordSeparator,
-                             string fieldSeparator) returns Error? {
-    WritableByteChannel byteChannel = check openWritableFile(filePath);
-    WritableCharacterChannel charChannel = new WritableCharacterChannel(byteChannel, encoding);
-    recordWriteCh = <WritableTextRecordChannel> new WritableTextRecordChannel(charChannel, fieldSeparator, recordSeparator);
-}
-
-
-function nextTextRecord() returns @tainted string[]|error {
-    var cha = recordReadCh;
-    if(cha is ReadableTextRecordChannel) {
-        var result = cha.getNext();
-        return result;
-    }
-    return GenericError("Record channel not initialized properly");
-}
-
-function writeTextRecord(string[] fields) {
-    var cha = recordWriteCh;
-    if(cha is WritableTextRecordChannel){
-        var result = cha.write(fields);
-    }
-}
-
-function closeReadableRecordChannel() {
-    var cha = recordReadCh;
-    if(cha is ReadableTextRecordChannel) {
-        var err = cha.close();
-    }
-}
-
-function closeWritableRecordChannel() {
-    var cha = recordWriteCh;
-    if(cha is WritableTextRecordChannel) {
-        var err = cha.close();
-    }
-}
-
-
-function hasNextTextRecord() returns boolean? {
-    var cha = recordReadCh;
-    if(cha is ReadableTextRecordChannel) {
-        return cha.hasNext();
+        test:assertFail(msg = byteChannel.message());
     }
 }

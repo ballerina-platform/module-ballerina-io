@@ -16,16 +16,10 @@
 
 import ballerina/test;
 
-@test:Config {
-    dependsOn: ["testWriteRecords"]
-}
+@test:Config {dependsOn: ["testWriteRecords"]}
 function testStrToJsonConvert() {
     string content = "{\n" + "  \"test\": { \"name\": \"Foo\" }\n" + "}";
-    json expectedJson = {
-        test: {
-            name: "Foo"
-        }
-    };
+    json expectedJson = {test: {name: "Foo"}};
     var result = getJson(content, "UTF-8");
     if (result is json) {
         test:assertEquals(result, expectedJson, msg = "Found unexpected output");
@@ -34,9 +28,7 @@ function testStrToJsonConvert() {
     }
 }
 
-@test:Config {
-    dependsOn: ["testStrToJsonConvert"]
-}
+@test:Config {dependsOn: ["testStrToJsonConvert"]}
 function testXmlToJsonConvert() {
     string content = "<test>" + "<name>Foo</name>" + "</test>";
     xml expectedXml = xml `<test><name>Foo</name></test>`;
@@ -45,7 +37,7 @@ function testXmlToJsonConvert() {
     if (result is xml) {
         test:assertEquals(result, expectedXml, msg = "Found unexpected output");
     } else {
-        test:assertFail(msg = (result is error)? result.message(): "Unexpected error");
+        test:assertFail(msg = (result is error) ? result.message() : "Unexpected error");
     }
 }
 

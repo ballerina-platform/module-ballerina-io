@@ -36,8 +36,8 @@ public class StringReader {
     #
     # + return - JSON or else `io:Error` if any error occurred
     public function readJson() returns @tainted json|Error {
-        if(self.charChannel is ReadableCharacterChannel){
-            var result = <ReadableCharacterChannel> self.charChannel;
+        if (self.charChannel is ReadableCharacterChannel) {
+            var result = <ReadableCharacterChannel>self.charChannel;
             return result.readJson();
         }
         return ();
@@ -51,8 +51,8 @@ public class StringReader {
     #
     # + return - XML or else `io:Error` if any error occurred
     public function readXml() returns @tainted xml|Error? {
-        if(self.charChannel is ReadableCharacterChannel){
-            var result = <ReadableCharacterChannel> self.charChannel;
+        if (self.charChannel is ReadableCharacterChannel) {
+            var result = <ReadableCharacterChannel>self.charChannel;
             return result.readXml();
         }
         return ();
@@ -67,8 +67,8 @@ public class StringReader {
     # + nCharacters - Number of characters to be read
     # + return - String or else `io:Error` if any error occurred
     public function readChar(int nCharacters) returns @tainted string|Error? {
-        if(self.charChannel is ReadableCharacterChannel){
-            var result = <ReadableCharacterChannel> self.charChannel;
+        if (self.charChannel is ReadableCharacterChannel) {
+            var result = <ReadableCharacterChannel>self.charChannel;
             return result.read(nCharacters);
         }
         return ();
@@ -81,8 +81,8 @@ public class StringReader {
     #
     # + return - An `io:Error` if could not close the channel or else `()`.
     public function close() returns Error? {
-        if(self.charChannel is ReadableCharacterChannel){
-            var result = <ReadableCharacterChannel> self.charChannel;
+        if (self.charChannel is ReadableCharacterChannel) {
+            var result = <ReadableCharacterChannel>self.charChannel;
             return result.close();
         }
         return ();
