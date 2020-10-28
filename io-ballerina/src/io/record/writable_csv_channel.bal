@@ -14,18 +14,14 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 # Represents the record separator of the CSV file.
 public const string CSV_RECORD_SEPARATOR = "\n";
-
 
 # Represents the colon separator, which should be used to identify colon-separated files.
 public const string FS_COLON = ":";
 
-
 # Represents the minimum number of headers, which will be included in the CSV.
 public const int MINIMUM_HEADER_COUNT = 0;
-
 
 # Represents a WritableCSVChannel, which could be used to write records from the CSV file.
 public class WritableCSVChannel {
@@ -55,8 +51,8 @@ public class WritableCSVChannel {
     # + csvRecord - A record to be written to the channel
     # + return - An `io:Error` if the record could not be written properly
     public function write(string[] csvRecord) returns Error? {
-        if(self.dc is WritableTextRecordChannel){
-            var result = <WritableTextRecordChannel> self.dc;
+        if (self.dc is WritableTextRecordChannel) {
+            var result = <WritableTextRecordChannel>self.dc;
             return result.write(csvRecord);
         }
         return ();
@@ -69,8 +65,8 @@ public class WritableCSVChannel {
     #
     # + return - `()` or else `io:Error` if any error occurred
     public function close() returns Error? {
-        if(self.dc is WritableTextRecordChannel){
-            var result = <WritableTextRecordChannel> self.dc;
+        if (self.dc is WritableTextRecordChannel) {
+            var result = <WritableTextRecordChannel>self.dc;
             return result.close();
         }
         return ();

@@ -13,14 +13,14 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-
 import ballerina/java;
 
 # WritableByteChannel represents an output resource (i.e file). which could be used to sink bytes.
 public class WritableByteChannel {
 
     # Adding default init function to prevent object getting initialized from the user code.
-    function init() {}
+    function init() {
+    }
 
     # Sinks bytes from a given input/output resource.
     #

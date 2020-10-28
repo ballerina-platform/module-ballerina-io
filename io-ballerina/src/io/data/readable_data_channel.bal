@@ -21,8 +21,8 @@ public class ReadableDataChannel {
 
     #Initializes the data channel.
     # 
-    # +byteChannel - The channel, which would represent the source to read/write data
-    # +bOrder - network byte order
+    # + byteChannel - The channel, which would represent the source to read/write data
+    # + bOrder - network byte order
     public function init(ReadableByteChannel byteChannel, ByteOrder bOrder = "BE") {
         // Remove temp once this got fixed #19842
         string temp = bOrder;
@@ -121,8 +121,7 @@ public class ReadableDataChannel {
     }
 }
 
-function initReadableDataChannel(ReadableDataChannel dataChannel, ReadableByteChannel byteChannel,
-                                 string bOrder) = @java:Method {
+function initReadableDataChannel(ReadableDataChannel dataChannel, ReadableByteChannel byteChannel, string bOrder) = @java:Method {
     name: "initReadableDataChannel",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.DataChannelUtils"
 } external;
@@ -157,8 +156,7 @@ function readBoolExtern(ReadableDataChannel dataChannel) returns boolean|Error =
     'class: "org.ballerinalang.stdlib.io.nativeimpl.DataChannelUtils"
 } external;
 
-function readStringExtern(ReadableDataChannel dataChannel, int nBytes, string encoding)
-                          returns string|Error = @java:Method {
+function readStringExtern(ReadableDataChannel dataChannel, int nBytes, string encoding) returns string|Error = @java:Method {
     name: "readString",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.DataChannelUtils"
 } external;

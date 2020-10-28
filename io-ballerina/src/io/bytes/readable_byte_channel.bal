@@ -20,7 +20,8 @@ import ballerina/java;
 public class ReadableByteChannel {
 
     # Adding default init function to prevent object getting initialized from the user code.
-    function init() {}
+    function init() {
+    }
 
     # Source bytes from a given input/output resource. The number of bytes returned will be < 0 if the file reached its end.
     # This operation will be asynchronous in which the total number of required bytes might not be returned at a given
@@ -35,18 +36,29 @@ public class ReadableByteChannel {
         return byteReadExtern(self, nBytes);
     }
 
+    # Read all content of the channel as a byte array and return a read only byte array.
+    # ```ballerina
+    # byte[]|io:Error result = readableByteChannel.readAll();
+    # ```
+    #
+    # + return - Either a read only byte array or else an `io:Error`
     public function readAll() returns @tainted readonly & byte[]|Error {
         var readResult = readAllBytes(self);
         if (readResult is byte[]) {
-            return <readonly & byte[]> readResult.cloneReadOnly();
+            return <readonly & byte[]>readResult.cloneReadOnly();
         } else {
             return readResult;
         }
     }
 
-     # Return a readable byte stream.
+    # Return a block stream that can be used to read all byte blocks as a stream.
+    # ```ballerina
+    # byte[]|io:Error result = readableByteChannel.blockStream();
+    # ```
+    # + blockSize - A positive integer. Size of the block.
+    # + return - Either a block stream or else an `io:Error`
     public function blockStream(int blockSize) returns stream<Block>|Error? {
-        BlockStream blockStream = new(self, blockSize);
+        BlockStream blockStream = new (self, blockSize);
         return new stream<Block>(blockStream);
     }
 

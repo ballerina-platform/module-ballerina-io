@@ -75,18 +75,23 @@ public class ReadableCSVChannel {
     #
     # + return - List of fields in the CSV or else an `io:Error`
     public function getNext() returns @tainted string[]|Error? {
-        if(self.dc is ReadableTextRecordChannel){
-            var result = <ReadableTextRecordChannel> self.dc;
+        if (self.dc is ReadableTextRecordChannel) {
+            var result = <ReadableTextRecordChannel>self.dc;
             return result.getNext();
         }
         return ();
     }
 
-    # Return a readable stream of CSV records.
+    # Returns a CSV record stream that can be used to CSV records as a stream.
+    # ```ballerina
+    # string[]|io:Error? record = readableCSVChannel.csvStream();
+    # ```
+    #
+    # + return - Either a stream of records(string[]) or else an `io:Error`
     public function csvStream() returns stream<string[]>|Error? {
         var recordChannel = self.dc;
         if (recordChannel is ReadableTextRecordChannel) {
-            CSVStream csvStream = new(recordChannel);
+            CSVStream csvStream = new (recordChannel);
             return new stream<string[]>(csvStream);
         } else {
             GenericError e = GenericError("channel not initialized");
@@ -101,8 +106,8 @@ public class ReadableCSVChannel {
     #
     # + return - `io:Error` if any error occurred
     public function close() returns Error? {
-        if(self.dc is ReadableTextRecordChannel){
-            var result = <ReadableTextRecordChannel> self.dc;
+        if (self.dc is ReadableTextRecordChannel) {
+            var result = <ReadableTextRecordChannel>self.dc;
             return result.close();
         }
         return ();
@@ -117,14 +122,14 @@ public class ReadableCSVChannel {
     # + structType - The object in which the CSV records should be deserialized
     # + fieldNames - The names of the fields used as the (composite)key of the table
     # + return - Table, which represents the CSV records or else an `io:Error`
-    public function getTable(typedesc<record {}> structType, string[] fieldNames = [])
-    returns @tainted table<record {}>|Error {
+    public function getTable(typedesc<record { }> structType, string[] fieldNames = []) returns @tainted table<record { }>|
+    Error {
         return getTableExtern(self, structType, fieldNames);
     }
 }
 
-function getTableExtern(ReadableCSVChannel csvChannel, typedesc<record {}> structType, string[] fieldNames)
-            returns @tainted table<record {}>|Error = @java:Method {
+function getTableExtern(ReadableCSVChannel csvChannel, typedesc<record { }> structType, string[] fieldNames) returns @tainted table<record { }>|
+Error = @java:Method {
     name: "getTable",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.GetTable"
 } external;
