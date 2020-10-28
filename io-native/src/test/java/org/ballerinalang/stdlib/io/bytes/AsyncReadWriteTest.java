@@ -49,7 +49,7 @@ public class AsyncReadWriteTest {
     public void readBytes() throws IOException, URISyntaxException {
         byte[] content = new byte[2];
         //Number of characters in this file would be 6
-        ByteChannel byteChannel = TestUtil.openForReading("datafiles/io/text/6charfile.txt");
+        ByteChannel byteChannel = TestUtil.openForReading("datafiles/io/text/charfile.txt");
         Channel channel = new MockByteChannel(byteChannel);
 
         byte[] expected = {49, 50};
@@ -76,7 +76,7 @@ public class AsyncReadWriteTest {
     public void readContentValidationTest() throws IOException, URISyntaxException {
         byte[] content = new byte[3];
         //Number of characters in this file would be 6
-        ByteChannel byteChannel = TestUtil.openForReading("datafiles/io/text/6charfile.txt");
+        ByteChannel byteChannel = TestUtil.openForReading("datafiles/io/text/charfile.txt");
         Channel channel = new MockByteChannel(byteChannel);
 
         byte[] expected = "123".getBytes();
