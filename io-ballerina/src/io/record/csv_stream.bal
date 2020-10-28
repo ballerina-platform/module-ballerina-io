@@ -24,10 +24,10 @@ public class CSVStream {
         self.readableTextRecordChannel = readableTextRecordChannel;
     }
 
-    public isolated function next() returns record {|string[] value;|}? {
+    public isolated function next() returns record {| string[] value; |}? {
         var recordValue = readRecord(self.readableTextRecordChannel, COMMA);
         if (recordValue is string[]) {
-            record {|string[] value;|} value = {value: <string[]> recordValue.cloneReadOnly()};
+            record {| string[] value; |} value = {value: <string[]>recordValue.cloneReadOnly()};
             return value;
         } else {
             return ();
@@ -35,8 +35,8 @@ public class CSVStream {
     }
 }
 
-isolated function readRecord(ReadableTextRecordChannel readableTextRecordChannel, string seperator) returns string[]|Error = @java:Method {
+isolated function readRecord(ReadableTextRecordChannel readableTextRecordChannel, string seperator) returns string[]|
+Error = @java:Method {
     name: "readRecord",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.RecordChannelUtils"
 } external;
-

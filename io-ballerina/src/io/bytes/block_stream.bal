@@ -18,7 +18,7 @@ import ballerina/java;
 
 type Block readonly & byte[];
 
-# BlockStream used to initialize the byte stream.
+# BlockStream used to initialize a byte stream.
 public class BlockStream {
     private ReadableByteChannel readableByteChannel;
     private int blockSize;
@@ -28,10 +28,10 @@ public class BlockStream {
         self.blockSize = blockSize;
     }
 
-    public isolated function next() returns record {|Block value;|}? {
+    public isolated function next() returns record {| Block value; |}? {
         var block = readBlock(self.readableByteChannel, self.blockSize);
         if (block is byte[]) {
-            record {|Block value;|} value = {value: <Block> block.cloneReadOnly()};
+            record {| Block value; |} value = {value: <Block>block.cloneReadOnly()};
             return value;
         } else {
             return ();
@@ -43,4 +43,3 @@ isolated function readBlock(ReadableByteChannel readableByteChannel, int blockSi
     name: "readBlock",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.ByteChannelUtils"
 } external;
-

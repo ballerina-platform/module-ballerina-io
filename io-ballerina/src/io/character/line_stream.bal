@@ -24,29 +24,10 @@ public class LineStream {
         self.readableCharacterChannel = readableCharacterChannel;
     }
 
-    public isolated function next() returns record {|string value;|}? {
+    public isolated function next() returns record {| string value; |}? {
         var line = readLine(self.readableCharacterChannel);
         if (line is string) {
-            record {|string value;|} value = {value: <string> line.cloneReadOnly()};
-            return value;
-        } else {
-            return ();
-        }
-    }
-}
-
-# CSVStream used to initialize the string stream of CSV records.
-public class CSVStream {
-    private ReadableTextRecordChannel readableTextRecordChannel;
-
-    public function init(ReadableTextRecordChannel readableTextRecordChannel) {
-        self.readableTextRecordChannel = readableTextRecordChannel;
-    }
-
-    public isolated function next() returns record {|string[] value;|}? {
-        var recordValue = readRecord(self.readableTextRecordChannel, COMMA);
-        if (recordValue is string[]) {
-            record {|string[] value;|} value = {value: <string[]> recordValue.cloneReadOnly()};
+            record {| string value; |} value = {value: <string>line.cloneReadOnly()};
             return value;
         } else {
             return ();
@@ -58,9 +39,3 @@ isolated function readLine(ReadableCharacterChannel readableCharacterChannel) re
     name: "readLine",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.CharacterChannelUtils"
 } external;
-
-isolated function readRecord(ReadableTextRecordChannel readableTextRecordChannel, string seperator) returns string[]|Error = @java:Method {
-    name: "readRecord",
-    'class: "org.ballerinalang.stdlib.io.nativeimpl.RecordChannelUtils"
-} external;
-
