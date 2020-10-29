@@ -28,8 +28,8 @@ public function channelReadBytes(ReadableChannel readableChannel) returns @taint
         var closeResult = readableChannel.close();
         return result;
     } else {
-        TypeMismatchError e = TypeMismatchError("Expected ReadableByteChannel but found a " + 'value:toString(typeof 
-        readableChannel));
+        TypeMismatchError e = TypeMismatchError("Expected ReadableByteChannel but found a " +
+        'value:toString(typeof readableChannel));
         return e;
     }
 }
@@ -39,15 +39,14 @@ public function channelReadBytes(ReadableChannel readableChannel) returns @taint
 # stream<io:Block>|io:Error content = io:channelReadBlocksAsStream(readableChannel, 1000);
 # ```
 # + readableChannel - A readable channel
-# + blockSize - Size of the byte block
+# + blockSize - An optional size of the byte block. Default size is 4KB.
 # + return - Either a byte block stream or `io:Error`
-# TODO make this block size optional and intelligently initilize block size
-public function channelReadBlocksAsStream(ReadableChannel readableChannel, int blockSize) returns stream<byte[]>|Error? {
+public function channelReadBlocksAsStream(ReadableChannel readableChannel, int blockSize=4096) returns stream<byte[]>|Error? {
     if (readableChannel is ReadableByteChannel) {
         return readableChannel.blockStream(blockSize);
     } else {
-        TypeMismatchError e = TypeMismatchError("Expected ReadableByteChannel but found a " + 'value:toString(typeof 
-        readableChannel));
+        TypeMismatchError e = TypeMismatchError("Expected ReadableByteChannel but found a " +
+        'value:toString(typeof readableChannel));
         return e;
     }
 }
@@ -68,8 +67,8 @@ public function channelWriteBytes(WritableChannel writableChannel, byte[] conten
             return closeResult;
         }
     } else {
-        TypeMismatchError e = TypeMismatchError("Expected WritableByteChannel but found a " + 'value:toString(typeof
-        writableChannel));
+        TypeMismatchError e = TypeMismatchError("Expected WritableByteChannel but found a " +
+        'value:toString(typeof writableChannel));
         return e;
     }
 }
