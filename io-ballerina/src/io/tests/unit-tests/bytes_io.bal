@@ -232,6 +232,22 @@ function testFileChannelReadBytesAsStream() {
     }
 }
 
+@test:Config {}
+function testFileCopy() {
+    string readFilePath = RESOURCES_BASE_PATH + "datafiles/io/images/ballerina.png";
+    string writeFilePath = TEMP_DIR + "ballerina.png";
+    var readResult = fileReadBytes(readFilePath);
+
+    if (readResult is byte[]) {
+        var writeResult = fileWriteBytes(writeFilePath, readResult);
+        if (writeResult is Error) {
+            test:assertFail(msg = writeResult.message());
+        }
+    } else {
+        test:assertFail(msg = readResult.message());
+    }
+}
+
 function createDirectoryExtern(string path) = @java:Method {
     name: "createDirectory",
     'class: "org.ballerinalang.stdlib.io.testutils.FileTestUtils"

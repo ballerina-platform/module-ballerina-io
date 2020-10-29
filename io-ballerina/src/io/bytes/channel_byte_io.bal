@@ -28,7 +28,7 @@ public function channelReadBytes(ReadableChannel readableChannel) returns @taint
         var closeResult = readableChannel.close();
         return result;
     } else {
-        GenericError e = GenericError("Expected ReadableByteChannel but provided a " + 'value:toString(typeof 
+        TypeMismatchError e = TypeMismatchError("Expected ReadableByteChannel but found a " + 'value:toString(typeof 
         readableChannel));
         return e;
     }
@@ -41,11 +41,12 @@ public function channelReadBytes(ReadableChannel readableChannel) returns @taint
 # + readableChannel - A readable channel
 # + blockSize - Size of the byte block
 # + return - Either a byte block stream or `io:Error`
+# TODO make this block size optional and intelligently initilize block size
 public function channelReadBlocksAsStream(ReadableChannel readableChannel, int blockSize) returns stream<byte[]>|Error? {
     if (readableChannel is ReadableByteChannel) {
         return readableChannel.blockStream(blockSize);
     } else {
-        GenericError e = GenericError("Expected ReadableByteChannel but provided a " + 'value:toString(typeof 
+        TypeMismatchError e = TypeMismatchError("Expected ReadableByteChannel but found a " + 'value:toString(typeof 
         readableChannel));
         return e;
     }
@@ -67,7 +68,7 @@ public function channelWriteBytes(WritableChannel writableChannel, byte[] conten
             return closeResult;
         }
     } else {
-        GenericError e = GenericError("Expected WritableByteChannel but provided a " + 'value:toString(typeof
+        TypeMismatchError e = TypeMismatchError("Expected WritableByteChannel but found a " + 'value:toString(typeof
         writableChannel));
         return e;
     }
@@ -97,7 +98,7 @@ public function channelWriteBlocksFromStream(WritableChannel writableChannel, st
             return closeResult;
         }
     } else {
-        GenericError e = GenericError("Expected WritableByteChannel but provided a " + 'value:toString(typeof
+        TypeMismatchError e = TypeMismatchError("Expected WritableByteChannel but found a " + 'value:toString(typeof
         writableChannel));
         return e;
     }

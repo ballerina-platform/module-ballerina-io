@@ -26,8 +26,11 @@ public type AccessDeniedError distinct error;
 # This will get returned if the file is not available in the given file path.
 public type FileNotFoundError distinct error;
 
+# This will get returned when there is an mismatch of given type and the expected type.
+public type TypeMismatchError distinct error;
+
 # This will get returned if read operations are performed on a channel after it closed.
 public type EofError distinct error;
 
 # Represents IO module related errors.
-public type Error GenericError|ConnectionTimedOutError|AccessDeniedError|FileNotFoundError|EofError;
+public type Error GenericError|ConnectionTimedOutError|AccessDeniedError|FileNotFoundError|TypeMismatchError|EofError;

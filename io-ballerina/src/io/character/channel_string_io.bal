@@ -241,7 +241,7 @@ function getReadableCharacterChannel(ReadableChannel readableChannel) returns Re
     } else if (readableChannel is ReadableCharacterChannel) {
         readableCharacterChannel = readableChannel;
     } else {
-        GenericError e = GenericError("Expected ReadableByteChannel/ReadableCharacterChannel but found a " + 
+        TypeMismatchError e = TypeMismatchError("Expected ReadableByteChannel/ReadableCharacterChannel but found a " + 
         'value:toString(typeof readableChannel));
         return e;
     }
@@ -255,7 +255,7 @@ function getWritableCharacterChannel(WritableChannel writableChannel) returns Wr
     } else if (writableChannel is WritableCharacterChannel) {
         writableCharacterChannel = writableChannel;
     } else {
-        GenericError e = GenericError("Expected ReadableByteChannel/ReadableCharacterChannel but found a " + 
+        TypeMismatchError e = TypeMismatchError("Expected ReadableByteChannel/ReadableCharacterChannel but found a " + 
         'value:toString(typeof writableChannel));
         return e;
     }
