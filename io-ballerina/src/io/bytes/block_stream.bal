@@ -34,12 +34,22 @@ public class BlockStream {
             record {| Block value; |} value = {value: <Block>block.cloneReadOnly()};
             return value;
         } else {
+            var closeResult = closeInputStream(self.readableByteChannel);
             return ();
         }
+    }
+
+    public isolated function close() returns Error? {
+        return closeInputStream(self.readableByteChannel);
     }
 }
 
 isolated function readBlock(ReadableByteChannel readableByteChannel, int blockSize) returns byte[]|Error = @java:Method {
     name: "readBlock",
+    'class: "org.ballerinalang.stdlib.io.nativeimpl.ByteChannelUtils"
+} external;
+
+isolated function closeInputStream(ReadableByteChannel readableByteChannel) returns Error? = @java:Method {
+    name: "closeInputStream",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.ByteChannelUtils"
 } external;

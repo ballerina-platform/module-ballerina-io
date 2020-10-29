@@ -170,7 +170,27 @@ public class CharacterChannelUtils {
     public static Object close(BObject channel) {
         CharacterChannel charChannel = (CharacterChannel) channel.getNativeData(CHARACTER_CHANNEL_NAME);
         try {
+            if(channel.getNativeData(BUFFERED_READER_ENTRY) != null) {
+                BufferedReader bufferedReader = (BufferedReader)
+                        channel.getNativeData(BUFFERED_READER_ENTRY);
+                bufferedReader.close();
+            }
             charChannel.close();
+        } catch (ClosedChannelException e) {
+            return IOUtils.createError("channel already closed.");
+        } catch (IOException e) {
+            return IOUtils.createError(e);
+        }
+        return null;
+    }
+
+    public static Object closeBufferedReader(BObject channel) {
+        try {
+            if(channel.getNativeData(BUFFERED_READER_ENTRY) != null) {
+                BufferedReader bufferedReader = (BufferedReader)
+                        channel.getNativeData(BUFFERED_READER_ENTRY);
+                bufferedReader.close();
+            }
         } catch (ClosedChannelException e) {
             return IOUtils.createError("channel already closed.");
         } catch (IOException e) {

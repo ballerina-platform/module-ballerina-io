@@ -30,13 +30,23 @@ public class CSVStream {
             record {| string[] value; |} value = {value: <string[]>recordValue.cloneReadOnly()};
             return value;
         } else {
+            var closeResult = closeRecordReader(self.readableTextRecordChannel);
             return ();
         }
+    }
+
+    public isolated function close() returns Error? {
+        return closeRecordReader(self.readableTextRecordChannel);
     }
 }
 
 isolated function readRecord(ReadableTextRecordChannel readableTextRecordChannel, string seperator) returns string[]|
 Error = @java:Method {
     name: "readRecord",
+    'class: "org.ballerinalang.stdlib.io.nativeimpl.RecordChannelUtils"
+} external;
+
+isolated function closeRecordReader(ReadableTextRecordChannel readableTextRecordChannel) returns Error? = @java:Method {
+    name: "closeBufferedReader",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.RecordChannelUtils"
 } external;

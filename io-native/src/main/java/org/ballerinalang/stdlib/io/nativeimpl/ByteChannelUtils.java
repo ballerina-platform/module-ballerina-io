@@ -137,6 +137,11 @@ public class ByteChannelUtils extends AbstractNativeChannel {
     public static Object closeByteChannel(BObject channel) {
         Channel byteChannel = (Channel) channel.getNativeData(BYTE_CHANNEL_NAME);
         try {
+            if (channel.getNativeData(IOConstants.BUFFERED_INPUT_STREAM_ENTRY) != null) {
+                BufferedInputStream bufferedInputStream = (BufferedInputStream)
+                        channel.getNativeData(IOConstants.BUFFERED_INPUT_STREAM_ENTRY);
+                bufferedInputStream.close();
+            }
             byteChannel.close();
         } catch (ClosedChannelException e) {
             return IOUtils.createError("channel already closed.");
@@ -144,6 +149,20 @@ public class ByteChannelUtils extends AbstractNativeChannel {
             return IOUtils.createError(e);
         }
         return null;
+    }
+
+    public static Object closeInputStream(BObject channel) {
+        try {
+            if (channel.getNativeData(IOConstants.BUFFERED_INPUT_STREAM_ENTRY) != null) {
+                BufferedInputStream bufferedInputStream = (BufferedInputStream)
+                        channel.getNativeData(IOConstants.BUFFERED_INPUT_STREAM_ENTRY);
+                bufferedInputStream.close();
+            }
+            return null;
+        } catch (IOException e) {
+            log.error(e.toString());
+            return IOUtils.createError(e.toString());
+        }
     }
 
     public static Object write(BObject channel, ArrayValue content, long offset) {

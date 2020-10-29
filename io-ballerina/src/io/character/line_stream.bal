@@ -30,12 +30,22 @@ public class LineStream {
             record {| string value; |} value = {value: <string>line.cloneReadOnly()};
             return value;
         } else {
+            var closeResult = closeReader(self.readableCharacterChannel);
             return ();
         }
+    }
+
+    public isolated function close() returns Error? {
+        return closeReader(self.readableCharacterChannel);
     }
 }
 
 isolated function readLine(ReadableCharacterChannel readableCharacterChannel) returns string|Error = @java:Method {
     name: "readLine",
+    'class: "org.ballerinalang.stdlib.io.nativeimpl.CharacterChannelUtils"
+} external;
+
+isolated function closeReader(ReadableCharacterChannel readableCharacterChannel) returns Error? = @java:Method {
+    name: "closeBufferedReader",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.CharacterChannelUtils"
 } external;
