@@ -15,9 +15,9 @@
  *
  */
 
-plugins {
-    id 'java'
-}
+apply plugin: "java"
+apply plugin: "com.github.spotbugs"
+apply plugin: "checkstyle"
 
 description = 'Ballerina - IO Java Utils'
 
@@ -25,7 +25,54 @@ dependencies {
     compile group: 'org.ballerinalang', name: 'ballerina-lang', version: "${ballerinaLangVersion}"
     compile group: 'org.ballerinalang', name: 'ballerina-runtime', version: "${ballerinaLangVersion}"
     compile project(":io-native")
+
+    checkstyle project(":build-config:checkstyle")
+    checkstyle "com.puppycrawl.tools:checkstyle:${puppycrawlCheckstyleVersion}"
 }
+
+spotbugsMain {
+    ignoreFailures = true
+    effort = "max"
+    reportLevel = "low"
+    reportsDir = file("$project.buildDir/reports/spotbugs")
+    def excludeFile = file("${rootDir}/build-config/spotbugs-exclude.xml")
+    if (excludeFile.exists()) {
+        it.excludeFilter = excludeFile
+    }
+    reports {
+        text.enabled = true
+    }
+}
+
+spotbugsTest {
+    enabled = false
+}
+
+task validateSpotbugs() {
+    doLast {
+        if (spotbugsMain.reports.size() > 0 &&
+                spotbugsMain.reports[0].destination.exists() &&
+                spotbugsMain.reports[0].destination.text.readLines().size() > 0) {
+            spotbugsMain.reports[0].destination?.eachLine {
+                println 'Failure: ' + it
+            }
+            throw new GradleException("Spotbugs rule violations were found.");
+        }
+    }
+}
+
+checkstyle {
+    toolVersion '7.8.2'
+    configFile file("${rootDir}/build-config/checkstyle/build/checkstyle.xml")
+    configProperties = ["suppressionFile": file("${rootDir}/build-config/checkstyle/build/suppressions.xml")]
+}
+
+tasks.withType(Checkstyle) {
+    exclude '**/module-info.java'
+}
+
+spotbugsMain.finalizedBy validateSpotbugs
+checkstyleMain.dependsOn(":build-config:checkstyle:downloadMultipleFiles")
 
 compileJava {
     doFirst {

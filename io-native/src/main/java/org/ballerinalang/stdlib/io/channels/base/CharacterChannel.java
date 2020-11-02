@@ -69,6 +69,11 @@ public class CharacterChannel implements IOChannel {
     private Buffer contentBuffer;
 
     /**
+     * Holds the encoding type.
+     */
+    private String encoding;
+
+    /**
      * Defines character which will be included when malformed input is detected from the decoder.
      */
     private static final char UN_MAPPABLE_CHARACTER = '\uFFFD';
@@ -91,6 +96,7 @@ public class CharacterChannel implements IOChannel {
 
     public CharacterChannel(Channel channel, String encoding) {
         this.channel = channel;
+        this.encoding = encoding;
         bytesDecoder = Charset.forName(encoding).newDecoder();
         byteEncoder = Charset.forName(encoding).newEncoder();
         contentBuffer = new Buffer(MINIMUM_BYTE_BUFFER_SIZE);
@@ -401,5 +407,12 @@ public class CharacterChannel implements IOChannel {
     @Override
     public boolean remaining() {
         return null != charBuffer && charBuffer.hasRemaining();
+    }
+
+    /**
+     * Return the encoding type.
+     */
+    public String getEncoding() {
+        return encoding;
     }
 }
