@@ -38,7 +38,11 @@ public class LineStream {
 
     public isolated function close() returns Error? {
         if (!self.isClosed) {
-            return closeReader(self.readableCharacterChannel);
+            var closeResult = closeReader(self.readableCharacterChannel);
+            if (closeResult is ()) {
+                self.isClosed = true;
+            }
+            return closeResult;
         }
         return ();
     }

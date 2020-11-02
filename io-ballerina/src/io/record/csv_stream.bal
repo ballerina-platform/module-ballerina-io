@@ -38,7 +38,11 @@ public class CSVStream {
 
     public isolated function close() returns Error? {
         if (!self.isClosed) {
-            return closeRecordReader(self.readableTextRecordChannel);
+            var closeResult = closeRecordReader(self.readableTextRecordChannel);
+            if (closeResult is ()) {
+                self.isClosed = true;
+            }
+            return closeResult;
         }
         return ();
     }

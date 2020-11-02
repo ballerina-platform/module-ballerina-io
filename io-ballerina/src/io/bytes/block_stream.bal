@@ -42,7 +42,11 @@ public class BlockStream {
 
     public isolated function close() returns Error? {
         if (!self.isClosed) {
-            return closeInputStream(self.readableByteChannel);
+            var closeResult = closeInputStream(self.readableByteChannel);
+            if (closeResult is ()) {
+                self.isClosed = true;
+            }
+            return closeResult;
         }
         return ();
     }
