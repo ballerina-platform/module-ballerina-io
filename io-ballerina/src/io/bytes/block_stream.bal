@@ -22,6 +22,7 @@ type Block readonly & byte[];
 public class BlockStream {
     private ReadableByteChannel readableByteChannel;
     private int blockSize;
+    private boolean isClosed = false;
 
     public function init(ReadableByteChannel readableByteChannel, int blockSize) {
         self.readableByteChannel = readableByteChannel;
@@ -40,7 +41,10 @@ public class BlockStream {
     }
 
     public isolated function close() returns Error? {
-        return closeInputStream(self.readableByteChannel);
+        if (!self.isClosed) {
+            return closeInputStream(self.readableByteChannel);
+        }
+        return ();
     }
 }
 

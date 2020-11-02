@@ -19,6 +19,7 @@ import ballerina/java;
 # CSVStream used to initialize the string stream of CSV records.
 public class CSVStream {
     private ReadableTextRecordChannel readableTextRecordChannel;
+    private boolean isClosed = false;
 
     public function init(ReadableTextRecordChannel readableTextRecordChannel) {
         self.readableTextRecordChannel = readableTextRecordChannel;
@@ -36,7 +37,10 @@ public class CSVStream {
     }
 
     public isolated function close() returns Error? {
-        return closeRecordReader(self.readableTextRecordChannel);
+        if (!self.isClosed) {
+            return closeRecordReader(self.readableTextRecordChannel);
+        }
+        return ();
     }
 }
 

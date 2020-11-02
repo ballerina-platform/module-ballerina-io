@@ -19,6 +19,7 @@ import ballerina/java;
 # LineStream used to initialize the string stream of lines.
 public class LineStream {
     private ReadableCharacterChannel readableCharacterChannel;
+    private boolean isClosed = false;
 
     public function init(ReadableCharacterChannel readableCharacterChannel) {
         self.readableCharacterChannel = readableCharacterChannel;
@@ -36,7 +37,10 @@ public class LineStream {
     }
 
     public isolated function close() returns Error? {
-        return closeReader(self.readableCharacterChannel);
+        if (!self.isClosed) {
+            return closeReader(self.readableCharacterChannel);
+        }
+        return ();
     }
 }
 
