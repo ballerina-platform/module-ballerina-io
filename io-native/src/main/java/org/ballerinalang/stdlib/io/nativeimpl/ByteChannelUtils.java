@@ -36,6 +36,7 @@ import org.ballerinalang.stdlib.io.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -46,6 +47,8 @@ import java.nio.channels.ReadableByteChannel;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.ballerinalang.stdlib.io.utils.IOConstants.BYTE_CHANNEL_NAME;
 
@@ -60,6 +63,7 @@ public class ByteChannelUtils extends AbstractNativeChannel {
     private static final String READ_ACCESS_MODE = "r";
     private static final String WRITE_ACCESS_MODE = "w";
     private static final String APPEND_ACCESS_MODE = "a";
+    private static final String STREAM_BLOCK_ENTRY = "value";
 
     private ByteChannelUtils() {
     }
@@ -79,6 +83,39 @@ public class ByteChannelUtils extends AbstractNativeChannel {
                 log.error(msg, e);
                 return IOUtils.createError(msg);
             }
+        }
+    }
+
+    public static Object readAll(BObject channel) {
+        BufferedInputStream bufferedInputStream = getBufferedInputStream(channel);
+        try {
+            if (bufferedInputStream != null) {
+                return ValueCreator.createArrayValue(bufferedInputStream.readAllBytes());
+            }
+            return IOUtils.createError("BufferedInputStream is not initialized");
+        } catch (IOException e) {
+            return IOUtils.createError(e);
+        }
+    }
+
+    public static Object readBlock(BObject channel, long blockSize) {
+        BufferedInputStream bufferedInputStream = getBufferedInputStream(channel);
+        int blockSizeInt = (int) blockSize;
+        byte[] buffer = new byte[blockSizeInt];
+        try {
+            if (bufferedInputStream != null) {
+                int n = bufferedInputStream.read(buffer, 0, blockSizeInt);
+                if (n == -1) {
+                    bufferedInputStream.close();
+                    return IOUtils.createEoFError();
+                }
+                Map<String, Object> map = new HashMap<>();
+                map.put(STREAM_BLOCK_ENTRY, ValueCreator.createArrayValue(buffer));
+                return ValueCreator.createArrayValue(buffer);
+            }
+            return IOUtils.createError("BufferedInputStream is not initialized");
+        } catch (IOException e) {
+            return IOUtils.createError(e);
         }
     }
 
@@ -104,6 +141,10 @@ public class ByteChannelUtils extends AbstractNativeChannel {
     public static Object closeByteChannel(BObject channel) {
         Channel byteChannel = (Channel) channel.getNativeData(BYTE_CHANNEL_NAME);
         try {
+            BufferedInputStream bufferedInputStream = getBufferedInputStream(channel);
+            if (bufferedInputStream != null) {
+                bufferedInputStream.close();
+            }
             byteChannel.close();
         } catch (ClosedChannelException e) {
             return IOUtils.createError("channel already closed.");
@@ -111,6 +152,18 @@ public class ByteChannelUtils extends AbstractNativeChannel {
             return IOUtils.createError(e);
         }
         return null;
+    }
+
+    public static Object closeInputStream(BObject channel) {
+        try {
+            BufferedInputStream bufferedInputStream = getBufferedInputStream(channel);
+            if (bufferedInputStream != null) {
+                bufferedInputStream.close();
+            }
+            return null;
+        } catch (IOException e) {
+            return IOUtils.createError(e);
+        }
     }
 
     public static Object write(BObject channel, ArrayValue content, long offset) {
@@ -126,15 +179,21 @@ public class ByteChannelUtils extends AbstractNativeChannel {
     }
 
     public static Object openReadableFile(BString pathUrl) {
-        Object channel;
+        BObject readableByteChannel;
         try {
-            channel = createChannel(inFlow(pathUrl.getValue()));
-        } catch (BallerinaIOException e) {
-            channel = IOUtils.createError(e);
+            readableByteChannel = createChannel(inFlow(pathUrl.getValue()));
+            Channel channel = (Channel) readableByteChannel.getNativeData(IOConstants.BYTE_CHANNEL_NAME);
+            BufferedInputStream bufferedInputStream = new BufferedInputStream(channel.getInputStream());
+            readableByteChannel.addNativeData(
+                    IOConstants.BUFFERED_INPUT_STREAM_ENTRY,
+                    bufferedInputStream
+            );
+        } catch (BallerinaIOException | IOException e) {
+            return IOUtils.createError(e);
         } catch (BError e) {
             return e;
         }
-        return channel;
+        return readableByteChannel;
     }
 
     public static Object openWritableFile(BString pathUrl, boolean accessMode) {
@@ -187,5 +246,12 @@ public class ByteChannelUtils extends AbstractNativeChannel {
         byte[] content = new byte[contentLength];
         System.arraycopy(array.getBytes(), 0, content, 0, contentLength);
         return content;
+    }
+
+    private static BufferedInputStream getBufferedInputStream(BObject channel) {
+        if (channel.getNativeData(IOConstants.BUFFERED_INPUT_STREAM_ENTRY) != null) {
+            return (BufferedInputStream) channel.getNativeData(IOConstants.BUFFERED_INPUT_STREAM_ENTRY);
+        }
+        return null;
     }
 }

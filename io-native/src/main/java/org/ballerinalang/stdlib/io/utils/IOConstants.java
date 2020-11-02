@@ -53,8 +53,14 @@ public class IOConstants {
      */
     public static final int CHANNEL_BUFFER_SIZE = 16384;
 
+    /**
+     * I/O standard library version.
+     */
     public static final String IO_PACKAGE_VERSION =  "0.5.2";
 
+    /**
+     * I/O standard library package ID.
+     */
     public static final Module IO_PACKAGE_ID = new Module(BALLERINA_BUILTIN_PKG_PREFIX, "io", IO_PACKAGE_VERSION);
 
     /**
@@ -76,6 +82,11 @@ public class IOConstants {
      * Detail record name in the io:Error.
      */
     public static final String DETAIL_RECORD_TYPE_NAME = "Detail";
+
+    /**
+     * Stream related constants for native data.
+     */
+    public static final String BUFFERED_INPUT_STREAM_ENTRY = "bufferedInputStreamEntry";
 
     /**
      * Specifies the error code for i/o.

@@ -142,8 +142,7 @@ public class WritableDataChannel {
     }
 }
 
-function initWritableDataChannel(WritableDataChannel dataChannel, WritableByteChannel byteChannel,
-                                 string bOrder) = @java:Method {
+function initWritableDataChannel(WritableDataChannel dataChannel, WritableByteChannel byteChannel, string bOrder) = @java:Method {
     name: "initWritableDataChannel",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.DataChannelUtils"
 } external;
@@ -178,8 +177,7 @@ function writeBoolExtern(WritableDataChannel dataChannel, boolean value) returns
     'class: "org.ballerinalang.stdlib.io.nativeimpl.DataChannelUtils"
 } external;
 
-function writeStringExtern(WritableDataChannel dataChannel, string value, string encoding)
-                           returns Error? = @java:Method {
+function writeStringExtern(WritableDataChannel dataChannel, string value, string encoding) returns Error? = @java:Method {
     name: "writeString",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.DataChannelUtils"
 } external;

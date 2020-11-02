@@ -23,7 +23,6 @@ public class WritableTextRecordChannel {
     private string rs;
 
     # Constructs a DelimitedTextRecordChannel from a given WritableCharacterChannel.
-
     # + characterChannel - The `WritableCharacterChannel`, which will point to the input/output resource
     # + fs - Field separator (this could be a regex)
     # + rs - Record separator (this could be a regex)
@@ -31,8 +30,8 @@ public class WritableTextRecordChannel {
     #         "DEFAULT" (the format specified by the CSVChannel), 
     #         "CSV" (Field separator would be "," and record separator would be a new line) or else
     #         "TDF" (Field separator will be a tab and record separator will be a new line). 
-    public function init(WritableCharacterChannel characterChannel, string fs = "", string rs = "",
-                           string fmt = "default") {
+    public function init(WritableCharacterChannel characterChannel, string fs = "", string rs = "", string fmt = 
+                         "default") {
         self.characterChannel = characterChannel;
         self.fs = fs;
         self.rs = rs;
@@ -61,7 +60,7 @@ public class WritableTextRecordChannel {
     }
 }
 
-function initWritableTextRecordChannel(WritableTextRecordChannel textChannel, WritableCharacterChannel charChannel,
+function initWritableTextRecordChannel(WritableTextRecordChannel textChannel, WritableCharacterChannel charChannel, 
                                        string fs, string rs, string fmt) = @java:Method {
     name: "initRecordChannel",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.RecordChannelUtils"

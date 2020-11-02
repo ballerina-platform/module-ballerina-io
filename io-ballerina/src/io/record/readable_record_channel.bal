@@ -28,8 +28,7 @@ public class ReadableTextRecordChannel {
     # + charChannel - CharacterChannel which will point to the input/output resource
     # + fs - Field separator (this could be a regex)
     # + rs - Record separator (this could be a regex)
-    public function init(ReadableCharacterChannel charChannel, string fs = "", string rs = "",
-                            string fmt = "default") {
+    public function init(ReadableCharacterChannel charChannel, string fs = "", string rs = "", string fmt = "default") {
         self.charChannel = charChannel;
         self.rs = rs;
         self.fs = fs;
@@ -67,7 +66,7 @@ public class ReadableTextRecordChannel {
     }
 }
 
-function initReadableTextRecordChannel(ReadableTextRecordChannel textChannel, ReadableCharacterChannel charChannel,
+function initReadableTextRecordChannel(ReadableTextRecordChannel textChannel, ReadableCharacterChannel charChannel, 
                                        string fs, string rs, string fmt) = @java:Method {
     name: "initRecordChannel",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.RecordChannelUtils"

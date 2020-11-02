@@ -147,7 +147,7 @@ public class IOUtils {
         try {
             int totalNumberOfCharsWritten = 0;
             int numberOfCharsWritten;
-            final int lengthOfPayload = payload.getBytes().length;
+            final int lengthOfPayload = payload.getBytes(Charset.forName(characterChannel.getEncoding())).length;
             do {
                 numberOfCharsWritten = characterChannel.write(payload, 0);
                 totalNumberOfCharsWritten = totalNumberOfCharsWritten + numberOfCharsWritten;

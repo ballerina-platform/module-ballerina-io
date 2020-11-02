@@ -25,25 +25,29 @@ import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.nio.charset.Charset;
 
 /**
  * PrintUtils to read the console and return the output.
  */
 public class PrintTestUtils {
     private static final Logger log = LoggerFactory.getLogger(PrintTestUtils.class);
+    private static final Object lock = new Object();
     static ByteArrayOutputStream outContent;
 
     // Initialize output stream
     public static void initOutputStream() {
-        if (outContent == null) {
-            outContent = new ByteArrayOutputStream();
-            System.setOut(new PrintStream(outContent));
+        synchronized (lock) {
+            if (outContent == null) {
+                outContent = new ByteArrayOutputStream();
+                System.setOut(new PrintStream(outContent, false, Charset.defaultCharset()));
+            }
         }
     }
 
     // Read output and return it as a ballerina string
     public static BString readOutputStream() {
-        return StringUtils.fromString(outContent.toString().replace("\r", ""));
+        return StringUtils.fromString(outContent.toString(Charset.defaultCharset()).replace("\r", ""));
     }
 
     // Reset output stream

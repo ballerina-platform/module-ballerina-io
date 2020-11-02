@@ -44,6 +44,16 @@ public class WritableCharacterChannel {
         return writeExtern(self, content, startOffset);
     }
 
+    public function writeLine(string content) returns Error? {
+        string lineContent = content + NEW_LINE;
+        var result = writeExtern(self, lineContent, 0);
+        if (result is Error) {
+            return result;
+        } else {
+            return ();
+        }
+    }
+
     # Writes a given JSON to the given channel.
     # ```ballerina
     # io:Error? err = writableCharChannel.writeJson(inputJson, 0);
@@ -88,14 +98,13 @@ public class WritableCharacterChannel {
     }
 }
 
-function initWritableCharacterChannel(WritableCharacterChannel characterChannel, WritableByteChannel byteChannel,
+function initWritableCharacterChannel(WritableCharacterChannel characterChannel, WritableByteChannel byteChannel, 
                                       string charset) = @java:Method {
     name: "initCharacterChannel",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.CharacterChannelUtils"
 } external;
 
-function writeExtern(WritableCharacterChannel characterChannel, string content, int startOffset)
-                     returns int|Error = @java:Method {
+function writeExtern(WritableCharacterChannel characterChannel, string content, int startOffset) returns int|Error = @java:Method {
     name: "write",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.CharacterChannelUtils"
 } external;
@@ -110,8 +119,8 @@ function writeXmlExtern(WritableCharacterChannel characterChannel, xml content) 
     'class: "org.ballerinalang.stdlib.io.nativeimpl.CharacterChannelUtils"
 } external;
 
-function writePropertiesExtern(WritableCharacterChannel characterChannel, map<string> properties,
-                                string comment) returns Error? = @java:Method {
+function writePropertiesExtern(WritableCharacterChannel characterChannel, map<string> properties, string comment) returns 
+Error? = @java:Method {
     name: "writeProperties",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.CharacterChannelUtils"
 } external;

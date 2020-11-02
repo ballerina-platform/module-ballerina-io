@@ -50,3 +50,9 @@ public const TAB = "\t";
 
 # Colon (:) will be use as the field separator.
 public const COLON = ":";
+
+# New line character
+public const NEW_LINE = "\n";
+
+# Default encoding for the abstract read/write APIs
+public const DEFAULT_ENCODING = "UTF8";

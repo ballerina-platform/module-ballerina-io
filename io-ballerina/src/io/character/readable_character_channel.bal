@@ -44,6 +44,24 @@ public class ReadableCharacterChannel {
         return readExtern(self, numberOfChars);
     }
 
+    # Read the entire channel content as a string.
+    # ```ballerina
+    # string|io:Error content = readableCharChannel.readString();
+    # ```
+    # + return - Either a string or `io:Error`
+    public function readString() returns @tainted string|Error {
+        return readAllAsStringExtern(self);
+    }
+
+    # Read the entire channel content as a list of lines.
+    # ```ballerina
+    # string[]|io:Error content = readableCharChannel.readAllLines();
+    # ```
+    # + return - Either a string array or `io:Error`
+    public function readAllLines() returns @tainted string[]|Error {
+        return readAllLinesExtern(self);
+    }
+
     # Reads a JSON from the given channel.
     # ```ballerina
     # json|io:Error result = readableCharChannel.readJson();
@@ -71,8 +89,19 @@ public class ReadableCharacterChannel {
     # + key - The property key needs to read.
     # + defaultValue - Default value to be return.
     # + return - The read property value or else an `io:Error`
-    public function readProperty(string key, string defaultValue="") returns @tainted string|Error {
+    public function readProperty(string key, string defaultValue = "") returns @tainted string|Error {
         return readPropertyExtern(self, key, defaultValue);
+    }
+
+    # Return a stream of lines that can be used to read all the lines in a file as a stream.
+    # ```ballerina
+    # stream<string>|io:Error? result = readableCharChannel.lineStream();
+    # ```
+    #
+    # + return - Either a stream of strings(lines) or an io:Error.
+    public function lineStream() returns stream<string>|Error? {
+        LineStream lineStream = new (self);
+        return new stream<string>(lineStream);
     }
 
     # Reads all properties from a .properties file.
@@ -96,15 +125,25 @@ public class ReadableCharacterChannel {
     }
 }
 
-function initReadableCharacterChannel(ReadableCharacterChannel characterChannel, ReadableByteChannel byteChannel,
+function initReadableCharacterChannel(ReadableCharacterChannel characterChannel, ReadableByteChannel byteChannel, 
                                       string charset) = @java:Method {
     name: "initCharacterChannel",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.CharacterChannelUtils"
 } external;
 
-function readExtern(ReadableCharacterChannel characterChannel, @untainted int numberOfChars) returns
-                    @tainted string|Error = @java:Method {
+function readExtern(ReadableCharacterChannel characterChannel, @untainted int numberOfChars) returns @tainted string|
+Error = @java:Method {
     name: "read",
+    'class: "org.ballerinalang.stdlib.io.nativeimpl.CharacterChannelUtils"
+} external;
+
+function readAllLinesExtern(ReadableCharacterChannel characterChannel) returns @tainted string[]|Error = @java:Method {
+    name: "readAllLines",
+    'class: "org.ballerinalang.stdlib.io.nativeimpl.CharacterChannelUtils"
+} external;
+
+function readAllAsStringExtern(ReadableCharacterChannel characterChannel) returns @tainted string|Error = @java:Method {
+    name: "readString",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.CharacterChannelUtils"
 } external;
 
@@ -118,8 +157,8 @@ function readXmlExtern(ReadableCharacterChannel characterChannel) returns @taint
     'class: "org.ballerinalang.stdlib.io.nativeimpl.CharacterChannelUtils"
 } external;
 
-function readPropertyExtern(ReadableCharacterChannel characterChannel, string key, string defaultValue) returns
-                            @tainted string|Error = @java:Method {
+function readPropertyExtern(ReadableCharacterChannel characterChannel, string key, string defaultValue) returns @tainted string|
+Error = @java:Method {
     name: "readProperty",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.CharacterChannelUtils"
 } external;

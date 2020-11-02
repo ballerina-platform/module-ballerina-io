@@ -16,9 +16,7 @@
 
 import ballerina/test;
 
-@test:Config {
-    dependsOn: ["testTableWithHeader"]
-}
+@test:Config {dependsOn: ["testTableWithHeader"]}
 function testWriteFixedSignedInt() {
     int value = 123;
     ByteOrder byteOrder = BIG_ENDIAN;
@@ -26,7 +24,7 @@ function testWriteFixedSignedInt() {
     var ch = openWritableFile(path);
 
     if (ch is WritableByteChannel) {
-        WritableDataChannel dataChannel = new(ch, byteOrder);
+        WritableDataChannel dataChannel = new (ch, byteOrder);
         var result = dataChannel.writeInt64(value);
         var closeResult = dataChannel.close();
     } else {
@@ -34,9 +32,7 @@ function testWriteFixedSignedInt() {
     }
 }
 
-@test:Config {
-    dependsOn: ["testWriteFixedSignedInt"]
-}
+@test:Config {dependsOn: ["testWriteFixedSignedInt"]}
 function testReadFixedSignedInt() {
     int value = 123;
     ByteOrder byteOrder = BIG_ENDIAN;
@@ -44,7 +40,7 @@ function testReadFixedSignedInt() {
 
     var ch = openReadableFile(path);
     if (ch is ReadableByteChannel) {
-        ReadableDataChannel dataChannel = new(ch, byteOrder);
+        ReadableDataChannel dataChannel = new (ch, byteOrder);
         var result = dataChannel.readInt64();
         if (result is int) {
             test:assertEquals(result, value);
@@ -57,9 +53,7 @@ function testReadFixedSignedInt() {
     }
 }
 
-@test:Config {
-    dependsOn: ["testReadFixedSignedInt"]
-}
+@test:Config {dependsOn: ["testReadFixedSignedInt"]}
 function testWriteVarInt() {
     var value = 456;
     ByteOrder byteOrder = BIG_ENDIAN;
@@ -67,7 +61,7 @@ function testWriteVarInt() {
     var ch = openWritableFile(path);
 
     if (ch is WritableByteChannel) {
-        WritableDataChannel dataChannel = new(ch, byteOrder);
+        WritableDataChannel dataChannel = new (ch, byteOrder);
         var result = dataChannel.writeInt64(value);
         var closeResult = dataChannel.close();
     } else {
@@ -75,9 +69,7 @@ function testWriteVarInt() {
     }
 }
 
-@test:Config {
-    dependsOn: ["testWriteVarInt"]
-}
+@test:Config {dependsOn: ["testWriteVarInt"]}
 function testReadVarInt() {
     int value = 456;
     ByteOrder byteOrder = BIG_ENDIAN;
@@ -85,7 +77,7 @@ function testReadVarInt() {
 
     var ch = openReadableFile(path);
     if (ch is ReadableByteChannel) {
-        ReadableDataChannel dataChannel = new(ch, byteOrder);
+        ReadableDataChannel dataChannel = new (ch, byteOrder);
         var result = dataChannel.readInt64();
         if (result is int) {
             test:assertEquals(result, value);
@@ -98,9 +90,7 @@ function testReadVarInt() {
     }
 }
 
-@test:Config {
-    dependsOn: ["testWriteVarInt"]
-}
+@test:Config {dependsOn: ["testWriteVarInt"]}
 function testWriteFixedFloat() {
     float value = 1359494.69;
     ByteOrder byteOrder = BIG_ENDIAN;
@@ -108,7 +98,7 @@ function testWriteFixedFloat() {
     var ch = openWritableFile(path);
 
     if (ch is WritableByteChannel) {
-        WritableDataChannel dataChannel = new(ch, byteOrder);
+        WritableDataChannel dataChannel = new (ch, byteOrder);
         var result = dataChannel.writeFloat64(value);
         var closeResult = dataChannel.close();
     } else {
@@ -116,9 +106,7 @@ function testWriteFixedFloat() {
     }
 }
 
-@test:Config {
-    dependsOn: ["testWriteFixedFloat"]
-}
+@test:Config {dependsOn: ["testWriteFixedFloat"]}
 function testReadFixedFloat() {
     float value = 1359494.69;
     ByteOrder byteOrder = BIG_ENDIAN;
@@ -126,7 +114,7 @@ function testReadFixedFloat() {
     var ch = openReadableFile(path);
 
     if (ch is ReadableByteChannel) {
-        ReadableDataChannel dataChannel = new(ch, byteOrder);
+        ReadableDataChannel dataChannel = new (ch, byteOrder);
         var result = dataChannel.readFloat64();
         if (result is float) {
             test:assertEquals(result, value);
@@ -139,9 +127,7 @@ function testReadFixedFloat() {
     }
 }
 
-@test:Config {
-    dependsOn: ["testReadFixedFloat"]
-}
+@test:Config {dependsOn: ["testReadFixedFloat"]}
 function testWriteBool() {
     boolean value = true;
     ByteOrder byteOrder = BIG_ENDIAN;
@@ -149,7 +135,7 @@ function testWriteBool() {
     var ch = openWritableFile(path);
 
     if (ch is WritableByteChannel) {
-        WritableDataChannel dataChannel = new(ch, byteOrder);
+        WritableDataChannel dataChannel = new (ch, byteOrder);
         var result = dataChannel.writeBool(value);
         var closeResult = dataChannel.close();
     } else {
@@ -157,9 +143,7 @@ function testWriteBool() {
     }
 }
 
-@test:Config {
-    dependsOn: ["testWriteBool"]
-}
+@test:Config {dependsOn: ["testWriteBool"]}
 function testReadBool() {
     boolean value = true;
     ByteOrder byteOrder = BIG_ENDIAN;
@@ -167,7 +151,7 @@ function testReadBool() {
     var ch = openReadableFile(path);
 
     if (ch is ReadableByteChannel) {
-        ReadableDataChannel dataChannel = new(ch, byteOrder);
+        ReadableDataChannel dataChannel = new (ch, byteOrder);
         var result = dataChannel.readBool();
         if (result is boolean) {
             test:assertTrue(result);
@@ -180,9 +164,7 @@ function testReadBool() {
     }
 }
 
-@test:Config {
-    dependsOn: ["testReadBool"]
-}
+@test:Config {dependsOn: ["testReadBool"]}
 function testWriteString() {
     string value = "Ballerina";
     ByteOrder byteOrder = BIG_ENDIAN;
@@ -191,7 +173,7 @@ function testWriteString() {
     var ch = openWritableFile(path);
 
     if (ch is WritableByteChannel) {
-        WritableDataChannel dataChannel = new(ch, byteOrder);
+        WritableDataChannel dataChannel = new (ch, byteOrder);
         var result = dataChannel.writeString(value, encoding);
         var closeResult = dataChannel.close();
     } else {
@@ -199,9 +181,7 @@ function testWriteString() {
     }
 }
 
-@test:Config {
-    dependsOn: ["testWriteString"]
-}
+@test:Config {dependsOn: ["testWriteString"]}
 function testReadString() {
     string value = "Ballerina";
     ByteOrder byteOrder = BIG_ENDIAN;
@@ -211,7 +191,7 @@ function testReadString() {
 
     var ch = openReadableFile(path);
     if (ch is ReadableByteChannel) {
-        ReadableDataChannel dataChannel = new(ch, byteOrder);
+        ReadableDataChannel dataChannel = new (ch, byteOrder);
         var result = dataChannel.readString(nBytes, encoding);
         if (result is string) {
             test:assertEquals(result, value);
