@@ -36,7 +36,9 @@ import org.ballerinalang.stdlib.io.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
 import java.nio.channels.ClosedChannelException;
@@ -85,33 +87,35 @@ public class ByteChannelUtils extends AbstractNativeChannel {
     }
 
     public static Object readAll(BObject channel) {
-        BufferedInputStream bufferedInputStream = (BufferedInputStream)
-                channel.getNativeData(IOConstants.BUFFERED_INPUT_STREAM_ENTRY);
+        BufferedInputStream bufferedInputStream = getBufferedInputStream(channel);
         try {
-            return ValueCreator.createArrayValue(bufferedInputStream.readAllBytes());
+            if (bufferedInputStream != null) {
+                return ValueCreator.createArrayValue(bufferedInputStream.readAllBytes());
+            }
+            return IOUtils.createError("BufferedInputStream is not initialized");
         } catch (IOException e) {
-            log.error(e.toString());
-            return IOUtils.createError(e.toString());
+            return IOUtils.createError(e);
         }
     }
 
     public static Object readBlock(BObject channel, long blockSize) {
-        BufferedInputStream bufferedInputStream = (BufferedInputStream)
-                channel.getNativeData(IOConstants.BUFFERED_INPUT_STREAM_ENTRY);
+        BufferedInputStream bufferedInputStream = getBufferedInputStream(channel);
         int blockSizeInt = (int) blockSize;
         byte[] buffer = new byte[blockSizeInt];
         try {
-            int n = bufferedInputStream.read(buffer, 0, blockSizeInt);
-            if (n == -1) {
-                bufferedInputStream.close();
-                return IOUtils.createEoFError();
+            if (bufferedInputStream != null) {
+                int n = bufferedInputStream.read(buffer, 0, blockSizeInt);
+                if (n == -1) {
+                    bufferedInputStream.close();
+                    return IOUtils.createEoFError();
+                }
+                Map<String, Object> map = new HashMap<>();
+                map.put(STREAM_BLOCK_ENTRY, ValueCreator.createArrayValue(buffer));
+                return ValueCreator.createArrayValue(buffer);
             }
-            Map<String, Object> map = new HashMap<>();
-            map.put(STREAM_BLOCK_ENTRY, ValueCreator.createArrayValue(buffer));
-            return ValueCreator.createArrayValue(buffer);
+            return IOUtils.createError("BufferedInputStream is not initialized");
         } catch (IOException e) {
-            log.error(e.toString());
-            return IOUtils.createError(e.toString());
+            return IOUtils.createError(e);
         }
     }
 
@@ -137,9 +141,8 @@ public class ByteChannelUtils extends AbstractNativeChannel {
     public static Object closeByteChannel(BObject channel) {
         Channel byteChannel = (Channel) channel.getNativeData(BYTE_CHANNEL_NAME);
         try {
-            if (channel.getNativeData(IOConstants.BUFFERED_INPUT_STREAM_ENTRY) != null) {
-                BufferedInputStream bufferedInputStream = (BufferedInputStream)
-                        channel.getNativeData(IOConstants.BUFFERED_INPUT_STREAM_ENTRY);
+            BufferedInputStream bufferedInputStream = getBufferedInputStream(channel);
+            if (bufferedInputStream != null) {
                 bufferedInputStream.close();
             }
             byteChannel.close();
@@ -153,15 +156,13 @@ public class ByteChannelUtils extends AbstractNativeChannel {
 
     public static Object closeInputStream(BObject channel) {
         try {
-            if (channel.getNativeData(IOConstants.BUFFERED_INPUT_STREAM_ENTRY) != null) {
-                BufferedInputStream bufferedInputStream = (BufferedInputStream)
-                        channel.getNativeData(IOConstants.BUFFERED_INPUT_STREAM_ENTRY);
+            BufferedInputStream bufferedInputStream = getBufferedInputStream(channel);
+            if (bufferedInputStream != null) {
                 bufferedInputStream.close();
             }
             return null;
         } catch (IOException e) {
-            log.error(e.toString());
-            return IOUtils.createError(e.toString());
+            return IOUtils.createError(e);
         }
     }
 
@@ -245,5 +246,12 @@ public class ByteChannelUtils extends AbstractNativeChannel {
         byte[] content = new byte[contentLength];
         System.arraycopy(array.getBytes(), 0, content, 0, contentLength);
         return content;
+    }
+
+    private static BufferedInputStream getBufferedInputStream(BObject channel) {
+        if (channel.getNativeData(IOConstants.BUFFERED_INPUT_STREAM_ENTRY) != null) {
+            return (BufferedInputStream) channel.getNativeData(IOConstants.BUFFERED_INPUT_STREAM_ENTRY);
+        }
+        return null;
     }
 }

@@ -97,8 +97,7 @@ public class CharacterChannelUtils {
             }
             return StringUtils.fromString(line);
         } catch (IOException e) {
-            log.error(e.toString());
-            return IOUtils.createError(e.toString());
+            return IOUtils.createError(e);
         }
     }
 
@@ -114,7 +113,7 @@ public class CharacterChannelUtils {
                 channel.getNativeData(BUFFERED_READER_ENTRY);
         String[] lines = bufferedReader.lines().toArray(String[]::new);
         StringJoiner joiner = new StringJoiner(System.lineSeparator());
-        for(int i = 0; i < lines.length; i++) {
+        for (int i = 0; i < lines.length; i++) {
             joiner.add(lines[i]);
         }
         return io.ballerina.runtime.api.StringUtils.fromString(joiner.toString());
@@ -170,11 +169,9 @@ public class CharacterChannelUtils {
     public static Object close(BObject channel) {
         CharacterChannel charChannel = (CharacterChannel) channel.getNativeData(CHARACTER_CHANNEL_NAME);
         try {
-            if(channel.getNativeData(BUFFERED_READER_ENTRY) != null) {
-                BufferedReader bufferedReader = (BufferedReader)
-                        channel.getNativeData(BUFFERED_READER_ENTRY);
-                bufferedReader.close();
-            }
+            BufferedReader bufferedReader = (BufferedReader)
+                    channel.getNativeData(BUFFERED_READER_ENTRY);
+            bufferedReader.close();
             charChannel.close();
         } catch (ClosedChannelException e) {
             return IOUtils.createError("channel already closed.");
@@ -186,11 +183,9 @@ public class CharacterChannelUtils {
 
     public static Object closeBufferedReader(BObject channel) {
         try {
-            if(channel.getNativeData(BUFFERED_READER_ENTRY) != null) {
-                BufferedReader bufferedReader = (BufferedReader)
-                        channel.getNativeData(BUFFERED_READER_ENTRY);
-                bufferedReader.close();
-            }
+            BufferedReader bufferedReader = (BufferedReader)
+                    channel.getNativeData(BUFFERED_READER_ENTRY);
+            bufferedReader.close();
         } catch (ClosedChannelException e) {
             return IOUtils.createError("channel already closed.");
         } catch (IOException e) {

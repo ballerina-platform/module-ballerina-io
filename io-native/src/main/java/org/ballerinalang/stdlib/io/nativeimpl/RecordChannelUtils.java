@@ -124,8 +124,7 @@ public class RecordChannelUtils {
             String[] record = line.strip().split(separator.getValue());
             return ValueCreator.createArrayValue(StringUtils.fromStringArray(record));
         } catch (IOException e) {
-            log.error(e.toString());
-            return IOUtils.createError(e.toString());
+            return IOUtils.createError(e);
         }
     }
 
@@ -143,11 +142,9 @@ public class RecordChannelUtils {
     public static Object close(BObject channel) {
         DelimitedRecordChannel recordChannel = (DelimitedRecordChannel) channel.getNativeData(TXT_RECORD_CHANNEL_NAME);
         try {
-            if(channel.getNativeData(BUFFERED_READER_ENTRY) != null) {
-                BufferedReader bufferedReader = (BufferedReader)
-                        channel.getNativeData(BUFFERED_READER_ENTRY);
-                bufferedReader.close();
-            }
+            BufferedReader bufferedReader = (BufferedReader)
+                    channel.getNativeData(BUFFERED_READER_ENTRY);
+            bufferedReader.close();
             recordChannel.close();
         } catch (ClosedChannelException e) {
             return IOUtils.createError("channel already closed.");
@@ -159,11 +156,9 @@ public class RecordChannelUtils {
 
     public static Object closeBufferedReader(BObject channel) {
         try {
-            if(channel.getNativeData(BUFFERED_READER_ENTRY) != null) {
-                BufferedReader bufferedReader = (BufferedReader)
-                        channel.getNativeData(BUFFERED_READER_ENTRY);
-                bufferedReader.close();
-            }
+            BufferedReader bufferedReader = (BufferedReader)
+                    channel.getNativeData(BUFFERED_READER_ENTRY);
+            bufferedReader.close();
         } catch (ClosedChannelException e) {
             return IOUtils.createError("channel already closed.");
         } catch (IOException e) {
