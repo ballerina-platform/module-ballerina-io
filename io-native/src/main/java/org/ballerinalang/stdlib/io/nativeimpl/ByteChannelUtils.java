@@ -87,8 +87,8 @@ public class ByteChannelUtils extends AbstractNativeChannel {
     }
 
     public static Object readAll(BObject channel) {
-        BufferedInputStream bufferedInputStream = getBufferedInputStream(channel);
         try {
+            BufferedInputStream bufferedInputStream = getBufferedInputStream(channel);
             if (bufferedInputStream != null) {
                 return ValueCreator.createArrayValue(bufferedInputStream.readAllBytes());
             }
@@ -99,10 +99,10 @@ public class ByteChannelUtils extends AbstractNativeChannel {
     }
 
     public static Object readBlock(BObject channel, long blockSize) {
-        BufferedInputStream bufferedInputStream = getBufferedInputStream(channel);
         int blockSizeInt = (int) blockSize;
         byte[] buffer = new byte[blockSizeInt];
         try {
+            BufferedInputStream bufferedInputStream = getBufferedInputStream(channel);
             if (bufferedInputStream != null) {
                 int n = bufferedInputStream.read(buffer, 0, blockSizeInt);
                 if (n == -1) {
@@ -248,10 +248,17 @@ public class ByteChannelUtils extends AbstractNativeChannel {
         return content;
     }
 
-    private static BufferedInputStream getBufferedInputStream(BObject channel) {
+    private static BufferedInputStream getBufferedInputStream(BObject channel) throws IOException {
         if (channel.getNativeData(IOConstants.BUFFERED_INPUT_STREAM_ENTRY) != null) {
             return (BufferedInputStream) channel.getNativeData(IOConstants.BUFFERED_INPUT_STREAM_ENTRY);
+        } else {
+            Channel byteChannel = (Channel) channel.getNativeData(BYTE_CHANNEL_NAME);
+            BufferedInputStream bufferedInputStream = new BufferedInputStream(byteChannel.getInputStream());
+            channel.addNativeData(
+                    IOConstants.BUFFERED_INPUT_STREAM_ENTRY,
+                    bufferedInputStream
+            );
+            return bufferedInputStream;
         }
-        return null;
     }
 }
