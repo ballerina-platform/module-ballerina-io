@@ -182,16 +182,18 @@ task ballerinaBuild {
             }
 
         }
-        // Doc creation and packing
-        exec {
-            workingDir project.projectDir
-            environment "JAVA_OPTS", "-DBALLERINA_DEV_COMPILE_BALLERINA_ORG=true"
-            if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-                commandLine 'cmd', '/c', "$distributionBinPath/ballerina.bat doc ${moduleName} && exit %%ERRORLEVEL%%"
-            } else {
-                commandLine 'sh', '-c', "$distributionBinPath/ballerina doc ${moduleName}"
-            }
-        }
+//        Disabling doc creation due to this issue(https://github.com/ballerina-platform/ballerina-lang/issues/26733).
+//        Once it fixed, we can enable doc creation.
+//        // Doc creation and packing
+//        exec {
+//            workingDir project.projectDir
+//            environment "JAVA_OPTS", "-DBALLERINA_DEV_COMPILE_BALLERINA_ORG=true"
+//            if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+//                commandLine 'cmd', '/c', "$distributionBinPath/ballerina.bat doc ${moduleName} && exit %%ERRORLEVEL%%"
+//            } else {
+//                commandLine 'sh', '-c', "$distributionBinPath/ballerina doc ${moduleName}"
+//            }
+//        }
         copy {
             from file("$project.projectDir/target/apidocs/${moduleName}")
             into file("$project.projectDir/build/docs_parent/docs/${moduleName}")
