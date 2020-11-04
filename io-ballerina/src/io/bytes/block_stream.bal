@@ -16,7 +16,7 @@
 
 import ballerina/java;
 
-type Block readonly & byte[];
+public type Block readonly & byte[];
 
 # BlockStream used to initialize a byte stream.
 public class BlockStream {
