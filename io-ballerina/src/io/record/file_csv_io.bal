@@ -53,7 +53,6 @@ public function fileReadCsvAsStream(@untainted string path) returns @tainted str
 # ```
 # + path - File path
 # + content - CSV content as an array of string arrays
-# + skipHeaders - Number of headers, which should be skipped
 # + return - `io:Error` or else `()`
 public function fileWriteCsv(@untainted string path, string[][] content) returns Error? {
     var csvChannel = openWritableCsvFile(path);
