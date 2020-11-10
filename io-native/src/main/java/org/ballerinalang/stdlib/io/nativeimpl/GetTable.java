@@ -18,20 +18,20 @@
 
 package org.ballerinalang.stdlib.io.nativeimpl;
 
-import io.ballerina.runtime.api.StringUtils;
 import io.ballerina.runtime.api.TypeTags;
-import io.ballerina.runtime.api.ValueCreator;
+import io.ballerina.runtime.api.creators.TypeCreator;
+import io.ballerina.runtime.api.creators.ValueCreator;
 import io.ballerina.runtime.api.types.Field;
+import io.ballerina.runtime.api.types.StructureType;
+import io.ballerina.runtime.api.types.TableType;
 import io.ballerina.runtime.api.types.Type;
+import io.ballerina.runtime.api.types.UnionType;
+import io.ballerina.runtime.api.utils.StringUtils;
+import io.ballerina.runtime.api.values.BArray;
+import io.ballerina.runtime.api.values.BError;
 import io.ballerina.runtime.api.values.BObject;
-import io.ballerina.runtime.types.BStructureType;
-import io.ballerina.runtime.types.BTableType;
-import io.ballerina.runtime.types.BUnionType;
-import io.ballerina.runtime.util.exceptions.BallerinaException;
-import io.ballerina.runtime.values.ArrayValue;
-import io.ballerina.runtime.values.TableValue;
-import io.ballerina.runtime.values.TableValueImpl;
-import io.ballerina.runtime.values.TypedescValue;
+import io.ballerina.runtime.api.values.BTable;
+import io.ballerina.runtime.api.values.BTypedesc;
 import org.ballerinalang.stdlib.io.channels.base.DelimitedRecordChannel;
 import org.ballerinalang.stdlib.io.utils.BallerinaIOException;
 import org.ballerinalang.stdlib.io.utils.IOConstants;
@@ -58,7 +58,7 @@ public class GetTable {
     private GetTable() {
     }
 
-    public static Object getTable(BObject csvChannel, TypedescValue typedescValue, ArrayValue key) {
+    public static Object getTable(BObject csvChannel, BTypedesc typedescValue, BArray key) {
         try {
             final BObject delimitedObj =
                     (BObject) csvChannel.get(StringUtils.fromString(CSV_CHANNEL_DELIMITED_STRUCT_FIELD));
@@ -72,22 +72,22 @@ public class GetTable {
                 records.add(delimitedChannel.read());
             }
             return getTable(typedescValue, key, records);
-        } catch (BallerinaIOException | BallerinaException e) {
+        } catch (BallerinaIOException | BError e) {
             String msg = "failed to process the delimited file: " + e.getMessage();
             return IOUtils.createError(msg);
         }
     }
 
-    private static TableValue getTable(TypedescValue typedescValue, ArrayValue key, List<String[]> records) {
+    private static BTable getTable(BTypedesc typedescValue, BArray key, List<String[]> records) {
         Type describingType = typedescValue.getDescribingType();
-        BTableType newTableType;
+        TableType newTableType;
         if (key.size() == 0) {
-            newTableType = new BTableType(describingType, false);
+            newTableType = TypeCreator.createTableType(describingType, false);
         } else {
-            newTableType = new BTableType(describingType, key.getStringArray(), false);
+            newTableType = TypeCreator.createTableType(describingType, key.getStringArray(), false);
         }
-        TableValue table = new TableValueImpl(newTableType);
-        BStructureType structType = (BStructureType) describingType;
+        BTable table = ValueCreator.createTableValue(newTableType);
+        StructureType structType = (StructureType) describingType;
         for (String[] fields : records) {
             final Map<String, Object> struct = getStruct(fields, structType);
             if (struct != null) {
@@ -98,7 +98,7 @@ public class GetTable {
         return table;
     }
 
-    private static Map<String, Object> getStruct(String[] fields, final BStructureType structType) {
+    private static Map<String, Object> getStruct(String[] fields, final StructureType structType) {
         Map<String, Field> internalStructFields = structType.getFields();
         int fieldLength = internalStructFields.size();
         Map<String, Object> struct = null;
@@ -119,7 +119,7 @@ public class GetTable {
                             populateRecord(type, struct, fieldName, value);
                             break;
                         case TypeTags.UNION_TAG:
-                            List<Type> members = ((BUnionType) internalStructField.getFieldType()).getMemberTypes();
+                            List<Type> members = ((UnionType) internalStructField.getFieldType()).getMemberTypes();
                             if (members.get(0).getTag() == TypeTags.NULL_TAG) {
                                 populateRecord(members.get(1).getTag(), struct, fieldName, value);
                             } else if (members.get(1).getTag() == TypeTags.NULL_TAG) {
