@@ -17,15 +17,14 @@
  */
 package org.ballerinalang.stdlib.io.nativeimpl;
 
-import io.ballerina.runtime.TypeChecker;
-import io.ballerina.runtime.api.StringUtils;
 import io.ballerina.runtime.api.TypeTags;
+import io.ballerina.runtime.api.creators.ErrorCreator;
+import io.ballerina.runtime.api.types.ArrayType;
 import io.ballerina.runtime.api.types.Type;
+import io.ballerina.runtime.api.utils.StringUtils;
+import io.ballerina.runtime.api.utils.TypeUtils;
+import io.ballerina.runtime.api.values.BArray;
 import io.ballerina.runtime.api.values.BString;
-import io.ballerina.runtime.types.BArrayType;
-import io.ballerina.runtime.util.exceptions.BLangExceptionHelper;
-import io.ballerina.runtime.util.exceptions.RuntimeErrors;
-import io.ballerina.runtime.values.ArrayValue;
 
 import java.util.IllegalFormatConversionException;
 
@@ -35,6 +34,10 @@ import java.util.IllegalFormatConversionException;
  * @since 0.964.0
  */
 public class Sprintf {
+
+    private static final BString NOT_ENOUGH_FORMAT_ARGUMENTS = StringUtils.fromString("not enough format arguments");
+    private static final String ILLEGAL_FORMAT_CONVERSION = "illegal format conversion";
+    private static final String UNKNOWN_FORMAT_CONVERSION = "unknown format conversion";
 
     private Sprintf() {
     }
@@ -78,7 +81,7 @@ public class Sprintf {
 
                 if (k >= args.length) {
                     // there's not enough arguments
-                    throw BLangExceptionHelper.getRuntimeException(RuntimeErrors.NOT_ENOUGH_FORMAT_ARGUMENTS);
+                    throw ErrorCreator.createError(NOT_ENOUGH_FORMAT_ARGUMENTS);
                 }
                 StringBuilder padding = new StringBuilder();
                 while (Character.isDigit(format.getValue().charAt(j)) || format.getValue().charAt(j) == '.') {
@@ -94,16 +97,19 @@ public class Sprintf {
                         case 'd':
                         case 'f':
                             if (ref == null) {
-                                throw BLangExceptionHelper.getRuntimeException(RuntimeErrors.ILLEGAL_FORMAT_CONVERSION,
-                                                                               format.getValue().charAt(j) + " != ()");
+                                throw ErrorCreator
+                                        .createError(StringUtils.fromString(ILLEGAL_FORMAT_CONVERSION + " '" +
+                                                                                    format.getValue().charAt(j) +
+                                                                                    " != ()'"));
                             }
                             result.append(String.format("%" + padding + formatSpecifier, ref));
                             break;
                         case 'x':
                         case 'X':
                             if (ref == null) {
-                                throw BLangExceptionHelper.getRuntimeException(RuntimeErrors.ILLEGAL_FORMAT_CONVERSION,
-                                                                               format.getValue().charAt(j) + " != ()");
+                                throw ErrorCreator
+                                        .createError(StringUtils.fromString(ILLEGAL_FORMAT_CONVERSION + " '" + +
+                                                format.getValue().charAt(j) + " != ()'"));
                             }
                             formatHexString(result, k, padding, formatSpecifier, args);
                             break;
@@ -118,13 +124,14 @@ public class Sprintf {
                             break;
                         default:
                             // format string not supported
-                            throw BLangExceptionHelper.getRuntimeException(RuntimeErrors.INVALID_FORMAT_SPECIFIER,
-                                                                           format.getValue().charAt(j));
+                            throw ErrorCreator
+                                    .createError(StringUtils.fromString(UNKNOWN_FORMAT_CONVERSION + " '" +
+                                                                                format.getValue().charAt(j) + "'"));
                     }
                 } catch (IllegalFormatConversionException e) {
-                    throw BLangExceptionHelper.getRuntimeException(RuntimeErrors.ILLEGAL_FORMAT_CONVERSION,
-                                                                   format.getValue().charAt(j) + " != " +
-                                                                           TypeChecker.getType(args[k]));
+                    throw ErrorCreator.createError(StringUtils.fromString(ILLEGAL_FORMAT_CONVERSION + " '" +
+                                                                                  format.getValue().charAt(j) + " != " +
+                                                                                  TypeUtils.getType(args[k]) + "'"));
                 }
                 if (format.getValue().charAt(j) == '%') {
                     // special case %%, don't count as a format specifier
@@ -138,14 +145,14 @@ public class Sprintf {
             // no match, copy and continue
             result.append(format.getValue().charAt(i));
         }
-        return io.ballerina.runtime.api.StringUtils.fromString(result.toString());
+        return StringUtils.fromString(result.toString());
     }
 
     private static void formatHexString(StringBuilder result, int k, StringBuilder padding, char x, Object... args) {
         final Object argsValues = args[k];
-        final Type type = TypeChecker.getType(argsValues);
-        if (TypeTags.ARRAY_TAG == type.getTag() && TypeTags.BYTE_TAG == ((BArrayType) type).getElementType().getTag()) {
-            ArrayValue byteArray = ((ArrayValue) argsValues);
+        final Type type = TypeUtils.getType(argsValues);
+        if (TypeTags.ARRAY_TAG == type.getTag() && TypeTags.BYTE_TAG == ((ArrayType) type).getElementType().getTag()) {
+            BArray byteArray = ((BArray) argsValues);
             for (int i = 0; i < byteArray.size(); i++) {
                 result.append(String.format("%" + padding + x, byteArray.getByte(i)));
             }

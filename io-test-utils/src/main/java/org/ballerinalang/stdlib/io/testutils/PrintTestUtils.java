@@ -18,7 +18,7 @@
 
 package org.ballerinalang.stdlib.io.testutils;
 
-import io.ballerina.runtime.api.StringUtils;
+import io.ballerina.runtime.api.utils.StringUtils;
 import io.ballerina.runtime.api.values.BString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -17,15 +17,14 @@
  */
 package org.ballerinalang.stdlib.io.utils;
 
-import io.ballerina.runtime.TypeChecker;
-import io.ballerina.runtime.api.ErrorCreator;
 import io.ballerina.runtime.api.Module;
-import io.ballerina.runtime.api.StringUtils;
-import io.ballerina.runtime.api.ValueCreator;
+import io.ballerina.runtime.api.creators.ErrorCreator;
+import io.ballerina.runtime.api.creators.ValueCreator;
+import io.ballerina.runtime.api.utils.StringUtils;
+import io.ballerina.runtime.api.utils.TypeUtils;
+import io.ballerina.runtime.api.values.BArray;
 import io.ballerina.runtime.api.values.BError;
 import io.ballerina.runtime.api.values.BObject;
-import io.ballerina.runtime.values.ArrayValue;
-import io.ballerina.runtime.values.ArrayValueImpl;
 import org.ballerinalang.stdlib.io.channels.base.Channel;
 
 import java.io.ByteArrayInputStream;
@@ -36,7 +35,7 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
-import static io.ballerina.runtime.util.BLangConstants.BALLERINA_BUILTIN_PKG_PREFIX;
+import static io.ballerina.runtime.api.constants.RuntimeConstants.BALLERINA_BUILTIN_PKG_PREFIX;
 
 /**
  * A util class for handling common functions across native implementation.
@@ -87,9 +86,9 @@ public class Utils {
      */
     @SuppressWarnings("unchecked")
     public static Object encode(Object input, String charset, boolean isMimeSpecific) {
-        switch (TypeChecker.getType(input).getTag()) {
+        switch (TypeUtils.getType(input).getTag()) {
             case io.ballerina.runtime.api.TypeTags.ARRAY_TAG:
-                return encodeBlob(((ArrayValue) input).getBytes(), isMimeSpecific);
+                return encodeBlob(((BArray) input).getBytes(), isMimeSpecific);
             case io.ballerina.runtime.api.TypeTags.OBJECT_TYPE_TAG:
             case io.ballerina.runtime.api.TypeTags.RECORD_TYPE_TAG:
                 //TODO : recheck following casing
@@ -114,9 +113,9 @@ public class Utils {
      * @return decoded value
      */
     public static Object decode(Object encodedInput, String charset, boolean isMimeSpecific) {
-        switch (TypeChecker.getType(encodedInput).getTag()) {
+        switch (TypeUtils.getType(encodedInput).getTag()) {
             case io.ballerina.runtime.api.TypeTags.ARRAY_TAG:
-                return decodeBlob(((ArrayValue) encodedInput).getBytes(), isMimeSpecific);
+                return decodeBlob(((BArray) encodedInput).getBytes(), isMimeSpecific);
             case io.ballerina.runtime.api.TypeTags.OBJECT_TYPE_TAG:
             case io.ballerina.runtime.api.TypeTags.RECORD_TYPE_TAG:
                 return decodeByteChannel((BObject) encodedInput, isMimeSpecific);
@@ -233,14 +232,14 @@ public class Utils {
      * @param isMimeSpecific A boolean indicating whether the encoder should be mime specific or not
      * @return encoded blob
      */
-    public static ArrayValue encodeBlob(byte[] bytes, boolean isMimeSpecific) {
+    public static BArray encodeBlob(byte[] bytes, boolean isMimeSpecific) {
         byte[] encodedContent;
         if (isMimeSpecific) {
             encodedContent = Base64.getMimeEncoder().encode(bytes);
         } else {
             encodedContent = Base64.getEncoder().encode(bytes);
         }
-        return new ArrayValueImpl(encodedContent);
+        return ValueCreator.createArrayValue(encodedContent);
     }
 
     /**
@@ -250,13 +249,13 @@ public class Utils {
      * @param isMimeSpecific A boolean indicating whether the encoder should be mime specific or not
      * @return decoded blob
      */
-    public static ArrayValue decodeBlob(byte[] encodedContent, boolean isMimeSpecific) {
+    public static BArray decodeBlob(byte[] encodedContent, boolean isMimeSpecific) {
         byte[] decodedContent;
         if (isMimeSpecific) {
             decodedContent = Base64.getMimeDecoder().decode(encodedContent);
         } else {
             decodedContent = Base64.getDecoder().decode(encodedContent);
         }
-        return new ArrayValueImpl(decodedContent);
+        return ValueCreator.createArrayValue(decodedContent);
     }
 }
