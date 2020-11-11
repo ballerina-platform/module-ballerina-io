@@ -41,7 +41,7 @@ public function channelReadBytes(ReadableChannel readableChannel) returns @taint
 # + readableChannel - A readable channel
 # + blockSize - An optional size of the byte block. Default size is 4KB.
 # + return - Either a byte block stream or `io:Error`
-public function channelReadBlocksAsStream(ReadableChannel readableChannel, int blockSize=4096) returns stream<byte[]>|Error? {
+public function channelReadBlocksAsStream(ReadableChannel readableChannel, int blockSize=4096) returns @tainted stream<Block>|Error {
     if (readableChannel is ReadableByteChannel) {
         return readableChannel.blockStream(blockSize);
     } else {

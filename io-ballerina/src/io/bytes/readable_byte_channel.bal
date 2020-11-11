@@ -57,7 +57,7 @@ public class ReadableByteChannel {
     # ```
     # + blockSize - A positive integer. Size of the block.
     # + return - Either a block stream or else an `io:Error`
-    public function blockStream(int blockSize) returns stream<Block>|Error? {
+    public function blockStream(int blockSize) returns @tainted stream<Block>|Error {
         BlockStream blockStream = new (self, blockSize);
         return new stream<Block>(blockStream);
     }
