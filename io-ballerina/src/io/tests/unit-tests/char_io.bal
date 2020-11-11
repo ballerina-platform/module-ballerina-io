@@ -668,10 +668,8 @@ function testFileReadLinesAsStream() {
                                test:assertEquals(val, expectedLines[i]);
                                i += 1;
                            });
-    } else if (result is Error) {
-        test:assertFail(msg = result.message());
     } else {
-        test:assertFail("Unknown error occured");
+        test:assertFail(msg = result.message());
     }
 }
 
