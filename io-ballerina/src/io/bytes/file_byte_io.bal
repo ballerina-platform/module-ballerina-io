@@ -36,7 +36,7 @@ public function fileReadBytes(@untainted string path) returns @tainted readonly 
 # + path - File path
 # + blockSize - Block size
 # + return - Either a byte block stream or `io:Error`
-public function fileReadBlocksAsStream(string path, int blockSize) returns stream<byte[]>|Error? {
+public function fileReadBlocksAsStream(string path, int blockSize=4096) returns @tainted stream<Block>|Error {
     var byteChannel = openReadableFile(path);
     if (byteChannel is ReadableByteChannel) {
         return channelReadBlocksAsStream(byteChannel, blockSize);

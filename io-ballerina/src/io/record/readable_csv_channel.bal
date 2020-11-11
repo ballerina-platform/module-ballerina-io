@@ -88,7 +88,7 @@ public class ReadableCSVChannel {
     # ```
     #
     # + return - Either a stream of records(string[]) or else an `io:Error`
-    public function csvStream() returns stream<string[]>|Error? {
+    public function csvStream() returns stream<string[]>|Error {
         var recordChannel = self.dc;
         if (recordChannel is ReadableTextRecordChannel) {
             CSVStream csvStream = new (recordChannel);

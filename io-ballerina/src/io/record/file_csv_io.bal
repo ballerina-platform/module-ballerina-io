@@ -37,7 +37,7 @@ public function fileReadCsv(@untainted string path, int skipHeaders = 0) returns
 # ```
 # + path - File path
 # + return - Either a stream of string array or `io:Error`
-public function fileReadCsvAsStream(@untainted string path) returns @tainted stream<string[]>|Error? {
+public function fileReadCsvAsStream(@untainted string path) returns @tainted stream<string[]>|Error {
     var csvChannel = openReadableCsvFile(path);
     if (csvChannel is ReadableCSVChannel) {
         return csvChannel.csvStream();

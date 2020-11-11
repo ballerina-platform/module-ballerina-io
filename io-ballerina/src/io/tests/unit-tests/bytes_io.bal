@@ -97,7 +97,7 @@ function testFileReadBytes() {
     var result = fileReadBytes(filePath);
     string expectedString = "Sheldon Cooper";
 
-    if (result is byte[]) {
+    if (result is (readonly & byte[])) {
         test:assertEquals(result, expectedString.toBytes(), msg = "Found unexpected output");
     } else {
         test:assertFail(msg = result.message());
@@ -138,10 +138,8 @@ function testFileReadBytesAsStream() {
         } else {
             test:assertFail(msg = returnedString.message());
         }
-    } else if (result is Error) {
-        test:assertFail(msg = result.message());
     } else {
-        test:assertFail("Unknown error occured");
+        test:assertFail(msg = result.message());
     }
 }
 
@@ -222,10 +220,8 @@ function testFileChannelReadBytesAsStream() {
             } else {
                 test:assertFail(msg = returnedString.message());
             }
-        } else if (result is Error) {
-            test:assertFail(msg = result.message());
         } else {
-            test:assertFail("Unknown error occured");
+            test:assertFail(msg = result.message());
         }
     } else {
         test:assertFail(msg = fileOpenResult.message());
@@ -238,8 +234,8 @@ function testFileCopy() {
     string writeFilePath = TEMP_DIR + "ballerina.png";
     var readResult = fileReadBytes(readFilePath);
 
-    if (readResult is byte[]) {
-        var writeResult = fileWriteBytes(writeFilePath, readResult);
+    if (readResult is (readonly & byte[])) {
+        var writeResult = fileWriteBytes(writeFilePath, <@untainted>readResult);
         if (writeResult is Error) {
             test:assertFail(msg = writeResult.message());
         }

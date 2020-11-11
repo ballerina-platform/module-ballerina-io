@@ -52,7 +52,7 @@ public function channelReadCsv(ReadableChannel readableChannel, int skipHeaders 
 # ```
 # + readableChannel - A readable channel
 # + return - Either a stream of string array or `io:Error`
-public function channelReadCsvAsStream(ReadableChannel readableChannel) returns @tainted stream<string[]>|Error? {
+public function channelReadCsvAsStream(ReadableChannel readableChannel) returns @tainted stream<string[]>|Error {
     var csvChannel = getReadableCSVChannel(readableChannel, 0);
     if (csvChannel is ReadableCSVChannel) {
         return csvChannel.csvStream();
