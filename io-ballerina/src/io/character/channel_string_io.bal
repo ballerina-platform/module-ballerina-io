@@ -56,7 +56,7 @@ public function channelReadLines(ReadableChannel readableChannel) returns @taint
 # ```
 # + readableChannel - A readable channel
 # + return - Either a string array or `io:Error`
-public function channelReadLinesAsStream(ReadableChannel readableChannel) returns @tainted stream<string>|Error? {
+public function channelReadLinesAsStream(ReadableChannel readableChannel) returns @tainted stream<string>|Error {
     var characterChannel = getReadableCharacterChannel(readableChannel);
     if (characterChannel is ReadableCharacterChannel) {
         return characterChannel.lineStream();
@@ -135,10 +135,9 @@ public function channelWriteString(WritableChannel writableChannel, string conte
 public function channelWriteLines(WritableChannel writableChannel, string[] content) returns Error? {
     var characterChannel = getWritableCharacterChannel(writableChannel);
     if (characterChannel is WritableCharacterChannel) {
-        string[] reversedContent = content.reverse();
         string writeContent = "";
-        foreach string line in reversedContent {
-            writeContent = line + NEW_LINE;
+        foreach string line in content {
+            writeContent = writeContent + line + NEW_LINE;
         }
         var writeResult = characterChannel.write(writeContent, 0);
         if (writeResult is Error) {

@@ -99,7 +99,7 @@ public class ReadableCharacterChannel {
     # ```
     #
     # + return - Either a stream of strings(lines) or an io:Error.
-    public function lineStream() returns stream<string>|Error? {
+    public function lineStream() returns stream<string>|Error {
         LineStream lineStream = new (self);
         return new stream<string>(lineStream);
     }
