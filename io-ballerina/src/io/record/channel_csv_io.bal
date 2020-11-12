@@ -20,9 +20,10 @@ import ballerina/lang.'value;
 # ```ballerina
 # string[][]|io:Error content = io:channelReadCsv(readableChannel);
 # ```
-# + readableChannel - A readable channel
-# + skipHeaders - Number of headers, which should be skipped prior to reading records
-# + return - Either an array of string arrays or `io:Error`
+# + readableChannel - A readable channel.
+# The possible inputs are `io:ReadableByteChannel`, `io:ReadableCharacterChannel` or `io:ReadableCSVChannel`.
+# + skipHeaders - Number of headers, which should be skipped prior to reading records.
+# + return - The entire CSV content in the channel as an array of string arrays or an `io:Error`.
 public function channelReadCsv(ReadableChannel readableChannel, int skipHeaders = 0) returns @tainted string[][]|Error {
     var csvChannel = getReadableCSVChannel(readableChannel, skipHeaders);
     if (csvChannel is ReadableCSVChannel) {
@@ -50,8 +51,9 @@ public function channelReadCsv(ReadableChannel readableChannel, int skipHeaders 
 # ```ballerina
 # stream<string[]>|io:Error content = io:channelReadCsvAsStream(readableChannel);
 # ```
-# + readableChannel - A readable channel
-# + return - Either a stream of string array or `io:Error`
+# + readableChannel - A readable channel.
+# The possible inputs are `io:ReadableByteChannel`, `io:ReadableCharacterChannel` or `io:ReadableCSVChannel`.
+# + return - The entire CSV content in the channel a stream of string arrays or an `io:Error`.
 public function channelReadCsvAsStream(ReadableChannel readableChannel) returns @tainted stream<string[]>|Error {
     var csvChannel = getReadableCSVChannel(readableChannel, 0);
     if (csvChannel is ReadableCSVChannel) {
@@ -66,9 +68,10 @@ public function channelReadCsvAsStream(ReadableChannel readableChannel) returns 
 # string[][] content = [["Anne", "Johnson", "SE"], ["John", "Cameron", "QA"]];
 # io:Error? result = io:channelWriteCsv(writableChannel, content);
 # ```
-# + writableChannel - A writable channel
-# + content - CSV content as an array of string arrays
-# + return - `io:Error` or else `()`
+# + writableChannel - A writable channel.
+# The possible inputs are `io:WritableByteChannel`, `io:WritableCharacterChannel`, or `io:WritableCSVChannel`.
+# + content - CSV content as an array of string arrays.
+# + return - Either an `io:Error` or the null `()` value when the writing was successful.
 public function channelWriteCsv(WritableChannel writableChannel, string[][] content) returns Error? {
     var csvChannel = getWritableCSVChannel(writableChannel);
     if (csvChannel is WritableCSVChannel) {
@@ -94,9 +97,10 @@ public function channelWriteCsv(WritableChannel writableChannel, string[][] cont
 # stream<string[]> recordStream = content.toStream();
 # io:Error? result = io:channelWriteCsv(writableChannel, recordStream);
 # ```
-# + writableChannel - A writable channel
+# + writableChannel - A writable channel.
+# # The possible inputs are `io:WritableByteChannel`, `io:WritableCharacterChannel`, or `io:WritableCSVChannel`.
 # + content - A CSV record stream to be written
-# + return - `io:Error` or else `()`
+# + return - Either an `io:Error` or the null `()` value when the writing was successful.
 public function channelWriteCsvFromStream(WritableChannel writableChannel, stream<string[]> content) returns Error? {
     var csvChannel = getWritableCSVChannel(writableChannel);
     if (csvChannel is WritableCSVChannel) {

@@ -18,8 +18,8 @@
 # ```ballerina
 # byte[]|io:Error content = io:fileReadBytes("./resources/myfile.txt");
 # ```
-# + path - File path
-# + return - Either a read only byte array or `io:Error`
+# + path - The path of the file.
+# + return - Either a read only byte array or `io:Error`.
 public function fileReadBytes(@untainted string path) returns @tainted readonly & byte[]|Error {
     var byteChannel = openReadableFile(path);
     if (byteChannel is ReadableByteChannel) {
@@ -33,9 +33,9 @@ public function fileReadBytes(@untainted string path) returns @tainted readonly 
 # ```ballerina
 # stream<io:Block>|io:Error content = io:fileReadBlocksAsStream("./resources/myfile.txt", 1000);
 # ```
-# + path - File path
-# + blockSize - Block size
-# + return - Either a byte block stream or `io:Error`
+# + path - The path of the file.
+# + blockSize - An optional size of the byte block. Default size is 4KB.
+# + return - Either a byte block stream or `io:Error`.
 public function fileReadBlocksAsStream(string path, int blockSize=4096) returns @tainted stream<Block>|Error {
     var byteChannel = openReadableFile(path);
     if (byteChannel is ReadableByteChannel) {
@@ -50,9 +50,9 @@ public function fileReadBlocksAsStream(string path, int blockSize=4096) returns 
 # byte[] content = [60, 78, 39, 28];
 # io:Error? result = io:fileWriteBytes("./resources/myfile.txt", content);
 # ```
-# + path - File path
-# + content - Byte content to write
-# + return - `io:Error` or else `()`
+# + path - The path of the file.
+# + content - Byte content to write.
+# + return - `io:Error` or else `()`.
 public function fileWriteBytes(@untainted string path, byte[] content) returns Error? {
     var byteChannel = openWritableFile(path);
     if (byteChannel is WritableByteChannel) {
@@ -68,9 +68,9 @@ public function fileWriteBytes(@untainted string path, byte[] content) returns E
 # stream<byte[], io:Error> byteStream = content.toStream();
 # io:Error? result = io:fileWriteBlocksFromStream("./resources/myfile.txt", byteStream);
 # ```
-# + path - File path
-# + byteStream - Byte stream to write
-# + return - `io:Error` or else `()`
+# + path - The path of the file.
+# + byteStream - Byte stream to write.
+# + return - `io:Error` or else `()`.
 public function fileWriteBlocksFromStream(@untainted string path, stream<byte[]> byteStream) returns Error? {
 
     var byteChannel = openWritableFile(path);

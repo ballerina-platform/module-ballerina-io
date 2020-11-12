@@ -18,9 +18,9 @@
 # ```ballerina
 # string[][]|io:Error content = io:fileReadCsv("./resources/myfile.csv");
 # ```
-# + path - File path
-# + skipHeaders - Number of headers, which should be skipped prior to reading records
-# + return - Either an array of string arrays or `io:Error`
+# + path - The CSV file path.
+# + skipHeaders - Number of headers, which should be skipped prior to reading records.
+# + return - The entire CSV content in the channel as an array of string arrays or an `io:Error`.
 public function fileReadCsv(@untainted string path, int skipHeaders = 0) returns @tainted string[][]|Error {
 
     var csvChannel = openReadableCsvFile(path, COMMA, DEFAULT_ENCODING, skipHeaders);
@@ -35,8 +35,8 @@ public function fileReadCsv(@untainted string path, int skipHeaders = 0) returns
 # ```ballerina
 # stream<string[]>|io:Error content = io:fileReadCsvAsStream("./resources/myfile.csv");
 # ```
-# + path - File path
-# + return - Either a stream of string array or `io:Error`
+# + path - The CSV file path.
+# + return - The entire CSV content in the channel a stream of string arrays or an `io:Error`.
 public function fileReadCsvAsStream(@untainted string path) returns @tainted stream<string[]>|Error {
     var csvChannel = openReadableCsvFile(path);
     if (csvChannel is ReadableCSVChannel) {
@@ -51,9 +51,9 @@ public function fileReadCsvAsStream(@untainted string path) returns @tainted str
 # string[][] content = [["Anne", "Johnson", "SE"], ["John", "Cameron", "QA"]];
 # io:Error? result = io:fileWriteCsv("./resources/myfile.csv", content);
 # ```
-# + path - File path
+# + path - The CSV file path.
 # + content - CSV content as an array of string arrays
-# + return - `io:Error` or else `()`
+# + return - Either an `io:Error` or the null `()` value when the writing was successful.
 public function fileWriteCsv(@untainted string path, string[][] content) returns Error? {
     var csvChannel = openWritableCsvFile(path);
     if (csvChannel is WritableCSVChannel) {
@@ -69,9 +69,9 @@ public function fileWriteCsv(@untainted string path, string[][] content) returns
 # stream<string[]> recordStream = content.toStream();
 # io:Error? result = io:fileWriteCsv("./resources/myfile.csv", recordStream);
 # ```
-# + path - File path
+# + path - The CSV file path.
 # + content - A CSV record stream to be written
-# + return - `io:Error` or else `()`
+# + return - Either an `io:Error` or the null `()` value when the writing was successful.
 public function fileWriteCsvFromStream(@untainted string path, stream<string[]> content) returns Error? {
     var csvChannel = openWritableCsvFile(path);
     if (csvChannel is WritableCSVChannel) {
