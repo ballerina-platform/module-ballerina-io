@@ -16,23 +16,23 @@
 
 import ballerina/java;
 
-# Represents network byte order.
+# Represents network byte order
 #
 # BIG_ENDIAN - specifies the bytes to be in the order of most significant byte first
 #
 # LITTLE_ENDIAN - specifies the byte order to be the least significant byte first
 public type ByteOrder "BE"|"LE";
 
-# Specifies the bytes to be in the order of most significant byte first.
+# Specifies the bytes to be in the order of most significant byte first
 public const BIG_ENDIAN = "BE";
 
-# Specifies the byte order to be the least significant byte first.
+# Specifies the byte order to be the least significant byte first
 public const LITTLE_ENDIAN = "LE";
 
-# Represents a WritableDataChannel for writing data.
+# Represents a WritableDataChannel for writing data
 public class WritableDataChannel {
 
-    # Initializes data channel.
+    # Initializes data channel
     #
     # + byteChannel - channel which would represent the source to read/write data
     # + bOrder - network byte order
@@ -42,7 +42,7 @@ public class WritableDataChannel {
         initWritableDataChannel(self, byteChannel, temp);
     }
 
-    # Writes a 16 bit integer.
+    # Writes a 16 bit integer
     # ```ballerina
     # io:Error? err = dataChannel.writeInt16(length);
     # ```
@@ -53,7 +53,7 @@ public class WritableDataChannel {
         return writeInt16Extern(self, value);
     }
 
-    # Writes a 32 bit integer.
+    # Writes a 32 bit integer
     # ```ballerina
     # io:Error? err = dataChannel.writeInt32(length);
     # ```
@@ -64,7 +64,7 @@ public class WritableDataChannel {
         return writeInt32Extern(self, value);
     }
 
-    # Writes a 64 bit integer.
+    # Writes a 64 bit integer
     # ```ballerina
     # io:Error? err = dataChannel.writeInt64(length);
     # ```
@@ -75,7 +75,7 @@ public class WritableDataChannel {
         return writeInt64Extern(self, value);
     }
 
-    # Writes a 32 bit float.
+    # Writes a 32 bit float
     # ```ballerina
     # io:Error? err = dataChannel.writeFloat32(3.12);
     # ```
@@ -86,7 +86,7 @@ public class WritableDataChannel {
         return writeFloat32Extern(self, value);
     }
 
-    # Writes a 64 bit float.
+    # Writes a 64 bit float
     # ```ballerina
     # io:Error? err = dataChannel.writeFloat32(3.12);
     # ```
@@ -97,7 +97,7 @@ public class WritableDataChannel {
         return writeFloat64Extern(self, value);
     }
 
-    # Writes a boolean.
+    # Writes a boolean
     # ```ballerina
     # io:Error? err = dataChannel.writeInt64(length);
     # ```
@@ -108,7 +108,7 @@ public class WritableDataChannel {
         return writeBoolExtern(self, value);
     }
 
-    # Writes a given string value to the respective channel.
+    # Writes a given string value to the respective channel
     # ```ballerina
     # io:Error? err = dataChannel.writeString(record);
     # ```
@@ -120,7 +120,7 @@ public class WritableDataChannel {
         return writeStringExtern(self, value, encoding);
     }
 
-    # Writes a variable-length integer.
+    # Writes a variable-length integer
     # ```ballerina
     # io:Error? err = dataChannel.writeVarInt(length);
     # ```
@@ -131,7 +131,7 @@ public class WritableDataChannel {
         return writeVarIntExtern(self, value);
     }
 
-    # Closes the data channel.
+    # Closes the data channel
     # ```ballerina
     # io:Error? err = dataChannel.close();
     # ```

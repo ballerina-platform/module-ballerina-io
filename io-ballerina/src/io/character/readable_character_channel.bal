@@ -16,7 +16,7 @@
 
 import ballerina/java;
 
-#Represents a channel, which could be used to read characters through a given ReadableByteChannel.
+# Represents a channel, which could be used to read characters through a given ReadableByteChannel
 public class ReadableCharacterChannel {
 
     private ReadableByteChannel byteChannel;

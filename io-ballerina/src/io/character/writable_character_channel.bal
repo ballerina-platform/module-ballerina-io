@@ -16,13 +16,13 @@
 
 import ballerina/java;
 
-# Represents a channel which could be used to write characters through a given WritableCharacterChannel.
+# Represents a channel which could be used to write characters through a given WritableCharacterChannel
 public class WritableCharacterChannel {
 
     private WritableByteChannel bChannel;
     private string charset;
 
-    # Constructs a `WritableByteChannel` from a given `WritableByteChannel` and `Charset`.
+    # Constructs a `WritableByteChannel` from a given `WritableByteChannel` and `Charset`
     # 
     # + bChannel - The `WritableByteChannel`, which would be used to write the characters
     # + charset - The character set, which would be used to encode the given bytes to characters
@@ -32,7 +32,7 @@ public class WritableCharacterChannel {
         initWritableCharacterChannel(self, bChannel, charset);
     }
 
-    # Writes a given sequence of characters (string).
+    # Writes a given sequence of characters (string)
     # ```ballerina
     # int|io:Error result = writableCharChannel.write("Content", 0);
     # ```
@@ -54,7 +54,7 @@ public class WritableCharacterChannel {
         }
     }
 
-    # Writes a given JSON to the given channel.
+    # Writes a given JSON to the given channel
     # ```ballerina
     # io:Error? err = writableCharChannel.writeJson(inputJson, 0);
     # ```
@@ -65,7 +65,7 @@ public class WritableCharacterChannel {
         return writeJsonExtern(self, content);
     }
 
-    # Writes a given XML to the channel.
+    # Writes a given XML to the channel
     # ```ballerina
     # io:Error? err = writableCharChannel.writeXml(inputXml, 0);
     # ```
@@ -76,18 +76,18 @@ public class WritableCharacterChannel {
         return writeXmlExtern(self, content);
     }
 
-    # Writes a given key-valued pair `map<string>` to a property file.
+    # Writes a given key-valued pair `map<string>` to a property file
     # ```ballerina
     # io:Error? err = writableCharChannel.writeProperties(properties);
     # ```
-    # + properties - The map<string> that contains keys and values.
+    # + properties - The map<string> that contains keys and values
     # + comment - Comment describing the property list
     # + return - `()` or else `io:Error` if any error occurred
     public function writeProperties(map<string> properties, string comment) returns Error? {
         return writePropertiesExtern(self, properties, comment);
     }
 
-    # Closes a given `WritableCharacterChannel` channel.
+    # Closes a given `WritableCharacterChannel` channel
     # ```ballerina
     # io:Error err = writableCharChannel.close();
     # ```

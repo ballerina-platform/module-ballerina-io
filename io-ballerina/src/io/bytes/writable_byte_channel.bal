@@ -15,14 +15,17 @@
 // under the License.
 import ballerina/java;
 
-# WritableByteChannel represents an output resource (i.e file). which could be used to sink bytes.
+# WritableByteChannel represents an output resource (i.e file). which could be used to sink bytes
+# A file path can be used to obtain a WritableByteChannel.
+# A WritableByteChannel do not support initilization, and it should be obtained using the following method or implement natively.
+# `io:openWritableFile("./files/sample.txt")` - used to obtain a WritableByteChannel from a given file path
 public class WritableByteChannel {
 
-    # Adding default init function to prevent object getting initialized from the user code.
+    # Adding default init function to prevent object getting initialized from the user code
     function init() {
     }
 
-    # Sinks bytes from a given input/output resource.
+    # Sinks bytes from a given input/output resource
     #
     # This operation will be asynchronous. Writing might return without writing all the content.
     # ```ballerina
@@ -30,7 +33,7 @@ public class WritableByteChannel {
     # ```
     #
     # + content - Block of bytes, which should be written
-    # + offset - Offset, which should be kept when writing bytes.
+    # + offset - Offset, which should be kept when writing bytes
     # + return - Number of bytes written or else `io:Error`
     public function write(byte[] content, int offset) returns int|Error {
         return byteWriteExtern(self, content, offset);

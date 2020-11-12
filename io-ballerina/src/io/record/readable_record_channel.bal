@@ -23,7 +23,7 @@ public class ReadableTextRecordChannel {
     private string rs;
     private string fs;
 
-    # Constructs a ReadableTextRecordChannel from a given ReadableCharacterChannel.
+    # Constructs a ReadableTextRecordChannel from a given ReadableCharacterChannel
     #
     # + charChannel - CharacterChannel which will point to the input/output resource
     # + fs - Field separator (this could be a regex)
@@ -35,7 +35,7 @@ public class ReadableTextRecordChannel {
         initReadableTextRecordChannel(self, charChannel, fs, rs, fmt);
     }
 
-    # Checks whether there's a record left to be read.
+    # Checks whether there's a record left to be read
     # ```ballerina
     # boolean hasNext = readableRecChannel.hasNext();
     # ```
@@ -45,7 +45,7 @@ public class ReadableTextRecordChannel {
         return hasNextExtern(self);
     }
 
-    # Get the next record from the input/output resource.
+    # Get the next record from the input/output resource
     # ```ballerina
     # string[]|io:Error record = readableRecChannel.getNext();
     # ```
@@ -55,7 +55,7 @@ public class ReadableTextRecordChannel {
         return getNextExtern(self);
     }
 
-    # Closes a given record channel.
+    # Closes a given record channel
     # ```ballerina
     # io:Error err = readableRecChannel.close();
     # ```

@@ -16,7 +16,7 @@
 
 import ballerina/java;
 
-# CSVStream used to initialize the string stream of CSV records.
+# CSVStream used to initialize the string stream of CSV records
 public class CSVStream {
     private ReadableTextRecordChannel readableTextRecordChannel;
     private boolean isClosed = false;

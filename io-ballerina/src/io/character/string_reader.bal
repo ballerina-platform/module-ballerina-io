@@ -14,11 +14,11 @@
 // specific language governing permissions and limitations
 // under the License.
 
-# Represents a reader which will wrap string content as a channel.
+# Represents a reader which will wrap string content as a channel
 public class StringReader {
     private ReadableCharacterChannel? charChannel;
 
-    # Constructs a channel to read string.
+    # Constructs a channel to read string
     #
     # + content - The content, which should be written
     # + encoding - Encoding of the characters of the content
@@ -28,7 +28,7 @@ public class StringReader {
         self.charChannel = new ReadableCharacterChannel(byteChannel, encoding);
     }
 
-    # Reads string as JSON using the reader.
+    # Reads string as JSON using the reader
     # ```ballerina
     # io:StringReader reader = new("{\"name\": \"Alice\"}");
     # json|io:Error? person = reader.readJson();
@@ -43,7 +43,7 @@ public class StringReader {
         return ();
     }
 
-    # Reads a string as XML using the reader.
+    # Reads a string as XML using the reader
     # ```ballerina
     # io:StringReader reader = new("<Person><Name>Alice</Name></Person>");
     # xml|io:Error? person = reader.readXml();
@@ -58,7 +58,7 @@ public class StringReader {
         return ();
     }
 
-    # Reads the characters from the given string.
+    # Reads the characters from the given string
     # ```ballerina
     # io:StringReader reader = new("Some text");
     # string|io:Error? person = reader.readChar(4);
@@ -74,12 +74,12 @@ public class StringReader {
         return ();
     }
 
-    # Closes the reader.
+    # Closes the reader
     # ```ballerina
     # io:Error? err = reader.close();
     # ```
     #
-    # + return - An `io:Error` if could not close the channel or else `()`.
+    # + return - An `io:Error` if could not close the channel or else `()`
     public function close() returns Error? {
         if (self.charChannel is ReadableCharacterChannel) {
             var result = <ReadableCharacterChannel>self.charChannel;

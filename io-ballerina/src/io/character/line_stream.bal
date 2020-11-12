@@ -16,7 +16,7 @@
 
 import ballerina/java;
 
-# LineStream used to initialize the string stream of lines.
+# LineStream used to initialize the string stream of lines
 public class LineStream {
     private ReadableCharacterChannel readableCharacterChannel;
     private boolean isClosed = false;

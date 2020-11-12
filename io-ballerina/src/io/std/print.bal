@@ -16,29 +16,29 @@
 
 import ballerina/java;
 
-# Prints `any` or `error` value(s) to the STDOUT.
+# Prints `any` or `error` value(s) to the STDOUT
 #```ballerina
 #io:print("Start processing the CSV file from ", srcFileName);
 #```
 # 
-# + values - The value(s) to be printed.
+# + values - The value(s) to be printed
 public isolated function print((any|error)... values) = @java:Method {
     name: "print",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.PrintUtils"
 } external;
 
-# Prints `any` or `error` value(s) to the STDOUT followed by a new line.
+# Prints `any` or `error` value(s) to the STDOUT followed by a new line
 #```ballerina
 #io:println("Start processing the CSV file from ", srcFileName);
 #```
 #  
-# + values - The value(s) to be printed.
+# + values - The value(s) to be printed
 public isolated function println((any|error)... values) = @java:Method {
     name: "println",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.PrintUtils"
 } external;
 
-# Returns a formatted string using the specified format string and arguments. Following format specifiers are allowed.
+# Returns a formatted string using the specified format string and arguments. Following format specifiers are allowed
 #
 # b - boolean
 #
@@ -76,9 +76,9 @@ public isolated function println((any|error)... values) = @java:Method {
 # // s9 => This is an int with leading zeros: 000000008
 # ```
 #
-# + format - The string needs to be formatted.
-# + args   - Arguments referred by the format specifiers in the format string.
-# + return - The formatted string.
+# + format - The string needs to be formatted
+# + args   - Arguments referred by the format specifiers in the format string
+# + return - The formatted string
 public isolated function sprintf(string format, (any|error)... args) returns string = @java:Method {
     name: "sprintf",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.Sprintf"

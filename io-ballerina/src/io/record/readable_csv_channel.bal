@@ -16,11 +16,11 @@
 
 import ballerina/java;
 
-# Represents a ReadableCSVChannel which could be used to read records from CSV file.
+# Represents a ReadableCSVChannel which could be used to read records from CSV file
 public class ReadableCSVChannel {
     private ReadableTextRecordChannel? dc;
 
-    # Constructs a CSV channel from a CharacterChannel to read/write CSV records.
+    # Constructs a CSV channel from a CharacterChannel to read/write CSV records
     #
     # + byteChannel - The CharacterChannel, which will represent the content in the CSV file
     # + fs - Field separator, which will separate between the records in the CSV file
@@ -38,7 +38,7 @@ public class ReadableCSVChannel {
         self.skipHeaders(nHeaders);
     }
 
-    # Skips the given number of headers.
+    # Skips the given number of headers
     # ```ballerina
     # readableCSVChannel.skipHeaders(5);
     # ```
@@ -52,7 +52,7 @@ public class ReadableCSVChannel {
         }
     }
 
-    # Indicates whether there's another record, which could be read.
+    # Indicates whether there's another record, which could be read
     # ```ballerina
     # boolean hasNext = readableCSVChannel.hasNext();
     # ```
@@ -68,7 +68,7 @@ public class ReadableCSVChannel {
         }
     }
 
-    # Gets the next record from the CSV file.
+    # Gets the next record from the CSV file
     # ```ballerina
     # string[]|io:Error? record = readableCSVChannel.getNext();
     # ```
@@ -82,7 +82,7 @@ public class ReadableCSVChannel {
         return ();
     }
 
-    # Returns a CSV record stream that can be used to CSV records as a stream.
+    # Returns a CSV record stream that can be used to CSV records as a stream
     # ```ballerina
     # string[]|io:Error? record = readableCSVChannel.csvStream();
     # ```
@@ -99,7 +99,7 @@ public class ReadableCSVChannel {
         }
     }
 
-    # Closes a given `CSVChannel`.
+    # Closes a given `CSVChannel`
     # ```ballerina
     # io:Error? err = readableCSVChannel.close();
     # ```
@@ -113,7 +113,7 @@ public class ReadableCSVChannel {
         return ();
     }
 
-    # Returns a table, which corresponds to the CSV records.
+    # Returns a table, which corresponds to the CSV records
     # ```ballerina
     # var tblResult1 = readableCSVChannel.getTable(Employee);
     # var tblResult2 = readableCSVChannel.getTable(Employee, ["id", "name"]);
