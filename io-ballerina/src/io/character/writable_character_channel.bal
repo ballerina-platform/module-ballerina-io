@@ -87,7 +87,8 @@ public class WritableCharacterChannel {
         return writePropertiesExtern(self, properties, comment);
     }
 
-    # Closes a given `WritableCharacterChannel` channel
+    # Closes a given `WritableCharacterChannel` channel.
+    # After a channel is closed, any further writing operations will cause an error.
     # ```ballerina
     # io:Error err = writableCharChannel.close();
     # ```

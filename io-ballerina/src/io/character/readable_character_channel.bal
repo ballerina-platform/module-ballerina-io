@@ -115,6 +115,7 @@ public class ReadableCharacterChannel {
     }
 
     # Closes a given character channel.
+    # After a channel is closed, any further reading operations will cause an error.
     # ```ballerina
     # io:Error? err = readableCharChannel.close();
     # ```

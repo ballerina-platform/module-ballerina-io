@@ -87,6 +87,7 @@ public class ReadableByteChannel {
     }
 
     # Closes a given `ReadableByteChannel`.
+    # After a channel is closed, any further reading operations will cause an error.
     # ```ballerina
     # io:Error? err = readableByteChannel.close();
     # ```

@@ -40,6 +40,7 @@ public class WritableByteChannel {
     }
 
     # Closes a given byte channel.
+    # After a channel is closed, any further writing operations will cause an error.
     # ```ballerina
     # io:Error err = writableByteChannel.close();
     # ```

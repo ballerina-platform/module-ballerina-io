@@ -55,7 +55,8 @@ public class ReadableTextRecordChannel {
         return getNextExtern(self);
     }
 
-    # Closes a given record channel
+    # Closes a given record channel.
+    # After a channel is closed, any further reading operations will cause an error.
     # ```ballerina
     # io:Error err = readableRecChannel.close();
     # ```

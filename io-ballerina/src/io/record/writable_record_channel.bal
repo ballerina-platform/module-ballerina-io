@@ -49,7 +49,8 @@ public class WritableTextRecordChannel {
         return writeRecordExtern(self, textRecord);
     }
 
-    # Closes a given record channel
+    # Closes a given record channel.
+    # After a channel is closed, any further writing operations will cause an error.
     # ```ballerina
     # io:Error? err = writableChannel.close();
     # ```

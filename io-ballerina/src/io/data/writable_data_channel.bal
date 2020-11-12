@@ -131,7 +131,8 @@ public class WritableDataChannel {
         return writeVarIntExtern(self, value);
     }
 
-    # Closes the data channel
+    # Closes the data channel.
+    # After a channel is closed, any further writing operations will cause an error.
     # ```ballerina
     # io:Error? err = dataChannel.close();
     # ```
