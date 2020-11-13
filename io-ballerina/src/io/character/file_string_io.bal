@@ -14,7 +14,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-# Read the entire file content as a `string`.
+# Reads the entire file content as a `string`.
 # ```ballerina
 # string|io:Error content = io:fileReadString("./resources/myfile.txt");
 # ```
@@ -29,7 +29,7 @@ public function fileReadString(@untainted string path) returns @tainted string|E
     }
 }
 
-# Read the entire file content as a list of lines.
+# Reads the entire file content as a list of lines.
 # ```ballerina
 # string[]|io:Error content = io:fileReadLines("./resources/myfile.txt");
 # ```
@@ -44,7 +44,7 @@ public function fileReadLines(@untainted string path) returns @tainted string[]|
     }
 }
 
-# Read file content as a stream of lines.
+# Reads file content as a stream of lines.
 # ```ballerina
 # stream<string>|io:Error content = io:fileReadLinesAsStream("./resources/myfile.txt");
 # ```
@@ -59,7 +59,7 @@ public function fileReadLinesAsStream(@untainted string path) returns @tainted s
     }
 }
 
-# Read file content as a JSON.
+# Reads file content as a JSON.
 # ```ballerina
 # json|io:Error content = io:fileReadJson("./resources/myfile.json");
 # ```
@@ -74,7 +74,7 @@ public function fileReadJson(@untainted string path) returns @tainted json|Error
     }
 }
 
-# Read file content as an XML.
+# Reads file content as an XML.
 # ```ballerina
 # xml|io:Error content = io:fileReadXml("./resources/myfile.xml");
 # ```
