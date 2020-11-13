@@ -16,10 +16,10 @@
 
 import ballerina/java;
 
-# Represents a data channel for reading data
+# Represents a data channel for reading data.
 public class ReadableDataChannel {
 
-    #Initializes the data channel
+    # Initializes the data channel.
     # 
     # + byteChannel - The channel, which would represent the source to read/write data
     # + bOrder - network byte order
@@ -29,7 +29,7 @@ public class ReadableDataChannel {
         initReadableDataChannel(self, byteChannel, temp);
     }
 
-    # Reads a 16 bit integer
+    # Reads a 16 bit integer.
     # ```ballerina
     # int|io:Error result = dataChannel.readInt16();
     # ```
@@ -39,7 +39,7 @@ public class ReadableDataChannel {
         return readInt16Extern(self);
     }
 
-    # Reads a 32 bit integer
+    # Reads a 32 bit integer.
     # ```ballerina
     # int|io:Error result = dataChannel.readInt32();
     # ```
@@ -49,7 +49,7 @@ public class ReadableDataChannel {
         return readInt32Extern(self);
     }
 
-    # Reads a 64 bit integer
+    # Reads a 64 bit integer.
     # ```ballerina
     # int|io:Error result = dataChannel.readInt64();
     # ```
@@ -59,7 +59,7 @@ public class ReadableDataChannel {
         return readInt64Extern(self);
     }
 
-    # Reads a 32 bit float
+    # Reads a 32 bit float.
     # ```ballerina
     # float|io:Error result = dataChannel.readFloat32();
     # ```
@@ -69,7 +69,7 @@ public class ReadableDataChannel {
         return readFloat32Extern(self);
     }
 
-    # Reads a 64 bit float
+    # Reads a 64 bit float.
     # ```ballerina
     # float|io:Error result = dataChannel.readFloat64();
     # ```
@@ -79,7 +79,7 @@ public class ReadableDataChannel {
         return readFloat64Extern(self);
     }
 
-    # Reads a byte and convert its value to boolean
+    # Reads a byte and convert its value to boolean.
     # ```ballerina
     # boolean|io:Error result = dataChannel.readBool();
     # ```
@@ -89,7 +89,7 @@ public class ReadableDataChannel {
         return readBoolExtern(self);
     }
 
-    # Reads the string value represented through the provided number of bytes
+    # Reads the string value represented through the provided number of bytes.
     # ```ballerina
     # string|io:Error string = dataChannel.readString(10, "UTF-8");
     # ```
@@ -101,7 +101,7 @@ public class ReadableDataChannel {
         return readStringExtern(self, nBytes, encoding);
     }
 
-    # Reads a variable length integer
+    # Reads a variable length integer.
     # ```ballerina
     # int|io:Error result = dataChannel.readVarInt();
     # ```

@@ -14,20 +14,20 @@
 // specific language governing permissions and limitations
 // under the License.
 
-# Represents the record separator of the CSV file
+# Represents the record separator of the CSV file.
 public const string CSV_RECORD_SEPARATOR = "\n";
 
-# Represents the colon separator, which should be used to identify colon-separated files
+# Represents the colon separator, which should be used to identify colon-separated files.
 public const string FS_COLON = ":";
 
-# Represents the minimum number of headers, which will be included in the CSV
+# Represents the minimum number of headers, which will be included in the CSV.
 public const int MINIMUM_HEADER_COUNT = 0;
 
-# Represents a WritableCSVChannel, which could be used to write records from the CSV file
+# Represents a WritableCSVChannel, which could be used to write records from the CSV file.
 public class WritableCSVChannel {
     private WritableTextRecordChannel? dc;
 
-    # Constructs a CSV channel from a `CharacterChannel` to read/write CSV records
+    # Constructs a CSV channel from a `CharacterChannel` to read/write CSV records.
     # 
     # + CharacterChannel - The `CharacterChannel`, which will represent the content in the CSV file
     # + fs - Field separator, which will separate the records in the CSV
@@ -43,7 +43,7 @@ public class WritableCSVChannel {
         }
     }
 
-    # Writes the record to a given CSV file
+    # Writes the record to a given CSV file.
     # ```ballerina
     # io:Error err = csvChannel.write(record);
     # ```

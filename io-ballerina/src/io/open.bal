@@ -16,7 +16,7 @@
 
 import ballerina/java;
 
-# Retrieves a `ReadableByteChannel` from a given file path
+# Retrieves a `ReadableByteChannel` from a given file path.
 #```ballerina
 # io:ReadableByteChannel readableFieldResult = check io:openReadableFile("./files/sample.txt");
 #```
@@ -28,7 +28,7 @@ public function openReadableFile(@untainted string path) returns ReadableByteCha
     'class: "org.ballerinalang.stdlib.io.nativeimpl.ByteChannelUtils"
 } external;
 
-# Retrieves a `WritableByteChannel` from a given file path
+# Retrieves a `WritableByteChannel` from a given file path.
 #```ballerina
 # io:WritableByteChannel writableFileResult = check io:openWritableFile("./files/sampleResponse.txt");
 # ```
@@ -42,7 +42,7 @@ public function openWritableFile(@untainted string path, boolean append = false)
     'class: "org.ballerinalang.stdlib.io.nativeimpl.ByteChannelUtils"
 } external;
 
-# Creates an in-memory channel, which will be a reference stream of bytes
+# Creates an in-memory channel, which will be a reference stream of bytes.
 # ```ballerina
 # var byteChannel = io:createReadableChannel(content);
 # ```
@@ -54,7 +54,7 @@ public function createReadableChannel(byte[] content) returns ReadableByteChanne
     'class: "org.ballerinalang.stdlib.io.nativeimpl.ByteChannelUtils"
 } external;
 
-# Retrieves a readable CSV channel from a given file path
+# Retrieves a readable CSV channel from a given file path.
 # ```ballerina
 # io:ReadableCSVChannel rCsvChannel = check io:openReadableCsvFile(srcFileName);
 # ```
@@ -73,7 +73,7 @@ public function openReadableCsvFile(@untainted string path,
     return new ReadableCSVChannel(charChannel, fieldSeparator, skipHeaders);
 }
 
-# Retrieves a writable CSV channel from a given file path
+# Retrieves a writable CSV channel from a given file path.
 # ```ballerina
 # io:WritableCSVChannel wCsvChannel = check io:openWritableCsvFile(srcFileName);
 # ```

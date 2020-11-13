@@ -16,7 +16,7 @@
 
 import ballerina/java;
 
-# Prints `any` or `error` value(s) to the STDOUT
+# Prints `any` or `error` value(s) to the STDOUT.
 #```ballerina
 #io:print("Start processing the CSV file from ", srcFileName);
 #```
@@ -27,7 +27,7 @@ public isolated function print((any|error)... values) = @java:Method {
     'class: "org.ballerinalang.stdlib.io.nativeimpl.PrintUtils"
 } external;
 
-# Prints `any` or `error` value(s) to the STDOUT followed by a new line
+# Prints `any` or `error` value(s) to the STDOUT followed by a new line.
 #```ballerina
 #io:println("Start processing the CSV file from ", srcFileName);
 #```
@@ -38,7 +38,7 @@ public isolated function println((any|error)... values) = @java:Method {
     'class: "org.ballerinalang.stdlib.io.nativeimpl.PrintUtils"
 } external;
 
-# Returns a formatted string using the specified format string and arguments. Following format specifiers are allowed
+# Returns a formatted string using the specified format string and arguments. Following format specifiers are allowed.
 #
 # b - boolean
 #

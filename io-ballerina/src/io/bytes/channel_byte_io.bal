@@ -16,7 +16,7 @@
 
 import ballerina/lang.'value;
 
-# Read the entire channel content as a byte array
+# Read the entire channel content as a byte array.
 # ```ballerina
 # byte[]|io:Error content = io:channelReadBytes(readableChannel);
 # ```
@@ -34,7 +34,7 @@ public function channelReadBytes(ReadableChannel readableChannel) returns @taint
     }
 }
 
-# Read the entire channel content as a stream of blocks
+# Read the entire channel content as a stream of blocks.
 # ```ballerina
 # stream<io:Block>|io:Error content = io:channelReadBlocksAsStream(readableChannel, 1000);
 # ```
@@ -51,7 +51,7 @@ public function channelReadBlocksAsStream(ReadableChannel readableChannel, int b
     }
 }
 
-# Write a given array of bytes to a channel
+# Write a given array of bytes to a channel.
 # ```ballerina
 # byte[] content = [60, 78, 39, 28];
 # io:Error? result = io:channelWriteBytes(writableChannel, content);
@@ -73,7 +73,7 @@ public function channelWriteBytes(WritableChannel writableChannel, byte[] conten
     }
 }
 
-# Write a byte stream to a channel
+# Write a byte stream to a channel.
 # ```ballerina
 # byte[] content = [[60, 78, 39, 28]];
 # stream<byte[], io:Error> byteStream = content.toStream();

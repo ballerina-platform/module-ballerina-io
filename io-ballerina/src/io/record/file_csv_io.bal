@@ -14,7 +14,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-# Read file content as a CSV
+# Read file content as a CSV.
 # ```ballerina
 # string[][]|io:Error content = io:fileReadCsv("./resources/myfile.csv");
 # ```
@@ -31,7 +31,7 @@ public function fileReadCsv(@untainted string path, int skipHeaders = 0) returns
     }
 }
 
-# Read file content as a CSV
+# Read file content as a CSV.
 # ```ballerina
 # stream<string[]>|io:Error content = io:fileReadCsvAsStream("./resources/myfile.csv");
 # ```
@@ -46,7 +46,7 @@ public function fileReadCsvAsStream(@untainted string path) returns @tainted str
     }
 }
 
-# Write CSV content to a file
+# Write CSV content to a file.
 # ```ballerina
 # string[][] content = [["Anne", "Johnson", "SE"], ["John", "Cameron", "QA"]];
 # io:Error? result = io:fileWriteCsv("./resources/myfile.csv", content);
@@ -63,7 +63,7 @@ public function fileWriteCsv(@untainted string path, string[][] content) returns
     }
 }
 
-# Write CSV record stream to a file
+# Write CSV record stream to a file.
 # ```ballerina
 # string[][] content = [["Anne", "Johnson", "SE"], ["John", "Cameron", "QA"]];
 # stream<string[]> recordStream = content.toStream();

@@ -16,13 +16,13 @@
 
 import ballerina/java;
 
-# Represents a channel which could be used to write characters through a given WritableCharacterChannel
+# Represents a channel which could be used to write characters through a given WritableCharacterChannel.
 public class WritableCharacterChannel {
 
     private WritableByteChannel bChannel;
     private string charset;
 
-    # Constructs a `WritableByteChannel` from a given `WritableByteChannel` and `Charset`
+    # Constructs a `WritableByteChannel` from a given `WritableByteChannel` and `Charset`.
     # 
     # + bChannel - The `WritableByteChannel`, which would be used to write the characters
     # + charset - The character set, which would be used to encode the given bytes to characters
@@ -32,18 +32,25 @@ public class WritableCharacterChannel {
         initWritableCharacterChannel(self, bChannel, charset);
     }
 
-    # Writes a given sequence of characters (string)
+    # Writes a given sequence of characters (string).
     # ```ballerina
     # int|io:Error result = writableCharChannel.write("Content", 0);
     # ```
     #
-    # + content - Content, which should be written
-    # + startOffset - Number of characters, which should be offset when writing the content
+    # + content - Content to be written
+    # + startOffset - Number of characters to be offset when writing the content
     # + return - Content length that written or else `io:Error`
     public function write(string content, int startOffset) returns int|Error {
         return writeExtern(self, content, startOffset);
     }
 
+    # Writes a string as a line with a following newline character `\n`.
+    # ```ballerina
+    # io:Error? result = writableCharChannel.writeLine("Content");
+    # ```
+    #
+    # + content - Content to be written
+    # + return - Returns null if the writing was successful or an `io:Error`
     public function writeLine(string content) returns Error? {
         string lineContent = content + NEW_LINE;
         var result = writeExtern(self, lineContent, 0);
@@ -54,29 +61,29 @@ public class WritableCharacterChannel {
         }
     }
 
-    # Writes a given JSON to the given channel
+    # Writes a given JSON to the given channel.
     # ```ballerina
     # io:Error? err = writableCharChannel.writeJson(inputJson, 0);
     # ```
     #
-    # + content - The JSON, which should be written
-    # + return - If an `io:Error` occurred while writing
+    # + content - The JSON to be written
+    # + return - Returns null if the writing was successful or an `io:Error`
     public function writeJson(json content) returns Error? {
         return writeJsonExtern(self, content);
     }
 
-    # Writes a given XML to the channel
+    # Writes a given XML to the channel.
     # ```ballerina
     # io:Error? err = writableCharChannel.writeXml(inputXml, 0);
     # ```
     #
-    # + content - The XML, which should be written
+    # + content - The XML to be written
     # + return - `()` or else `io:Error` if any error occurred
     public function writeXml(xml content) returns Error? {
         return writeXmlExtern(self, content);
     }
 
-    # Writes a given key-valued pair `map<string>` to a property file
+    # Writes a given key-valued pair `map<string>` to a property file.
     # ```ballerina
     # io:Error? err = writableCharChannel.writeProperties(properties);
     # ```

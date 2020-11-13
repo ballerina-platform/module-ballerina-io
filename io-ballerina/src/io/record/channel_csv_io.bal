@@ -16,7 +16,7 @@
 
 import ballerina/lang.'value;
 
-# Read channel content as a CSV
+# Read channel content as a CSV.
 # ```ballerina
 # string[][]|io:Error content = io:channelReadCsv(readableChannel);
 # ```
@@ -47,7 +47,7 @@ public function channelReadCsv(ReadableChannel readableChannel, int skipHeaders 
     }
 }
 
-# Read channel content as a CSV
+# Read channel content as a CSV.
 # ```ballerina
 # stream<string[]>|io:Error content = io:channelReadCsvAsStream(readableChannel);
 # ```
@@ -63,7 +63,7 @@ public function channelReadCsvAsStream(ReadableChannel readableChannel) returns 
     }
 }
 
-# Write CSV content to a channel
+# Write CSV content to a channel.
 # ```ballerina
 # string[][] content = [["Anne", "Johnson", "SE"], ["John", "Cameron", "QA"]];
 # io:Error? result = io:channelWriteCsv(writableChannel, content);
@@ -91,7 +91,7 @@ public function channelWriteCsv(WritableChannel writableChannel, string[][] cont
     }
 }
 
-# Write CSV record stream to a channel
+# Write CSV record stream to a channel.
 # ```ballerina
 # string[][] content = [["Anne", "Johnson", "SE"], ["John", "Cameron", "QA"]];
 # stream<string[]> recordStream = content.toStream();

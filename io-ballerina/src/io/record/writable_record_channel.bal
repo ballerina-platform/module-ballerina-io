@@ -16,13 +16,13 @@
 
 import ballerina/java;
 
-# Represents a channel, which will allow to write records through a given WritableCharacterChannel
+# Represents a channel, which will allow to write records through a given WritableCharacterChannel.
 public class WritableTextRecordChannel {
     private WritableCharacterChannel characterChannel;
     private string fs;
     private string rs;
 
-    # Constructs a DelimitedTextRecordChannel from a given WritableCharacterChannel
+    # Constructs a DelimitedTextRecordChannel from a given WritableCharacterChannel.
     # + characterChannel - The `WritableCharacterChannel`, which will point to the input/output resource
     # + fs - Field separator (this could be a regex)
     # + rs - Record separator (this could be a regex)
@@ -38,7 +38,7 @@ public class WritableTextRecordChannel {
         initWritableTextRecordChannel(self, characterChannel, fs, rs, fmt);
     }
 
-    # Writes records to a given output resource
+    # Writes records to a given output resource.
     # ```ballerina
     # io:Error? err = writableChannel.write(records);
     # ```

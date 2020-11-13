@@ -14,26 +14,26 @@
 // specific language governing permissions and limitations
 // under the License.
 
-# The format, which will be used to represent the CSV
+# The format, which will be used to represent the CSV.
 #
 # DEFAULT - The default value is the format specified by the CSVChannel. Precedence will be given to the field
 #           separator and record separator.
 #
-# CSV - Field separator will be "," and the record separator will be a new line
+# CSV - Field separator will be "," and the record separator will be a new line.
 #
-# TDF - Field separator will be a tab and record separator will be a new line
+# TDF - Field separator will be a tab and record separator will be a new line.
 public type Format DEFAULT|CSV|TDF;
 
 #  Default value is the format specified by the CSVChannel. Precedence will be given to the field separator and record separator.
 public const DEFAULT = "default";
 
-# Field separator will be "," and the record separator will be a new line
+# Field separator will be "," and the record separator will be a new line.
 public const CSV = "csv";
 
-# Field separator will be a tab and the record separator will be a new line
+# Field separator will be a tab and the record separator will be a new line.
 public const TDF = "tdf";
 
-# Field separators, which are supported by the `DelimitedTextRecordChannel`
+# Field separators, which are supported by the `DelimitedTextRecordChannel`.
 #
 # COMMA - Delimited text records will be separated using a comma
 #
@@ -42,17 +42,17 @@ public const TDF = "tdf";
 # COLON - Delimited text records will be separated using a colon(:)
 public type Separator COMMA|TAB|COLON|string;
 
-# Comma (,) will be used as the field separator
+# Comma (,) will be used as the field separator.
 public const COMMA = ",";
 
-# Tab (/t) will be use as the field separator
+# Tab (/t) will be use as the field separator.
 public const TAB = "\t";
 
-# Colon (:) will be use as the field separator
+# Colon (:) will be use as the field separator.
 public const COLON = ":";
 
-# New line character
+# New line character.
 public const NEW_LINE = "\n";
 
-# Default encoding for the abstract read/write APIs
+# Default encoding for the abstract read/write APIs.
 public const DEFAULT_ENCODING = "UTF8";

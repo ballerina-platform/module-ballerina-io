@@ -17,17 +17,17 @@
 import ballerina/java;
 
 # ReadableByteChannel represents an input resource (i.e file). which could be used to source bytes.
-# A file path or an in-memory byte array can be used to obtain a ReadableByteChannel.
-# A ReadableByteChannel do not support initilization, and it should be obtained using the following methods or implement natively.
-# `io:openReadableFile("./files/sample.txt")` - used to obtain a ReadableByteChannel from a given file path
-# `io:createReadableChannel(byteArray)` - used to obtain a ReadableByteChannel from a given byte array
+# A file path or an in-memory `byte` array can be used to obtain a `io:ReadableByteChannel`.
+# A `io:ReadableByteChannel` do not support initilization, and it should be obtained using the following methods or implement natively.
+# `io:openReadableFile("./files/sample.txt")` - used to obtain a `io:ReadableByteChannel` from a given file path
+# `io:createReadableChannel(byteArray)` - used to obtain a `io:ReadableByteChannel` from a given `byte` array
 public class ReadableByteChannel {
 
-    # Adding default init function to prevent object getting initialized from the user code
+    # Adding default init function to prevent object getting initialized from the user code.
     function init() {
     }
 
-    # Source bytes from a given input/output resource.
+    # Source bytes from a given input resource.
     # This operation will be asynchronous in which the total number of required bytes might not be returned at a given
     # time. An `io:EofError` will return once the channel reaches the end.
     # ```ballerina
@@ -40,12 +40,12 @@ public class ReadableByteChannel {
         return byteReadExtern(self, nBytes);
     }
 
-    # Read all content of the channel as a byte array and return a read only byte array.
+    # Read all content of the channel as a `byte` array and return a read only `byte` array.
     # ```ballerina
     # byte[]|io:Error result = readableByteChannel.readAll();
     # ```
     #
-    # + return - Either a read only byte array or else an `io:Error`
+    # + return - Either a read only `byte` array or else an `io:Error`
     public function readAll() returns @tainted readonly & byte[]|Error {
         var readResult = readAllBytes(self);
         if (readResult is byte[]) {
@@ -55,7 +55,7 @@ public class ReadableByteChannel {
         }
     }
 
-    # Return a block stream that can be used to read all byte blocks as a stream
+    # Return a block stream that can be used to read all `byte` blocks as a stream.
     # ```ballerina
     # stream<io:Block>|io:Error result = readableByteChannel.blockStream();
     # ```
@@ -66,7 +66,7 @@ public class ReadableByteChannel {
         return new stream<Block>(blockStream);
     }
 
-    # Encodes a given `ReadableByteChannel` using the Base64 encoding scheme
+    # Encodes a given `ReadableByteChannel` using the Base64 encoding scheme.
     # ```ballerina
     # io:ReadableByteChannel|Error encodedChannel = readableByteChannel.base64Encode();
     # ```
@@ -76,7 +76,7 @@ public class ReadableByteChannel {
         return base64EncodeExtern(self);
     }
 
-    # Decodes a given `ReadableByteChannel` using the Base64 encoding scheme
+    # Decodes a given Base64 encoded `io:ReadableByteChannel`.
     # ```ballerina
     # io:ReadableByteChannel|Error encodedChannel = readableByteChannel.base64Decode();
     # ```

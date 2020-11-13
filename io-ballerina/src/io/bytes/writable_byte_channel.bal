@@ -15,25 +15,26 @@
 // under the License.
 import ballerina/java;
 
-# WritableByteChannel represents an output resource (i.e file). which could be used to sink bytes
-# A file path can be used to obtain a WritableByteChannel.
-# A WritableByteChannel do not support initilization, and it should be obtained using the following method or implement natively.
-# `io:openWritableFile("./files/sample.txt")` - used to obtain a WritableByteChannel from a given file path
+# WritableByteChannel represents an output resource (i.e file) which could be used to sink bytes
+# A file path can be used to obtain a `io:WritableByteChannel`.
+# A `io:WritableByteChannel` can only be obtained using the following method or by providing a native implementation.
+# It cannot be instantiated.
+# `io:openWritableFile("./files/sample.txt")` - used to obtain a `io:WritableByteChannel` from a given file path
 public class WritableByteChannel {
 
-    # Adding default init function to prevent object getting initialized from the user code
+    # Adding default init function to prevent object getting initialized from the user code.
     function init() {
     }
 
-    # Sinks bytes from a given input/output resource
+    # Sinks bytes from a given input/output resource.
     #
-    # This operation will be asynchronous. Writing might return without writing all the content.
+    # This is an asynchronous operation. The method might return before writing all the content.
     # ```ballerina
     # int|io:Error result = writableByteChannel.write(record, 0);
     # ```
     #
-    # + content - Block of bytes, which should be written
-    # + offset - Offset, which should be kept when writing bytes
+    # + content - Block of bytes to be written
+    # + offset - Offset of the provided content, which needs to be kept when writing bytes
     # + return - Number of bytes written or else `io:Error`
     public function write(byte[] content, int offset) returns int|Error {
         return byteWriteExtern(self, content, offset);
