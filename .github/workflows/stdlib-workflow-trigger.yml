@@ -1,4 +1,4 @@
-name: Standard Library dependency graph trigger
+name: Stdlib dependency update
  
 on:
   workflow_dispatch:
@@ -17,5 +17,5 @@ jobs:
           -H 'Accept: application/vnd.github.v3+json' \
           -H 'Authorization: token ${{ secrets.BALLERINA_BOT_TOKEN }}' \
           --data '{
-            "event_type": "dependency-trigger"
+            "event_type": "dependency-update"
           }'
