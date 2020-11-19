@@ -16,7 +16,7 @@
 
 import ballerina/java;
 
-# Represents a channel which will allow to read
+# Represents a channel which will allow to read.
 public class ReadableTextRecordChannel {
 
     private ReadableCharacterChannel charChannel;
@@ -56,6 +56,7 @@ public class ReadableTextRecordChannel {
     }
 
     # Closes a given record channel.
+    # After a channel is closed, any further reading operations will cause an error.
     # ```ballerina
     # io:Error err = readableRecChannel.close();
     # ```

@@ -14,12 +14,12 @@
 // specific language governing permissions and limitations
 // under the License.
 
-# Read the entire file content as a string.
+# Reads the entire file content as a `string`.
 # ```ballerina
 # string|io:Error content = io:fileReadString("./resources/myfile.txt");
 # ```
-# + path - File path
-# + return - Either a string or `io:Error`
+# + path - The path of the file
+# + return - The entire file content as a string or an `io:Error`
 public function fileReadString(@untainted string path) returns @tainted string|Error {
     var byteChannel = openReadableFile(path);
     if (byteChannel is ReadableByteChannel) {
@@ -29,12 +29,12 @@ public function fileReadString(@untainted string path) returns @tainted string|E
     }
 }
 
-# Read the entire file content as a list of lines.
+# Reads the entire file content as a list of lines.
 # ```ballerina
 # string[]|io:Error content = io:fileReadLines("./resources/myfile.txt");
 # ```
-# + path - File path
-# + return - Either a string array or `io:Error`
+# + path - The path of the file
+# + return - The file as list of lines or an `io:Error`
 public function fileReadLines(@untainted string path) returns @tainted string[]|Error {
     var byteChannel = openReadableFile(path);
     if (byteChannel is ReadableByteChannel) {
@@ -44,12 +44,12 @@ public function fileReadLines(@untainted string path) returns @tainted string[]|
     }
 }
 
-# Read file content as a stream of lines.
+# Reads file content as a stream of lines.
 # ```ballerina
 # stream<string>|io:Error content = io:fileReadLinesAsStream("./resources/myfile.txt");
 # ```
-# + path - File path
-# + return - Either a string array or `io:Error`
+# + path - The path of the file
+# + return - The file content as a stream of strings or an `io:Error`
 public function fileReadLinesAsStream(@untainted string path) returns @tainted stream<string>|Error {
     var byteChannel = openReadableFile(path);
     if (byteChannel is ReadableByteChannel) {
@@ -59,12 +59,12 @@ public function fileReadLinesAsStream(@untainted string path) returns @tainted s
     }
 }
 
-# Read file content as a JSON.
+# Reads file content as a JSON.
 # ```ballerina
 # json|io:Error content = io:fileReadJson("./resources/myfile.json");
 # ```
-# + path - JSON file path
-# + return - Either a JSON or `io:Error`
+# + path - The path of the JSON file
+# + return - The file content as a JSON object or an `io:Error`
 public function fileReadJson(@untainted string path) returns @tainted json|Error {
     var byteChannel = openReadableFile(path);
     if (byteChannel is ReadableByteChannel) {
@@ -74,12 +74,12 @@ public function fileReadJson(@untainted string path) returns @tainted json|Error
     }
 }
 
-# Read file content as an XML.
+# Reads file content as an XML.
 # ```ballerina
 # xml|io:Error content = io:fileReadXml("./resources/myfile.xml");
 # ```
-# + path - XML file path
-# + return - Either a XML or `io:Error`
+# + path - The path of the XML file
+# + return - The file content as an XML or an `io:Error`
 public function fileReadXml(@untainted string path) returns @tainted xml|Error {
     var byteChannel = openReadableFile(path);
     if (byteChannel is ReadableByteChannel) {
@@ -94,9 +94,9 @@ public function fileReadXml(@untainted string path) returns @tainted xml|Error {
 # string content = "Hello Universe..!!";
 # io:Error result = io:fileWriteString("./resources/myfile.txt", content);
 # ```
-# + path - File path
-# + content - String content to read
-# + return - Either `io:Error` or `()`
+# + path - The path of the file
+# + content - String content to write
+# + return - The null `()` value when the writing was successful or an `io:Error`
 public function fileWriteString(@untainted string path, string content) returns Error? {
     var byteChannel = openWritableFile(path);
     if (byteChannel is WritableByteChannel) {
@@ -107,13 +107,14 @@ public function fileWriteString(@untainted string path, string content) returns 
 }
 
 # Write an array of lines to a file.
+# During the writing operation, a newline character `\n` will be added after each line.
 # ```ballerina
 # string[] content = ["Hello Universe..!!", "How are you?"];
 # io:Error result = io:fileWriteLines("./resources/myfile.txt", content);
 # ```
-# + path - File path
-# + content - An array of string lines
-# + return - Either `io:Error` or `()`
+# + path - The path of the file
+# + content - An array of string lines to write
+# + return - The null `()` value when the writing was successful or an `io:Error`
 public function fileWriteLines(@untainted string path, string[] content) returns Error? {
     var byteChannel = openWritableFile(path);
     if (byteChannel is WritableByteChannel) {
@@ -124,14 +125,15 @@ public function fileWriteLines(@untainted string path, string[] content) returns
 }
 
 # Write stream of lines to a file.
+# During the writing operation, a newline character `\n` will be added after each line.
 # ```ballerina
 # string content = ["Hello Universe..!!", "How are you?"];
 # stream<string, io:Error> lineStream = content.toStream();
 # io:Error result = io:fileWriteLinesFromStream("./resources/myfile.txt", lineStream);
 # ```
-# + path - File path
-# + lineStream - A stream of lines
-# + return - Either `io:Error` or `()`
+# + path - The path of the file
+# + lineStream -  A stream of lines to write
+# + return - The null `()` value when the writing was successful or an `io:Error`
 public function fileWriteLinesFromStream(@untainted string path, stream<string> lineStream) returns Error? {
     var byteChannel = openWritableFile(path);
     if (byteChannel is WritableByteChannel) {
@@ -146,9 +148,9 @@ public function fileWriteLinesFromStream(@untainted string path, stream<string> 
 # json content = {"name": "Anne", "age": 30};
 # io:Error? content = io:fileWriteJson("./resources/myfile.json");
 # ```
-# + path - JSON file path
+# + path - The path of the JSON file
 # + content - JSON content to write
-# + return - `io:Error` or else `()`
+# + return - The null `()` value when the writing was successful or an `io:Error`
 public function fileWriteJson(@untainted string path, json content) returns @tainted Error? {
     var byteChannel = openWritableFile(path);
     if (byteChannel is WritableByteChannel) {
@@ -163,9 +165,9 @@ public function fileWriteJson(@untainted string path, json content) returns @tai
 # xml content = xml `<book>The Lost World</book>`;
 # io:Error? result = io:fileWriteXml("./resources/myfile.xml", content);
 # ```
-# + path - XML file path
+# + path - The path of the XML file
 # + content - XML content to write
-# + return - `io:Error` or else `()`
+# + return - The null `()` value when the writing was successful or an `io:Error`
 public function fileWriteXml(@untainted string path, xml content) returns Error? {
     var byteChannel = openWritableFile(path);
     if (byteChannel is WritableByteChannel) {

@@ -18,17 +18,25 @@ import ballerina/java;
 
 public type Block readonly & byte[];
 
-# BlockStream used to initialize a byte stream.
+# `BlockStream` used to initialize a stream of type `io:Block`. This `BlockStream` refers to the stream that embedded to
+# the I/O byte channels.
 public class BlockStream {
     private ReadableByteChannel readableByteChannel;
     private int blockSize;
     private boolean isClosed = false;
 
+    # Initialize a `BlockStream` using a `io:ReadableByteChannel`.
+    #
+    # + readableByteChannel - The `io:ReadableByteChannel` that this block stream is referred to
+    # + blockSize - The size of a block as an integer
     public function init(ReadableByteChannel readableByteChannel, int blockSize) {
         self.readableByteChannel = readableByteChannel;
         self.blockSize = blockSize;
     }
 
+    # The next function reads and return the next block of the related stream.
+    #
+    # + return - Returns a `io:Block` when a block is avaliable in the stream or return null when the stream reaches the end
     public isolated function next() returns record {| Block value; |}? {
         var block = readBlock(self.readableByteChannel, self.blockSize);
         if (block is byte[]) {
@@ -40,6 +48,10 @@ public class BlockStream {
         }
     }
 
+    # Close the stream. The primary usage of this function is to close the stream without reaching the end.
+    # If the stream reaches the end, the `blockStream.next()` will automatically close the stream.
+    #
+    # + return - Returns null when the closing was successful or an `io:Error`
     public isolated function close() returns Error? {
         if (!self.isClosed) {
             var closeResult = closeInputStream(self.readableByteChannel);

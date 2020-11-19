@@ -63,7 +63,7 @@ public function createReadableChannel(byte[] content) returns ReadableByteChanne
 # + fieldSeparator - CSV record separator (i.e., comma or tab)
 # + charset - Representation of the encoding characters in the file 
 # + skipHeaders - Number of headers, which should be skipped
-# + return - The `ReadableCSVChannel`, which could be used to iterate through the CSV records or else an `io:Error` if any error occurred.
+# + return - The `ReadableCSVChannel`, which could be used to iterate through the CSV records or else an `io:Error` if any error occurred
 public function openReadableCsvFile(@untainted string path,
                                     @untainted Separator fieldSeparator = ",",
                                     @untainted string charset = "UTF-8",

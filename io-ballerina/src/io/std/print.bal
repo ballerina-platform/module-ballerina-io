@@ -21,7 +21,7 @@ import ballerina/java;
 #io:print("Start processing the CSV file from ", srcFileName);
 #```
 # 
-# + values - The value(s) to be printed.
+# + values - The value(s) to be printed
 public isolated function print((any|error)... values) = @java:Method {
     name: "print",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.PrintUtils"
@@ -32,7 +32,7 @@ public isolated function print((any|error)... values) = @java:Method {
 #io:println("Start processing the CSV file from ", srcFileName);
 #```
 #  
-# + values - The value(s) to be printed.
+# + values - The value(s) to be printed
 public isolated function println((any|error)... values) = @java:Method {
     name: "println",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.PrintUtils"
@@ -56,10 +56,27 @@ public isolated function println((any|error)... values) = @java:Method {
 #             These values will be converted to their string representation.)
 # 
 # ```ballerina
-# string s8 = io:sprintf("%s scored %d for %s and has an average of %.2f.", name, marks, subjects[0], average);
+# string s1 = io:sprintf("This is a boolean: %b", false);
+# // s1 => This is a boolean: false
+# string s2 = io:sprintf("This is a boolean in all caps: %B", true);
+# // s2 => This is a boolean in all caps: TRUE
+# string s3 = io:sprintf("This is an integer: %d", 8);
+# // s3 => This is an integer: 8
+# string s4 = io:sprintf("This is a float: %f", 8.504);
+# // s4 => This is a float: 8.504000
+# string s5 = io:sprintf("This is a float with 2 places after decimal points: %.2f", 8.506);
+# // s5 => This is a float with 2 places after decimal points: 8.51
+# string s6 = io:sprintf("This is a hexadecimal: %x", 0X3DF);
+# // s6 => This is a hexadecimal: 3df
+# string s7 = io:sprintf("This is a hexadecimal in all caps: %X", 0X3DF);
+# // s7 => This is a hexadecimal in all caps: 3DF
+# string s8 = io:sprintf("This is a string: %s", "Ballerina");
+# // s8 => This is a string: Ballerina
+# string s9 = io:sprintf("This is an int with leading zeros: %09d", 8);
+# // s9 => This is an int with leading zeros: 000000008
 # ```
 #
-# + format - A format string
+# + format - The string needs to be formatted
 # + args   - Arguments referred by the format specifiers in the format string
 # + return - The formatted string
 public isolated function sprintf(string format, (any|error)... args) returns string = @java:Method {

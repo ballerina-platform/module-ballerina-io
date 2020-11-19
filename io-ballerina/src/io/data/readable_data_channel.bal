@@ -19,7 +19,7 @@ import ballerina/java;
 # Represents a data channel for reading data.
 public class ReadableDataChannel {
 
-    #Initializes the data channel.
+    # Initializes the data channel.
     # 
     # + byteChannel - The channel, which would represent the source to read/write data
     # + bOrder - network byte order
@@ -112,6 +112,7 @@ public class ReadableDataChannel {
     }
 
     # Closes the data channel.
+    # After a channel is closed, any further reading operations will cause an error.
     # ```ballerina
     # io:Error? err = dataChannel.close();
     # ```

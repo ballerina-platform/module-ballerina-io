@@ -35,11 +35,11 @@ public const TDF = "tdf";
 
 # Field separators, which are supported by the `DelimitedTextRecordChannel`.
 #
-# COMMA - Delimited text records will be separated using a comma.
+# COMMA - Delimited text records will be separated using a comma
 #
-# TAB - Delimited text records will be separated using a tab.
+# TAB - Delimited text records will be separated using a tab
 #
-# COLON - Delimited text records will be separated using a colon(:).
+# COLON - Delimited text records will be separated using a colon(:)
 public type Separator COMMA|TAB|COLON|string;
 
 # Comma (,) will be used as the field separator.
@@ -51,8 +51,8 @@ public const TAB = "\t";
 # Colon (:) will be use as the field separator.
 public const COLON = ":";
 
-# New line character
+# New line character.
 public const NEW_LINE = "\n";
 
-# Default encoding for the abstract read/write APIs
+# Default encoding for the abstract read/write APIs.
 public const DEFAULT_ENCODING = "UTF8";

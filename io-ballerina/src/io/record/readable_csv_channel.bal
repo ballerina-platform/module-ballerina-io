@@ -100,6 +100,7 @@ public class ReadableCSVChannel {
     }
 
     # Closes a given `CSVChannel`.
+    # After a channel is closed, any further reading operations will cause an error.
     # ```ballerina
     # io:Error? err = readableCSVChannel.close();
     # ```

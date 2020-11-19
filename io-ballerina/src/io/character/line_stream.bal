@@ -16,15 +16,22 @@
 
 import ballerina/java;
 
-# LineStream used to initialize the string stream of lines.
+# `LineStream` used to initialize a stream of type strings(lines). This `LineStream` refers to the stream that embedded to
+# the I/O character channels.
 public class LineStream {
     private ReadableCharacterChannel readableCharacterChannel;
     private boolean isClosed = false;
 
+    # Initialize a `LineStream` using a `io:ReadableCharacterChannel`.
+    #
+    # + readableCharacterChannel - The `io:ReadableCharacterChannel` that this line stream is referred to
     public function init(ReadableCharacterChannel readableCharacterChannel) {
         self.readableCharacterChannel = readableCharacterChannel;
     }
 
+    # The next function reads and return the next line of the related stream.
+    #
+    # + return - Returns a line as a string when a line is avaliable in the stream or return null when the stream reaches the end
     public isolated function next() returns record {| string value; |}? {
         var line = readLine(self.readableCharacterChannel);
         if (line is string) {
@@ -36,6 +43,10 @@ public class LineStream {
         }
     }
 
+    # Close the stream. The primary usage of this function is to close the stream without reaching the end.
+    # If the stream reaches the end, the `lineStream.next()` will automatically close the stream.
+    #
+    # + return - Returns null when the closing was successful or an `io:Error`
     public isolated function close() returns Error? {
         if (!self.isClosed) {
             var closeResult = closeReader(self.readableCharacterChannel);

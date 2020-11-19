@@ -17,13 +17,17 @@
 import ballerina/java;
 
 # ReadableByteChannel represents an input resource (i.e file). which could be used to source bytes.
+# A file path or an in-memory `byte` array can be used to obtain a `io:ReadableByteChannel`.
+# A `io:ReadableByteChannel` do not support initilization, and it should be obtained using the following methods or implement natively.
+# `io:openReadableFile("./files/sample.txt")` - used to obtain a `io:ReadableByteChannel` from a given file path
+# `io:createReadableChannel(byteArray)` - used to obtain a `io:ReadableByteChannel` from a given `byte` array
 public class ReadableByteChannel {
 
     # Adding default init function to prevent object getting initialized from the user code.
     function init() {
     }
 
-    # Source bytes from a given input/output resource. The number of bytes returned will be < 0 if the file reached its end.
+    # Source bytes from a given input resource.
     # This operation will be asynchronous in which the total number of required bytes might not be returned at a given
     # time. An `io:EofError` will return once the channel reaches the end.
     # ```ballerina
@@ -36,12 +40,12 @@ public class ReadableByteChannel {
         return byteReadExtern(self, nBytes);
     }
 
-    # Read all content of the channel as a byte array and return a read only byte array.
+    # Read all content of the channel as a `byte` array and return a read only `byte` array.
     # ```ballerina
     # byte[]|io:Error result = readableByteChannel.readAll();
     # ```
     #
-    # + return - Either a read only byte array or else an `io:Error`
+    # + return - Either a read only `byte` array or else an `io:Error`
     public function readAll() returns @tainted readonly & byte[]|Error {
         var readResult = readAllBytes(self);
         if (readResult is byte[]) {
@@ -51,9 +55,9 @@ public class ReadableByteChannel {
         }
     }
 
-    # Return a block stream that can be used to read all byte blocks as a stream.
+    # Return a block stream that can be used to read all `byte` blocks as a stream.
     # ```ballerina
-    # byte[]|io:Error result = readableByteChannel.blockStream();
+    # stream<io:Block>|io:Error result = readableByteChannel.blockStream();
     # ```
     # + blockSize - A positive integer. Size of the block.
     # + return - Either a block stream or else an `io:Error`
@@ -64,7 +68,7 @@ public class ReadableByteChannel {
 
     # Encodes a given `ReadableByteChannel` using the Base64 encoding scheme.
     # ```ballerina
-    # ReadableByteChannel|Error encodedChannel = readableByteChannel.base64Encode();
+    # io:ReadableByteChannel|Error encodedChannel = readableByteChannel.base64Encode();
     # ```
     #
     # + return - An encoded `ReadableByteChannel` or else an `io:Error`
@@ -72,9 +76,9 @@ public class ReadableByteChannel {
         return base64EncodeExtern(self);
     }
 
-    # Decodes a given `ReadableByteChannel` using the Base64 encoding scheme.
+    # Decodes a given Base64 encoded `io:ReadableByteChannel`.
     # ```ballerina
-    # ReadableByteChannel|Error encodedChannel = readableByteChannel.base64Decode();
+    # io:ReadableByteChannel|Error encodedChannel = readableByteChannel.base64Decode();
     # ```
     #
     # + return - A decoded `ReadableByteChannel` or else an `io:Error`
@@ -83,6 +87,7 @@ public class ReadableByteChannel {
     }
 
     # Closes a given `ReadableByteChannel`.
+    # After a channel is closed, any further reading operations will cause an error.
     # ```ballerina
     # io:Error? err = readableByteChannel.close();
     # ```

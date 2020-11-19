@@ -79,7 +79,7 @@ public class StringReader {
     # io:Error? err = reader.close();
     # ```
     #
-    # + return - An `io:Error` if could not close the channel or else `()`.
+    # + return - An `io:Error` if could not close the channel or else `()`
     public function close() returns Error? {
         if (self.charChannel is ReadableCharacterChannel) {
             var result = <ReadableCharacterChannel>self.charChannel;

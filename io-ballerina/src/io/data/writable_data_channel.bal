@@ -18,9 +18,9 @@ import ballerina/java;
 
 # Represents network byte order.
 #
-# BIG_ENDIAN - specifies the bytes to be in the order of most significant byte first
+# BIG_ENDIAN - specifies the bytes to be in the order of most significant byte first.
 #
-# LITTLE_ENDIAN - specifies the byte order to be the least significant byte first
+# LITTLE_ENDIAN - specifies the byte order to be the least significant byte first.
 public type ByteOrder "BE"|"LE";
 
 # Specifies the bytes to be in the order of most significant byte first.
@@ -132,6 +132,7 @@ public class WritableDataChannel {
     }
 
     # Closes the data channel.
+    # After a channel is closed, any further writing operations will cause an error.
     # ```ballerina
     # io:Error? err = dataChannel.close();
     # ```
