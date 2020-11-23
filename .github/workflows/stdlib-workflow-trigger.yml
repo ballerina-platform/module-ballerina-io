@@ -1,7 +1,6 @@
 name: Dependency update
 
 on:
-  workflow_dispatch:
   push:
     paths:
     - 'build.gradle'
