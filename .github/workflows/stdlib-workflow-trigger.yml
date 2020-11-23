@@ -1,4 +1,4 @@
-name: Dependency update
+name: Stdlib Dependency Update
 
 on:
   push:
