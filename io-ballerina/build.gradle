@@ -169,6 +169,10 @@ task ballerinaBuild {
             from file("$project.projectDir/target/apidocs/${packageName}")
             into file("$project.projectDir/build/docs_parent/docs/${packageName}")
         }
+        copy {
+            from file("$project.projectDir/../resources/package-architecture.svg")
+            into file("$project.projectDir/build/docs_parent/docs/${packageName}/resources")
+        }
         ballerinaConfigFile.text = originalConfig
     }
 
