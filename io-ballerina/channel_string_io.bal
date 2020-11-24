@@ -22,7 +22,7 @@ import ballerina/lang.'value;
 # ```
 # + readableChannel - A readable channel. The possible inputs are `io:ReadableByteChannel` or `io:ReadableCharacterChannel`.
 # + return - The entire channel content as a string or an `io:Error`
-public function channelReadString(ReadableChannel readableChannel) returns @tainted string|Error {
+function channelReadString(ReadableChannel readableChannel) returns @tainted string|Error {
     var characterChannel = getReadableCharacterChannel(readableChannel);
     if (characterChannel is ReadableCharacterChannel) {
         var result = characterChannel.readString();
@@ -39,7 +39,7 @@ public function channelReadString(ReadableChannel readableChannel) returns @tain
 # ```
 # + readableChannel - A readable channel. The possible inputs are `io:ReadableByteChannel` or `io:ReadableCharacterChannel`.
 # + return - The channel content as list of lines or an `io:Error`
-public function channelReadLines(ReadableChannel readableChannel) returns @tainted string[]|Error {
+function channelReadLines(ReadableChannel readableChannel) returns @tainted string[]|Error {
     var characterChannel = getReadableCharacterChannel(readableChannel);
     if (characterChannel is ReadableCharacterChannel) {
         var result = characterChannel.readAllLines();
@@ -56,7 +56,7 @@ public function channelReadLines(ReadableChannel readableChannel) returns @taint
 # ```
 # + readableChannel - A readable channel. The possible inputs are `io:ReadableByteChannel` or `io:ReadableCharacterChannel`.
 # + return - The channel content as a stream of strings or an `io:Error`
-public function channelReadLinesAsStream(ReadableChannel readableChannel) returns @tainted stream<string>|Error {
+function channelReadLinesAsStream(ReadableChannel readableChannel) returns @tainted stream<string>|Error {
     var characterChannel = getReadableCharacterChannel(readableChannel);
     if (characterChannel is ReadableCharacterChannel) {
         return characterChannel.lineStream();
@@ -71,7 +71,7 @@ public function channelReadLinesAsStream(ReadableChannel readableChannel) return
 # ```
 # + readableChannel - A readable channel. The possible inputs are `io:ReadableByteChannel` or `io:ReadableCharacterChannel`.
 # + return - The channel content as a JSON object or an `io:Error`
-public function channelReadJson(ReadableChannel readableChannel) returns @tainted json|Error {
+function channelReadJson(ReadableChannel readableChannel) returns @tainted json|Error {
     var characterChannel = getReadableCharacterChannel(readableChannel);
     if (characterChannel is ReadableCharacterChannel) {
         var result = characterChannel.readJson();
@@ -88,7 +88,7 @@ public function channelReadJson(ReadableChannel readableChannel) returns @tainte
 # ```
 # + readableChannel - A readable channel. The possible inputs are `io:ReadableByteChannel` or `io:ReadableCharacterChannel`.
 # + return - The channel content as an XML or an `io:Error`
-public function channelReadXml(ReadableChannel readableChannel) returns @tainted xml|Error {
+function channelReadXml(ReadableChannel readableChannel) returns @tainted xml|Error {
     var characterChannel = getReadableCharacterChannel(readableChannel);
     if (characterChannel is ReadableCharacterChannel) {
         var result = characterChannel.readXml();
@@ -107,7 +107,7 @@ public function channelReadXml(ReadableChannel readableChannel) returns @tainted
 # + writableChannel - A writable channel. The possible inputs are `io:WritableByteChannel` or `io:WritableCharacterChannel`.
 # + content - String content to be written
 # + return - The null `()` value when the writing was successful or an `io:Error`
-public function channelWriteString(WritableChannel writableChannel, string content) returns Error? {
+function channelWriteString(WritableChannel writableChannel, string content) returns Error? {
     var characterChannel = getWritableCharacterChannel(writableChannel);
     if (characterChannel is WritableCharacterChannel) {
         var writeResult = characterChannel.write(content, 0);
@@ -133,7 +133,7 @@ public function channelWriteString(WritableChannel writableChannel, string conte
 # + writableChannel - A writable channel. The possible inputs are `io:WritableByteChannel` or `io:WritableCharacterChannel`.
 # + content - An array of string lines to be written
 # + return - The null `()` value when the writing was successful or an `io:Error`
-public function channelWriteLines(WritableChannel writableChannel, string[] content) returns Error? {
+function channelWriteLines(WritableChannel writableChannel, string[] content) returns Error? {
     var characterChannel = getWritableCharacterChannel(writableChannel);
     if (characterChannel is WritableCharacterChannel) {
         string writeContent = "";
@@ -164,7 +164,7 @@ public function channelWriteLines(WritableChannel writableChannel, string[] cont
 # + writableChannel - A writable channel. The possible inputs are `io:WritableByteChannel` or `io:WritableCharacterChannel`.
 # + lineStream - A stream of lines to be written
 # + return - The null `()` value when the writing was successful or an `io:Error`
-public function channelWriteLinesFromStream(WritableChannel writableChannel, stream<string> lineStream) returns Error? {
+function channelWriteLinesFromStream(WritableChannel writableChannel, stream<string> lineStream) returns Error? {
     var characterChannel = getWritableCharacterChannel(writableChannel);
     if (characterChannel is WritableCharacterChannel) {
         error? e = lineStream.forEach(function(string stringContent) {
@@ -193,7 +193,7 @@ public function channelWriteLinesFromStream(WritableChannel writableChannel, str
 # + writableChannel - A writable channel. The possible inputs are `io:WritableByteChannel` or `io:WritableCharacterChannel`.
 # + content - JSON content to be written
 # + return - The null `()` value when the writing was successful or an `io:Error`
-public function channelWriteJson(WritableChannel writableChannel, json content) returns @tainted Error? {
+function channelWriteJson(WritableChannel writableChannel, json content) returns @tainted Error? {
     var characterChannel = getWritableCharacterChannel(writableChannel);
     if (characterChannel is WritableCharacterChannel) {
         var writeResult = characterChannel.writeJson(content);
@@ -218,7 +218,7 @@ public function channelWriteJson(WritableChannel writableChannel, json content) 
 # + writableChannel - A writable channel. The possible inputs are `io:WritableByteChannel` or `io:WritableCharacterChannel`.
 # + content - XML content to be written
 # + return - The null `()` value when the writing was successful or an `io:Error`
-public function channelWriteXml(WritableChannel writableChannel, xml content) returns Error? {
+function channelWriteXml(WritableChannel writableChannel, xml content) returns Error? {
     var characterChannel = getWritableCharacterChannel(writableChannel);
     if (characterChannel is WritableCharacterChannel) {
         var writeResult = characterChannel.writeXml(content);
