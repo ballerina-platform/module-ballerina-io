@@ -16,12 +16,6 @@
 
 import ballerina/lang.'value;
 
-# Reads the entire channel content as a `string` from the specified channel.
-# ```ballerina
-# string|io:Error content = io:channelReadString(readableChannel);
-# ```
-# + readableChannel - A readable channel. The possible inputs are `io:ReadableByteChannel` or `io:ReadableCharacterChannel`.
-# + return - The entire channel content as a string or an `io:Error`
 function channelReadString(ReadableChannel readableChannel) returns @tainted string|Error {
     var characterChannel = getReadableCharacterChannel(readableChannel);
     if (characterChannel is ReadableCharacterChannel) {
@@ -33,12 +27,6 @@ function channelReadString(ReadableChannel readableChannel) returns @tainted str
     }
 }
 
-# Reads the entire channel content as a list of lines from the specified channel.
-# ```ballerina
-# string[]|io:Error content = io:channelReadLines(readableChannel);
-# ```
-# + readableChannel - A readable channel. The possible inputs are `io:ReadableByteChannel` or `io:ReadableCharacterChannel`.
-# + return - The channel content as list of lines or an `io:Error`
 function channelReadLines(ReadableChannel readableChannel) returns @tainted string[]|Error {
     var characterChannel = getReadableCharacterChannel(readableChannel);
     if (characterChannel is ReadableCharacterChannel) {
@@ -50,12 +38,6 @@ function channelReadLines(ReadableChannel readableChannel) returns @tainted stri
     }
 }
 
-# Reads channel content as a stream of lines from the specified channel.
-# ```ballerina
-# stream<string>|io:Error content = io:channelReadLinesAsStream(readableChannel);
-# ```
-# + readableChannel - A readable channel. The possible inputs are `io:ReadableByteChannel` or `io:ReadableCharacterChannel`.
-# + return - The channel content as a stream of strings or an `io:Error`
 function channelReadLinesAsStream(ReadableChannel readableChannel) returns @tainted stream<string>|Error {
     var characterChannel = getReadableCharacterChannel(readableChannel);
     if (characterChannel is ReadableCharacterChannel) {
@@ -65,12 +47,6 @@ function channelReadLinesAsStream(ReadableChannel readableChannel) returns @tain
     }
 }
 
-# Reads channel content as a JSON from the specified channel.
-# ```ballerina
-# json|io:Error content = io:channelReadJson(readableChannel);
-# ```
-# + readableChannel - A readable channel. The possible inputs are `io:ReadableByteChannel` or `io:ReadableCharacterChannel`.
-# + return - The channel content as a JSON object or an `io:Error`
 function channelReadJson(ReadableChannel readableChannel) returns @tainted json|Error {
     var characterChannel = getReadableCharacterChannel(readableChannel);
     if (characterChannel is ReadableCharacterChannel) {
@@ -82,12 +58,6 @@ function channelReadJson(ReadableChannel readableChannel) returns @tainted json|
     }
 }
 
-# Reads channel content as an XML from the specified channel.
-# ```ballerina
-# xml|io:Error content = io:channelReadXml(readableChannel);
-# ```
-# + readableChannel - A readable channel. The possible inputs are `io:ReadableByteChannel` or `io:ReadableCharacterChannel`.
-# + return - The channel content as an XML or an `io:Error`
 function channelReadXml(ReadableChannel readableChannel) returns @tainted xml|Error {
     var characterChannel = getReadableCharacterChannel(readableChannel);
     if (characterChannel is ReadableCharacterChannel) {
@@ -99,14 +69,6 @@ function channelReadXml(ReadableChannel readableChannel) returns @tainted xml|Er
     }
 }
 
-# Writes the given `string` value to the specified channel.
-# ```ballerina
-# string content = "Hello Universe..!!";
-# io:Error result = io:channelWriteString(writableChannel, content);
-# ```
-# + writableChannel - A writable channel. The possible inputs are `io:WritableByteChannel` or `io:WritableCharacterChannel`.
-# + content - String content to be written
-# + return - The null `()` value when the writing was successful or an `io:Error`
 function channelWriteString(WritableChannel writableChannel, string content) returns Error? {
     var characterChannel = getWritableCharacterChannel(writableChannel);
     if (characterChannel is WritableCharacterChannel) {
@@ -124,15 +86,6 @@ function channelWriteString(WritableChannel writableChannel, string content) ret
     }
 }
 
-# Write the given array of lines to the specified channel.
-# During the writing operation, a newline character `\n` will be added after each line.
-# ```ballerina
-# string[] content = ["Hello Universe..!!", "How are you?"];
-# io:Error result = io:channelWriteLines(writableChannel, content);
-# ```
-# + writableChannel - A writable channel. The possible inputs are `io:WritableByteChannel` or `io:WritableCharacterChannel`.
-# + content - An array of string lines to be written
-# + return - The null `()` value when the writing was successful or an `io:Error`
 function channelWriteLines(WritableChannel writableChannel, string[] content) returns Error? {
     var characterChannel = getWritableCharacterChannel(writableChannel);
     if (characterChannel is WritableCharacterChannel) {
@@ -154,16 +107,6 @@ function channelWriteLines(WritableChannel writableChannel, string[] content) re
     }
 }
 
-# Write lines from the given stream to the specified channel.
-# During the writing operation, a newline character `\n` will be added after each line.
-# ```ballerina
-# string content = ["Hello Universe..!!", "How are you?"];
-# stream<string, io:Error> lineStream = content.toStream();
-# io:Error result = io:channelWriteLinesFromStream(writableChannel, lineStream);
-# ```
-# + writableChannel - A writable channel. The possible inputs are `io:WritableByteChannel` or `io:WritableCharacterChannel`.
-# + lineStream - A stream of lines to be written
-# + return - The null `()` value when the writing was successful or an `io:Error`
 function channelWriteLinesFromStream(WritableChannel writableChannel, stream<string> lineStream) returns Error? {
     var characterChannel = getWritableCharacterChannel(writableChannel);
     if (characterChannel is WritableCharacterChannel) {
@@ -185,14 +128,6 @@ function channelWriteLinesFromStream(WritableChannel writableChannel, stream<str
     }
 }
 
-# Write the given JSON content to the specified channel.
-# ```ballerina
-# json content = {"name": "Anne", "age": 30};
-# io:Error? content = io:channelWriteJson(writableChannel);
-# ```
-# + writableChannel - A writable channel. The possible inputs are `io:WritableByteChannel` or `io:WritableCharacterChannel`.
-# + content - JSON content to be written
-# + return - The null `()` value when the writing was successful or an `io:Error`
 function channelWriteJson(WritableChannel writableChannel, json content) returns @tainted Error? {
     var characterChannel = getWritableCharacterChannel(writableChannel);
     if (characterChannel is WritableCharacterChannel) {
@@ -210,14 +145,6 @@ function channelWriteJson(WritableChannel writableChannel, json content) returns
     }
 }
 
-# Write the XML content to the specified channel.
-# ```ballerina
-# xml content = xml `<book>The Lost World</book>`;
-# io:Error? result = io:channelWriteXml(writableChannel, content);
-# ```
-# + writableChannel - A writable channel. The possible inputs are `io:WritableByteChannel` or `io:WritableCharacterChannel`.
-# + content - XML content to be written
-# + return - The null `()` value when the writing was successful or an `io:Error`
 function channelWriteXml(WritableChannel writableChannel, xml content) returns Error? {
     var characterChannel = getWritableCharacterChannel(writableChannel);
     if (characterChannel is WritableCharacterChannel) {
