@@ -155,8 +155,6 @@ task ballerinaBuild {
             }
 
         }
-//        Disabling doc creation due to this issue(https://github.com/ballerina-platform/ballerina-lang/issues/26733).
-//        Once it fixed, we can enable doc creation.
         // Doc creation and packing
         exec {
             workingDir project.projectDir
