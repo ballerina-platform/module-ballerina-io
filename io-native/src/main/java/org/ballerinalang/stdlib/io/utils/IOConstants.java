@@ -56,7 +56,7 @@ public class IOConstants {
     /**
      * I/O standard library version.
      */
-    public static final String IO_PACKAGE_VERSION =  "0.5.2";
+    public static final String IO_PACKAGE_VERSION =  "0.5.3";
 
     /**
      * I/O standard library package ID.
