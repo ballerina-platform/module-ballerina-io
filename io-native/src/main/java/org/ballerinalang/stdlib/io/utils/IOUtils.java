@@ -18,6 +18,7 @@
 
 package org.ballerinalang.stdlib.io.utils;
 
+import io.ballerina.runtime.api.Module;
 import io.ballerina.runtime.api.creators.ErrorCreator;
 import io.ballerina.runtime.api.utils.StringUtils;
 import io.ballerina.runtime.api.values.BError;
@@ -26,6 +27,7 @@ import org.ballerinalang.stdlib.io.channels.base.Channel;
 import org.ballerinalang.stdlib.io.channels.base.CharacterChannel;
 import org.ballerinalang.stdlib.io.channels.base.DelimitedRecordChannel;
 import org.ballerinalang.stdlib.io.csv.Format;
+import org.ballerinalang.stdlib.io.nativeimpl.ModuleUtils;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -45,7 +47,6 @@ import static org.ballerinalang.stdlib.io.utils.IOConstants.ErrorCode.AccessDeni
 import static org.ballerinalang.stdlib.io.utils.IOConstants.ErrorCode.EoF;
 import static org.ballerinalang.stdlib.io.utils.IOConstants.ErrorCode.FileNotFoundError;
 import static org.ballerinalang.stdlib.io.utils.IOConstants.ErrorCode.GenericError;
-import static org.ballerinalang.stdlib.io.utils.IOConstants.IO_PACKAGE_ID;
 
 /**
  * Represents the util functions of IO operations.
@@ -62,8 +63,8 @@ public class IOUtils {
      * @return an error which will be propagated to ballerina user
      */
     public static BError createError(String errorMsg) {
-        return ErrorCreator.createDistinctError(GenericError.errorCode(), IO_PACKAGE_ID,
-                                                 StringUtils.fromString(errorMsg));
+        return ErrorCreator.createDistinctError(GenericError.errorCode(), getIOPackage(),
+                                                StringUtils.fromString(errorMsg));
     }
 
     /**
@@ -84,7 +85,7 @@ public class IOUtils {
      * @return an error which will be propagated to ballerina user
      */
     public static BError createError(IOConstants.ErrorCode code, String errorMsg) {
-        return ErrorCreator.createDistinctError(code.errorCode(), IO_PACKAGE_ID, StringUtils.fromString(errorMsg));
+        return ErrorCreator.createDistinctError(code.errorCode(), getIOPackage(), StringUtils.fromString(errorMsg));
     }
 
     /**
@@ -278,5 +279,14 @@ public class IOUtils {
         FileIOChannel fileIOChannel = new FileIOChannel(sourceChannel);
         CharacterChannel characterChannel = new CharacterChannel(fileIOChannel, Charset.forName(encoding).name());
         return new DelimitedRecordChannel(characterChannel, format);
+    }
+
+    /**
+     * Gets ballerina io package.
+     *
+     * @return io package.
+     */
+    public static Module getIOPackage() {
+        return ModuleUtils.getModule();
     }
 }
