@@ -36,6 +36,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 import static io.ballerina.runtime.api.constants.RuntimeConstants.BALLERINA_BUILTIN_PKG_PREFIX;
+import static org.ballerinalang.stdlib.io.utils.IOUtils.getIOPackage;
 
 /**
  * A util class for handling common functions across native implementation.
@@ -190,7 +191,7 @@ public class Utils {
             }
             InputStream encodedStream = new ByteArrayInputStream(encodedByteArray);
             Base64ByteChannel decodedByteChannel = new Base64ByteChannel(encodedStream);
-            byteChannelObj = ValueCreator.createObjectValue(IOConstants.IO_PACKAGE_ID, STRUCT_TYPE);
+            byteChannelObj = ValueCreator.createObjectValue(getIOPackage(), STRUCT_TYPE);
             byteChannelObj.addNativeData(IOConstants.BYTE_CHANNEL_NAME, new Base64Wrapper(decodedByteChannel));
             return byteChannelObj;
         } catch (IOException e) {
@@ -217,7 +218,7 @@ public class Utils {
             }
             InputStream decodedStream = new ByteArrayInputStream(decodedByteArray);
             Base64ByteChannel decodedByteChannel = new Base64ByteChannel(decodedStream);
-            byteChannelObj = ValueCreator.createObjectValue(IOConstants.IO_PACKAGE_ID, STRUCT_TYPE);
+            byteChannelObj = ValueCreator.createObjectValue(getIOPackage(), STRUCT_TYPE);
             byteChannelObj.addNativeData(IOConstants.BYTE_CHANNEL_NAME, new Base64Wrapper(decodedByteChannel));
             return byteChannelObj;
         } catch (IOException e) {

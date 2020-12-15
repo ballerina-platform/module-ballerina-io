@@ -55,12 +55,16 @@ public class IOConstants {
 
     /**
      * I/O standard library version.
+     * @deprecated Use IOUtils.getIOPackage().getVersion().
      */
+    @Deprecated
     public static final String IO_PACKAGE_VERSION =  "0.5.4";
 
     /**
      * I/O standard library package ID.
+     * @deprecated Use IOUtils.getIOPackage().
      */
+    @Deprecated
     public static final Module IO_PACKAGE_ID = new Module(BALLERINA_BUILTIN_PKG_PREFIX, "io", IO_PACKAGE_VERSION);
 
     /**
