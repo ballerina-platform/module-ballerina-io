@@ -98,7 +98,7 @@ function getReadableCSVChannel(ReadableChannel readableChannel, int skipHeaders)
     } else if (readableChannel is ReadableCSVChannel) {
         readableCSVChannel = readableChannel;
     } else {
-        TypeMismatchError e = TypeMismatchError(
+        TypeMismatchError e = error TypeMismatchError(
         "Expected ReadableByteChannel/ReadableCharacterChannel/ReadableCSVChannel but found a " + 'value:toString(typeof 
         readableChannel));
         return e;
@@ -117,7 +117,7 @@ function getWritableCSVChannel(WritableChannel writableChannel) returns Writable
     } else if (writableChannel is WritableCSVChannel) {
         writableCSVChannel = writableChannel;
     } else {
-        TypeMismatchError e = TypeMismatchError(
+        TypeMismatchError e = error TypeMismatchError(
         "Expected WritableByteChannel/WritableCharacterChannel/WritableCSVChannel but found a " + 'value:toString(typeof 
         writableChannel));
         return e;

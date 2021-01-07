@@ -22,7 +22,7 @@ function channelReadBytes(ReadableChannel readableChannel) returns @tainted read
         var closeResult = readableChannel.close();
         return result;
     } else {
-        TypeMismatchError e = TypeMismatchError("Expected ReadableByteChannel but found a " +
+        TypeMismatchError e = error TypeMismatchError("Expected ReadableByteChannel but found a " +
         'value:toString(typeof readableChannel));
         return e;
     }
@@ -32,7 +32,7 @@ function channelReadBlocksAsStream(ReadableChannel readableChannel, int blockSiz
     if (readableChannel is ReadableByteChannel) {
         return readableChannel.blockStream(blockSize);
     } else {
-        TypeMismatchError e = TypeMismatchError("Expected ReadableByteChannel but found a " +
+        TypeMismatchError e = error TypeMismatchError("Expected ReadableByteChannel but found a " +
         'value:toString(typeof readableChannel));
         return e;
     }
@@ -46,7 +46,7 @@ function channelWriteBytes(WritableChannel writableChannel, byte[] content) retu
             return closeResult;
         }
     } else {
-        TypeMismatchError e = TypeMismatchError("Expected WritableByteChannel but found a " +
+        TypeMismatchError e = error TypeMismatchError("Expected WritableByteChannel but found a " +
         'value:toString(typeof writableChannel));
         return e;
     }
@@ -67,7 +67,7 @@ function channelWriteBlocksFromStream(WritableChannel writableChannel, stream<by
             return closeResult;
         }
     } else {
-        TypeMismatchError e = TypeMismatchError("Expected WritableByteChannel but found a " + 'value:toString(typeof
+        TypeMismatchError e = error TypeMismatchError("Expected WritableByteChannel but found a " + 'value:toString(typeof
         writableChannel));
         return e;
     }
