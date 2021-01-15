@@ -91,7 +91,7 @@ function testWriteRecords() {
     }
 }
 
-@test:Config {dependsOn: ["testWriteRecords"]}
+@test:Config {dependsOn: [testWriteRecords]}
 function testReadRecordContent() {
     string filePath = TEMP_DIR + "recordsFile.csv";
     string[] expectedContent = ["Name", "Email", "Telephone"];
