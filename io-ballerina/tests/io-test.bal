@@ -24,7 +24,7 @@ function beforePrint() {
 }
 
 @test:Config {
-    dependsOn: ["testReadString"]
+    dependsOn: [testReadString]
 }
 function testPrintString() {
     string s = "A Greeting from Ballerina...!!!";
@@ -33,7 +33,7 @@ function testPrintString() {
 }
 
 @test:Config {
-    dependsOn: ["testPrintString"]
+    dependsOn: [testPrintString]
 }
 function testPrintlnString() {
     string s = "Hello World...!!!";
@@ -43,7 +43,7 @@ function testPrintlnString() {
 }
 
 @test:Config{
-    dependsOn: ["testPrintlnString"]
+    dependsOn: [testPrintlnString]
 }
 function testPrintInt() {
     int v = 1000;
@@ -52,7 +52,7 @@ function testPrintInt() {
 }
 
 @test:Config{
-    dependsOn: ["testPrintInt"]
+    dependsOn: [testPrintInt]
 }
 function testPrintlnInt() {
     int v = 1;
@@ -61,7 +61,7 @@ function testPrintlnInt() {
 }
 
 @test:Config{
-    dependsOn: ["testPrintlnInt"]
+    dependsOn: [testPrintlnInt]
 }
 function testPrintFloat() {
     float v = 1000;
@@ -70,7 +70,7 @@ function testPrintFloat() {
 }
 
 @test:Config{
-    dependsOn: ["testPrintFloat"]
+    dependsOn: [testPrintFloat]
 }
 function testPrintlnFloat() {
     float v = 1;
@@ -79,7 +79,7 @@ function testPrintlnFloat() {
 }
 
 @test:Config{
-    dependsOn: ["testPrintlnFloat"]
+    dependsOn: [testPrintlnFloat]
 }
 function testPrintBoolean() {
     boolean b = false;
@@ -88,7 +88,7 @@ function testPrintBoolean() {
 }
 
 @test:Config{
-    dependsOn: ["testPrintBoolean"]
+    dependsOn: [testPrintBoolean]
 }
 function testPrintlnBoolean() {
     boolean b = true;
@@ -97,7 +97,7 @@ function testPrintlnBoolean() {
 }
 
 @test:Config{
-    dependsOn: ["testPrintlnBoolean"]
+    dependsOn: [testPrintlnBoolean]
 }
 function testPrintConnector() {
     Foo f = new Foo();
@@ -107,7 +107,7 @@ function testPrintConnector() {
 }
 
 @test:Config{
-    dependsOn: ["testPrintConnector"]
+    dependsOn: [testPrintConnector]
 }
 function testPrintlnConnector() {
     Foo f = new Foo();
@@ -117,7 +117,7 @@ function testPrintlnConnector() {
 }
 
 @test:Config{
-    dependsOn: ["testPrintlnConnector"]
+    dependsOn: [testPrintlnConnector]
 }
 function testPrintFunctionPointer() {
     function (int, int) returns (int) addFunction = func1;
@@ -126,7 +126,7 @@ function testPrintFunctionPointer() {
 }
 
 @test:Config{
-    dependsOn: ["testPrintFunctionPointer"]
+    dependsOn: [testPrintFunctionPointer]
 }
 function testPrintlnFunctionPointer() {
     function (int, int) returns (int) addFunction = func1;
@@ -135,7 +135,7 @@ function testPrintlnFunctionPointer() {
 }
 
 @test:Config{
-    dependsOn: ["testPrintlnFunctionPointer"]
+    dependsOn: [testPrintlnFunctionPointer]
 }
 function testPrintVarargs() {
     string s1 = "Hello World...!!!";
@@ -147,7 +147,7 @@ function testPrintVarargs() {
 }
 
 @test:Config{
-    dependsOn: ["testPrintVarargs"]
+    dependsOn: [testPrintVarargs]
 }
 function testPrintMixVarargs() {
     string s1 = "Hello World...!!!";
@@ -160,7 +160,7 @@ function testPrintMixVarargs() {
 }
 
 @test:Config{
-    dependsOn: ["testPrintMixVarargs"]
+    dependsOn: [testPrintMixVarargs]
 }
 function testPrintlnVarargs() {
     string s1 = "Hello World...!!!";
@@ -172,7 +172,7 @@ function testPrintlnVarargs() {
 }
 
 @test:Config{
-    dependsOn: ["testPrintlnVarargs"]
+    dependsOn: [testPrintlnVarargs]
 }
 function testPrintNewline() {
     string expectedOutput = "hello\n";
@@ -181,7 +181,7 @@ function testPrintNewline() {
 }
 
 @test:Config{
-    dependsOn: ["testPrintNewline"]
+    dependsOn: [testPrintNewline]
 }
 function testSprintfTrue() {
     string fmtStr = "%b";
@@ -191,7 +191,7 @@ function testSprintfTrue() {
 }
 
 @test:Config{
-    dependsOn: ["testSprintfTrue"]
+    dependsOn: [testSprintfTrue]
 }
 function testSprintfFalse() {
     string fmtStr = "%b";
@@ -201,7 +201,7 @@ function testSprintfFalse() {
 }
 
 @test:Config{
-    dependsOn: ["testSprintfFalse"]
+    dependsOn: [testSprintfFalse]
 }
 function testSprintfInt() {
     string fmtStr = "%d";
@@ -211,7 +211,7 @@ function testSprintfInt() {
 }
 
 @test:Config{
-    dependsOn: ["testSprintfInt"]
+    dependsOn: [testSprintfInt]
 }
 function testSprintfFloat() {
     string fmtStr = "%f";
@@ -221,7 +221,7 @@ function testSprintfFloat() {
 }
 
 @test:Config{
-    dependsOn: ["testSprintfFloat"]
+    dependsOn: [testSprintfFloat]
 }
 function testSprintfString() {
     string fmtStr = "%s";
@@ -231,7 +231,7 @@ function testSprintfString() {
 }
 
 @test:Config{
-    dependsOn: ["testSprintfString"]
+    dependsOn: [testSprintfString]
 }
 function testSprintfHex() {
     string fmtStr = "%x";
@@ -241,7 +241,7 @@ function testSprintfHex() {
 }
 
 @test:Config{
-    dependsOn: ["testSprintfHex"]
+    dependsOn: [testSprintfHex]
 }
 function testSprintfArray() {
     string fmtStr = "%s";
@@ -251,7 +251,7 @@ function testSprintfArray() {
 }
 
 @test:Config{
-    dependsOn: ["testSprintfArray"]
+    dependsOn: [testSprintfArray]
 }
 function testSprintfLiteralPercentChar() {
     string fmtStr = "%% %s";
@@ -261,7 +261,7 @@ function testSprintfLiteralPercentChar() {
 }
 
 @test:Config{
-    dependsOn: ["testSprintfArray"]
+    dependsOn: [testSprintfArray]
 }
 function testSprintfStringWithPadding() {
     string fmtStr = "%9.2s";
@@ -271,7 +271,7 @@ function testSprintfStringWithPadding() {
 }
 
 @test:Config{
-    dependsOn: ["testSprintfArray"]
+    dependsOn: [testSprintfArray]
 }
 function testSprintfFloatWithPadding() {
     string fmtStr = "%5.4f";
@@ -281,7 +281,7 @@ function testSprintfFloatWithPadding() {
 }
 
 @test:Config{
-    dependsOn: ["testSprintfFloatWithPadding"]
+    dependsOn: [testSprintfFloatWithPadding]
 }
 function testSprintfDecimalWithPadding() {
     string fmtStr = "%15d";
@@ -291,7 +291,7 @@ function testSprintfDecimalWithPadding() {
 }
 
 @test:Config{
-    dependsOn: ["testSprintfDecimalWithPadding"]
+    dependsOn: [testSprintfDecimalWithPadding]
 }
 function testSprintfIllegalFormatConversion() {
     string fmtStr = "%x";
@@ -308,7 +308,7 @@ function testSprintfIllegalFormatConversion() {
 }
 
 @test:Config{
-    dependsOn: ["testSprintfIllegalFormatConversion"]
+    dependsOn: [testSprintfIllegalFormatConversion]
 }
 function testSprintfMix() {
     string fmtStr = "the %s jumped over the %s, %d times";
@@ -321,7 +321,7 @@ function testSprintfMix() {
 }
 
 @test:Config{
-    dependsOn: ["testSprintfMix"]
+    dependsOn: [testSprintfMix]
 }
 function testSprintfNilString() {
     string output = sprintf("%s", ());
@@ -329,7 +329,7 @@ function testSprintfNilString() {
 }
 
 @test:Config{
-    dependsOn: ["testSprintfNilString"]
+    dependsOn: [testSprintfNilString]
 }
 function testSprintfNilFloat() {
     string|error output = trap sprintf("%f", ());

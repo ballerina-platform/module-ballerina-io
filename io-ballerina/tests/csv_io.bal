@@ -221,7 +221,7 @@ function testOpenAndReadColonDelimitedFile() {
     }
 }
 
-@test:Config {dependsOn: ["testOpenAndReadColonDelimitedFile"]}
+@test:Config {dependsOn: [testOpenAndReadColonDelimitedFile]}
 function testOpenAndReadCsvWithHeaders() {
     string filePath = RESOURCES_BASE_PATH + "datafiles/io/records/sampleWithHeader.csv";
     int expectedRecordLength = 3;
@@ -599,7 +599,7 @@ function testFileCsvWrite() {
     }
 }
 
-@test:Config {dependsOn: ["testFileCsvWrite"]}
+@test:Config {dependsOn: [testFileCsvWrite]}
 function testFileCsvRead() {
     string[][] expectedContent = [["Anne Hamiltom", "Software Engineer", "Microsoft", "26 years", "New York"], [
     "John Thomson", "Software Architect", "WSO2", "38 years", "Colombo"], ["Mary Thompson", "Banker", "Sampath Bank", 
@@ -632,7 +632,7 @@ function testFileCsvWriteWithSkipHeaders() {
     }
 }
 
-@test:Config {dependsOn: ["testFileCsvWriteWithSkipHeaders"]}
+@test:Config {dependsOn: [testFileCsvWriteWithSkipHeaders]}
 function testFileCsvReadWithSkipHeaders() {
     string[][] expectedContent = [["Name", "Occupation", "Company", "Age", "Hometown"], ["Ross Meton", "Civil Engineer", 
     "ABC Construction", "26 years", "Sydney"], ["Matt Jason", "Architect", "Typer", "38 years", "Colombo"]];
@@ -665,7 +665,7 @@ function testFileWriteCsvFromStream() {
     }
 }
 
-@test:Config {dependsOn: ["testFileWriteCsvFromStream"]}
+@test:Config {dependsOn: [testFileWriteCsvFromStream]}
 function testFileReadCsvAsStream() {
     string filePath = TEMP_DIR + "workers4.csv";
     string[][] expectedContent = [["Anne Hamiltom", "Software Engineer", "Microsoft", "26 years", "New York"], [

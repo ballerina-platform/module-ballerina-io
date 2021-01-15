@@ -91,7 +91,7 @@ function testFileWriteBytes() {
     }
 }
 
-@test:Config {dependsOn: ["testFileWriteBytes"]}
+@test:Config {dependsOn: [testFileWriteBytes]}
 function testFileReadBytes() {
     string filePath = TEMP_DIR + "bytesFile2.txt";
     var result = fileReadBytes(filePath);
@@ -120,7 +120,7 @@ function testFileWriteBytesFromStream() {
     }
 }
 
-@test:Config {dependsOn: ["testFileWriteBytesFromStream"]}
+@test:Config {dependsOn: [testFileWriteBytesFromStream]}
 function testFileReadBytesAsStream() {
     string filePath = TEMP_DIR + "bytesFile3.txt";
     var result = fileReadBlocksAsStream(filePath, 2);
@@ -160,7 +160,7 @@ function testFileChannelWriteBytes() {
     }
 }
 
-@test:Config {dependsOn: ["testFileChannelWriteBytes"]}
+@test:Config {dependsOn: [testFileChannelWriteBytes]}
 function testFileChannelReadBytes() {
     string filePath = TEMP_DIR + "bytesFile4.txt";
     string expectedString = "Sheldon Cooper";
@@ -199,7 +199,7 @@ function testFileChannelWriteBytesFromStream() {
     }
 }
 
-@test:Config {dependsOn: ["testFileChannelWriteBytesFromStream"]}
+@test:Config {dependsOn: [testFileChannelWriteBytesFromStream]}
 function testFileChannelReadBytesAsStream() {
     string filePath = TEMP_DIR + "bytesFile5.txt";
     string expectedString = "Sheldon Cooper";

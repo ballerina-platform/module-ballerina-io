@@ -16,7 +16,7 @@
 
 import ballerina/test;
 
-@test:Config {dependsOn: ["testWriteRecords"]}
+@test:Config {dependsOn: [testWriteRecords]}
 function testStrToJsonConvert() {
     string content = "{\n" + "  \"test\": { \"name\": \"Foo\" }\n" + "}";
     json expectedJson = {test: {name: "Foo"}};
@@ -28,7 +28,7 @@ function testStrToJsonConvert() {
     }
 }
 
-@test:Config {dependsOn: ["testStrToJsonConvert"]}
+@test:Config {dependsOn: [testStrToJsonConvert]}
 function testXmlToJsonConvert() {
     string content = "<test>" + "<name>Foo</name>" + "</test>";
     xml expectedXml = xml `<test><name>Foo</name></test>`;

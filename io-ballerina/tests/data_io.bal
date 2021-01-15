@@ -16,7 +16,7 @@
 
 import ballerina/test;
 
-@test:Config {dependsOn: ["testTableWithHeader"]}
+@test:Config {dependsOn: [testTableWithHeader]}
 function testWriteFixedSignedInt() {
     int value = 123;
     ByteOrder byteOrder = BIG_ENDIAN;
@@ -32,7 +32,7 @@ function testWriteFixedSignedInt() {
     }
 }
 
-@test:Config {dependsOn: ["testWriteFixedSignedInt"]}
+@test:Config {dependsOn: [testWriteFixedSignedInt]}
 function testReadFixedSignedInt() {
     int value = 123;
     ByteOrder byteOrder = BIG_ENDIAN;
@@ -53,7 +53,7 @@ function testReadFixedSignedInt() {
     }
 }
 
-@test:Config {dependsOn: ["testReadFixedSignedInt"]}
+@test:Config {dependsOn: [testReadFixedSignedInt]}
 function testWriteVarInt() {
     var value = 456;
     ByteOrder byteOrder = BIG_ENDIAN;
@@ -69,7 +69,7 @@ function testWriteVarInt() {
     }
 }
 
-@test:Config {dependsOn: ["testWriteVarInt"]}
+@test:Config {dependsOn: [testWriteVarInt]}
 function testReadVarInt() {
     int value = 456;
     ByteOrder byteOrder = BIG_ENDIAN;
@@ -90,7 +90,7 @@ function testReadVarInt() {
     }
 }
 
-@test:Config {dependsOn: ["testWriteVarInt"]}
+@test:Config {dependsOn: [testWriteVarInt]}
 function testWriteFixedFloat() {
     float value = 1359494.69;
     ByteOrder byteOrder = BIG_ENDIAN;
@@ -106,7 +106,7 @@ function testWriteFixedFloat() {
     }
 }
 
-@test:Config {dependsOn: ["testWriteFixedFloat"]}
+@test:Config {dependsOn: [testWriteFixedFloat]}
 function testReadFixedFloat() {
     float value = 1359494.69;
     ByteOrder byteOrder = BIG_ENDIAN;
@@ -127,7 +127,7 @@ function testReadFixedFloat() {
     }
 }
 
-@test:Config {dependsOn: ["testReadFixedFloat"]}
+@test:Config {dependsOn: [testReadFixedFloat]}
 function testWriteBool() {
     boolean value = true;
     ByteOrder byteOrder = BIG_ENDIAN;
@@ -143,7 +143,7 @@ function testWriteBool() {
     }
 }
 
-@test:Config {dependsOn: ["testWriteBool"]}
+@test:Config {dependsOn: [testWriteBool]}
 function testReadBool() {
     boolean value = true;
     ByteOrder byteOrder = BIG_ENDIAN;
@@ -164,7 +164,7 @@ function testReadBool() {
     }
 }
 
-@test:Config {dependsOn: ["testReadBool"]}
+@test:Config {dependsOn: [testReadBool]}
 function testWriteString() {
     string value = "Ballerina";
     ByteOrder byteOrder = BIG_ENDIAN;
@@ -181,7 +181,7 @@ function testWriteString() {
     }
 }
 
-@test:Config {dependsOn: ["testWriteString"]}
+@test:Config {dependsOn: [testWriteString]}
 function testReadString() {
     string value = "Ballerina";
     ByteOrder byteOrder = BIG_ENDIAN;

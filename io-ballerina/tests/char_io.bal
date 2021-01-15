@@ -16,7 +16,7 @@
 
 import ballerina/test;
 
-@test:Config {dependsOn: ["testWriteBytes"]}
+@test:Config {dependsOn: [testWriteBytes]}
 function testReadCharacters() {
     string filePath = RESOURCES_BASE_PATH + "datafiles/io/text/utf8file.txt";
     string expectedCharacters = "aaa";
@@ -57,7 +57,7 @@ function testReadCharacters() {
     }
 }
 
-@test:Config {dependsOn: ["testReadCharacters"]}
+@test:Config {dependsOn: [testReadCharacters]}
 function testReadAllCharacters() {
     string filePath = RESOURCES_BASE_PATH + "datafiles/io/text/fileThatExceeds2MB.txt";
     string result = "";
@@ -93,7 +93,7 @@ function testReadAllCharacters() {
     }
 }
 
-@test:Config {dependsOn: ["testReadAllCharacters"]}
+@test:Config {dependsOn: [testReadAllCharacters]}
 function testReadAllCharactersFromEmptyFile() {
     string filePath = RESOURCES_BASE_PATH + "datafiles/io/text/emptyFile.txt";
     string result = "";
@@ -129,7 +129,7 @@ function testReadAllCharactersFromEmptyFile() {
     }
 }
 
-@test:Config {dependsOn: ["testReadAllCharactersFromEmptyFile"]}
+@test:Config {dependsOn: [testReadAllCharactersFromEmptyFile]}
 function testWriteCharacters() {
     string filePath = TEMP_DIR + "characterFile.txt";
     string content = "The quick brown fox jumps over the lazy dog";
@@ -151,7 +151,7 @@ function testWriteCharacters() {
     }
 }
 
-@test:Config {dependsOn: ["testWriteCharacters"]}
+@test:Config {dependsOn: [testWriteCharacters]}
 function testAppendCharacters() {
     string filePath = TEMP_DIR + "appendCharacterFile.txt";
     string initialContent = "Hi, I'm the initial content. ";
@@ -224,7 +224,7 @@ function testWriteJson() {
     }
 }
 
-@test:Config {dependsOn: ["testWriteJson"]}
+@test:Config {dependsOn: [testWriteJson]}
 function testReadJson() {
     string filePath = TEMP_DIR + "jsonCharsFile1.json";
     json expectedJson = {"web-app": {"servlet-mapping": {
@@ -271,7 +271,7 @@ function testFileWriteJson() {
     }
 }
 
-@test:Config {dependsOn: ["testFileWriteJson"]}
+@test:Config {dependsOn: [testFileWriteJson]}
 function testFileReadJson() {
     string filePath = TEMP_DIR + "jsonCharsFile2.json";
     json expectedJson = {"web-app": {"servlet-mapping": {
@@ -313,7 +313,7 @@ function testWriteHigherUnicodeJson() {
     }
 }
 
-@test:Config {dependsOn: ["testWriteHigherUnicodeJson"]}
+@test:Config {dependsOn: [testWriteHigherUnicodeJson]}
 function testReadHigherUnicodeJson() {
     string filePath = TEMP_DIR + "higherUniJsonCharsFile.json";
     createDirectoryExtern(TEMP_DIR);
@@ -384,7 +384,7 @@ function testWriteXml() {
     }
 }
 
-@test:Config {dependsOn: ["testWriteXml"]}
+@test:Config {dependsOn: [testWriteXml]}
 function testReadXml() {
     string filePath = TEMP_DIR + "xmlCharsFile1.xml";
     xml expectedXml = xml `<CATALOG>
@@ -467,7 +467,7 @@ function testFileWriteXml() {
     }
 }
 
-@test:Config {dependsOn: ["testFileWriteXml"]}
+@test:Config {dependsOn: [testFileWriteXml]}
 function testFileReadXml() {
     string filePath = TEMP_DIR + "xmlCharsFile2.xml";
     xml expectedXml = xml `<CATALOG>
@@ -529,7 +529,7 @@ function testReadAvailableProperty() {
     }
 }
 
-@test:Config {dependsOn: ["testReadAvailableProperty"]}
+@test:Config {dependsOn: [testReadAvailableProperty]}
 function testAllProperties() {
     string filePath = RESOURCES_BASE_PATH + "datafiles/io/text/person.properties";
 
@@ -550,7 +550,7 @@ function testAllProperties() {
     }
 }
 
-@test:Config {dependsOn: ["testAllProperties"]}
+@test:Config {dependsOn: [testAllProperties]}
 function testReadUnavailableProperty() {
     string filePath = RESOURCES_BASE_PATH + "datafiles/io/text/person.properties";
     string defaultValue = "Default";
@@ -574,7 +574,7 @@ function testReadUnavailableProperty() {
     }
 }
 
-@test:Config {dependsOn: ["testReadUnavailableProperty"]}
+@test:Config {dependsOn: [testReadUnavailableProperty]}
 function testWriteProperties() {
     string filePath = TEMP_DIR + "/tmp_person.properties";
     map<string> properties = {
@@ -609,7 +609,7 @@ function testFileWriteString() {
     }
 }
 
-@test:Config {dependsOn: ["testFileWriteString"]}
+@test:Config {dependsOn: [testFileWriteString]}
 function testFileReadString() {
     string filePath = TEMP_DIR + "stringContent1.txt";
     string expectedString = "The Big Bang Theory";
@@ -631,7 +631,7 @@ function testFileWriteLines() {
     }
 }
 
-@test:Config {dependsOn: ["testFileWriteLines"]}
+@test:Config {dependsOn: [testFileWriteLines]}
 function testFileReadLines() {
     string filePath = TEMP_DIR + "stringContentAsLines1.txt";
     string[] expectedLines = ["The Big Bang Theory", "F.R.I.E.N.D.S", "Game of Thrones", "LOST"];
@@ -657,7 +657,7 @@ function testFileWriteLinesFromStream() {
     }
 }
 
-@test:Config {dependsOn: ["testFileWriteLinesFromStream"]}
+@test:Config {dependsOn: [testFileWriteLinesFromStream]}
 function testFileReadLinesAsStream() {
     string filePath = TEMP_DIR + "stringContentAsLines2.txt";
     string[] expectedLines = ["The Big Bang Theory", "F.R.I.E.N.D.S", "Game of Thrones", "LOST"];
@@ -689,7 +689,7 @@ function testFileChannelWriteStringWithByteChannel() {
     }
 }
 
-@test:Config {dependsOn: ["testFileChannelWriteStringWithByteChannel"]}
+@test:Config {dependsOn: [testFileChannelWriteStringWithByteChannel]}
 function testFileChannelReadStringWithByteChannel() {
     string filePath = TEMP_DIR + "stringContent2.txt";
     string expectedString = "The Big Bang Theory";
@@ -723,7 +723,7 @@ function testFileChannelWriteLinesWithByteChannel() {
     }
 }
 
-@test:Config {dependsOn: ["testFileChannelWriteLinesWithByteChannel"]}
+@test:Config {dependsOn: [testFileChannelWriteLinesWithByteChannel]}
 function testFileChannelReadLinesWithByteChannel() {
     string filePath = TEMP_DIR + "stringContent2.txt";
     string expectedString = "The Big Bang Theory";
