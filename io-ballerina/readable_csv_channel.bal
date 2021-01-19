@@ -84,15 +84,15 @@ public class ReadableCSVChannel {
 
     # Returns a CSV record stream that can be used to CSV records as a stream.
     # ```ballerina
-    # string[]|io:Error? record = readableCSVChannel.csvStream();
+    # stream<string[], io:Error?>|io:Error? record = readableCSVChannel.csvStream();
     # ```
     #
     # + return - Either a stream of records(string[]) or else an `io:Error`
-    public function csvStream() returns stream<string[]>|Error {
+    public function csvStream() returns stream<string[], Error?>|Error {
         var recordChannel = self.dc;
         if (recordChannel is ReadableTextRecordChannel) {
             CSVStream csvStream = new (recordChannel);
-            return new stream<string[]>(csvStream);
+            return new stream<string[], Error?>(csvStream);
         } else {
             GenericError e = error GenericError("channel not initialized");
             panic e;

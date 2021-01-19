@@ -672,9 +672,9 @@ function testFileReadCsvAsStream() {
     "John Thomson", "Software Architect", "WSO2", "38 years", "Colombo"], ["Mary Thompson", "Banker", "Sampath Bank", 
     "30 years", "Colombo"]];
     var result = fileReadCsvAsStream(filePath);
-    if (result is stream<string[]>) {
+    if (result is stream<string[], Error?>) {
         int i = 0;
-        _ = result.forEach(function(string[] val) {
+        error? e = result.forEach(function(string[] val) {
                                int j = 0;
                                foreach string s in val {
                                    test:assertEquals(s, expectedContent[i][j]);
@@ -682,6 +682,10 @@ function testFileReadCsvAsStream() {
                                }
                                i += 1;
                            });
+        if (e is error) {
+            test:assertFail(msg = e.message());
+        }
+        test:assertEquals(i, 3);
     } else {
         test:assertFail(msg = result.message());
     }

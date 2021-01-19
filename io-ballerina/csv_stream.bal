@@ -33,14 +33,16 @@ public class CSVStream {
     #
     # + return - Returns a CSV record as a string array when a record is avaliable in the stream or
     # return null when the stream reaches the end
-    public isolated function next() returns record {| string[] value; |}? {
+    public isolated function next() returns record {| string[] value; |}|Error? {
         var recordValue = readRecord(self.readableTextRecordChannel, COMMA);
         if (recordValue is string[]) {
             record {| string[] value; |} value = {value: <string[]>recordValue.cloneReadOnly()};
             return value;
-        } else {
+        } else if (recordValue is EofError) {
             var closeResult = closeRecordReader(self.readableTextRecordChannel);
             return ();
+        } else {
+            return recordValue;
         }
     }
 

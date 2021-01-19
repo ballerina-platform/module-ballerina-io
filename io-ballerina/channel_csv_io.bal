@@ -39,7 +39,7 @@ function channelReadCsv(ReadableChannel readableChannel, int skipHeaders = 0) re
     }
 }
 
-function channelReadCsvAsStream(ReadableChannel readableChannel) returns @tainted stream<string[]>|Error {
+function channelReadCsvAsStream(ReadableChannel readableChannel) returns @tainted stream<string[], Error?>|Error {
     var csvChannel = getReadableCSVChannel(readableChannel, 0);
     if (csvChannel is ReadableCSVChannel) {
         return csvChannel.csvStream();
@@ -67,7 +67,7 @@ function channelWriteCsv(WritableChannel writableChannel, string[][] content) re
     }
 }
 
-function channelWriteCsvFromStream(WritableChannel writableChannel, stream<string[]> content) returns Error? {
+function channelWriteCsvFromStream(WritableChannel writableChannel, stream<string[], Error?> content) returns Error? {
     var csvChannel = getWritableCSVChannel(writableChannel);
     if (csvChannel is WritableCSVChannel) {
         error? e = content.forEach(function(string[] stringContent) {
