@@ -52,7 +52,7 @@ function channelWriteBytes(WritableChannel writableChannel, byte[] content) retu
     }
 }
 
-function channelWriteBlocksFromStream(WritableChannel writableChannel, stream<byte[]> byteStream) returns Error? {
+function channelWriteBlocksFromStream(WritableChannel writableChannel, stream<byte[], Error?> byteStream) returns Error? {
     if (writableChannel is WritableByteChannel) {
         error? e = byteStream.forEach(function(byte[] byteContent) {
                                           if (writableChannel is WritableByteChannel) {

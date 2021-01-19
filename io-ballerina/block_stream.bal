@@ -37,14 +37,16 @@ public class BlockStream {
     # The next function reads and return the next block of the related stream.
     #
     # + return - Returns a `io:Block` when a block is avaliable in the stream or return null when the stream reaches the end
-    public isolated function next() returns record {| Block value; |}? {
+    public isolated function next() returns record {| Block value; |}|Error? {
         var block = readBlock(self.readableByteChannel, self.blockSize);
         if (block is byte[]) {
             record {| Block value; |} value = {value: <Block>block.cloneReadOnly()};
             return value;
-        } else {
+        } else if (block is EofError){
             var closeResult = closeInputStream(self.readableByteChannel);
             return ();
+        } else {
+            return block;
         }
     }
 

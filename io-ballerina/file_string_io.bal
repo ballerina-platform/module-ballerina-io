@@ -46,11 +46,11 @@ public function fileReadLines(@untainted string path) returns @tainted string[]|
 
 # Reads file content as a stream of lines.
 # ```ballerina
-# stream<string>|io:Error content = io:fileReadLinesAsStream("./resources/myfile.txt");
+# stream<string, io:Error?>|io:Error content = io:fileReadLinesAsStream("./resources/myfile.txt");
 # ```
 # + path - The path of the file
 # + return - The file content as a stream of strings or an `io:Error`
-public function fileReadLinesAsStream(@untainted string path) returns @tainted stream<string>|Error {
+public function fileReadLinesAsStream(@untainted string path) returns @tainted stream<string, Error?>|Error {
     var byteChannel = openReadableFile(path);
     if (byteChannel is ReadableByteChannel) {
         return channelReadLinesAsStream(byteChannel);
@@ -128,13 +128,13 @@ public function fileWriteLines(@untainted string path, string[] content) returns
 # During the writing operation, a newline character `\n` will be added after each line.
 # ```ballerina
 # string content = ["Hello Universe..!!", "How are you?"];
-# stream<string, io:Error> lineStream = content.toStream();
+# stream<string, io:Error?> lineStream = content.toStream();
 # io:Error result = io:fileWriteLinesFromStream("./resources/myfile.txt", lineStream);
 # ```
 # + path - The path of the file
 # + lineStream -  A stream of lines to write
 # + return - The null `()` value when the writing was successful or an `io:Error`
-public function fileWriteLinesFromStream(@untainted string path, stream<string> lineStream) returns Error? {
+public function fileWriteLinesFromStream(@untainted string path, stream<string, Error?> lineStream) returns Error? {
     var byteChannel = openWritableFile(path);
     if (byteChannel is WritableByteChannel) {
         return channelWriteLinesFromStream(byteChannel, lineStream);

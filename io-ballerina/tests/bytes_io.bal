@@ -208,8 +208,8 @@ function testFileChannelReadBytesAsStream() {
     var fileOpenResult = openReadableFile(filePath);
     if (fileOpenResult is ReadableByteChannel) {
         var result = channelReadBlocksAsStream(fileOpenResult, 2);
-        if (result is stream<Block>) {
-            _ = result.forEach(function(Block val) {
+        if (result is stream<Block, Error?>) {
+            error? e = result.forEach(function(Block val) {
                                    foreach byte b in val {
                                        byteArr.push(b);
                                    }

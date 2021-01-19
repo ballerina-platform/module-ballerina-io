@@ -662,12 +662,17 @@ function testFileReadLinesAsStream() {
     string filePath = TEMP_DIR + "stringContentAsLines2.txt";
     string[] expectedLines = ["The Big Bang Theory", "F.R.I.E.N.D.S", "Game of Thrones", "LOST"];
     var result = fileReadLinesAsStream(filePath);
-    if (result is stream<string>) {
+    if (result is stream<string, error?>) {
         int i = 0;
-        _ = result.forEach(function(string val) {
+        error? e = result.forEach(function(string val) {
                                test:assertEquals(val, expectedLines[i]);
                                i += 1;
                            });
+
+        if (e is error) {
+            test:assertFail(msg = e.message());
+        }
+        test:assertEquals(i, 4);
     } else {
         test:assertFail(msg = result.message());
     }
