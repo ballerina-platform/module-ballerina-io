@@ -38,7 +38,7 @@ function channelReadLines(ReadableChannel readableChannel) returns @tainted stri
     }
 }
 
-function channelReadLinesAsStream(ReadableChannel readableChannel) returns @tainted stream<string>|Error {
+function channelReadLinesAsStream(ReadableChannel readableChannel) returns @tainted stream<string, Error>|Error {
     var characterChannel = getReadableCharacterChannel(readableChannel);
     if (characterChannel is ReadableCharacterChannel) {
         return characterChannel.lineStream();
@@ -107,7 +107,7 @@ function channelWriteLines(WritableChannel writableChannel, string[] content) re
     }
 }
 
-function channelWriteLinesFromStream(WritableChannel writableChannel, stream<string> lineStream) returns Error? {
+function channelWriteLinesFromStream(WritableChannel writableChannel, stream<string, error?> lineStream) returns Error? {
     var characterChannel = getWritableCharacterChannel(writableChannel);
     if (characterChannel is WritableCharacterChannel) {
         error? e = lineStream.forEach(function(string stringContent) {

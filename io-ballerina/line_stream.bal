@@ -32,14 +32,16 @@ public class LineStream {
     # The next function reads and return the next line of the related stream.
     #
     # + return - Returns a line as a string when a line is avaliable in the stream or return null when the stream reaches the end
-    public isolated function next() returns record {| string value; |}? {
+    public isolated function next() returns record {| string value; |}|Error? {
         var line = readLine(self.readableCharacterChannel);
         if (line is string) {
             record {| string value; |} value = {value: <string>line.cloneReadOnly()};
             return value;
-        } else {
+        } else if (line is EofError) {
             var closeResult = closeReader(self.readableCharacterChannel);
             return ();
+        } else {
+            return line;
         }
     }
 
