@@ -14,7 +14,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import ballerina/java;
+import ballerina/jballerina.java;
 
 # ReadableByteChannel represents an input resource (i.e file). which could be used to source bytes.
 # A file path or an in-memory `byte` array can be used to obtain a `io:ReadableByteChannel`.
