@@ -13,7 +13,7 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-import ballerina/java;
+import ballerina/jballerina.java;
 
 # WritableByteChannel represents an output resource (i.e file) which could be used to sink bytes
 # A file path can be used to obtain a `io:WritableByteChannel`.

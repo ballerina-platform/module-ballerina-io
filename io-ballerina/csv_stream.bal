@@ -14,7 +14,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import ballerina/java;
+import ballerina/jballerina.java;
 
 # `LineStream` used to initialize a stream of type strings(lines). This `LineStream` refers to the stream that embedded to
 # the I/O record channels.
