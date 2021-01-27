@@ -250,6 +250,7 @@ public class IOUtils {
                     opts.add(StandardOpenOption.APPEND);
                 } else {
                     opts.add(StandardOpenOption.WRITE);
+                    opts.add(StandardOpenOption.TRUNCATE_EXISTING);
                 }
             }
             return FileChannel.open(path, opts);
