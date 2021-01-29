@@ -4,9 +4,7 @@ on: [ push, pull_request ]
 
 jobs:
     ubuntu-build:
-
         runs-on: ubuntu-latest
-
         steps:
             -   uses: actions/checkout@v1
             -   name: Set up JDK 11
@@ -17,10 +15,22 @@ jobs:
                 env:
                     packageUser: ${{ github.actor }}
                     packagePAT: ${{ secrets.GITHUB_TOKEN }}
-                run: ./gradlew build --scan
+                run: ./gradlew build --scan --no-daemon
+            -   name: Archive Error Log
+                uses: actions/upload-artifact@v2
+                if: failure()
+                with:
+                    name: Ballerina Internal Log
+                    path: io-ballerina/ballerina-internal.log
+                    if-no-files-found: ignore
+            -   name: Archive Code Coverage JSON
+                uses: actions/upload-artifact@v2
+                with:
+                    name: Code Coverage JSON
+                    path: io-ballerina/target/report/test_results.json
+                    if-no-files-found: ignore
 
     windows-build:
-
         runs-on: windows-latest
 
         steps:
@@ -33,5 +43,4 @@ jobs:
                 env:
                     packageUser: ${{ github.actor }}
                     packagePAT: ${{ secrets.GITHUB_TOKEN }}
-                run: ./gradlew.bat build -x test --scan
-        
+                run: ./gradlew.bat build -x test --scan --no-daemon
