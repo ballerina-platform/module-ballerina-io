@@ -126,12 +126,12 @@ function testFileReadBytesAsStream() {
     var result = fileReadBlocksAsStream(filePath, 2);
     string expectedString = "Sheldon Cooper";
     byte[] byteArr = [];
-    if (result is stream<Block>) {
-        _ = result.forEach(function(Block val) {
-                               foreach byte b in val {
-                                   byteArr.push(b);
-                               }
-                           });
+    if (result is stream<Block, Error>) {
+        error? e = result.forEach(function(Block val) {
+            foreach byte b in val {
+                byteArr.push(b);
+            }
+        });
         string|error returnedString = langstring:fromBytes(byteArr);
         if (returnedString is string) {
             test:assertEquals(returnedString, expectedString);
@@ -208,7 +208,7 @@ function testFileChannelReadBytesAsStream() {
     var fileOpenResult = openReadableFile(filePath);
     if (fileOpenResult is ReadableByteChannel) {
         var result = channelReadBlocksAsStream(fileOpenResult, 2);
-        if (result is stream<Block, Error?>) {
+        if (result is stream<Block, Error>) {
             error? e = result.forEach(function(Block val) {
                                    foreach byte b in val {
                                        byteArr.push(b);

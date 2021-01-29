@@ -57,13 +57,13 @@ public class ReadableByteChannel {
 
     # Return a block stream that can be used to read all `byte` blocks as a stream.
     # ```ballerina
-    # stream<io:Block, io:Error?>|io:Error result = readableByteChannel.blockStream();
+    # stream<io:Block, io:Error>|io:Error result = readableByteChannel.blockStream();
     # ```
     # + blockSize - A positive integer. Size of the block.
     # + return - Either a block stream or else an `io:Error`
-    public function blockStream(int blockSize) returns @tainted stream<Block, Error?>|Error {
+    public function blockStream(int blockSize) returns @tainted stream<Block, Error>|Error {
         BlockStream blockStream = new (self, blockSize);
-        return new stream<Block, Error?>(blockStream);
+        return new stream<Block, Error>(blockStream);
     }
 
     # Encodes a given `ReadableByteChannel` using the Base64 encoding scheme.
