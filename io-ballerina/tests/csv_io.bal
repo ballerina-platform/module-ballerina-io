@@ -672,7 +672,7 @@ function testFileReadCsvAsStream() {
     "John Thomson", "Software Architect", "WSO2", "38 years", "Colombo"], ["Mary Thompson", "Banker", "Sampath Bank", 
     "30 years", "Colombo"]];
     var result = fileReadCsvAsStream(filePath);
-    if (result is stream<string[], Error?>) {
+    if (result is stream<string[], Error>) {
         int i = 0;
         error? e = result.forEach(function(string[] val) {
                                int j = 0;

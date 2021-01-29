@@ -28,7 +28,7 @@ function channelReadBytes(ReadableChannel readableChannel) returns @tainted read
     }
 }
 
-function channelReadBlocksAsStream(ReadableChannel readableChannel, int blockSize=4096) returns @tainted stream<Block>|Error {
+function channelReadBlocksAsStream(ReadableChannel readableChannel, int blockSize=4096) returns @tainted stream<Block, Error>|Error {
     if (readableChannel is ReadableByteChannel) {
         return readableChannel.blockStream(blockSize);
     } else {
@@ -52,7 +52,7 @@ function channelWriteBytes(WritableChannel writableChannel, byte[] content) retu
     }
 }
 
-function channelWriteBlocksFromStream(WritableChannel writableChannel, stream<byte[], Error?> byteStream) returns Error? {
+function channelWriteBlocksFromStream(WritableChannel writableChannel, stream<byte[], Error> byteStream) returns Error? {
     if (writableChannel is WritableByteChannel) {
         error? e = byteStream.forEach(function(byte[] byteContent) {
                                           if (writableChannel is WritableByteChannel) {
