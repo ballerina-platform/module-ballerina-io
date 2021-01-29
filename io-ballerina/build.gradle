@@ -129,7 +129,6 @@ task ballerinaBuild {
     dependsOn(updateTomlFile)
     dependsOn(test)
     dependsOn(unpackJballerinaTools)
-    dependsOn(updateTomlFile)
     finalizedBy(revertTomlFile)
 
     def testParams = "--skip-tests"
