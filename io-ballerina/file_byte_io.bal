@@ -31,12 +31,12 @@ public function fileReadBytes(@untainted string path) returns @tainted readonly 
 
 # Read the entire file content as a stream of blocks.
 # ```ballerina
-# stream<io:Block, io:Error?>|io:Error content = io:fileReadBlocksAsStream("./resources/myfile.txt", 1000);
+# stream<io:Block, io:Error>|io:Error content = io:fileReadBlocksAsStream("./resources/myfile.txt", 1000);
 # ```
 # + path - The path of the file
 # + blockSize - An optional size of the byte block. Default size is 4KB
 # + return - Either a byte block stream or `io:Error`
-public function fileReadBlocksAsStream(string path, int blockSize=4096) returns @tainted stream<Block, Error?>|Error {
+public function fileReadBlocksAsStream(string path, int blockSize=4096) returns @tainted stream<Block, Error>|Error {
     var byteChannel = openReadableFile(path);
     if (byteChannel is ReadableByteChannel) {
         return channelReadBlocksAsStream(byteChannel, blockSize);
@@ -71,7 +71,7 @@ public function fileWriteBytes(@untainted string path, byte[] content) returns E
 # + path - The path of the file
 # + byteStream - Byte stream to write
 # + return - `io:Error` or else `()`
-public function fileWriteBlocksFromStream(@untainted string path, stream<byte[], Error?> byteStream) returns Error? {
+public function fileWriteBlocksFromStream(@untainted string path, stream<byte[], Error> byteStream) returns Error? {
 
     var byteChannel = openWritableFile(path);
     if (byteChannel is WritableByteChannel) {

@@ -95,13 +95,13 @@ public class ReadableCharacterChannel {
 
     # Return a stream of lines that can be used to read all the lines in a file as a stream.
     # ```ballerina
-    # stream<string, io:Error?>|io:Error? result = readableCharChannel.lineStream();
+    # stream<string, io:Error>|io:Error? result = readableCharChannel.lineStream();
     # ```
     #
     # + return - Either a stream of strings(lines) or an io:Error.
-    public function lineStream() returns stream<string, Error?>|Error {
+    public function lineStream() returns stream<string, Error>|Error {
         LineStream lineStream = new (self);
-        return new stream<string, Error?>(lineStream);
+        return new stream<string, Error>(lineStream);
     }
 
     # Reads all properties from a .properties file.
