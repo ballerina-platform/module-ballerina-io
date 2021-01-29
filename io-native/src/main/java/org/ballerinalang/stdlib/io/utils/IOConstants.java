@@ -58,7 +58,7 @@ public class IOConstants {
      * @deprecated Use IOUtils.getIOPackage().getVersion().
      */
     @Deprecated
-    public static final String IO_PACKAGE_VERSION =  "0.5.5";
+    public static final String IO_PACKAGE_VERSION =  "0.5.6";
 
     /**
      * I/O standard library package ID.

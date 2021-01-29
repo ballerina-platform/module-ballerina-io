@@ -126,12 +126,12 @@ function testFileReadBytesAsStream() {
     var result = fileReadBlocksAsStream(filePath, 2);
     string expectedString = "Sheldon Cooper";
     byte[] byteArr = [];
-    if (result is stream<Block>) {
-        _ = result.forEach(function(Block val) {
-                               foreach byte b in val {
-                                   byteArr.push(b);
-                               }
-                           });
+    if (result is stream<Block, Error>) {
+        error? e = result.forEach(function(Block val) {
+            foreach byte b in val {
+                byteArr.push(b);
+            }
+        });
         string|error returnedString = langstring:fromBytes(byteArr);
         if (returnedString is string) {
             test:assertEquals(returnedString, expectedString);
@@ -208,7 +208,7 @@ function testFileChannelReadBytesAsStream() {
     var fileOpenResult = openReadableFile(filePath);
     if (fileOpenResult is ReadableByteChannel) {
         var result = channelReadBlocksAsStream(fileOpenResult, 2);
-        if (result is stream<Block, Error?>) {
+        if (result is stream<Block, Error>) {
             error? e = result.forEach(function(Block val) {
                                    foreach byte b in val {
                                        byteArr.push(b);
@@ -241,6 +241,39 @@ function testFileCopy() {
         }
     } else {
         test:assertFail(msg = readResult.message());
+    }
+}
+
+@test:Config {}
+function testFileWriteBytesWithTruncate() {
+    string filePath = TEMP_DIR + "bytesFile6.txt";
+    createDirectoryExtern(TEMP_DIR);
+    string content1 = "Ballerina is an open source programming language and " +
+    "platform for cloud-era application programmers to easily write software that just works.";
+    string content2 = "Ann Johnson is a banker.";
+
+    // Check content 01
+    var result1 = fileWriteBytes(filePath, content1.toBytes());
+    if (result1 is Error) {
+        test:assertFail(msg = result1.message());
+    }
+    var result2 = fileReadBytes(filePath);
+    if (result2 is (readonly & byte[])) {
+        test:assertEquals(result2, content1.toBytes());
+    } else {
+        test:assertFail(msg = result2.message());
+    }
+
+    // Check content 02
+    var result3 = fileWriteBytes(filePath, content2.toBytes());
+    if (result3 is Error) {
+        test:assertFail(msg = result3.message());
+    }
+    var result4 = fileReadBytes(filePath);
+    if (result4 is (readonly & byte[])) {
+        test:assertEquals(result4, content2.toBytes());
+    } else {
+        test:assertFail(msg = result4.message());
     }
 }
 
