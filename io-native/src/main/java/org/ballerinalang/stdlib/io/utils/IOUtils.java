@@ -22,11 +22,8 @@ import io.ballerina.runtime.api.Module;
 import io.ballerina.runtime.api.creators.ErrorCreator;
 import io.ballerina.runtime.api.utils.StringUtils;
 import io.ballerina.runtime.api.values.BError;
-import org.ballerinalang.stdlib.io.channels.FileIOChannel;
 import org.ballerinalang.stdlib.io.channels.base.Channel;
 import org.ballerinalang.stdlib.io.channels.base.CharacterChannel;
-import org.ballerinalang.stdlib.io.channels.base.DelimitedRecordChannel;
-import org.ballerinalang.stdlib.io.csv.Format;
 import org.ballerinalang.stdlib.io.nativeimpl.ModuleUtils;
 
 import java.io.IOException;
@@ -37,10 +34,8 @@ import java.nio.file.AccessDeniedException;
 import java.nio.file.Files;
 import java.nio.file.OpenOption;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.HashSet;
-import java.util.Locale;
 import java.util.Set;
 
 import static org.ballerinalang.stdlib.io.utils.IOConstants.ErrorCode.AccessDeniedError;
@@ -220,14 +215,14 @@ public class IOUtils {
      * Open a file channel from the given path.
      *
      * @param path       path to the file.
-     * @param accessMode file access mode.
+     * @param option file access option.
      * @return the file channel which will hold the reference.
      * @throws BallerinaIOException during i/o error.
      */
-    public static FileChannel openFileChannelExtended(Path path, String accessMode) throws BallerinaIOException {
-        String accessLC = accessMode.toLowerCase(Locale.getDefault());
+    public static FileChannel openFileChannelExtended(Path path, IOConstants.FileOpenOption option)
+            throws BallerinaIOException {
         Set<OpenOption> opts = new HashSet<>();
-        if (accessLC.contains("r")) {
+        if (option.equals(IOConstants.FileOpenOption.READ)) {
             if (!path.toFile().exists()) {
                 String msg = "no such file or directory: " + path.toFile().getAbsolutePath();
                 throw createError(FileNotFoundError, msg);
@@ -237,8 +232,8 @@ public class IOUtils {
             }
             opts.add(StandardOpenOption.READ);
         }
-        boolean write = accessLC.contains("w");
-        boolean append = accessLC.contains("a");
+        boolean write = option.equals(IOConstants.FileOpenOption.OVERWRITE);
+        boolean append = option.equals(IOConstants.FileOpenOption.APPEND);
         try {
             if (write || append) {
                 if (path.toFile().exists() && !Files.isWritable(path)) {
@@ -260,26 +255,6 @@ public class IOUtils {
         } catch (IOException | UnsupportedOperationException e) {
             throw new BallerinaIOException("fail to open file: " + e.getMessage(), e);
         }
-    }
-
-    /**
-     * Creates a delimited record channel to read from CSV file.
-     *
-     * @param filePath path to the CSV file.
-     * @param encoding the encoding of CSV file.
-     * @param mode     permission to access the file.
-     * @param format   format of the CSV file.
-     * @return delimited record channel to read from CSV.
-     * @throws BallerinaIOException during I/O error.
-     */
-    public static DelimitedRecordChannel createDelimitedRecordChannelExtended(String filePath, String encoding,
-                                                                              String mode, Format format)
-            throws BallerinaIOException {
-        Path path = Paths.get(filePath);
-        FileChannel sourceChannel = openFileChannelExtended(path, mode);
-        FileIOChannel fileIOChannel = new FileIOChannel(sourceChannel);
-        CharacterChannel characterChannel = new CharacterChannel(fileIOChannel, Charset.forName(encoding).name());
-        return new DelimitedRecordChannel(characterChannel, format);
     }
 
     /**
