@@ -16,6 +16,15 @@
 
 import ballerina/jballerina.java;
 
+# Represents a file opening options for writing.
+#
+# + OVERWRITE - Overriwrite(truncate the existing content)
+# + APPEND - Append to the existing content
+public enum FileOpenOption {
+    OVERWRITE,
+    APPEND
+}
+
 # Retrieves a `ReadableByteChannel` from a given file path.
 #```ballerina
 # io:ReadableByteChannel readableFieldResult = check io:openReadableFile("./files/sample.txt");
@@ -34,9 +43,9 @@ public function openReadableFile(@untainted string path) returns ReadableByteCha
 # ```
 #
 # + path - Relative/absolute path string to locate the file
-# + append - Whether to append to the end of file
+# + option - To indicate whether to overwrite or append the given content
 # + return - The `ByteChannel` representation of the file resource or else an `io:Error` if any error occurred
-public function openWritableFile(@untainted string path, boolean append = false)
+public function openWritableFile(@untainted string path, FileOpenOption option = OVERWRITE)
     returns WritableByteChannel|Error = @java:Method {
     name: "openWritableFile",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.ByteChannelUtils"
@@ -82,12 +91,14 @@ public function openReadableCsvFile(@untainted string path,
 # + fieldSeparator - CSV record separator (i.e., comma or tab)
 # + charset - Representation of the encoding characters in the file 
 # + skipHeaders - Number of headers, which should be skipped
+# + option - To indicate whether to overwrite or append the given content
 # + return - The `WritableCSVChannel`, which could be used to write the CSV records or else an `io:Error` if any error occurred
 public function openWritableCsvFile(@untainted string path,
                                     @untainted Separator fieldSeparator = ",",
                                     @untainted string charset = "UTF-8",
-                                    @untainted int skipHeaders = 0) returns WritableCSVChannel|Error {
-    WritableByteChannel byteChannel = check openWritableFile(path);
+                                    @untainted int skipHeaders = 0,
+                                    FileOpenOption option = OVERWRITE) returns WritableCSVChannel|Error {
+    WritableByteChannel byteChannel = check openWritableFile(path, option);
     WritableCharacterChannel charChannel = new(byteChannel, charset);
     return new WritableCSVChannel(charChannel, fieldSeparator);
 }
