@@ -157,7 +157,7 @@ function testAppendCharacters() {
     string initialContent = "Hi, I'm the initial content. ";
     string appendingContent = "Hi, I was appended later. ";
 
-    var byteChannel = openWritableFile(filePath, true);
+    var byteChannel = openWritableFile(filePath, APPEND);
     if (byteChannel is WritableByteChannel) {
         WritableCharacterChannel characterChannel = new WritableCharacterChannel(byteChannel, DEFAULT_ENCODING);
         var result = characterChannel.write(initialContent, 0);
@@ -173,7 +173,7 @@ function testAppendCharacters() {
         test:assertFail(msg = byteChannel.message());
     }
 
-    var byteChannelToAppend = openWritableFile(filePath, true);
+    var byteChannelToAppend = openWritableFile(filePath, APPEND);
     if (byteChannelToAppend is WritableByteChannel) {
         WritableCharacterChannel characterChannelToAppend = new WritableCharacterChannel(byteChannelToAppend, 
         DEFAULT_ENCODING);
@@ -193,407 +193,6 @@ function testAppendCharacters() {
         }
     } else {
         test:assertFail(msg = byteChannelToAppend.message());
-    }
-}
-
-@test:Config {}
-function testWriteJson() {
-    string filePath = TEMP_DIR + "jsonCharsFile1.json";
-    json content = {"web-app": {"servlet-mapping": {
-                "cofaxCDS": "/",
-                "cofaxEmail": "/cofaxutil/aemail/*",
-                "cofaxAdmin": "/admin/*",
-                "fileServlet": "/static/*",
-                "cofaxTools": ["/tools1/*", "/tools2/*", "/tools3/*"]
-            }}};
-
-    var byteChannel = openWritableFile(filePath);
-    if (byteChannel is WritableByteChannel) {
-        WritableCharacterChannel characterChannel = new WritableCharacterChannel(byteChannel, DEFAULT_ENCODING);
-        var result = characterChannel.writeJson(content);
-        if (result is Error) {
-            test:assertFail(msg = result.message());
-        }
-
-        var closeResult = characterChannel.close();
-        if (closeResult is Error) {
-            test:assertFail(msg = closeResult.message());
-        }
-    } else {
-        test:assertFail(msg = byteChannel.message());
-    }
-}
-
-@test:Config {dependsOn: [testWriteJson]}
-function testReadJson() {
-    string filePath = TEMP_DIR + "jsonCharsFile1.json";
-    json expectedJson = {"web-app": {"servlet-mapping": {
-                "cofaxCDS": "/",
-                "cofaxEmail": "/cofaxutil/aemail/*",
-                "cofaxAdmin": "/admin/*",
-                "fileServlet": "/static/*",
-                "cofaxTools": ["/tools1/*", "/tools2/*", "/tools3/*"]
-            }}};
-
-    var byteChannel = openReadableFile(filePath);
-    if (byteChannel is ReadableByteChannel) {
-        ReadableCharacterChannel characterChannel = new ReadableCharacterChannel(byteChannel, DEFAULT_ENCODING);
-        var result = characterChannel.readJson();
-        if (result is json) {
-            test:assertEquals(result, expectedJson, msg = "Found unexpected output");
-        } else {
-            test:assertFail(msg = result.message());
-        }
-
-        var closeResult = characterChannel.close();
-        if (closeResult is Error) {
-            test:assertFail(msg = closeResult.message());
-        }
-    } else {
-        test:assertFail(msg = byteChannel.message());
-    }
-}
-
-@test:Config {}
-function testFileWriteJson() {
-    string filePath = TEMP_DIR + "jsonCharsFile2.json";
-    json content = {"web-app": {"servlet-mapping": {
-                "cofaxCDS": "/",
-                "cofaxEmail": "/cofaxutil/aemail/*",
-                "cofaxAdmin": "/admin/*",
-                "fileServlet": "/static/*",
-                "cofaxTools": ["/tools1/*", "/tools2/*", "/tools3/*"]
-            }}};
-
-    var result = fileWriteJson(filePath, content);
-    if (result is Error) {
-        test:assertFail(msg = result.message());
-    }
-}
-
-@test:Config {dependsOn: [testFileWriteJson]}
-function testFileReadJson() {
-    string filePath = TEMP_DIR + "jsonCharsFile2.json";
-    json expectedJson = {"web-app": {"servlet-mapping": {
-                "cofaxCDS": "/",
-                "cofaxEmail": "/cofaxutil/aemail/*",
-                "cofaxAdmin": "/admin/*",
-                "fileServlet": "/static/*",
-                "cofaxTools": ["/tools1/*", "/tools2/*", "/tools3/*"]
-            }}};
-
-    var result = fileReadJson(filePath);
-    if (result is json) {
-        test:assertEquals(result, expectedJson, msg = "Found unexpected output");
-    } else {
-        test:assertFail(msg = result.message());
-    }
-}
-
-@test:Config {}
-function testFileWriteJsonWithTruncate() {
-    string filePath = TEMP_DIR + "jsonCharsFile3.json";
-    json content1 = {"web-app": {"servlet-mapping": {
-                "cofaxCDS": "/",
-                "cofaxEmail": "/cofaxutil/aemail/*",
-                "cofaxAdmin": "/admin/*",
-                "fileServlet": "/static/*",
-                "cofaxTools": ["/tools1/*", "/tools2/*", "/tools3/*"]
-            }}};
-    json content2 = {"userName": "Harry Thompson", "age": 23};
-
-    // Check content 01
-    var result1 = fileWriteJson(filePath, content1);
-    if (result1 is Error) {
-        test:assertFail(msg = result1.message());
-    }
-    var result2 = fileReadJson(filePath);
-    if (result2 is json) {
-        test:assertEquals(result2, content1);
-    } else {
-        test:assertFail(msg = result2.message());
-    }
-
-    // Check content 02
-    var result3 = fileWriteJson(filePath, content2);
-    if (result3 is Error) {
-        test:assertFail(msg = result3.message());
-    }
-    var result4= fileReadJson(filePath);
-    if (result4 is json) {
-        test:assertEquals(result4, content2);
-    } else {
-        test:assertFail(msg = result4.message());
-    }
-}
-
-
-@test:Config {}
-function testWriteHigherUnicodeJson() {
-    string filePath = TEMP_DIR + "higherUniJsonCharsFile.json";
-    createDirectoryExtern(TEMP_DIR);
-    json content = {"loop": "É"};
-
-    var byteChannel = openWritableFile(filePath);
-    if (byteChannel is WritableByteChannel) {
-        WritableCharacterChannel characterChannel = new WritableCharacterChannel(byteChannel, DEFAULT_ENCODING);
-        var result = characterChannel.writeJson(content);
-        if (result is Error) {
-            test:assertFail(msg = result.message());
-        }
-
-        var closeResult = characterChannel.close();
-        if (closeResult is Error) {
-            test:assertFail(msg = closeResult.message());
-        }
-    } else {
-        test:assertFail(msg = byteChannel.message());
-    }
-}
-
-@test:Config {dependsOn: [testWriteHigherUnicodeJson]}
-function testReadHigherUnicodeJson() {
-    string filePath = TEMP_DIR + "higherUniJsonCharsFile.json";
-    createDirectoryExtern(TEMP_DIR);
-    json expectedJson = {"loop": "É"};
-    var byteChannel = openReadableFile(filePath);
-    if (byteChannel is ReadableByteChannel) {
-        ReadableCharacterChannel characterChannel = new ReadableCharacterChannel(byteChannel, DEFAULT_ENCODING);
-        var result = characterChannel.readJson();
-        if (result is json) {
-            test:assertEquals(result, expectedJson, msg = "Found unexpected output");
-        } else {
-            test:assertFail(msg = result.message());
-        }
-
-        var closeResult = characterChannel.close();
-        if (closeResult is Error) {
-            test:assertFail(msg = closeResult.message());
-        }
-    } else {
-        test:assertFail(msg = byteChannel.message());
-    }
-}
-
-@test:Config {}
-function testWriteXml() {
-    string filePath = TEMP_DIR + "xmlCharsFile1.xml";
-    createDirectoryExtern(TEMP_DIR);
-    xml content = xml `<CATALOG>
-                       <CD>
-                           <TITLE>Empire Burlesque</TITLE>
-                           <ARTIST>Bob Dylan</ARTIST>
-                           <COUNTRY>USA</COUNTRY>
-                           <COMPANY>Columbia</COMPANY>
-                           <PRICE>10.90</PRICE>
-                           <YEAR>1985</YEAR>
-                       </CD>
-                       <CD>
-                           <TITLE>Hide your heart</TITLE>
-                           <ARTIST>Bonnie Tyler</ARTIST>
-                           <COUNTRY>UK</COUNTRY>
-                           <COMPANY>CBS Records</COMPANY>
-                           <PRICE>9.90</PRICE>
-                           <YEAR>1988</YEAR>
-                       </CD>
-                       <CD>
-                           <TITLE>Greatest Hits</TITLE>
-                           <ARTIST>Dolly Parton</ARTIST>
-                           <COUNTRY>USA</COUNTRY>
-                           <COMPANY>RCA</COMPANY>
-                           <PRICE>9.90</PRICE>
-                           <YEAR>1982</YEAR>
-                       </CD>
-                   </CATALOG>`;
-    var byteChannel = openWritableFile(filePath);
-    if (byteChannel is WritableByteChannel) {
-        WritableCharacterChannel characterChannel = new WritableCharacterChannel(byteChannel, DEFAULT_ENCODING);
-        var result = characterChannel.writeXml(content);
-        if (result is Error) {
-            test:assertFail(msg = result.message());
-        }
-
-        var closeResult = characterChannel.close();
-        if (closeResult is Error) {
-            test:assertFail(msg = closeResult.message());
-        }
-    } else {
-        test:assertFail(msg = byteChannel.message());
-    }
-}
-
-@test:Config {dependsOn: [testWriteXml]}
-function testReadXml() {
-    string filePath = TEMP_DIR + "xmlCharsFile1.xml";
-    xml expectedXml = xml `<CATALOG>
-                       <CD>
-                           <TITLE>Empire Burlesque</TITLE>
-                           <ARTIST>Bob Dylan</ARTIST>
-                           <COUNTRY>USA</COUNTRY>
-                           <COMPANY>Columbia</COMPANY>
-                           <PRICE>10.90</PRICE>
-                           <YEAR>1985</YEAR>
-                       </CD>
-                       <CD>
-                           <TITLE>Hide your heart</TITLE>
-                           <ARTIST>Bonnie Tyler</ARTIST>
-                           <COUNTRY>UK</COUNTRY>
-                           <COMPANY>CBS Records</COMPANY>
-                           <PRICE>9.90</PRICE>
-                           <YEAR>1988</YEAR>
-                       </CD>
-                       <CD>
-                           <TITLE>Greatest Hits</TITLE>
-                           <ARTIST>Dolly Parton</ARTIST>
-                           <COUNTRY>USA</COUNTRY>
-                           <COMPANY>RCA</COMPANY>
-                           <PRICE>9.90</PRICE>
-                           <YEAR>1982</YEAR>
-                       </CD>
-                   </CATALOG>`;
-    var byteChannel = openReadableFile(filePath);
-    if (byteChannel is ReadableByteChannel) {
-        ReadableCharacterChannel characterChannel = new ReadableCharacterChannel(byteChannel, DEFAULT_ENCODING);
-        var result = characterChannel.readXml();
-        if (result is xml) {
-            test:assertEquals(result, expectedXml, msg = "Found unexpected output");
-        } else {
-            test:assertFail(msg = result.message());
-        }
-
-        var closeResult = characterChannel.close();
-        if (closeResult is Error) {
-            test:assertFail(msg = closeResult.message());
-        }
-    } else {
-        test:assertFail(msg = byteChannel.message());
-    }
-}
-
-@test:Config {}
-function testFileWriteXml() {
-    string filePath = TEMP_DIR + "xmlCharsFile2.xml";
-    xml content = xml `<CATALOG>
-                       <CD>
-                           <TITLE>Empire Burlesque</TITLE>
-                           <ARTIST>Bob Dylan</ARTIST>
-                           <COUNTRY>USA</COUNTRY>
-                           <COMPANY>Columbia</COMPANY>
-                           <PRICE>10.90</PRICE>
-                           <YEAR>1985</YEAR>
-                       </CD>
-                       <CD>
-                           <TITLE>Hide your heart</TITLE>
-                           <ARTIST>Bonnie Tyler</ARTIST>
-                           <COUNTRY>UK</COUNTRY>
-                           <COMPANY>CBS Records</COMPANY>
-                           <PRICE>9.90</PRICE>
-                           <YEAR>1988</YEAR>
-                       </CD>
-                       <CD>
-                           <TITLE>Greatest Hits</TITLE>
-                           <ARTIST>Dolly Parton</ARTIST>
-                           <COUNTRY>USA</COUNTRY>
-                           <COMPANY>RCA</COMPANY>
-                           <PRICE>9.90</PRICE>
-                           <YEAR>1982</YEAR>
-                       </CD>
-                   </CATALOG>`;
-    var result = fileWriteXml(filePath, content);
-    if (result is Error) {
-        test:assertFail(msg = result.message());
-    }
-}
-
-@test:Config {dependsOn: [testFileWriteXml]}
-function testFileReadXml() {
-    string filePath = TEMP_DIR + "xmlCharsFile2.xml";
-    xml expectedXml = xml `<CATALOG>
-                       <CD>
-                           <TITLE>Empire Burlesque</TITLE>
-                           <ARTIST>Bob Dylan</ARTIST>
-                           <COUNTRY>USA</COUNTRY>
-                           <COMPANY>Columbia</COMPANY>
-                           <PRICE>10.90</PRICE>
-                           <YEAR>1985</YEAR>
-                       </CD>
-                       <CD>
-                           <TITLE>Hide your heart</TITLE>
-                           <ARTIST>Bonnie Tyler</ARTIST>
-                           <COUNTRY>UK</COUNTRY>
-                           <COMPANY>CBS Records</COMPANY>
-                           <PRICE>9.90</PRICE>
-                           <YEAR>1988</YEAR>
-                       </CD>
-                       <CD>
-                           <TITLE>Greatest Hits</TITLE>
-                           <ARTIST>Dolly Parton</ARTIST>
-                           <COUNTRY>USA</COUNTRY>
-                           <COMPANY>RCA</COMPANY>
-                           <PRICE>9.90</PRICE>
-                           <YEAR>1982</YEAR>
-                       </CD>
-                   </CATALOG>`;
-    var result = fileReadXml(filePath);
-    if (result is xml) {
-        test:assertEquals(result, expectedXml, msg = "Found unexpected output");
-    } else {
-        test:assertFail(msg = result.message());
-    }
-}
-
-@test:Config {}
-function testFileWriteXmlWithTruncate() {
-    string filePath = TEMP_DIR + "xmlCharsFile3.xml";
-    xml content1 = xml `<CATALOG>
-                       <CD>
-                           <TITLE>Empire Burlesque</TITLE>
-                           <ARTIST>Bob Dylan</ARTIST>
-                           <COUNTRY>USA</COUNTRY>
-                           <COMPANY>Columbia</COMPANY>
-                           <PRICE>10.90</PRICE>
-                           <YEAR>1985</YEAR>
-                       </CD>
-                       <CD>
-                           <TITLE>Hide your heart</TITLE>
-                           <ARTIST>Bonnie Tyler</ARTIST>
-                           <COUNTRY>UK</COUNTRY>
-                           <COMPANY>CBS Records</COMPANY>
-                           <PRICE>9.90</PRICE>
-                           <YEAR>1988</YEAR>
-                       </CD>
-                       <CD>
-                           <TITLE>Greatest Hits</TITLE>
-                           <ARTIST>Dolly Parton</ARTIST>
-                           <COUNTRY>USA</COUNTRY>
-                           <COMPANY>RCA</COMPANY>
-                           <PRICE>9.90</PRICE>
-                           <YEAR>1982</YEAR>
-                       </CD>
-                   </CATALOG>`;
-    xml content2 = xml `<USER><NAME>Mary Jane</NAME><AGE>33</AGE></USER>`;
-    // Check content 01
-    var result1 = fileWriteXml(filePath, content1);
-    if (result1 is Error) {
-        test:assertFail(msg = result1.message());
-    }
-    var result2 = fileReadXml(filePath);
-    if (result2 is xml) {
-        test:assertEquals(result2, content1);
-    } else {
-        test:assertFail(msg = result2.message());
-    }
-
-    // Check content 02
-    var result3 = fileWriteXml(filePath, content2);
-    if (result3 is Error) {
-        test:assertFail(msg = result3.message());
-    }
-    var result4 = fileReadXml(filePath);
-    if (result4 is xml) {
-        test:assertEquals(result4, content2);
-    } else {
-        test:assertFail(msg = result4.message());
     }
 }
 
@@ -715,7 +314,7 @@ function testFileReadString() {
 }
 
 @test:Config {}
-function testFileWriteStringWithTruncate() {
+function testFileWriteStringWithOverwrite() {
     string filePath = TEMP_DIR + "stringContent2.txt";
     string content1 = "Ballerina is an open source programming language and " +
     "platform for cloud-era application programmers to easily write software that just works.";
@@ -741,6 +340,38 @@ function testFileWriteStringWithTruncate() {
     var result4 = fileReadString(filePath);
     if (result4 is string) {
         test:assertEquals(result4, content2);
+    } else {
+        test:assertFail(msg = result4.message());
+    }
+}
+
+@test:Config {}
+function testFileWriteStringWithAppend() {
+    string filePath = TEMP_DIR + "stringContent3.txt";
+    string content1 = "Ballerina is an open source programming language and " +
+    "platform for cloud-era application programmers to easily write software that just works.";
+    string content2 = "Ann Johnson is a banker.";
+
+    // Check content 01
+    var result1 = fileWriteString(filePath, content1);
+    if (result1 is Error) {
+        test:assertFail(msg = result1.message());
+    }
+    var result2 = fileReadString(filePath);
+    if (result2 is string) {
+        test:assertEquals(result2, content1);
+    } else {
+        test:assertFail(msg = result2.message());
+    }
+
+    // Check content 01 + 02
+    var result3 = fileWriteString(filePath, content2, APPEND);
+    if (result3 is Error) {
+        test:assertFail(msg = result3.message());
+    }
+    var result4 = fileReadString(filePath);
+    if (result4 is string) {
+        test:assertEquals(result4, (content1+content2));
     } else {
         test:assertFail(msg = result4.message());
     }
@@ -773,6 +404,85 @@ function testFileReadLines() {
 }
 
 @test:Config {}
+function testFileWriteLinesWithOverwrite() {
+    string filePath = TEMP_DIR + "stringContentAsLines2.txt";
+    string[] content1 = ["The Big Bang Theory", "F.R.I.E.N.D.S", "Game of Thrones", "LOST"];
+    string[] content2 = ["WSO2", "Google", "Microsoft", "Facebook", "Apple"];
+
+    // Check content 01
+    var result1 = fileWriteLines(filePath, content1);
+    if (result1 is Error) {
+        test:assertFail(msg = result1.message());
+    }
+    var result2 = fileReadLines(filePath);
+    if (result2 is string[]) {
+        int i = 0;
+        foreach string line in result2 {
+            test:assertEquals(line, content1[i]);
+            i += 1;
+        }
+    } else {
+        test:assertFail(msg = result2.message());
+    }
+
+    // Check content 02
+    var result3 = fileWriteLines(filePath, content2);
+    if (result3 is Error) {
+        test:assertFail(msg = result3.message());
+    }
+    var result4 = fileReadLines(filePath);
+    if (result4 is string[]) {
+        int i = 0;
+        foreach string line in result4 {
+            test:assertEquals(line, content2[i]);
+            i += 1;
+        }
+    } else {
+        test:assertFail(msg = result4.message());
+    }
+}
+
+@test:Config {}
+function testFileWriteLinesWithAppend() {
+    string filePath = TEMP_DIR + "stringContentAsLines2.txt";
+    string[] content1 = ["The Big Bang Theory", "F.R.I.E.N.D.S", "Game of Thrones", "LOST"];
+    string[] content2 = ["WSO2", "Google", "Microsoft", "Facebook", "Apple"];
+    string[] expectedLines = ["The Big Bang Theory", "F.R.I.E.N.D.S", "Game of Thrones", "LOST",
+                                "WSO2", "Google", "Microsoft", "Facebook", "Apple"];
+    // Check content 01
+    var result1 = fileWriteLines(filePath, content1);
+    if (result1 is Error) {
+        test:assertFail(msg = result1.message());
+    }
+    var result2 = fileReadLines(filePath);
+    if (result2 is string[]) {
+        int i = 0;
+        foreach string line in result2 {
+            test:assertEquals(line, content1[i]);
+            i += 1;
+        }
+    } else {
+        test:assertFail(msg = result2.message());
+    }
+
+    // Check content 01 + 02
+    var result3 = fileWriteLines(filePath, content2, APPEND);
+    if (result3 is Error) {
+        test:assertFail(msg = result3.message());
+    }
+    var result4 = fileReadLines(filePath);
+    if (result4 is string[]) {
+        int i = 0;
+        foreach string line in result4 {
+            test:assertEquals(line, expectedLines[i]);
+            i += 1;
+        }
+    } else {
+        test:assertFail(msg = result4.message());
+    }
+}
+
+@test:Config {}
 function testFileWriteLinesFromStream() {
     string filePath = TEMP_DIR + "stringContentAsLines2.txt";
     string[] content = ["The Big Bang Theory", "F.R.I.E.N.D.S", "Game of Thrones", "LOST"];
@@ -800,6 +510,105 @@ function testFileReadLinesAsStream() {
         test:assertEquals(i, 4);
     } else {
         test:assertFail(msg = result.message());
+    }
+}
+
+@test:Config {}
+function testFileWriteLinesFromStreamWithOverwrite() {
+    string filePath = TEMP_DIR + "stringContentAsLines2.txt";
+    string[] content1 = ["The Big Bang Theory", "F.R.I.E.N.D.S", "Game of Thrones", "LOST"];
+    string[] content2 = ["WSO2", "Google", "Microsoft", "Facebook", "Apple"];
+
+    // Check content 01
+    var result1 = fileWriteLinesFromStream(filePath, content1.toStream());
+    if (result1 is Error) {
+        test:assertFail(msg = result1.message());
+    }
+    var result2 = fileReadLinesAsStream(filePath);
+    if (result2 is stream<string, error?>) {
+        int i = 0;
+        error? e = result2.forEach(function(string val) {
+                               test:assertEquals(val, content1[i]);
+                               i += 1;
+                           });
+
+        if (e is error) {
+            test:assertFail(msg = e.message());
+        }
+        test:assertEquals(i, 4);
+    } else {
+        test:assertFail(msg = result2.message());
+    }
+
+    // Check content 02
+    var result3 = fileWriteLinesFromStream(filePath, content2.toStream());
+    if (result3 is Error) {
+        test:assertFail(msg = result3.message());
+    }
+    var result4 = fileReadLinesAsStream(filePath);
+    if (result4 is stream<string, error?>) {
+        int i = 0;
+        error? e = result4.forEach(function(string val) {
+                               test:assertEquals(val, content2[i]);
+                               i += 1;
+                           });
+
+        if (e is error) {
+            test:assertFail(msg = e.message());
+        }
+        test:assertEquals(i, 5);
+    } else {
+        test:assertFail(msg = result4.message());
+    }
+}
+
+@test:Config {}
+function testFileWriteLinesFromStreamWithAppend() {
+    string filePath = TEMP_DIR + "stringContentAsLines2.txt";
+    string[] content1 = ["The Big Bang Theory", "F.R.I.E.N.D.S", "Game of Thrones", "LOST"];
+    string[] content2 = ["WSO2", "Google", "Microsoft", "Facebook", "Apple"];
+    string[] expectedLines = ["The Big Bang Theory", "F.R.I.E.N.D.S", "Game of Thrones", "LOST",
+                                "WSO2", "Google", "Microsoft", "Facebook", "Apple"];
+    // Check content 01
+    var result1 = fileWriteLinesFromStream(filePath, content1.toStream());
+    if (result1 is Error) {
+        test:assertFail(msg = result1.message());
+    }
+    var result2 = fileReadLinesAsStream(filePath);
+    if (result2 is stream<string, error?>) {
+        int i = 0;
+        error? e = result2.forEach(function(string val) {
+                               test:assertEquals(val, content1[i]);
+                               i += 1;
+                           });
+
+        if (e is error) {
+            test:assertFail(msg = e.message());
+        }
+        test:assertEquals(i, 4);
+    } else {
+        test:assertFail(msg = result2.message());
+    }
+
+    // Check content 01 + 02
+    var result3 = fileWriteLinesFromStream(filePath, content2.toStream(), APPEND);
+    if (result3 is Error) {
+        test:assertFail(msg = result3.message());
+    }
+    var result4 = fileReadLinesAsStream(filePath);
+    if (result4 is stream<string, error?>) {
+        int i = 0;
+        error? e = result4.forEach(function(string val) {
+                               test:assertEquals(val, expectedLines[i]);
+                               i += 1;
+                           });
+
+        if (e is error) {
+            test:assertFail(msg = e.message());
+        }
+        test:assertEquals(i, 9);
+    } else {
+        test:assertFail(msg = result4.message());
     }
 }
 

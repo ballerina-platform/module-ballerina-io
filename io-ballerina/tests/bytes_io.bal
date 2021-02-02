@@ -245,7 +245,7 @@ function testFileCopy() {
 }
 
 @test:Config {}
-function testFileWriteBytesWithTruncate() {
+function testFileWriteBytesWithOverwrite() {
     string filePath = TEMP_DIR + "bytesFile6.txt";
     createDirectoryExtern(TEMP_DIR);
     string content1 = "Ballerina is an open source programming language and " +
@@ -272,6 +272,173 @@ function testFileWriteBytesWithTruncate() {
     var result4 = fileReadBytes(filePath);
     if (result4 is (readonly & byte[])) {
         test:assertEquals(result4, content2.toBytes());
+    } else {
+        test:assertFail(msg = result4.message());
+    }
+}
+
+@test:Config {}
+function testFileWriteBytesWithAppend() {
+    string filePath = TEMP_DIR + "bytesFile7.txt";
+    createDirectoryExtern(TEMP_DIR);
+    string content1 = "Ballerina is an open source programming language and " +
+    "platform for cloud-era application programmers to easily write software that just works. ";
+    string content2 = "Ann Johnson is a banker.";
+
+    // Check content 01
+    var result1 = fileWriteBytes(filePath, content1.toBytes());
+    if (result1 is Error) {
+        test:assertFail(msg = result1.message());
+    }
+    var result2 = fileReadBytes(filePath);
+    if (result2 is (readonly & byte[])) {
+        test:assertEquals(result2, content1.toBytes());
+    } else {
+        test:assertFail(msg = result2.message());
+    }
+
+    // Check content 01 + 02
+    var result3 = fileWriteBytes(filePath, content2.toBytes(), APPEND);
+    if (result3 is Error) {
+        test:assertFail(msg = result3.message());
+    }
+    var result4 = fileReadBytes(filePath);
+    if (result4 is (readonly & byte[])) {
+        test:assertEquals(result4, (content1+content2).toBytes());
+    } else {
+        test:assertFail(msg = result4.message());
+    }
+}
+
+@test:Config {}
+function testFileWriteBytesFromStreamWithOverride() {
+    string filePath = TEMP_DIR + "bytesFile8.txt";
+    createDirectoryExtern(TEMP_DIR);
+    string[] content1 = ["Ballerina ", "is ", "an "];
+    string[] content2 = ["open ", "source ", "programming ", "language"];
+    string expectedContent1 = "Ballerina is an ";
+    string expectedContent2 = "open source programming language";
+    byte[][] byteContent1 = [];
+    byte[][] byteContent2 = [];
+    int i = 0;
+    foreach string s in content1 {
+        byteContent1[i] = s.toBytes();
+        i += 1;
+    }
+    i = 0;
+    foreach string s in content2 {
+        byteContent2[i] = s.toBytes();
+        i += 1;
+    }
+    // Check content 01
+    var result1 = fileWriteBlocksFromStream(filePath, byteContent1.toStream());
+    if (result1 is Error) {
+        test:assertFail(msg = result1.message());
+    }
+    var result2 = fileReadBlocksAsStream(filePath, 2);
+    byte[] byteArr1 = [];
+    if (result2 is stream<Block, Error>) {
+        error? e = result2.forEach(function(Block val) {
+            foreach byte b in val {
+                byteArr1.push(b);
+            }
+        });
+        string|error returnedString = langstring:fromBytes(byteArr1);
+        if (returnedString is string) {
+            test:assertEquals(returnedString, expectedContent1);
+        } else {
+            test:assertFail(msg = returnedString.message());
+        }
+    } else {
+        test:assertFail(msg = result2.message());
+    }
+
+    // Check content 02
+    var result3 = fileWriteBlocksFromStream(filePath, byteContent2.toStream());
+    if (result3 is Error) {
+        test:assertFail(msg = result3.message());
+    }
+    var result4 = fileReadBlocksAsStream(filePath, 2);
+    byte[] byteArr2 = [];
+    if (result4 is stream<Block, Error>) {
+        error? e = result4.forEach(function(Block val) {
+            foreach byte b in val {
+                byteArr2.push(b);
+            }
+        });
+        string|error returnedString = langstring:fromBytes(byteArr2);
+        if (returnedString is string) {
+            test:assertEquals(returnedString, expectedContent2);
+        } else {
+            test:assertFail(msg = returnedString.message());
+        }
+    } else {
+        test:assertFail(msg = result4.message());
+    }
+}
+
+@test:Config {}
+function testFileWriteBytesFromStreamWithAppend() {
+    string filePath = TEMP_DIR + "bytesFile8.txt";
+    createDirectoryExtern(TEMP_DIR);
+    string[] content1 = ["Ballerina ", "is ", "an "];
+    string[] content2 = ["open ", "source ", "programming ", "language"];
+    string expectedContent1 = "Ballerina is an ";
+    string expectedContent2 = "Ballerina is an open source programming language";
+    byte[][] byteContent1 = [];
+    byte[][] byteContent2 = [];
+    int i = 0;
+    foreach string s in content1 {
+        byteContent1[i] = s.toBytes();
+        i += 1;
+    }
+    i = 0;
+    foreach string s in content2 {
+        byteContent2[i] = s.toBytes();
+        i += 1;
+    }
+    // Check content 01
+    var result1 = fileWriteBlocksFromStream(filePath, byteContent1.toStream());
+    if (result1 is Error) {
+        test:assertFail(msg = result1.message());
+    }
+    var result2 = fileReadBlocksAsStream(filePath, 2);
+    byte[] byteArr1 = [];
+    if (result2 is stream<Block, Error>) {
+        error? e = result2.forEach(function(Block val) {
+            foreach byte b in val {
+                byteArr1.push(b);
+            }
+        });
+        string|error returnedString = langstring:fromBytes(byteArr1);
+        if (returnedString is string) {
+            test:assertEquals(returnedString, expectedContent1);
+        } else {
+            test:assertFail(msg = returnedString.message());
+        }
+    } else {
+        test:assertFail(msg = result2.message());
+    }
+
+    // Check content 01 + 02
+    var result3 = fileWriteBlocksFromStream(filePath, byteContent2.toStream(), APPEND);
+    if (result3 is Error) {
+        test:assertFail(msg = result3.message());
+    }
+    var result4 = fileReadBlocksAsStream(filePath, 2);
+    byte[] byteArr2 = [];
+    if (result4 is stream<Block, Error>) {
+        error? e = result4.forEach(function(Block val) {
+            foreach byte b in val {
+                byteArr2.push(b);
+            }
+        });
+        string|error returnedString = langstring:fromBytes(byteArr2);
+        if (returnedString is string) {
+            test:assertEquals(returnedString, expectedContent2);
+        } else {
+            test:assertFail(msg = returnedString.message());
+        }
     } else {
         test:assertFail(msg = result4.message());
     }
