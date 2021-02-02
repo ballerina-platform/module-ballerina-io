@@ -96,9 +96,11 @@ public function fileReadXml(@untainted string path) returns @tainted xml|Error {
 # ```
 # + path - The path of the file
 # + content - String content to write
+# + option - To indicate whether to overwrite or append the given content
 # + return - The null `()` value when the writing was successful or an `io:Error`
-public function fileWriteString(@untainted string path, string content) returns Error? {
-    var byteChannel = openWritableFile(path);
+public function fileWriteString(@untainted string path, string content,
+                    FileOpenOption option = OVERWRITE) returns Error? {
+    var byteChannel = openWritableFile(path, option);
     if (byteChannel is WritableByteChannel) {
         return channelWriteString(byteChannel, content);
     } else {
@@ -114,9 +116,11 @@ public function fileWriteString(@untainted string path, string content) returns 
 # ```
 # + path - The path of the file
 # + content - An array of string lines to write
+# + option - To indicate whether to overwrite or append the given content
 # + return - The null `()` value when the writing was successful or an `io:Error`
-public function fileWriteLines(@untainted string path, string[] content) returns Error? {
-    var byteChannel = openWritableFile(path);
+public function fileWriteLines(@untainted string path, string[] content,
+                    FileOpenOption option = OVERWRITE) returns Error? {
+    var byteChannel = openWritableFile(path, option);
     if (byteChannel is WritableByteChannel) {
         return channelWriteLines(byteChannel, content);
     } else {
@@ -133,9 +137,11 @@ public function fileWriteLines(@untainted string path, string[] content) returns
 # ```
 # + path - The path of the file
 # + lineStream -  A stream of lines to write
+# + option - To indicate whether to overwrite or append the given content
 # + return - The null `()` value when the writing was successful or an `io:Error`
-public function fileWriteLinesFromStream(@untainted string path, stream<string, Error> lineStream) returns Error? {
-    var byteChannel = openWritableFile(path);
+public function fileWriteLinesFromStream(@untainted string path, stream<string, Error> lineStream,
+                    FileOpenOption option = OVERWRITE) returns Error? {
+    var byteChannel = openWritableFile(path, option);
     if (byteChannel is WritableByteChannel) {
         return channelWriteLinesFromStream(byteChannel, lineStream);
     } else {
