@@ -65,8 +65,10 @@ public class DataChannel implements IOChannel {
         byte[] contentArr = buffer.array();
         int length = buffer.limit();
         byte[] reverseContent = new byte[length];
-        for (int count = 0; count < length; count++) {
+        for (int count = 0; count <= (length / 2); count++) {
+            byte temp = contentArr[count];
             reverseContent[count] = contentArr[(length - 1) - count];
+            reverseContent[(length - 1) - count] = temp;
         }
         return reverseContent;
     }
