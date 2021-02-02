@@ -69,7 +69,7 @@ public function fileWriteCsv(@untainted string path, string[][] content,
 # ```ballerina
 # string[][] content = [["Anne", "Johnson", "SE"], ["John", "Cameron", "QA"]];
 # stream<string[], io:Error> recordStream = content.toStream();
-# io:Error? result = io:fileWriteCsv("./resources/myfile.csv", recordStream);
+# io:Error? result = io:fileWriteCsvFromStream("./resources/myfile.csv", recordStream);
 # ```
 # + path - The CSV file path
 # + content - A CSV record stream to be written
