@@ -99,7 +99,7 @@ public function fileReadXml(@untainted string path) returns @tainted xml|Error {
 # + option - To indicate whether to overwrite or append the given content
 # + return - The null `()` value when the writing was successful or an `io:Error`
 public function fileWriteString(@untainted string path, string content,
-                    FileOpenOption option = OVERWRITE) returns Error? {
+                    FileWriteOption option = OVERWRITE) returns Error? {
     var byteChannel = openWritableFile(path, option);
     if (byteChannel is WritableByteChannel) {
         return channelWriteString(byteChannel, content);
@@ -119,7 +119,7 @@ public function fileWriteString(@untainted string path, string content,
 # + option - To indicate whether to overwrite or append the given content
 # + return - The null `()` value when the writing was successful or an `io:Error`
 public function fileWriteLines(@untainted string path, string[] content,
-                    FileOpenOption option = OVERWRITE) returns Error? {
+                    FileWriteOption option = OVERWRITE) returns Error? {
     var byteChannel = openWritableFile(path, option);
     if (byteChannel is WritableByteChannel) {
         return channelWriteLines(byteChannel, content);
@@ -140,7 +140,7 @@ public function fileWriteLines(@untainted string path, string[] content,
 # + option - To indicate whether to overwrite or append the given content
 # + return - The null `()` value when the writing was successful or an `io:Error`
 public function fileWriteLinesFromStream(@untainted string path, stream<string, Error> lineStream,
-                    FileOpenOption option = OVERWRITE) returns Error? {
+                    FileWriteOption option = OVERWRITE) returns Error? {
     var byteChannel = openWritableFile(path, option);
     if (byteChannel is WritableByteChannel) {
         return channelWriteLinesFromStream(byteChannel, lineStream);

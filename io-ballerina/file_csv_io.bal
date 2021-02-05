@@ -56,7 +56,7 @@ public function fileReadCsvAsStream(@untainted string path) returns @tainted str
 # + option - To indicate whether to overwrite or append the given content
 # + return - Either an `io:Error` or the null `()` value when the writing was successful
 public function fileWriteCsv(@untainted string path, string[][] content,
-                        FileOpenOption option = OVERWRITE) returns Error? {
+                        FileWriteOption option = OVERWRITE) returns Error? {
     var csvChannel = openWritableCsvFile(path, option=option);
     if (csvChannel is WritableCSVChannel) {
         return channelWriteCsv(csvChannel, content);
@@ -76,7 +76,7 @@ public function fileWriteCsv(@untainted string path, string[][] content,
 # + option - To indicate whether to overwrite or append the given content
 # + return - Either an `io:Error` or the null `()` value when the writing was successful
 public function fileWriteCsvFromStream(@untainted string path, stream<string[], Error> content,
-                    FileOpenOption option = OVERWRITE) returns Error? {
+                    FileWriteOption option = OVERWRITE) returns Error? {
     var csvChannel = openWritableCsvFile(path, option=option);
     if (csvChannel is WritableCSVChannel) {
         return channelWriteCsvFromStream(csvChannel, content);
