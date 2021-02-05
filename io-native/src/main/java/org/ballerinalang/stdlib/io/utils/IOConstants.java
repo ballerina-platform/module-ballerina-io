@@ -18,10 +18,6 @@
 
 package org.ballerinalang.stdlib.io.utils;
 
-import io.ballerina.runtime.api.Module;
-
-import static io.ballerina.runtime.api.constants.RuntimeConstants.BALLERINA_BUILTIN_PKG_PREFIX;
-
 /**
  * I/O related constants.
  */
@@ -52,20 +48,6 @@ public class IOConstants {
      * The size of the buffer allocated for reading bytes from the channel (15~ KB).
      */
     public static final int CHANNEL_BUFFER_SIZE = 16384;
-
-    /**
-     * I/O standard library version.
-     * @deprecated Use IOUtils.getIOPackage().getVersion().
-     */
-    @Deprecated
-    public static final String IO_PACKAGE_VERSION =  "0.5.6";
-
-    /**
-     * I/O standard library package ID.
-     * @deprecated Use IOUtils.getIOPackage().
-     */
-    @Deprecated
-    public static final Module IO_PACKAGE_ID = new Module(BALLERINA_BUILTIN_PKG_PREFIX, "io", IO_PACKAGE_VERSION);
 
     /**
      * Represents the base number of proto-buf.
