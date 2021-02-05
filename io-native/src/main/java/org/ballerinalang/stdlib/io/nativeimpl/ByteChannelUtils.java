@@ -37,6 +37,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
@@ -46,8 +47,6 @@ import java.nio.channels.ReadableByteChannel;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.ballerinalang.stdlib.io.utils.IOConstants.BYTE_CHANNEL_NAME;
 
@@ -96,18 +95,19 @@ public class ByteChannelUtils extends AbstractNativeChannel {
 
     public static Object readBlock(BObject channel, long blockSize) {
         int blockSizeInt = (int) blockSize;
-        byte[] buffer = new byte[blockSizeInt];
         try {
             BufferedInputStream bufferedInputStream = getBufferedInputStream(channel);
             if (bufferedInputStream != null) {
-                int n = bufferedInputStream.read(buffer, 0, blockSizeInt);
-                if (n == -1) {
-                    bufferedInputStream.close();
-                    return IOUtils.createEoFError();
+                try (ByteArrayOutputStream output = new ByteArrayOutputStream()) {
+                    byte[] buffer = new byte[blockSizeInt];
+                    int n = bufferedInputStream.read(buffer, 0, blockSizeInt);
+                    if (n == -1) {
+                        bufferedInputStream.close();
+                        return IOUtils.createEoFError();
+                    }
+                    output.write(buffer, 0, n);
+                    return ValueCreator.createArrayValue(output.toByteArray());
                 }
-                Map<String, Object> map = new HashMap<>();
-                map.put(STREAM_BLOCK_ENTRY, ValueCreator.createArrayValue(buffer));
-                return ValueCreator.createArrayValue(buffer);
             }
             return IOUtils.createError("BufferedInputStream is not initialized");
         } catch (IOException e) {
