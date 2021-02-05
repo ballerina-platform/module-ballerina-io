@@ -47,8 +47,6 @@ import java.nio.channels.ReadableByteChannel;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.ballerinalang.stdlib.io.utils.IOConstants.BYTE_CHANNEL_NAME;
 
@@ -108,10 +106,7 @@ public class ByteChannelUtils extends AbstractNativeChannel {
                         return IOUtils.createEoFError();
                     }
                     output.write(buffer, 0, n);
-                    byte[] bytes = output.toByteArray();
-                    Map<String, Object> map = new HashMap<>();
-                    map.put(STREAM_BLOCK_ENTRY, ValueCreator.createArrayValue(bytes));
-                    return ValueCreator.createArrayValue(buffer);
+                    return ValueCreator.createArrayValue(output.toByteArray());
                 }
             }
             return IOUtils.createError("BufferedInputStream is not initialized");
