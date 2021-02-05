@@ -113,4 +113,12 @@ public class IOConstants {
             return errorCode;
         }
     }
+    /**
+     * File opening options.
+     */
+    public enum FileOpenOption {
+        READ,
+        OVERWRITE,
+        APPEND
+    }
 }

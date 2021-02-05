@@ -59,9 +59,6 @@ import static org.ballerinalang.stdlib.io.utils.IOConstants.BYTE_CHANNEL_NAME;
 public class ByteChannelUtils extends AbstractNativeChannel {
 
     private static final Logger log = LoggerFactory.getLogger(ByteChannelUtils.class);
-    private static final String READ_ACCESS_MODE = "r";
-    private static final String WRITE_ACCESS_MODE = "w";
-    private static final String APPEND_ACCESS_MODE = "a";
     private static final String STREAM_BLOCK_ENTRY = "value";
 
     private ByteChannelUtils() {
@@ -180,7 +177,7 @@ public class ByteChannelUtils extends AbstractNativeChannel {
     public static Object openReadableFile(BString pathUrl) {
         BObject readableByteChannel;
         try {
-            readableByteChannel = createChannel(inFlow(pathUrl.getValue()));
+            readableByteChannel = createChannel(inFlow(pathUrl.getValue(), IOConstants.FileOpenOption.READ));
             Channel channel = (Channel) readableByteChannel.getNativeData(IOConstants.BYTE_CHANNEL_NAME);
             BufferedInputStream bufferedInputStream = new BufferedInputStream(channel.getInputStream());
             readableByteChannel.addNativeData(
@@ -195,9 +192,13 @@ public class ByteChannelUtils extends AbstractNativeChannel {
         return readableByteChannel;
     }
 
-    public static Object openWritableFile(BString pathUrl, boolean accessMode) {
+    public static Object openWritableFile(BString pathUrl, BString option) {
         try {
-            return createChannel(inFlow(pathUrl.getValue(), accessMode));
+            if (IOConstants.FileOpenOption.OVERWRITE.name().equals(option.getValue())) {
+                return createChannel(inFlow(pathUrl.getValue(), IOConstants.FileOpenOption.OVERWRITE));
+            } else {
+                return createChannel(inFlow(pathUrl.getValue(), IOConstants.FileOpenOption.APPEND));
+            }
         } catch (BallerinaIOException e) {
             return IOUtils.createError(e);
         } catch (BError e) {
@@ -214,23 +215,19 @@ public class ByteChannelUtils extends AbstractNativeChannel {
         }
     }
 
-    private static Channel inFlow(String pathUrl) throws BallerinaIOException {
-        Path path = Paths.get(pathUrl);
-        FileChannel fileChannel = IOUtils.openFileChannelExtended(path, READ_ACCESS_MODE);
-        Channel channel = new FileIOChannel(fileChannel);
-        channel.setReadable(true);
-        return channel;
-    }
-
-    private static Channel inFlow(String pathUrl, boolean accessMode) throws BallerinaIOException {
+    private static Channel inFlow(String pathUrl, IOConstants.FileOpenOption option) throws BallerinaIOException {
         Path path = Paths.get(pathUrl);
         FileChannel fileChannel;
-        if (accessMode) {
-            fileChannel = IOUtils.openFileChannelExtended(path, APPEND_ACCESS_MODE);
+        Channel channel;
+        if (option.equals(IOConstants.FileOpenOption.READ)) {
+            fileChannel = IOUtils.openFileChannelExtended(path, option);
+            channel = new FileIOChannel(fileChannel);
+            channel.setReadable(true);
         } else {
-            fileChannel = IOUtils.openFileChannelExtended(path, WRITE_ACCESS_MODE);
+            fileChannel = IOUtils.openFileChannelExtended(path, option);
+            channel = new FileIOChannel(fileChannel);
         }
-        return new FileIOChannel(fileChannel);
+        return channel;
     }
 
     private static Channel inFlow(BArray contentArr) {

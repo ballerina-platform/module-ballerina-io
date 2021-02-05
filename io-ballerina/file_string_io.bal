@@ -92,13 +92,15 @@ public function fileReadXml(@untainted string path) returns @tainted xml|Error {
 # Write a string content to a file.
 # ```ballerina
 # string content = "Hello Universe..!!";
-# io:Error result = io:fileWriteString("./resources/myfile.txt", content);
+# io:Error? result = io:fileWriteString("./resources/myfile.txt", content);
 # ```
 # + path - The path of the file
 # + content - String content to write
+# + option - To indicate whether to overwrite or append the given content
 # + return - The null `()` value when the writing was successful or an `io:Error`
-public function fileWriteString(@untainted string path, string content) returns Error? {
-    var byteChannel = openWritableFile(path);
+public function fileWriteString(@untainted string path, string content,
+                    FileWriteOption option = OVERWRITE) returns Error? {
+    var byteChannel = openWritableFile(path, option);
     if (byteChannel is WritableByteChannel) {
         return channelWriteString(byteChannel, content);
     } else {
@@ -110,13 +112,15 @@ public function fileWriteString(@untainted string path, string content) returns 
 # During the writing operation, a newline character `\n` will be added after each line.
 # ```ballerina
 # string[] content = ["Hello Universe..!!", "How are you?"];
-# io:Error result = io:fileWriteLines("./resources/myfile.txt", content);
+# io:Error? result = io:fileWriteLines("./resources/myfile.txt", content);
 # ```
 # + path - The path of the file
 # + content - An array of string lines to write
+# + option - To indicate whether to overwrite or append the given content
 # + return - The null `()` value when the writing was successful or an `io:Error`
-public function fileWriteLines(@untainted string path, string[] content) returns Error? {
-    var byteChannel = openWritableFile(path);
+public function fileWriteLines(@untainted string path, string[] content,
+                    FileWriteOption option = OVERWRITE) returns Error? {
+    var byteChannel = openWritableFile(path, option);
     if (byteChannel is WritableByteChannel) {
         return channelWriteLines(byteChannel, content);
     } else {
@@ -129,13 +133,15 @@ public function fileWriteLines(@untainted string path, string[] content) returns
 # ```ballerina
 # string content = ["Hello Universe..!!", "How are you?"];
 # stream<string, io:Error> lineStream = content.toStream();
-# io:Error result = io:fileWriteLinesFromStream("./resources/myfile.txt", lineStream);
+# io:Error? result = io:fileWriteLinesFromStream("./resources/myfile.txt", lineStream);
 # ```
 # + path - The path of the file
 # + lineStream -  A stream of lines to write
+# + option - To indicate whether to overwrite or append the given content
 # + return - The null `()` value when the writing was successful or an `io:Error`
-public function fileWriteLinesFromStream(@untainted string path, stream<string, Error> lineStream) returns Error? {
-    var byteChannel = openWritableFile(path);
+public function fileWriteLinesFromStream(@untainted string path, stream<string, Error> lineStream,
+                    FileWriteOption option = OVERWRITE) returns Error? {
+    var byteChannel = openWritableFile(path, option);
     if (byteChannel is WritableByteChannel) {
         return channelWriteLinesFromStream(byteChannel, lineStream);
     } else {

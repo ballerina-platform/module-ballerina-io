@@ -52,9 +52,11 @@ public function fileReadBlocksAsStream(string path, int blockSize=4096) returns 
 # ```
 # + path - The path of the file
 # + content - Byte content to write
+# + option - To indicate whether to overwrite or append the given content
 # + return - `io:Error` or else `()`
-public function fileWriteBytes(@untainted string path, byte[] content) returns Error? {
-    var byteChannel = openWritableFile(path);
+public function fileWriteBytes(@untainted string path, byte[] content,
+                            FileWriteOption option = OVERWRITE) returns Error? {
+    var byteChannel = openWritableFile(path, option);
     if (byteChannel is WritableByteChannel) {
         return channelWriteBytes(byteChannel, content);
     } else {
@@ -70,10 +72,12 @@ public function fileWriteBytes(@untainted string path, byte[] content) returns E
 # ```
 # + path - The path of the file
 # + byteStream - Byte stream to write
+# + option - To indicate whether to overwrite or append the given content
 # + return - `io:Error` or else `()`
-public function fileWriteBlocksFromStream(@untainted string path, stream<byte[], Error> byteStream) returns Error? {
+public function fileWriteBlocksFromStream(@untainted string path, stream<byte[], Error> byteStream,
+                        FileWriteOption option = OVERWRITE) returns Error? {
 
-    var byteChannel = openWritableFile(path);
+    var byteChannel = openWritableFile(path, option);
     if (byteChannel is WritableByteChannel) {
         return channelWriteBlocksFromStream(byteChannel, byteStream);
     } else {
