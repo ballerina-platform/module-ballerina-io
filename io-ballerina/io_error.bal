@@ -32,5 +32,7 @@ public type TypeMismatchError distinct error;
 # This will get returned if read operations are performed on a channel after it closed.
 public type EofError distinct error;
 
+public type ConfigurationError distinct error;
+
 # Represents IO module related errors.
-public type Error GenericError|ConnectionTimedOutError|AccessDeniedError|FileNotFoundError|TypeMismatchError|EofError;
+public type Error GenericError|ConnectionTimedOutError|AccessDeniedError|FileNotFoundError|TypeMismatchError|EofError|ConfigurationError;
