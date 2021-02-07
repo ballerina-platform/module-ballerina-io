@@ -236,3 +236,87 @@ function testFileWriteXmlWithOverwrite() {
         test:assertFail(msg = result4.message());
     }
 }
+
+@test:Config {}
+function testFileWriteDocTypedXml() {
+    string filePath = TEMP_DIR + "xmlCharsFile4.xml";
+    xml content = xml `<note>
+    <to>Tove</to>
+    <from>Jani</from>
+    <heading>Reminder</heading>
+    <body>Don't forget me this weekend!</body>
+    </note>`;
+    string docTypeValue = "<!DOCTYPE note SYSTEM \"Note.dtd\">";
+
+    var writeResult = fileWriteXml(filePath, content, docType=docTypeValue);
+    if (writeResult is Error) {
+        test:assertFail(msg = writeResult.message());
+    }
+    var readResult = fileReadString(filePath);
+    if (readResult is string) {
+        test:assertEquals(readResult, (xml:concat(docTypeValue, NEW_LINE, content)).toString());
+    } else {
+        test:assertFail(msg = readResult.message());
+    }
+
+}
+
+@test:Config {}
+function testFileWriteDocTypedWithMultiRoots() {
+    string filePath = TEMP_DIR + "xmlCharsFile4.xml";
+    xml content = xml `<note>
+    <to>Tove</to>
+    <from>Jani</from>
+    <heading>Reminder</heading>
+    <body>Don't forget me this weekend!</body>
+    </note>`;
+    string docTypeValue = "<!DOCTYPE note SYSTEM \"Note.dtd\">";
+    xml x1 = xml `<body>Don't forget me this weekend!</body>`;
+
+    var writeResult = fileWriteXml(filePath, xml:concat(content, x1), docType=docTypeValue);
+    if (writeResult is Error) {
+        test:assertEquals(writeResult.message(), "The DOCUMENT XML can only contains single root");
+    }
+}
+
+@test:Config {}
+function testFileWriteDocTypedWithAppend() {
+    string filePath = TEMP_DIR + "xmlCharsFile4.xml";
+    xml content = xml `<note>
+    <to>Tove</to>
+    <from>Jani</from>
+    <heading>Reminder</heading>
+    <body>Don't forget me this weekend!</body>
+    </note>`;
+    string docTypeValue = "<!DOCTYPE note SYSTEM \"Note.dtd\">";
+
+    var writeResult = fileWriteXml(filePath, content,
+                        docType=docTypeValue, fileWriteOption=APPEND);
+    if (writeResult is Error) {
+        test:assertEquals(writeResult.message(), "The APPEND operation not allowed with DOCUMENT");
+    }
+}
+
+@test:Config {dependsOn: [testFileWriteDocTypedXml]}
+function testFileAppendDocTypedXml() {
+    string filePath = TEMP_DIR + "xmlCharsFile4.xml";
+    xml existingContent = xml `<note>
+    <to>Tove</to>
+    <from>Jani</from>
+    <heading>Reminder</heading>
+    <body>Don't forget me this weekend!</body>
+    </note>`;
+    string docTypeValue = "<!DOCTYPE note SYSTEM \"Note.dtd\">";
+    xml content = xml `<body>Don't forget me this weekend!</body>`;
+    var appendResult = fileWriteXml(filePath, content, fileWriteOption=APPEND, xmlContentType=EXTERNAL_PARSED_ENTITY);
+    if (appendResult is Error) {
+        test:assertFail(msg = appendResult.message());
+    }
+    var readResult = fileReadString(filePath);
+    if (readResult is string) {
+        test:assertEquals(readResult,
+            (xml:concat(docTypeValue, NEW_LINE, existingContent, content)).toString());
+    } else {
+        test:assertFail(msg = readResult.message());
+    }
+}
