@@ -173,11 +173,35 @@ public function fileWriteJson(@untainted string path, json content) returns @tai
 # ```
 # + path - The path of the XML file
 # + content - XML content to write
+# + xmlWriteOptions - XML writing options(XML content type, DOCTYPE, and file write option)
 # + return - The null `()` value when the writing was successful or an `io:Error`
-public function fileWriteXml(@untainted string path, xml content) returns Error? {
-    var byteChannel = openWritableFile(path);
+public function fileWriteXml(@untainted string path, xml content, *XmlWriteOptions xmlWriteOptions) returns Error? {
+    WritableByteChannel|Error byteChannel;
+    xml writeContent = xml ``;
+    if (xmlWriteOptions.xmlContentType == DOCUMENT) {
+        if (xmlWriteOptions.fileWriteOption == APPEND) {
+            return error ConfigurationError("The APPEND operation not allowed with DOCUMENT");
+        }
+        if (xml:length(content) > 1) {
+            return error ConfigurationError("The DOCUMENT XML can only contains single root");
+        }
+        if (xmlWriteOptions.docType != () && xmlWriteOptions.docType != "") {
+            writeContent = xml:concat(<string>xmlWriteOptions.docType, NEW_LINE, content);
+        } else {
+            writeContent = content;
+        }
+        byteChannel = openWritableFile(path);
+    } else {
+        if (xmlWriteOptions.fileWriteOption == APPEND) {
+            byteChannel = openWritableFile(path, APPEND);
+        } else {
+            byteChannel = openWritableFile(path);
+        }
+        writeContent = content;
+    }
+
     if (byteChannel is WritableByteChannel) {
-        return channelWriteXml(byteChannel, content);
+        return channelWriteXml(byteChannel, writeContent);
     } else {
         return byteChannel;
     }
