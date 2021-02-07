@@ -25,6 +25,26 @@ public enum FileWriteOption {
     APPEND
 }
 
+# Represents the XML content type that need to be written.
+#
+# + DOCUMENT - An XML document with a single root node
+# + EXTERNAL_PARSED_ENTITY - Externally parsed well-formed XML entity
+public enum XmlContentType {
+    DOCUMENT,
+    EXTERNAL_PARSED_ENTITY
+}
+
+# The writing options of an XML.
+#
+# + xmlContentType - Content type of the XML input(default value is `DOCUMENT`)
+# + docType - XML DOCTYPE value(default value is null)
+# + fileWriteOption - file writing option(default value is `OVERWRITE`)
+public type XmlWriteOptions record {|
+    XmlContentType xmlContentType = DOCUMENT;
+    string? docType = ();
+    FileWriteOption fileWriteOption = OVERWRITE;
+|};
+
 public function openReadableFile(@untainted string path) returns ReadableByteChannel|Error = @java:Method {
     name: "openReadableFile",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.ByteChannelUtils"
