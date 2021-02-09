@@ -49,12 +49,13 @@ task unpackJballerinaTools(type: Copy) {
 
 def packageName = "io"
 def packageOrg = "ballerina"
+ def tomlVersion = project.version.split("-")[0]
 def ballerinaConfigFile = new File("$project.projectDir/Ballerina.toml")
 def artifactBallerinaDocs = file("$project.projectDir/build/docs_parent/")
 def artifactCacheParent = file("$project.projectDir/build/cache_parent/")
 def artifactLibParent = file("$project.projectDir/build/lib_parent/")
 def artifactCodeCoverageReport = file("$project.projectDir/target/cache/tests_cache/coverage/ballerina.exec")
-def tomlVersion = project.version.split("-")[0]
+def artifactTestableJar = file("$project.projectDir/target/cache/${packageOrg}/${packageName}/${tomlVersion}/java11/")
 def ballerinaCentralAccessToken = System.getenv('BALLERINA_CENTRAL_ACCESS_TOKEN')
 def distributionBinPath = project.projectDir.absolutePath + "/build/target/extracted-distributions/jballerina-tools-zip/jballerina-tools-${ballerinaLangVersion}/bin"
 def originalConfig = ballerinaConfigFile.text
@@ -83,15 +84,12 @@ task initializeVariables {
     if (project.hasProperty("groups")) {
         groupParams = "--groups ${project.findProperty("groups")}"
     }
-
     if (project.hasProperty("disable")) {
         disableGroups = "--disable-groups ${project.findProperty("disable")}"
     }
-
     if (project.hasProperty("debug")) {
         debugParams = "--debug ${project.findProperty("debug")}"
     }
-
     if (project.hasProperty("balJavaDebug")) {
         balJavaDebugParam = "BAL_JAVA_DEBUG=${project.findProperty("balJavaDebug")}"
     }
@@ -117,10 +115,10 @@ task ballerinaBuild {
 
     def testParams = "--skip-tests"
     gradle.taskGraph.whenReady { graph ->
-        if (graph.hasTask(':io-ballerina:build')) {
+        if (graph.hasTask(":${packageName}-ballerina:build") || graph.hasTask(":${packageName}-ballerina:publish")) {
             ballerinaTest.enabled = false
         }
-        if (graph.hasTask(':io-ballerin:test')) {
+        if (graph.hasTask(":${packageName}-ballerina:test")) {
             testParams = "--code-coverage --includes=*"
         }
     }
@@ -188,8 +186,12 @@ task createArtifactZip(type: Zip) {
     from ballerinaBuild
 }
 
-def getCheckedOutGitCommitHash() {
-    'git rev-parse --verify --short HEAD'.execute().text.trim()
+task createTestableJarZip(type: Zip) {
+    archiveName("${packageOrg}-${packageName}-${project.version}-testable-jars.zip")
+    destinationDir(file("${buildDir}/distributions"))
+    from ("${artifactTestableJar}") {
+        include '**/*-testable.jar'
+    }
 }
 
 publishing {
@@ -197,6 +199,7 @@ publishing {
         maven(MavenPublication) {
             artifact source: createArtifactZip, extension: 'zip'
             artifact source: artifactCodeCoverageReport, classifier: 'jacoco'
+            artifact source: createTestableJarZip, classifier: 'testable-jars', extension: 'zip'
         }
     }
 
@@ -228,3 +231,4 @@ ballerinaBuild.dependsOn updateTomlFile
 ballerinaBuild.finalizedBy revertTomlFile
 build.dependsOn ballerinaBuild
 
+createTestableJarZip.dependsOn ballerinaBuild
