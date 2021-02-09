@@ -98,13 +98,6 @@ task initializeVariables {
 }
 
 task ballerinaTest {
-    dependsOn(":io-native:build")
-    dependsOn(":io-native:test")
-    dependsOn(":io-test-utils:build")
-    dependsOn(unpackJballerinaTools)
-    dependsOn(updateTomlFile)
-    dependsOn(initializeVariables)
-    finalizedBy(revertTomlFile)
 
     doLast {
         exec {
@@ -119,24 +112,15 @@ task ballerinaTest {
     }
 }
 
-test {
-    dependsOn(ballerinaTest)
-}
-
 task ballerinaBuild {
     inputs.dir file(project.projectDir)
-    dependsOn(initializeVariables)
-    dependsOn(updateTomlFile)
-    dependsOn(test)
-    dependsOn(unpackJballerinaTools)
-    finalizedBy(revertTomlFile)
 
     def testParams = "--skip-tests"
     gradle.taskGraph.whenReady { graph ->
-        if (graph.hasTask(':io-ballerina:build') || graph.hasTask(':io-ballerina:publish')) {
+        if (graph.hasTask(':io-ballerina:build')) {
             ballerinaTest.enabled = false
         }
-        if (graph.hasTask(':io-ballerina:test')) {
+        if (graph.hasTask(':io-ballerin:test')) {
             testParams = "--code-coverage --includes=*"
         }
     }
@@ -147,9 +131,9 @@ task ballerinaBuild {
             workingDir project.projectDir
             environment "JAVA_OPTS", "-DBALLERINA_DEV_COMPILE_BALLERINA_ORG=true"
             if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-                commandLine 'cmd', '/c', "$balJavaDebugParam $distributionBinPath/bal.bat build ${testParams} ${debugParams} && exit %%ERRORLEVEL%%"
+                commandLine 'cmd', '/c', "$balJavaDebugParam $distributionBinPath/bal.bat build $testParams ${debugParams} && exit %%ERRORLEVEL%%"
             } else {
-                commandLine 'sh', '-c', "$balJavaDebugParam $distributionBinPath/bal build ${testParams} ${debugParams}"
+                commandLine 'sh', '-c', "$balJavaDebugParam $distributionBinPath/bal build $testParams ${debugParams}"
             }
         }
         copy {
@@ -228,6 +212,19 @@ publishing {
     }
 }
 
-build {
-    dependsOn(ballerinaBuild)
-}
+ballerinaTest.dependsOn ":io-native:build"
+ballerinaTest.dependsOn ":io-native:test"
+ballerinaTest.dependsOn ":io-test-utils:build"
+ballerinaTest.dependsOn unpackJballerinaTools
+ballerinaTest.dependsOn updateTomlFile
+ballerinaTest.dependsOn initializeVariables
+ballerinaTest.finalizedBy revertTomlFile
+test.dependsOn ballerinaTest
+
+ballerinaBuild.dependsOn test
+ballerinaBuild.dependsOn unpackJballerinaTools
+ballerinaBuild.dependsOn initializeVariables
+ballerinaBuild.dependsOn updateTomlFile
+ballerinaBuild.finalizedBy revertTomlFile
+build.dependsOn ballerinaBuild
+
