@@ -31,7 +31,7 @@ dependencies {
 }
 
 clean {
-    delete "$project.projectDir/target"
+    delete "${project.projectDir}/target"
 }
 
 jar {
@@ -49,13 +49,13 @@ task unpackJballerinaTools(type: Copy) {
 
 def packageName = "io"
 def packageOrg = "ballerina"
- def tomlVersion = project.version.split("-")[0]
-def ballerinaConfigFile = new File("$project.projectDir/Ballerina.toml")
-def artifactBallerinaDocs = file("$project.projectDir/build/docs_parent/")
-def artifactCacheParent = file("$project.projectDir/build/cache_parent/")
-def artifactLibParent = file("$project.projectDir/build/lib_parent/")
-def artifactCodeCoverageReport = file("$project.projectDir/target/cache/tests_cache/coverage/ballerina.exec")
-def artifactTestableJar = file("$project.projectDir/target/cache/${packageOrg}/${packageName}/${tomlVersion}/java11/")
+def tomlVersion = project.version.split("-")[0]
+def ballerinaConfigFile = new File("${project.projectDir}/Ballerina.toml")
+def artifactBallerinaDocs = file("${project.projectDir}/build/docs_parent/")
+def artifactCacheParent = file("${project.projectDir}/build/cache_parent/")
+def artifactLibParent = file("${project.projectDir}/build/lib_parent/")
+def artifactCodeCoverageReport = file("${project.projectDir}/target/cache/tests_cache/coverage/ballerina.exec")
+def artifactTestableJar = file("${project.projectDir}/target/cache/${packageOrg}/${packageName}/${tomlVersion}/java11/")
 def ballerinaCentralAccessToken = System.getenv('BALLERINA_CENTRAL_ACCESS_TOKEN')
 def distributionBinPath = project.projectDir.absolutePath + "/build/target/extracted-distributions/jballerina-tools-zip/jballerina-tools-${ballerinaLangVersion}/bin"
 def originalConfig = ballerinaConfigFile.text
@@ -102,9 +102,9 @@ task ballerinaTest {
             workingDir project.projectDir
             environment "JAVA_OPTS", "-DBALLERINA_DEV_COMPILE_BALLERINA_ORG=true"
             if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-                commandLine 'cmd', '/c', "$balJavaDebugParam $distributionBinPath/bal.bat test --code-coverage --includes=* ${groupParams} ${disableGroups} ${debugParams} && exit %%ERRORLEVEL%%"
+                commandLine 'cmd', '/c', "${balJavaDebugParam} ${distributionBinPath}/bal.bat test --code-coverage --includes=* ${groupParams} ${disableGroups} ${debugParams} && exit %%ERRORLEVEL%%"
             } else {
-                commandLine 'sh', '-c', "$balJavaDebugParam $distributionBinPath/bal test --code-coverage --includes=* ${groupParams} ${disableGroups} ${debugParams}"
+                commandLine 'sh', '-c', "${balJavaDebugParam} ${distributionBinPath}/bal test --code-coverage --includes=* ${groupParams} ${disableGroups} ${debugParams}"
             }
         }
     }
@@ -129,20 +129,20 @@ task ballerinaBuild {
             workingDir project.projectDir
             environment "JAVA_OPTS", "-DBALLERINA_DEV_COMPILE_BALLERINA_ORG=true"
             if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-                commandLine 'cmd', '/c', "$balJavaDebugParam $distributionBinPath/bal.bat build $testParams ${debugParams} && exit %%ERRORLEVEL%%"
+                commandLine 'cmd', '/c', "${balJavaDebugParam} ${distributionBinPath}/bal.bat build ${testParams} ${debugParams} && exit %%ERRORLEVEL%%"
             } else {
-                commandLine 'sh', '-c', "$balJavaDebugParam $distributionBinPath/bal build $testParams ${debugParams}"
+                commandLine 'sh', '-c', "${balJavaDebugParam} ${distributionBinPath}/bal build ${testParams} ${debugParams}"
             }
         }
         copy {
-            from file("$project.projectDir/target/bala")
-            into file("$artifactCacheParent/bala/${packageOrg}/${packageName}/${tomlVersion}")
+            from file("${project.projectDir}/target/bala")
+            into file("${artifactCacheParent}/bala/${packageOrg}/${packageName}/${tomlVersion}")
         }
         copy {
-            from file("$project.projectDir/target/cache")
+            from file("${project.projectDir}/target/cache")
             exclude '**/*-testable.jar'
             exclude '**/tests_cache/'
-            into file("$artifactCacheParent/cache/")
+            into file("${artifactCacheParent}/cache/")
         }
 
         // Publish to central
@@ -152,9 +152,9 @@ task ballerinaBuild {
                 workingDir project.projectDir
                 environment "JAVA_OPTS", "-DBALLERINA_DEV_COMPILE_BALLERINA_ORG=true"
                 if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-                    commandLine 'cmd', '/c', "$distributionBinPath/bal.bat push && exit %%ERRORLEVEL%%"
+                    commandLine 'cmd', '/c', "${distributionBinPath}/bal.bat push && exit %%ERRORLEVEL%%"
                 } else {
-                    commandLine 'sh', '-c', "$distributionBinPath/bal push"
+                    commandLine 'sh', '-c', "${distributionBinPath}/bal push"
                 }
             }
 
@@ -164,14 +164,14 @@ task ballerinaBuild {
             workingDir project.projectDir
             environment "JAVA_OPTS", "-DBALLERINA_DEV_COMPILE_BALLERINA_ORG=true"
             if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-                commandLine 'cmd', '/c', "$distributionBinPath/bal.bat doc && exit %%ERRORLEVEL%%"
+                commandLine 'cmd', '/c', "${distributionBinPath}/bal.bat doc && exit %%ERRORLEVEL%%"
             } else {
-                commandLine 'sh', '-c', "$distributionBinPath/bal doc"
+                commandLine 'sh', '-c', "${distributionBinPath}/bal doc"
             }
         }
         copy {
-            from file("$project.projectDir/target/apidocs/${packageName}")
-            into file("$project.projectDir/build/docs_parent/docs/${packageName}")
+            from file("${project.projectDir}/target/apidocs/${packageName}")
+            into file("${project.projectDir}/build/docs_parent/docs/${packageName}")
         }
         ballerinaConfigFile.text = originalConfig
     }
@@ -182,7 +182,7 @@ task ballerinaBuild {
 }
 
 task createArtifactZip(type: Zip) {
-    destinationDirectory = file("$buildDir/distributions")
+    destinationDirectory = file("${buildDir}/distributions")
     from ballerinaBuild
 }
 
