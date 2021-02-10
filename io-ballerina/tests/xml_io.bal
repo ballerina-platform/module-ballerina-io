@@ -246,15 +246,14 @@ function testFileWriteDocTypedXml() {
     <heading>Reminder</heading>
     <body>Don't forget me this weekend!</body>
     </note>`;
-    string docTypeValue = "<!DOCTYPE note SYSTEM \"Note.dtd\">";
-
-    var writeResult = fileWriteXml(filePath, content, docType=docTypeValue);
+    string doctypeValue = "<!DOCTYPE note SYSTEM \"Note.dtd\">";
+    var writeResult = fileWriteXml(filePath, content, doctype={system:"Note.dtd"});
     if (writeResult is Error) {
         test:assertFail(msg = writeResult.message());
     }
     var readResult = fileReadString(filePath);
     if (readResult is string) {
-        test:assertEquals(readResult, (xml:concat(docTypeValue, NEW_LINE, content)).toString());
+        test:assertEquals(readResult, (xml:concat(doctypeValue, NEW_LINE, content)).toString());
     } else {
         test:assertFail(msg = readResult.message());
     }
@@ -270,10 +269,9 @@ function testFileWriteDocTypedWithMultiRoots() {
     <heading>Reminder</heading>
     <body>Don't forget me this weekend!</body>
     </note>`;
-    string docTypeValue = "<!DOCTYPE note SYSTEM \"Note.dtd\">";
     xml x1 = xml `<body>Don't forget me this weekend!</body>`;
 
-    var writeResult = fileWriteXml(filePath, xml:concat(content, x1), docType=docTypeValue);
+    var writeResult = fileWriteXml(filePath, xml:concat(content, x1));
     if (writeResult is Error) {
         test:assertEquals(writeResult.message(), "The DOCUMENT XML can only contains single root");
     }
@@ -288,34 +286,120 @@ function testFileWriteDocTypedWithAppend() {
     <heading>Reminder</heading>
     <body>Don't forget me this weekend!</body>
     </note>`;
-    string docTypeValue = "<!DOCTYPE note SYSTEM \"Note.dtd\">";
 
-    var writeResult = fileWriteXml(filePath, content,
-                        docType=docTypeValue, fileWriteOption=APPEND);
+    var writeResult = fileWriteXml(filePath, content, fileWriteOption=APPEND);
     if (writeResult is Error) {
         test:assertEquals(writeResult.message(), "The APPEND operation not allowed with DOCUMENT");
     }
 }
 
-@test:Config {dependsOn: [testFileWriteDocTypedXml]}
+@test:Config {}
 function testFileAppendDocTypedXml() {
-    string filePath = TEMP_DIR + "xmlCharsFile4.xml";
-    xml existingContent = xml `<note>
+    string filePath = TEMP_DIR + "xmlCharsFile5.xml";
+    xml content1 = xml `<note>
     <to>Tove</to>
     <from>Jani</from>
     <heading>Reminder</heading>
     <body>Don't forget me this weekend!</body>
     </note>`;
-    string docTypeValue = "<!DOCTYPE note SYSTEM \"Note.dtd\">";
-    xml content = xml `<body>Don't forget me this weekend!</body>`;
-    var appendResult = fileWriteXml(filePath, content, fileWriteOption=APPEND, xmlContentType=EXTERNAL_PARSED_ENTITY);
+    xml content2 = xml `<body>Don't forget me this weekend!</body>`;
+    var writeResult = fileWriteXml(filePath, content1);
+    if (writeResult is Error) {
+        test:assertFail(msg = writeResult.message());
+    }
+    var appendResult = fileWriteXml(filePath, content2, fileWriteOption=APPEND, xmlEntityType=EXTERNAL_PARSED_ENTITY);
     if (appendResult is Error) {
         test:assertFail(msg = appendResult.message());
     }
     var readResult = fileReadString(filePath);
     if (readResult is string) {
         test:assertEquals(readResult,
-            (xml:concat(docTypeValue, NEW_LINE, existingContent, content)).toString());
+            (xml:concat(content1, content2)).toString());
+    } else {
+        test:assertFail(msg = readResult.message());
+    }
+}
+
+@test:Config {}
+function testFileWriteDocTypedXmlWithInternalSubset() {
+    string filePath = TEMP_DIR + "xmlCharsFile6.xml";
+    xml content = xml `<note>
+    <to>Tove</to>
+    <from>Jani</from>
+    <heading>Reminder</heading>
+    <body>Don't forget me this weekend!</body>
+    </note>`;
+    string startElement = "<!DOCTYPE note ";
+    string endElement = ">";
+    string internalSub = string `[
+        <!ELEMENT note (to,from,heading,body)>
+        <!ELEMENT to (#PCDATA)>
+        <!ELEMENT from (#PCDATA)>
+        <!ELEMENT heading (#PCDATA)>
+        <!ELEMENT body (#PCDATA)>
+    ]`;
+    var writeResult = fileWriteXml(filePath, content, doctype={internalSubset: internalSub});
+    if (writeResult is Error) {
+        test:assertFail(msg = writeResult.message());
+    }
+    var readResult = fileReadString(filePath);
+    if (readResult is string) {
+        test:assertEquals(readResult, (xml:concat(startElement, internalSub, endElement, NEW_LINE, content)).toString());
+    } else {
+        test:assertFail(msg = readResult.message());
+    }
+}
+
+@test:Config {}
+function testFileWriteDocTypedXmlWithPrioritizeInternalSubset() {
+    string filePath = TEMP_DIR + "xmlCharsFile6.xml";
+    xml content = xml `<note>
+    <to>Tove</to>
+    <from>Jani</from>
+    <heading>Reminder</heading>
+    <body>Don't forget me this weekend!</body>
+    </note>`;
+    string startElement = "<!DOCTYPE note ";
+    string endElement = ">";
+    string systemId = "http://www.w3.org/TR/html4/loose.dtd";
+    string internalSub = string `[
+        <!ELEMENT note (to,from,heading,body)>
+        <!ELEMENT to (#PCDATA)>
+        <!ELEMENT from (#PCDATA)>
+        <!ELEMENT heading (#PCDATA)>
+        <!ELEMENT body (#PCDATA)>
+    ]`;
+    var writeResult = fileWriteXml(filePath, content, doctype={internalSubset: internalSub, system: systemId});
+    if (writeResult is Error) {
+        test:assertFail(msg = writeResult.message());
+    }
+    var readResult = fileReadString(filePath);
+    if (readResult is string) {
+        test:assertEquals(readResult, (xml:concat(startElement, internalSub, endElement, NEW_LINE, content)).toString());
+    } else {
+        test:assertFail(msg = readResult.message());
+    }
+}
+
+@test:Config {}
+function testFileWriteDocTypedXmlWithPublic() {
+    string filePath = TEMP_DIR + "xmlCharsFile6.xml";
+    xml content = xml `<note>
+    <to>Tove</to>
+    <from>Jani</from>
+    <heading>Reminder</heading>
+    <body>Don't forget me this weekend!</body>
+    </note>`;
+    string doctypeValue = "<!DOCTYPE note PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">";
+    string publicId = "-//W3C//DTD HTML 4.01 Transitional//EN";
+    string systemId = "http://www.w3.org/TR/html4/loose.dtd";
+    var writeResult = fileWriteXml(filePath, content, doctype={system: systemId, 'public: publicId});
+    if (writeResult is Error) {
+        test:assertFail(msg = writeResult.message());
+    }
+    var readResult = fileReadString(filePath);
+    if (readResult is string) {
+        test:assertEquals(readResult, (xml:concat(doctypeValue, NEW_LINE, content)).toString());
     } else {
         test:assertFail(msg = readResult.message());
     }
