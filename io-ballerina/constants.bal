@@ -54,5 +54,11 @@ public const COLON = ":";
 # New line character.
 public const NEW_LINE = "\n";
 
+# Single space character
+const SINGLE_SPACE = " ";
+
+# Double quote character
+const DOUBLE_QUOTE = "\"";
+
 # Default encoding for the abstract read/write APIs.
 public const DEFAULT_ENCODING = "UTF8";
