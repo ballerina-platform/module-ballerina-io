@@ -173,10 +173,10 @@ public function fileWriteJson(@untainted string path, json content) returns @tai
 # ```
 # + path - The path of the XML file
 # + content - XML content to write
-# + fileWriteOption - file write option(`OVERWRITE` and `APPEND` are the possible values, and the default value is `OVERWRITE`)
 # + xmlOptions - XML writing options(XML entity type and DOCTYPE)
+# + fileWriteOption - file write option(`OVERWRITE` and `APPEND` are the possible values, and the default value is `OVERWRITE`)
 # + return - The null `()` value when the writing was successful or an `io:Error`
-public function fileWriteXml(@untainted string path, xml content, FileWriteOption fileWriteOption = OVERWRITE, *XmlWriteOptions xmlOptions) returns Error? {
+public function fileWriteXml(@untainted string path, xml content, *XmlWriteOptions xmlOptions, FileWriteOption fileWriteOption=OVERWRITE) returns Error? {
     WritableByteChannel|Error byteChannel;
     xml writeContent = xml ``;
     if (xmlOptions.xmlEntityType == DOCUMENT_ENTITY) {
