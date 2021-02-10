@@ -27,7 +27,7 @@ The bytes I/O APIs provide the reading and writing APIs in both streaming and no
 - `io:fileWriteBytes`
 - `io:fileWriteBlocksFromStream`
 
-To learn how to use bytes read and write APIs, see the [Read/Write Bytes example](https://ballerina.io/swan-lake/learn/by-example/byte-io.html).
+To learn how to use bytes read and write APIs, see the [Read/Write Bytes example](https://ballerina.io/learn/by-example/byte-io.html).
 
 ### Strings I/O
 The strings I/O APIs provide the reading and writing APIs in 3 different ways:
@@ -42,7 +42,7 @@ The strings I/O APIs are as follows:
 - `io:fileWriteLines`
 - `io:fileWriteLinesFromStream`
 
-To learn how to use strings read and write APIs, see the  [Read/Write Strings example](https://ballerina.io/swan-lake/learn/by-example/strings-io.html).
+To learn how to use strings read and write APIs, see the  [Read/Write Strings example](https://ballerina.io/learn/by-example/strings-io.html).
 
 ### CSV I/O
 The CSV I/O APIs provide the reading and writing APIs in both streaming and non-streaming ways. Those APIs are,
@@ -51,18 +51,18 @@ The CSV I/O APIs provide the reading and writing APIs in both streaming and non-
 - `io:fileWriteCsv`
 - `io:fileWriteCsvFromStream`
 
-To learn how to use CSV read and write APIs, see the [Read/Write CSV example](https://ballerina.io/swan-lake/learn/by-example/csv-io.html).
+To learn how to use CSV read and write APIs, see the [Read/Write CSV example](https://ballerina.io/learn/by-example/csv-io.html).
 
 ### JSON I/O
 The JSON I/O APIs provide the reading and writing APIs for JSON content. Those APIs are,
 - `io:fileReadJson`
 - `io:fileWriteJson`
 
-To learn how to use JSON read and write APIs, see the [Read/Write JSON example](https://ballerina.io/swan-lake/learn/by-example/json-io.html).
+To learn how to use JSON read and write APIs, see the [Read/Write JSON example](https://ballerina.io/learn/by-example/json-io.html).
 
 ### XML I/O
 The XML I/O APIs provide the reading and writing APIs for XML content. Those APIs are,
 - `io:fileReadXml`
 - `io:fileWriteXml`
 
-To learn how to use XML read and write APIs, see the [Read/Write XML example](https://ballerina.io/swan-lake/learn/by-example/json-io.html).
+To learn how to use XML read and write APIs, see the [Read/Write XML example](https://ballerina.io/learn/by-example/json-io.html).
