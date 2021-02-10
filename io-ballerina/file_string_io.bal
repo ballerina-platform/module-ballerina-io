@@ -173,26 +173,27 @@ public function fileWriteJson(@untainted string path, json content) returns @tai
 # ```
 # + path - The path of the XML file
 # + content - XML content to write
-# + xmlWriteOptions - XML writing options(XML content type, DOCTYPE, and file write option)
+# + fileWriteOption - file write option(`OVERWRITE` and `APPEND` are the possible values, and the default value is `OVERWRITE`)
+# + xmlOptions - XML writing options(XML entity type and DOCTYPE)
 # + return - The null `()` value when the writing was successful or an `io:Error`
-public function fileWriteXml(@untainted string path, xml content, *XmlWriteOptions xmlWriteOptions) returns Error? {
+public function fileWriteXml(@untainted string path, xml content, FileWriteOption fileWriteOption = OVERWRITE, *XmlWriteOptions xmlOptions) returns Error? {
     WritableByteChannel|Error byteChannel;
     xml writeContent = xml ``;
-    if (xmlWriteOptions.xmlContentType == DOCUMENT) {
-        if (xmlWriteOptions.fileWriteOption == APPEND) {
+    if (xmlOptions.xmlEntityType == DOCUMENT_ENTITY) {
+        if (fileWriteOption == APPEND) {
             return error ConfigurationError("The APPEND operation not allowed with DOCUMENT");
         }
         if (xml:length(content) > 1) {
             return error ConfigurationError("The DOCUMENT XML can only contains single root");
         }
-        if (xmlWriteOptions.docType != () && xmlWriteOptions.docType != "") {
-            writeContent = xml:concat(<string>xmlWriteOptions.docType, NEW_LINE, content);
+        if (xmlOptions.doctype != ()) {
+            writeContent = xml:concat(populateDoctype(content, <XmlDoctype>xmlOptions.doctype), NEW_LINE, content);
         } else {
             writeContent = content;
         }
         byteChannel = openWritableFile(path);
     } else {
-        if (xmlWriteOptions.fileWriteOption == APPEND) {
+        if (fileWriteOption == APPEND) {
             byteChannel = openWritableFile(path, APPEND);
         } else {
             byteChannel = openWritableFile(path);
@@ -205,4 +206,33 @@ public function fileWriteXml(@untainted string path, xml content, *XmlWriteOptio
     } else {
         return byteChannel;
     }
+}
+
+function populateDoctype(xml content, XmlDoctype doctype) returns string {
+    // Generate <!DOCTYPE rootElementName PUBLIC|SYSTEM PublicIdentifier SystemIdentifier internalSubset>
+    string doctypeElement = "";
+    string startElement = "<!DOCTYPE ";
+    string endElement = ">";
+    string systemElement = "SYSTEM";
+    string publicElement = "PUBLIC";
+    xml:Element rootElement = <xml:Element> content;
+    if (doctype.internalSubset != ()) {
+         doctypeElement = startElement + <string>rootElement.getName() +
+                            SINGLE_SPACE + <string>doctype.internalSubset + endElement;
+    } else if (doctype.'public != () && doctype.system != ()) {
+         doctypeElement = startElement + <string>rootElement.getName() +
+                            SINGLE_SPACE + publicElement + SINGLE_SPACE +
+                            DOUBLE_QUOTE + <string>doctype.'public + DOUBLE_QUOTE + SINGLE_SPACE +
+                            DOUBLE_QUOTE + <string>doctype.system + DOUBLE_QUOTE + endElement;
+
+    } else if (doctype.'public != ()) {
+         doctypeElement = startElement + <string>rootElement.getName() +
+                            SINGLE_SPACE + publicElement + SINGLE_SPACE +
+                            DOUBLE_QUOTE + <string>doctype.'public + DOUBLE_QUOTE + endElement;
+    } else if (doctype.system != ()) {
+         doctypeElement = startElement + <string>rootElement.getName() +
+                            SINGLE_SPACE + systemElement + SINGLE_SPACE +
+                            DOUBLE_QUOTE + <string>doctype.system + DOUBLE_QUOTE + endElement;
+    }
+    return doctypeElement;
 }
