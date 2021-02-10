@@ -383,7 +383,7 @@ function testFileWriteDocTypedXmlWithPrioritizeInternalSubset() {
 
 @test:Config {}
 function testFileWriteDocTypedXmlWithPublic() {
-    string filePath = TEMP_DIR + "xmlCharsFile6.xml";
+    string filePath = TEMP_DIR + "xmlCharsFile7.xml";
     xml content = xml `<note>
     <to>Tove</to>
     <from>Jani</from>
