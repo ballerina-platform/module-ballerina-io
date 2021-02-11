@@ -236,3 +236,141 @@ function testFileWriteXmlWithOverwrite() {
         test:assertFail(msg = result4.message());
     }
 }
+
+@test:Config {}
+function testFileWriteDocTypedXml() {
+    string filePath = TEMP_DIR + "xmlCharsFile4.xml";
+    string resultFilePath = "tests/resources/expectedXmlCharsFile4.xml";
+    string originalFilePath = "tests/resources/originalXmlContent.xml";
+
+    xml content = checkpanic fileReadXml(originalFilePath);
+    string doctypeValue = "<!DOCTYPE note SYSTEM \"Note.dtd\">";
+    var writeResult = fileWriteXml(filePath, content, doctype={system:"Note.dtd"});
+    if (writeResult is Error) {
+        test:assertFail(msg = writeResult.message());
+    }
+    string readResult = checkpanic fileReadString(filePath);
+    string expectedResult = checkpanic fileReadString(resultFilePath);
+    test:assertEquals(readResult, expectedResult);
+}
+
+@test:Config {}
+function testFileWriteDocTypedWithMultiRoots() {
+    string filePath = TEMP_DIR + "xmlCharsFile4.xml";
+    string originalFilePath = "tests/resources/originalXmlContent.xml";
+
+    xml content = checkpanic fileReadXml(originalFilePath);
+    xml x1 = xml `<body>Don't forget me this weekend!</body>`;
+
+    var writeResult = fileWriteXml(filePath, xml:concat(content, x1));
+    if (writeResult is Error) {
+        test:assertEquals(writeResult.message(), "The XML Document can only contains single root");
+    } else {
+        test:assertFail("Expected ConfigurationError not found");
+    }
+}
+
+@test:Config {}
+function testFileWriteDocTypedWithAppend() {
+    string filePath = TEMP_DIR + "xmlCharsFile4.xml";
+    string originalFilePath = "tests/resources/originalXmlContent.xml";
+
+    xml content = checkpanic fileReadXml(originalFilePath);
+    var writeResult = fileWriteXml(filePath, content, fileWriteOption=APPEND);
+    if (writeResult is Error) {
+        test:assertEquals(writeResult.message(), "The file append operation is not allowed for Document Entity");
+    } else {
+        test:assertFail("Expected ConfigurationError not found");
+    }
+}
+
+@test:Config {}
+function testFileAppendDocTypedXml() {
+    string filePath = TEMP_DIR + "xmlCharsFile5.xml";
+    string originalFilePath = "tests/resources/originalXmlContent.xml";
+    string resultFilePath = "tests/resources/expectedXmlCharsFile5.xml";
+
+    xml content1 = checkpanic fileReadXml(originalFilePath);
+    xml content2 = xml `<body>Don't forget me this weekend!</body>`;
+    var writeResult = fileWriteXml(filePath, content1);
+    if (writeResult is Error) {
+        test:assertFail(msg = writeResult.message());
+    }
+    var appendResult = fileWriteXml(filePath, content2, fileWriteOption=APPEND, xmlEntityType=EXTERNAL_PARSED_ENTITY);
+    if (appendResult is Error) {
+        test:assertFail(msg = appendResult.message());
+    }
+    string readResult = checkpanic fileReadString(filePath);
+    string expectedResult = checkpanic fileReadString(resultFilePath);
+    test:assertEquals(readResult, expectedResult);
+}
+
+@test:Config {}
+function testFileWriteDocTypedXmlWithInternalSubset() {
+    string filePath = TEMP_DIR + "xmlCharsFile6.xml";
+    string originalFilePath = "tests/resources/originalXmlContent.xml";
+    string resultFilePath = "tests/resources/expectedXmlCharsFile6.xml";
+
+    xml content = checkpanic fileReadXml(originalFilePath);
+    string startElement = "<!DOCTYPE note ";
+    string endElement = ">";
+    string internalSub = string `[
+        <!ELEMENT note (to,from,heading,body)>
+        <!ELEMENT to (#PCDATA)>
+        <!ELEMENT from (#PCDATA)>
+        <!ELEMENT heading (#PCDATA)>
+        <!ELEMENT body (#PCDATA)>
+    ]`;
+    var writeResult = fileWriteXml(filePath, content, doctype={internalSubset: internalSub});
+    if (writeResult is Error) {
+        test:assertFail(msg = writeResult.message());
+    }
+    string readResult = checkpanic fileReadString(filePath);
+    string expectedResult = checkpanic fileReadString(resultFilePath);
+    test:assertEquals(readResult, expectedResult);
+}
+
+@test:Config {}
+function testFileWriteDocTypedXmlWithPrioritizeInternalSubset() {
+    string filePath = TEMP_DIR + "xmlCharsFile6.xml";
+    string originalFilePath = "tests/resources/originalXmlContent.xml";
+    string resultFilePath = "tests/resources/expectedXmlCharsFile6.xml";
+
+    xml content = checkpanic fileReadXml(originalFilePath);
+    string startElement = "<!DOCTYPE note ";
+    string endElement = ">";
+    string systemId = "http://www.w3.org/TR/html4/loose.dtd";
+    string internalSub = string `[
+        <!ELEMENT note (to,from,heading,body)>
+        <!ELEMENT to (#PCDATA)>
+        <!ELEMENT from (#PCDATA)>
+        <!ELEMENT heading (#PCDATA)>
+        <!ELEMENT body (#PCDATA)>
+    ]`;
+    var writeResult = fileWriteXml(filePath, content, doctype={internalSubset: internalSub, system: systemId});
+    if (writeResult is Error) {
+        test:assertFail(msg = writeResult.message());
+    }
+    string readResult = checkpanic fileReadString(filePath);
+    string expectedResult = checkpanic fileReadString(resultFilePath);
+    test:assertEquals(readResult, expectedResult);
+}
+
+@test:Config {}
+function testFileWriteDocTypedXmlWithPublic() {
+    string filePath = TEMP_DIR + "xmlCharsFile7.xml";
+    string originalFilePath = "tests/resources/originalXmlContent.xml";
+    string resultFilePath = "tests/resources/expectedXmlCharsFile7.xml";
+
+    xml content = checkpanic fileReadXml(originalFilePath);
+    string doctypeValue = "<!DOCTYPE note PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">";
+    string publicId = "-//W3C//DTD HTML 4.01 Transitional//EN";
+    string systemId = "http://www.w3.org/TR/html4/loose.dtd";
+    var writeResult = fileWriteXml(filePath, content, doctype={system: systemId, 'public: publicId});
+    if (writeResult is Error) {
+        test:assertFail(msg = writeResult.message());
+    }
+    string readResult = checkpanic fileReadString(filePath);
+    string expectedResult = checkpanic fileReadString(resultFilePath);
+    test:assertEquals(readResult, expectedResult);
+}

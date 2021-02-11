@@ -16,15 +16,6 @@
 
 import ballerina/jballerina.java;
 
-# Represents a file opening options for writing.
-#
-# + OVERWRITE - Overriwrite(truncate the existing content)
-# + APPEND - Append to the existing content
-public enum FileWriteOption {
-    OVERWRITE,
-    APPEND
-}
-
 public function openReadableFile(@untainted string path) returns ReadableByteChannel|Error = @java:Method {
     name: "openReadableFile",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.ByteChannelUtils"

@@ -98,8 +98,8 @@ public function fileReadXml(@untainted string path) returns @tainted xml|Error {
 # + content - String content to write
 # + option - To indicate whether to overwrite or append the given content
 # + return - The null `()` value when the writing was successful or an `io:Error`
-public function fileWriteString(@untainted string path, string content,
-                    FileWriteOption option = OVERWRITE) returns Error? {
+public function fileWriteString(@untainted string path, string content, FileWriteOption option = OVERWRITE) returns
+Error? {
     var byteChannel = openWritableFile(path, option);
     if (byteChannel is WritableByteChannel) {
         return channelWriteString(byteChannel, content);
@@ -118,8 +118,8 @@ public function fileWriteString(@untainted string path, string content,
 # + content - An array of string lines to write
 # + option - To indicate whether to overwrite or append the given content
 # + return - The null `()` value when the writing was successful or an `io:Error`
-public function fileWriteLines(@untainted string path, string[] content,
-                    FileWriteOption option = OVERWRITE) returns Error? {
+public function fileWriteLines(@untainted string path, string[] content, FileWriteOption option = OVERWRITE) returns
+Error? {
     var byteChannel = openWritableFile(path, option);
     if (byteChannel is WritableByteChannel) {
         return channelWriteLines(byteChannel, content);
@@ -139,8 +139,8 @@ public function fileWriteLines(@untainted string path, string[] content,
 # + lineStream -  A stream of lines to write
 # + option - To indicate whether to overwrite or append the given content
 # + return - The null `()` value when the writing was successful or an `io:Error`
-public function fileWriteLinesFromStream(@untainted string path, stream<string, Error> lineStream,
-                    FileWriteOption option = OVERWRITE) returns Error? {
+public function fileWriteLinesFromStream(@untainted string path, stream<string, Error> lineStream, FileWriteOption option =
+                                         OVERWRITE) returns Error? {
     var byteChannel = openWritableFile(path, option);
     if (byteChannel is WritableByteChannel) {
         return channelWriteLinesFromStream(byteChannel, lineStream);
@@ -173,12 +173,63 @@ public function fileWriteJson(@untainted string path, json content) returns @tai
 # ```
 # + path - The path of the XML file
 # + content - XML content to write
+# + xmlOptions - XML writing options(XML entity type and DOCTYPE)
+# + fileWriteOption - file write option(`OVERWRITE` and `APPEND` are the possible values, and the default value is `OVERWRITE`)
 # + return - The null `()` value when the writing was successful or an `io:Error`
-public function fileWriteXml(@untainted string path, xml content) returns Error? {
-    var byteChannel = openWritableFile(path);
+public function fileWriteXml(@untainted string path, xml content, *XmlWriteOptions xmlOptions, FileWriteOption fileWriteOption =
+                             OVERWRITE) returns Error? {
+    WritableByteChannel|Error byteChannel;
+    xml writeContent = xml ``;
+    if (xmlOptions.xmlEntityType == DOCUMENT_ENTITY) {
+        if (fileWriteOption == APPEND) {
+            return error ConfigurationError("The file append operation is not allowed for Document Entity");
+        }
+        if (xml:length(content) > 1) {
+            return error ConfigurationError("The XML Document can only contains single root");
+        }
+        if (xmlOptions.doctype != ()) {
+            writeContent = xml:concat(populateDoctype(content, <XmlDoctype>xmlOptions.doctype), NEW_LINE, content);
+        } else {
+            writeContent = content;
+        }
+        byteChannel = openWritableFile(path);
+    } else {
+        if (fileWriteOption == APPEND) {
+            byteChannel = openWritableFile(path, APPEND);
+        } else {
+            byteChannel = openWritableFile(path);
+        }
+        writeContent = content;
+    }
+
     if (byteChannel is WritableByteChannel) {
-        return channelWriteXml(byteChannel, content);
+        return channelWriteXml(byteChannel, writeContent);
     } else {
         return byteChannel;
     }
+}
+
+function populateDoctype(xml content, XmlDoctype doctype) returns string {
+    // Generate <!DOCTYPE rootElementName PUBLIC|SYSTEM PublicIdentifier SystemIdentifier internalSubset>
+    string doctypeElement = "";
+    string startElement = "<!DOCTYPE";
+    string endElement = ">";
+    string systemElement = "SYSTEM";
+    string publicElement = "PUBLIC";
+    xml:Element rootElement = <xml:Element>content;
+    if (doctype.internalSubset != ()) {
+        doctypeElement = string `${startElement} ${<string>rootElement.getName()} ${<string>doctype.internalSubset}${
+        endElement}`;
+    } else if (doctype.'public != () && doctype.system != ()) {
+        doctypeElement = string `${startElement} ${<string>rootElement.getName()} ${publicElement} "${<string>doctype.
+        'public}" "${<string>doctype.system}"${endElement}`;
+
+    } else if (doctype.'public != ()) {
+        doctypeElement = string `${startElement} ${<string>rootElement.getName()} ${publicElement} "${<string>doctype.
+        'public}"${endElement}`;
+    } else if (doctype.system != ()) {
+        doctypeElement = string `${startElement} ${<string>rootElement.getName()} ${systemElement} "${<string>doctype.
+        system}"${endElement}`;
+    }
+    return doctypeElement;
 }
