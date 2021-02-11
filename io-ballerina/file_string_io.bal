@@ -181,10 +181,10 @@ public function fileWriteXml(@untainted string path, xml content, *XmlWriteOptio
     xml writeContent = xml ``;
     if (xmlOptions.xmlEntityType == DOCUMENT_ENTITY) {
         if (fileWriteOption == APPEND) {
-            return error ConfigurationError("The APPEND operation not allowed with DOCUMENT");
+            return error ConfigurationError("The file append operation is not allowed for Document Entity");
         }
         if (xml:length(content) > 1) {
-            return error ConfigurationError("The DOCUMENT XML can only contains single root");
+            return error ConfigurationError("The XML Document can only contains single root");
         }
         if (xmlOptions.doctype != ()) {
             writeContent = xml:concat(populateDoctype(content, <XmlDoctype>xmlOptions.doctype), NEW_LINE, content);

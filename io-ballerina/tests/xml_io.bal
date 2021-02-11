@@ -264,7 +264,7 @@ function testFileWriteDocTypedWithMultiRoots() {
 
     var writeResult = fileWriteXml(filePath, xml:concat(content, x1));
     if (writeResult is Error) {
-        test:assertEquals(writeResult.message(), "The DOCUMENT XML can only contains single root");
+        test:assertEquals(writeResult.message(), "The XML Document can only contains single root");
     } else {
         test:assertFail("Expected ConfigurationError not found");
     }
@@ -278,7 +278,7 @@ function testFileWriteDocTypedWithAppend() {
     xml content = checkpanic fileReadXml(originalFilePath);
     var writeResult = fileWriteXml(filePath, content, fileWriteOption=APPEND);
     if (writeResult is Error) {
-        test:assertEquals(writeResult.message(), "The APPEND operation not allowed with DOCUMENT");
+        test:assertEquals(writeResult.message(), "The file append operation is not allowed for Document Entity");
     } else {
         test:assertFail("Expected ConfigurationError not found");
     }

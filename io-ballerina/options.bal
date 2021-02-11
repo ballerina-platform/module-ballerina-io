@@ -16,7 +16,7 @@
 
 # Represents a file opening options for writing.
 #
-# + OVERWRITE - Overriwrite(truncate the existing content)
+# + OVERWRITE - Overwrite(truncate the existing content)
 # + APPEND - Append to the existing content
 public enum FileWriteOption {
     OVERWRITE,
