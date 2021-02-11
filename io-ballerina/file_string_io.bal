@@ -98,8 +98,8 @@ public function fileReadXml(@untainted string path) returns @tainted xml|Error {
 # + content - String content to write
 # + option - To indicate whether to overwrite or append the given content
 # + return - The null `()` value when the writing was successful or an `io:Error`
-public function fileWriteString(@untainted string path, string content,
-                    FileWriteOption option = OVERWRITE) returns Error? {
+public function fileWriteString(@untainted string path, string content, FileWriteOption option = OVERWRITE) returns
+Error? {
     var byteChannel = openWritableFile(path, option);
     if (byteChannel is WritableByteChannel) {
         return channelWriteString(byteChannel, content);
@@ -118,8 +118,8 @@ public function fileWriteString(@untainted string path, string content,
 # + content - An array of string lines to write
 # + option - To indicate whether to overwrite or append the given content
 # + return - The null `()` value when the writing was successful or an `io:Error`
-public function fileWriteLines(@untainted string path, string[] content,
-                    FileWriteOption option = OVERWRITE) returns Error? {
+public function fileWriteLines(@untainted string path, string[] content, FileWriteOption option = OVERWRITE) returns
+Error? {
     var byteChannel = openWritableFile(path, option);
     if (byteChannel is WritableByteChannel) {
         return channelWriteLines(byteChannel, content);
@@ -139,8 +139,8 @@ public function fileWriteLines(@untainted string path, string[] content,
 # + lineStream -  A stream of lines to write
 # + option - To indicate whether to overwrite or append the given content
 # + return - The null `()` value when the writing was successful or an `io:Error`
-public function fileWriteLinesFromStream(@untainted string path, stream<string, Error> lineStream,
-                    FileWriteOption option = OVERWRITE) returns Error? {
+public function fileWriteLinesFromStream(@untainted string path, stream<string, Error> lineStream, FileWriteOption option =
+                                         OVERWRITE) returns Error? {
     var byteChannel = openWritableFile(path, option);
     if (byteChannel is WritableByteChannel) {
         return channelWriteLinesFromStream(byteChannel, lineStream);
@@ -176,7 +176,8 @@ public function fileWriteJson(@untainted string path, json content) returns @tai
 # + xmlOptions - XML writing options(XML entity type and DOCTYPE)
 # + fileWriteOption - file write option(`OVERWRITE` and `APPEND` are the possible values, and the default value is `OVERWRITE`)
 # + return - The null `()` value when the writing was successful or an `io:Error`
-public function fileWriteXml(@untainted string path, xml content, *XmlWriteOptions xmlOptions, FileWriteOption fileWriteOption = OVERWRITE) returns Error? {
+public function fileWriteXml(@untainted string path, xml content, *XmlWriteOptions xmlOptions, FileWriteOption fileWriteOption =
+                             OVERWRITE) returns Error? {
     WritableByteChannel|Error byteChannel;
     xml writeContent = xml ``;
     if (xmlOptions.xmlEntityType == DOCUMENT_ENTITY) {
@@ -211,28 +212,24 @@ public function fileWriteXml(@untainted string path, xml content, *XmlWriteOptio
 function populateDoctype(xml content, XmlDoctype doctype) returns string {
     // Generate <!DOCTYPE rootElementName PUBLIC|SYSTEM PublicIdentifier SystemIdentifier internalSubset>
     string doctypeElement = "";
-    string startElement = "<!DOCTYPE ";
+    string startElement = "<!DOCTYPE";
     string endElement = ">";
     string systemElement = "SYSTEM";
     string publicElement = "PUBLIC";
-    xml:Element rootElement = <xml:Element> content;
+    xml:Element rootElement = <xml:Element>content;
     if (doctype.internalSubset != ()) {
-         doctypeElement = startElement + <string>rootElement.getName() +
-                            SINGLE_SPACE + <string>doctype.internalSubset + endElement;
+        doctypeElement = string `${startElement} ${<string>rootElement.getName()} ${<string>doctype.internalSubset}${
+        endElement}`;
     } else if (doctype.'public != () && doctype.system != ()) {
-         doctypeElement = startElement + <string>rootElement.getName() +
-                            SINGLE_SPACE + publicElement + SINGLE_SPACE +
-                            DOUBLE_QUOTE + <string>doctype.'public + DOUBLE_QUOTE + SINGLE_SPACE +
-                            DOUBLE_QUOTE + <string>doctype.system + DOUBLE_QUOTE + endElement;
+        doctypeElement = string `${startElement} ${<string>rootElement.getName()} ${publicElement} "${<string>doctype.
+        'public}" "${<string>doctype.system}"${endElement}`;
 
     } else if (doctype.'public != ()) {
-         doctypeElement = startElement + <string>rootElement.getName() +
-                            SINGLE_SPACE + publicElement + SINGLE_SPACE +
-                            DOUBLE_QUOTE + <string>doctype.'public + DOUBLE_QUOTE + endElement;
+        doctypeElement = string `${startElement} ${<string>rootElement.getName()} ${publicElement} "${<string>doctype.
+        'public}"${endElement}`;
     } else if (doctype.system != ()) {
-         doctypeElement = startElement + <string>rootElement.getName() +
-                            SINGLE_SPACE + systemElement + SINGLE_SPACE +
-                            DOUBLE_QUOTE + <string>doctype.system + DOUBLE_QUOTE + endElement;
+        doctypeElement = string `${startElement} ${<string>rootElement.getName()} ${systemElement} "${<string>doctype.
+        system}"${endElement}`;
     }
     return doctypeElement;
 }
