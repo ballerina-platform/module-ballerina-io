@@ -16,7 +16,7 @@
 
 import ballerina/test;
 
-@test:Config {dependsOn: [testWriteBytes]}
+@test:Config {}
 function testReadCharacters() {
     string filePath = RESOURCES_BASE_PATH + "datafiles/io/text/utf8file.txt";
     string expectedCharacters = "aaa";
@@ -57,7 +57,7 @@ function testReadCharacters() {
     }
 }
 
-@test:Config {dependsOn: [testReadCharacters]}
+@test:Config {}
 function testReadAllCharacters() {
     string filePath = RESOURCES_BASE_PATH + "datafiles/io/text/fileThatExceeds2MB.txt";
     string result = "";
@@ -93,7 +93,7 @@ function testReadAllCharacters() {
     }
 }
 
-@test:Config {dependsOn: [testReadAllCharacters]}
+@test:Config {}
 function testReadAllCharactersFromEmptyFile() {
     string filePath = RESOURCES_BASE_PATH + "datafiles/io/text/emptyFile.txt";
     string result = "";
@@ -129,7 +129,7 @@ function testReadAllCharactersFromEmptyFile() {
     }
 }
 
-@test:Config {dependsOn: [testReadAllCharactersFromEmptyFile]}
+@test:Config {}
 function testWriteCharacters() {
     string filePath = TEMP_DIR + "characterFile.txt";
     string content = "The quick brown fox jumps over the lazy dog";
@@ -221,7 +221,7 @@ function testReadAvailableProperty() {
     }
 }
 
-@test:Config {dependsOn: [testReadAvailableProperty]}
+@test:Config {}
 function testAllProperties() {
     string filePath = RESOURCES_BASE_PATH + "datafiles/io/text/person.properties";
 
@@ -242,7 +242,7 @@ function testAllProperties() {
     }
 }
 
-@test:Config {dependsOn: [testAllProperties]}
+@test:Config {}
 function testReadUnavailableProperty() {
     string filePath = RESOURCES_BASE_PATH + "datafiles/io/text/person.properties";
     string defaultValue = "Default";
@@ -266,7 +266,7 @@ function testReadUnavailableProperty() {
     }
 }
 
-@test:Config {dependsOn: [testReadUnavailableProperty]}
+@test:Config {}
 function testWriteProperties() {
     string filePath = TEMP_DIR + "/tmp_person.properties";
     map<string> properties = {

@@ -150,7 +150,6 @@ function testFileWriteJsonWithTruncate() {
 @test:Config {}
 function testWriteHigherUnicodeJson() {
     string filePath = TEMP_DIR + "higherUniJsonCharsFile.json";
-    createDirectoryExtern(TEMP_DIR);
     json content = {"loop": "É"};
 
     var byteChannel = openWritableFile(filePath);
@@ -173,7 +172,6 @@ function testWriteHigherUnicodeJson() {
 @test:Config {dependsOn: [testWriteHigherUnicodeJson]}
 function testReadHigherUnicodeJson() {
     string filePath = TEMP_DIR + "higherUniJsonCharsFile.json";
-    createDirectoryExtern(TEMP_DIR);
     json expectedJson = {"loop": "É"};
     var byteChannel = openReadableFile(filePath);
     if (byteChannel is ReadableByteChannel) {

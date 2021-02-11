@@ -18,7 +18,6 @@ import ballerina/test;
 @test:Config {}
 function testWriteXml() {
     string filePath = TEMP_DIR + "xmlCharsFile1.xml";
-    createDirectoryExtern(TEMP_DIR);
     xml content = xml `<CATALOG>
                        <CD>
                            <TITLE>Empire Burlesque</TITLE>

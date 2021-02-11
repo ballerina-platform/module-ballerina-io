@@ -18,6 +18,11 @@ import ballerina/jballerina.java;
 import ballerina/test;
 import ballerina/lang.'string as langstring;
 
+@test:BeforeSuite
+function beforeFunc() {
+     createDirectoryExtern(TEMP_DIR);
+}
+
 @test:Config {}
 function testReadBytes() {
     string filePath = RESOURCES_BASE_PATH + "datafiles/io/text/charfile.txt";
@@ -82,7 +87,6 @@ function testWriteBytes() {
 @test:Config {}
 function testFileWriteBytes() {
     string filePath = TEMP_DIR + "bytesFile2.txt";
-    createDirectoryExtern(TEMP_DIR);
     string content = "Sheldon Cooper";
     var result = fileWriteBytes(filePath, content.toBytes());
 
@@ -146,7 +150,6 @@ function testFileReadBytesAsStream() {
 @test:Config {}
 function testFileChannelWriteBytes() {
     string filePath = TEMP_DIR + "bytesFile4.txt";
-    createDirectoryExtern(TEMP_DIR);
     string content = "Sheldon Cooper";
 
     var fileOpenResult = openWritableFile(filePath);
@@ -247,7 +250,6 @@ function testFileCopy() {
 @test:Config {}
 function testFileWriteBytesWithOverwrite() {
     string filePath = TEMP_DIR + "bytesFile6.txt";
-    createDirectoryExtern(TEMP_DIR);
     string content1 = "Ballerina is an open source programming language and " +
     "platform for cloud-era application programmers to easily write software that just works.";
     string content2 = "Ann Johnson is a banker.";
@@ -280,7 +282,6 @@ function testFileWriteBytesWithOverwrite() {
 @test:Config {}
 function testFileWriteBytesWithAppend() {
     string filePath = TEMP_DIR + "bytesFile7.txt";
-    createDirectoryExtern(TEMP_DIR);
     string content1 = "Ballerina is an open source programming language and " +
     "platform for cloud-era application programmers to easily write software that just works. ";
     string content2 = "Ann Johnson is a banker.";
@@ -313,7 +314,6 @@ function testFileWriteBytesWithAppend() {
 @test:Config {}
 function testFileWriteBytesFromStreamWithOverride() {
     string filePath = TEMP_DIR + "bytesFile8.txt";
-    createDirectoryExtern(TEMP_DIR);
     string[] content1 = ["Ballerina ", "is ", "an "];
     string[] content2 = ["open ", "source ", "programming ", "language"];
     string expectedContent1 = "Ballerina is an ";
@@ -380,7 +380,6 @@ function testFileWriteBytesFromStreamWithOverride() {
 @test:Config {}
 function testFileWriteBytesFromStreamWithAppend() {
     string filePath = TEMP_DIR + "bytesFile8.txt";
-    createDirectoryExtern(TEMP_DIR);
     string[] content1 = ["Ballerina ", "is ", "an "];
     string[] content2 = ["open ", "source ", "programming ", "language"];
     string expectedContent1 = "Ballerina is an ";
