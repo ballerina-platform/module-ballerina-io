@@ -14,6 +14,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
+import ballerina/jballerina.java;
 import ballerina/test;
 
 @test:Config {}
@@ -61,7 +62,8 @@ function testReadCharacters() {
 function testReadAllCharacters() {
     string filePath = RESOURCES_BASE_PATH + "datafiles/io/text/fileThatExceeds2MB.txt";
     string result = "";
-    int expectedNumberOfCharacters = 2265223;
+    int expectedNumberOfCharsInWindows = 2297329;
+    int expectedNumberOfCharsInLinux = 2265223;
     int fixedSize = 500;
     boolean isDone = false;
 
@@ -82,7 +84,11 @@ function testReadAllCharacters() {
                 }
             }
         }
-        test:assertEquals(result.length(), expectedNumberOfCharacters);
+        if (isWindowsEnvironment()) {
+            test:assertEquals(result.length(), expectedNumberOfCharsInWindows);
+        } else {
+            test:assertEquals(result.length(), expectedNumberOfCharsInLinux);
+        }
 
         var closeResult = characterChannel.close();
         if (closeResult is Error) {
@@ -679,3 +685,8 @@ function testFileChannelReadLinesWithByteChannel() {
         test:assertFail(msg = fileOpenResult.message());
     }
 }
+
+function isWindowsEnvironment() returns boolean = @java:Method {
+    name: "isWindowsEnvironment",
+    'class: "org.ballerinalang.stdlib.io.testutils.EnvironmentTestUtils"
+} external;
