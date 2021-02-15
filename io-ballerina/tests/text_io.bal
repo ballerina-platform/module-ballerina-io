@@ -14,9 +14,10 @@
 // specific language governing permissions and limitations
 // under the License.
 
+import ballerina/jballerina.java;
 import ballerina/test;
 
-@test:Config {dependsOn: [testWriteBytes]}
+@test:Config {}
 function testReadCharacters() {
     string filePath = RESOURCES_BASE_PATH + "datafiles/io/text/utf8file.txt";
     string expectedCharacters = "aaa";
@@ -57,11 +58,12 @@ function testReadCharacters() {
     }
 }
 
-@test:Config {dependsOn: [testReadCharacters]}
+@test:Config {}
 function testReadAllCharacters() {
     string filePath = RESOURCES_BASE_PATH + "datafiles/io/text/fileThatExceeds2MB.txt";
     string result = "";
-    int expectedNumberOfCharacters = 2265223;
+    int expectedNumberOfCharsInWindows = 2297329;
+    int expectedNumberOfCharsInLinux = 2265223;
     int fixedSize = 500;
     boolean isDone = false;
 
@@ -82,7 +84,11 @@ function testReadAllCharacters() {
                 }
             }
         }
-        test:assertEquals(result.length(), expectedNumberOfCharacters);
+        if (isWindowsEnvironment()) {
+            test:assertEquals(result.length(), expectedNumberOfCharsInWindows);
+        } else {
+            test:assertEquals(result.length(), expectedNumberOfCharsInLinux);
+        }
 
         var closeResult = characterChannel.close();
         if (closeResult is Error) {
@@ -93,7 +99,7 @@ function testReadAllCharacters() {
     }
 }
 
-@test:Config {dependsOn: [testReadAllCharacters]}
+@test:Config {}
 function testReadAllCharactersFromEmptyFile() {
     string filePath = RESOURCES_BASE_PATH + "datafiles/io/text/emptyFile.txt";
     string result = "";
@@ -129,7 +135,7 @@ function testReadAllCharactersFromEmptyFile() {
     }
 }
 
-@test:Config {dependsOn: [testReadAllCharactersFromEmptyFile]}
+@test:Config {}
 function testWriteCharacters() {
     string filePath = TEMP_DIR + "characterFile.txt";
     string content = "The quick brown fox jumps over the lazy dog";
@@ -221,7 +227,7 @@ function testReadAvailableProperty() {
     }
 }
 
-@test:Config {dependsOn: [testReadAvailableProperty]}
+@test:Config {}
 function testAllProperties() {
     string filePath = RESOURCES_BASE_PATH + "datafiles/io/text/person.properties";
 
@@ -242,7 +248,7 @@ function testAllProperties() {
     }
 }
 
-@test:Config {dependsOn: [testAllProperties]}
+@test:Config {}
 function testReadUnavailableProperty() {
     string filePath = RESOURCES_BASE_PATH + "datafiles/io/text/person.properties";
     string defaultValue = "Default";
@@ -266,7 +272,7 @@ function testReadUnavailableProperty() {
     }
 }
 
-@test:Config {dependsOn: [testReadUnavailableProperty]}
+@test:Config {}
 function testWriteProperties() {
     string filePath = TEMP_DIR + "/tmp_person.properties";
     map<string> properties = {
@@ -679,3 +685,8 @@ function testFileChannelReadLinesWithByteChannel() {
         test:assertFail(msg = fileOpenResult.message());
     }
 }
+
+function isWindowsEnvironment() returns boolean = @java:Method {
+    name: "isWindowsEnvironment",
+    'class: "org.ballerinalang.stdlib.io.testutils.EnvironmentTestUtils"
+} external;
