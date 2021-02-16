@@ -37,7 +37,7 @@ public enum XmlEntityType {
 # + system - the system identifier
 # + public - the public identifier
 # + internalSubset - internal DTD schema
-type XmlDoctype record {|
+public type XmlDoctype record {|
    string? system = ();
    string? 'public = ();
    string? internalSubset = ();
