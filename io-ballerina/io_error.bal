@@ -32,6 +32,7 @@ public type TypeMismatchError distinct error;
 # This will get returned if read operations are performed on a channel after it closed.
 public type EofError distinct error;
 
+# This will get returned if there is an invalid configuration.
 public type ConfigurationError distinct error;
 
 # Represents IO module related errors.
