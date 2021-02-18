@@ -248,8 +248,8 @@ ballerinaBuild.dependsOn updateTomlFile
 ballerinaBuild.finalizedBy revertTomlFile
 build.dependsOn ballerinaBuild
 
-ballerinaBuild.dependsOn ":${packageName}-native:test"
-ballerinaBuild.dependsOn ":${packageName}-test-utils:build"
+ballerinaPublish.dependsOn ":${packageName}-native:test"
+ballerinaPublish.dependsOn ":${packageName}-test-utils:build"
 
 ballerinaPublish.dependsOn ":${packageName}-native:build"
 ballerinaPublish.dependsOn ballerinaBuild
