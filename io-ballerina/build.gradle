@@ -250,7 +250,6 @@ build.dependsOn ballerinaBuild
 
 ballerinaPublish.dependsOn ":${packageName}-native:test"
 ballerinaPublish.dependsOn ":${packageName}-test-utils:build"
-
 ballerinaPublish.dependsOn ":${packageName}-native:build"
 ballerinaPublish.dependsOn ballerinaBuild
 ballerinaPublish.dependsOn updateTomlFile
