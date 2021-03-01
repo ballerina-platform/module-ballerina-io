@@ -52,6 +52,7 @@ public class CharacterChannelUtils {
 
     private static final Logger log = LoggerFactory.getLogger(CharacterChannelUtils.class);
     private static final String BUFFERED_READER_ENTRY = "bufferedReader";
+    private static final String NEW_LINE = "\n";
 
     private CharacterChannelUtils() {
     }
@@ -213,11 +214,17 @@ public class CharacterChannelUtils {
         return null;
     }
 
-    public static Object writeXml(BObject characterChannelObj, BXml content) {
+    public static Object writeXml(BObject characterChannelObj, BXml content, BString doctype) {
         try {
             CharacterChannel characterChannel = (CharacterChannel) characterChannelObj
                     .getNativeData(CHARACTER_CHANNEL_NAME);
-            IOUtils.writeFull(characterChannel, content.toString());
+            String writeContent = "";
+            if (doctype.getValue().isBlank()) {
+                writeContent = content.toString();
+            } else {
+                writeContent = doctype.getValue() + NEW_LINE + content.toString();
+            }
+            IOUtils.writeFull(characterChannel, writeContent);
         } catch (BallerinaIOException e) {
             return IOUtils.createError(e);
         }
