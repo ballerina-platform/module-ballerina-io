@@ -145,10 +145,15 @@ function channelWriteJson(WritableChannel writableChannel, json content) returns
     }
 }
 
-function channelWriteXml(WritableChannel writableChannel, xml content) returns Error? {
+function channelWriteXml(WritableChannel writableChannel, xml content, XmlDoctype? xmlDoctype = ()) returns Error? {
     var characterChannel = getWritableCharacterChannel(writableChannel);
     if (characterChannel is WritableCharacterChannel) {
-        var writeResult = characterChannel.writeXml(content);
+        Error? writeResult = ();
+        if (xmlDoctype != ()) {
+            writeResult = characterChannel.writeXml(content, <XmlDoctype>xmlDoctype);
+        } else {
+            writeResult = characterChannel.writeXml(content);
+        }
         if (writeResult is Error) {
             return writeResult;
         }

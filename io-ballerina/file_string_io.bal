@@ -179,18 +179,12 @@ public function fileWriteJson(@untainted string path, json content) returns @tai
 public function fileWriteXml(@untainted string path, xml content, *XmlWriteOptions xmlOptions, FileWriteOption fileWriteOption =
                              OVERWRITE) returns Error? {
     WritableByteChannel|Error byteChannel;
-    xml writeContent = xml ``;
     if (xmlOptions.xmlEntityType == DOCUMENT_ENTITY) {
         if (fileWriteOption == APPEND) {
             return error ConfigurationError("The file append operation is not allowed for Document Entity");
         }
         if (xml:length(content) > 1) {
             return error ConfigurationError("The XML Document can only contains single root");
-        }
-        if (xmlOptions.doctype != ()) {
-            writeContent = xml:concat(populateDoctype(content, <XmlDoctype>xmlOptions.doctype), NEW_LINE, content);
-        } else {
-            writeContent = content;
         }
         byteChannel = openWritableFile(path);
     } else {
@@ -199,37 +193,14 @@ public function fileWriteXml(@untainted string path, xml content, *XmlWriteOptio
         } else {
             byteChannel = openWritableFile(path);
         }
-        writeContent = content;
     }
 
     if (byteChannel is WritableByteChannel) {
-        return channelWriteXml(byteChannel, writeContent);
+        if (xmlOptions.doctype != ()) {
+            return channelWriteXml(byteChannel, content, xmlOptions.doctype);
+        }
+        return channelWriteXml(byteChannel, content);
     } else {
         return byteChannel;
     }
-}
-
-function populateDoctype(xml content, XmlDoctype doctype) returns string {
-    // Generate <!DOCTYPE rootElementName PUBLIC|SYSTEM PublicIdentifier SystemIdentifier internalSubset>
-    string doctypeElement = "";
-    string startElement = "<!DOCTYPE";
-    string endElement = ">";
-    string systemElement = "SYSTEM";
-    string publicElement = "PUBLIC";
-    xml:Element rootElement = <xml:Element>content;
-    if (doctype.internalSubset != ()) {
-        doctypeElement = string `${startElement} ${<string>rootElement.getName()} ${<string>doctype.internalSubset}${
-        endElement}`;
-    } else if (doctype.'public != () && doctype.system != ()) {
-        doctypeElement = string `${startElement} ${<string>rootElement.getName()} ${publicElement} "${<string>doctype.
-        'public}" "${<string>doctype.system}"${endElement}`;
-
-    } else if (doctype.'public != ()) {
-        doctypeElement = string `${startElement} ${<string>rootElement.getName()} ${publicElement} "${<string>doctype.
-        'public}"${endElement}`;
-    } else if (doctype.system != ()) {
-        doctypeElement = string `${startElement} ${<string>rootElement.getName()} ${systemElement} "${<string>doctype.
-        system}"${endElement}`;
-    }
-    return doctypeElement;
 }
