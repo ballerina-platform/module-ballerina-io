@@ -14,6 +14,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-public type ReadableChannel ReadableByteChannel|ReadableCharacterChannel|ReadableTextRecordChannel|ReadableCSVChannel;
+type ReadableChannel ReadableByteChannel|ReadableCharacterChannel|ReadableTextRecordChannel|ReadableCSVChannel;
 
-public type WritableChannel WritableByteChannel|WritableCharacterChannel|WritableTextRecordChannel|WritableCSVChannel;
+type WritableChannel WritableByteChannel|WritableCharacterChannel|WritableTextRecordChannel|WritableCSVChannel;
