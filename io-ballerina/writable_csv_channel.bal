@@ -31,7 +31,7 @@ public class WritableCSVChannel {
     # 
     # + CharacterChannel - The `CharacterChannel`, which will represent the content in the CSV file
     # + fs - Field separator, which will separate the records in the CSV
-    public function init(WritableCharacterChannel characterChannel, Separator fs = ",") {
+    public isolated function init(WritableCharacterChannel characterChannel, Separator fs = ",") {
         if (fs == TAB) {
             self.dc = new WritableTextRecordChannel(characterChannel, fmt = "TDF");
         } else if (fs == COLON) {
@@ -50,7 +50,7 @@ public class WritableCSVChannel {
     #
     # + csvRecord - A record to be written to the channel
     # + return - An `io:Error` if the record could not be written properly
-    public function write(string[] csvRecord) returns Error? {
+    public isolated function write(string[] csvRecord) returns Error? {
         if (self.dc is WritableTextRecordChannel) {
             var result = <WritableTextRecordChannel>self.dc;
             return result.write(csvRecord);
@@ -65,7 +65,7 @@ public class WritableCSVChannel {
     # ```
     #
     # + return - `()` or else `io:Error` if any error occurred
-    public function close() returns Error? {
+    public isolated function close() returns Error? {
         if (self.dc is WritableTextRecordChannel) {
             var result = <WritableTextRecordChannel>self.dc;
             return result.close();

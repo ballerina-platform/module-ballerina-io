@@ -25,7 +25,7 @@ public class ReadableCSVChannel {
     # + byteChannel - The CharacterChannel, which will represent the content in the CSV file
     # + fs - Field separator, which will separate between the records in the CSV file
     # + nHeaders - Number of headers, which should be skipped prior to reading records
-    public function init(ReadableCharacterChannel byteChannel, Separator fs = ",", int nHeaders = 0) {
+    public isolated function init(ReadableCharacterChannel byteChannel, Separator fs = ",", int nHeaders = 0) {
         if (fs == TAB) {
             self.dc = new ReadableTextRecordChannel(byteChannel, fmt = "TDF");
         } else if (fs == COLON) {
@@ -44,7 +44,7 @@ public class ReadableCSVChannel {
     # ```
     #
     # + nHeaders - The number of headers, which should be skipped
-    function skipHeaders(int nHeaders) {
+    public isolated function skipHeaders(int nHeaders) {
         int count = MINIMUM_HEADER_COUNT;
         while (count < nHeaders) {
             var result = self.getNext();
@@ -58,7 +58,7 @@ public class ReadableCSVChannel {
     # ```
     #
     # + return - True if there's a record
-    public function hasNext() returns boolean {
+    public isolated function hasNext() returns boolean {
         var recordChannel = self.dc;
         if (recordChannel is ReadableTextRecordChannel) {
             return recordChannel.hasNext();
@@ -74,7 +74,7 @@ public class ReadableCSVChannel {
     # ```
     #
     # + return - List of fields in the CSV or else an `io:Error`
-    public function getNext() returns @tainted string[]|Error? {
+    public isolated function getNext() returns @tainted string[]|Error? {
         if (self.dc is ReadableTextRecordChannel) {
             var result = <ReadableTextRecordChannel>self.dc;
             return result.getNext();
@@ -88,7 +88,7 @@ public class ReadableCSVChannel {
     # ```
     #
     # + return - Either a stream of records(string[]) or else an `io:Error`
-    public function csvStream() returns stream<string[], Error>|Error {
+    public isolated function csvStream() returns stream<string[], Error>|Error {
         var recordChannel = self.dc;
         if (recordChannel is ReadableTextRecordChannel) {
             CSVStream csvStream = new (recordChannel);
@@ -106,7 +106,7 @@ public class ReadableCSVChannel {
     # ```
     #
     # + return - `io:Error` if any error occurred
-    public function close() returns Error? {
+    public isolated function close() returns Error? {
         if (self.dc is ReadableTextRecordChannel) {
             var result = <ReadableTextRecordChannel>self.dc;
             return result.close();
@@ -123,13 +123,13 @@ public class ReadableCSVChannel {
     # + structType - The object in which the CSV records should be deserialized
     # + fieldNames - The names of the fields used as the (composite)key of the table
     # + return - Table, which represents the CSV records or else an `io:Error`
-    public function getTable(typedesc<record { }> structType, string[] fieldNames = []) returns @tainted table<record { }>|
+    public isolated function getTable(typedesc<record { }> structType, string[] fieldNames = []) returns @tainted table<record { }>|
     Error {
         return getTableExtern(self, structType, fieldNames);
     }
 }
 
-function getTableExtern(ReadableCSVChannel csvChannel, typedesc<record { }> structType, string[] fieldNames) returns @tainted table<record { }>|
+isolated function getTableExtern(ReadableCSVChannel csvChannel, typedesc<record { }> structType, string[] fieldNames) returns @tainted table<record { }>|
 Error = @java:Method {
     name: "getTable",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.GetTable"

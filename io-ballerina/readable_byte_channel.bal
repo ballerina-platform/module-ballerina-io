@@ -24,7 +24,7 @@ import ballerina/jballerina.java;
 public class ReadableByteChannel {
 
     # Adding default init function to prevent object getting initialized from the user code.
-    function init() {
+    isolated function init() {
     }
 
     # Source bytes from a given input resource.
@@ -36,7 +36,7 @@ public class ReadableByteChannel {
     #
     # + nBytes - A positive integer. Represents the number of bytes, which should be read
     # + return - Content (the number of bytes) read, an `EofError` once the channel reaches the end or else an `io:Error`
-    public function read(@untainted int nBytes) returns @tainted byte[]|Error {
+    public isolated function read(@untainted int nBytes) returns @tainted byte[]|Error {
         return byteReadExtern(self, nBytes);
     }
 
@@ -46,7 +46,7 @@ public class ReadableByteChannel {
     # ```
     #
     # + return - Either a read only `byte` array or else an `io:Error`
-    public function readAll() returns @tainted readonly & byte[]|Error {
+    public isolated function readAll() returns @tainted readonly & byte[]|Error {
         var readResult = readAllBytes(self);
         if (readResult is byte[]) {
             return <readonly & byte[]>readResult.cloneReadOnly();
@@ -61,7 +61,7 @@ public class ReadableByteChannel {
     # ```
     # + blockSize - A positive integer. Size of the block.
     # + return - Either a block stream or else an `io:Error`
-    public function blockStream(int blockSize) returns @tainted stream<Block, Error>|Error {
+    public isolated function blockStream(int blockSize) returns @tainted stream<Block, Error>|Error {
         BlockStream blockStream = new (self, blockSize);
         return new stream<Block, Error>(blockStream);
     }
@@ -72,7 +72,7 @@ public class ReadableByteChannel {
     # ```
     #
     # + return - An encoded `ReadableByteChannel` or else an `io:Error`
-    public function base64Encode() returns ReadableByteChannel|Error {
+    public isolated function base64Encode() returns ReadableByteChannel|Error {
         return base64EncodeExtern(self);
     }
 
@@ -82,7 +82,7 @@ public class ReadableByteChannel {
     # ```
     #
     # + return - A decoded `ReadableByteChannel` or else an `io:Error`
-    public function base64Decode() returns ReadableByteChannel|Error {
+    public isolated function base64Decode() returns ReadableByteChannel|Error {
         return base64DecodeExtern(self);
     }
 
@@ -93,32 +93,32 @@ public class ReadableByteChannel {
     # ```
     #
     # + return - Will return `()` if there is no error
-    public function close() returns Error? {
+    public isolated function close() returns Error? {
         return closeReadableByteChannelExtern(self);
     }
 }
 
-function byteReadExtern(ReadableByteChannel byteChannel, @untainted int nBytes) returns @tainted byte[]|Error = @java:Method {
+isolated function byteReadExtern(ReadableByteChannel byteChannel, @untainted int nBytes) returns @tainted byte[]|Error = @java:Method {
     name: "read",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.ByteChannelUtils"
 } external;
 
-function readAllBytes(ReadableByteChannel byteChannel) returns @tainted byte[]|Error = @java:Method {
+isolated function readAllBytes(ReadableByteChannel byteChannel) returns @tainted byte[]|Error = @java:Method {
     name: "readAll",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.ByteChannelUtils"
 } external;
 
-function base64EncodeExtern(ReadableByteChannel byteChannel) returns ReadableByteChannel|Error = @java:Method {
+isolated function base64EncodeExtern(ReadableByteChannel byteChannel) returns ReadableByteChannel|Error = @java:Method {
     name: "base64Encode",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.ByteChannelUtils"
 } external;
 
-function base64DecodeExtern(ReadableByteChannel byteChannel) returns ReadableByteChannel|Error = @java:Method {
+isolated function base64DecodeExtern(ReadableByteChannel byteChannel) returns ReadableByteChannel|Error = @java:Method {
     name: "base64Decode",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.ByteChannelUtils"
 } external;
 
-function closeReadableByteChannelExtern(ReadableByteChannel byteChannel) returns Error? = @java:Method {
+isolated function closeReadableByteChannelExtern(ReadableByteChannel byteChannel) returns Error? = @java:Method {
     name: "closeByteChannel",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.ByteChannelUtils"
 } external;

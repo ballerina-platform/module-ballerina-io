@@ -23,7 +23,7 @@ import ballerina/jballerina.java;
 public class WritableByteChannel {
 
     # Adding default init function to prevent object getting initialized from the user code.
-    function init() {
+    isolated function init() {
     }
 
     # Sinks bytes from a given input/output resource.
@@ -36,7 +36,7 @@ public class WritableByteChannel {
     # + content - Block of bytes to be written
     # + offset - Offset of the provided content, which needs to be kept when writing bytes
     # + return - Number of bytes written or else `io:Error`
-    public function write(byte[] content, int offset) returns int|Error {
+    public isolated function write(byte[] content, int offset) returns int|Error {
         return byteWriteExtern(self, content, offset);
     }
 
@@ -47,17 +47,17 @@ public class WritableByteChannel {
     # ```
     #
     # + return - `io:Error` or else `()`
-    public function close() returns Error? {
+    public isolated function close() returns Error? {
         return closeWritableByteChannelExtern(self);
     }
 }
 
-function byteWriteExtern(WritableByteChannel byteChannel, byte[] content, int offset) returns int|Error = @java:Method {
+isolated function byteWriteExtern(WritableByteChannel byteChannel, byte[] content, int offset) returns int|Error = @java:Method {
     name: "write",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.ByteChannelUtils"
 } external;
 
-function closeWritableByteChannelExtern(WritableByteChannel byteChannel) returns Error? = @java:Method {
+isolated function closeWritableByteChannelExtern(WritableByteChannel byteChannel) returns Error? = @java:Method {
     name: "closeByteChannel",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.ByteChannelUtils"
 } external;

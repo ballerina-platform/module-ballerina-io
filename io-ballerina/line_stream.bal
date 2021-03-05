@@ -25,7 +25,7 @@ public class LineStream {
     # Initialize a `LineStream` using a `io:ReadableCharacterChannel`.
     #
     # + readableCharacterChannel - The `io:ReadableCharacterChannel` that this line stream is referred to
-    public function init(ReadableCharacterChannel readableCharacterChannel) {
+    public isolated function init(ReadableCharacterChannel readableCharacterChannel) {
         self.readableCharacterChannel = readableCharacterChannel;
     }
 

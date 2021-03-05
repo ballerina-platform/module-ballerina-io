@@ -20,7 +20,7 @@
 # ```
 # + path - The path of the file
 # + return - The entire file content as a string or an `io:Error`
-public function fileReadString(@untainted string path) returns @tainted string|Error {
+public isolated function fileReadString(@untainted string path) returns @tainted string|Error {
     var byteChannel = openReadableFile(path);
     if (byteChannel is ReadableByteChannel) {
         return channelReadString(byteChannel);
@@ -35,7 +35,7 @@ public function fileReadString(@untainted string path) returns @tainted string|E
 # ```
 # + path - The path of the file
 # + return - The file as list of lines or an `io:Error`
-public function fileReadLines(@untainted string path) returns @tainted string[]|Error {
+public isolated function fileReadLines(@untainted string path) returns @tainted string[]|Error {
     var byteChannel = openReadableFile(path);
     if (byteChannel is ReadableByteChannel) {
         return channelReadLines(byteChannel);
@@ -50,7 +50,7 @@ public function fileReadLines(@untainted string path) returns @tainted string[]|
 # ```
 # + path - The path of the file
 # + return - The file content as a stream of strings or an `io:Error`
-public function fileReadLinesAsStream(@untainted string path) returns @tainted stream<string, Error>|Error {
+public isolated function fileReadLinesAsStream(@untainted string path) returns @tainted stream<string, Error>|Error {
     var byteChannel = openReadableFile(path);
     if (byteChannel is ReadableByteChannel) {
         return channelReadLinesAsStream(byteChannel);
@@ -65,7 +65,7 @@ public function fileReadLinesAsStream(@untainted string path) returns @tainted s
 # ```
 # + path - The path of the JSON file
 # + return - The file content as a JSON object or an `io:Error`
-public function fileReadJson(@untainted string path) returns @tainted json|Error {
+public isolated function fileReadJson(@untainted string path) returns @tainted json|Error {
     var byteChannel = openReadableFile(path);
     if (byteChannel is ReadableByteChannel) {
         return channelReadJson(byteChannel);
@@ -80,7 +80,7 @@ public function fileReadJson(@untainted string path) returns @tainted json|Error
 # ```
 # + path - The path of the XML file
 # + return - The file content as an XML or an `io:Error`
-public function fileReadXml(@untainted string path) returns @tainted xml|Error {
+public isolated function fileReadXml(@untainted string path) returns @tainted xml|Error {
     var byteChannel = openReadableFile(path);
     if (byteChannel is ReadableByteChannel) {
         return channelReadXml(byteChannel);
@@ -98,7 +98,7 @@ public function fileReadXml(@untainted string path) returns @tainted xml|Error {
 # + content - String content to write
 # + option - To indicate whether to overwrite or append the given content
 # + return - The null `()` value when the writing was successful or an `io:Error`
-public function fileWriteString(@untainted string path, string content, FileWriteOption option = OVERWRITE) returns
+public isolated function fileWriteString(@untainted string path, string content, FileWriteOption option = OVERWRITE) returns
 Error? {
     var byteChannel = openWritableFile(path, option);
     if (byteChannel is WritableByteChannel) {
@@ -118,7 +118,7 @@ Error? {
 # + content - An array of string lines to write
 # + option - To indicate whether to overwrite or append the given content
 # + return - The null `()` value when the writing was successful or an `io:Error`
-public function fileWriteLines(@untainted string path, string[] content, FileWriteOption option = OVERWRITE) returns
+public isolated function fileWriteLines(@untainted string path, string[] content, FileWriteOption option = OVERWRITE) returns
 Error? {
     var byteChannel = openWritableFile(path, option);
     if (byteChannel is WritableByteChannel) {
@@ -139,7 +139,7 @@ Error? {
 # + lineStream -  A stream of lines to write
 # + option - To indicate whether to overwrite or append the given content
 # + return - The null `()` value when the writing was successful or an `io:Error`
-public function fileWriteLinesFromStream(@untainted string path, stream<string, Error> lineStream, FileWriteOption option =
+public isolated function fileWriteLinesFromStream(@untainted string path, stream<string, Error> lineStream, FileWriteOption option =
                                          OVERWRITE) returns Error? {
     var byteChannel = openWritableFile(path, option);
     if (byteChannel is WritableByteChannel) {
@@ -157,7 +157,7 @@ public function fileWriteLinesFromStream(@untainted string path, stream<string, 
 # + path - The path of the JSON file
 # + content - JSON content to write
 # + return - The null `()` value when the writing was successful or an `io:Error`
-public function fileWriteJson(@untainted string path, json content) returns @tainted Error? {
+public isolated function fileWriteJson(@untainted string path, json content) returns @tainted Error? {
     var byteChannel = openWritableFile(path);
     if (byteChannel is WritableByteChannel) {
         return channelWriteJson(byteChannel, content);
@@ -176,7 +176,7 @@ public function fileWriteJson(@untainted string path, json content) returns @tai
 # + xmlOptions - XML writing options(XML entity type and DOCTYPE)
 # + fileWriteOption - file write option(`OVERWRITE` and `APPEND` are the possible values, and the default value is `OVERWRITE`)
 # + return - The null `()` value when the writing was successful or an `io:Error`
-public function fileWriteXml(@untainted string path, xml content, *XmlWriteOptions xmlOptions, FileWriteOption fileWriteOption =
+public isolated function fileWriteXml(@untainted string path, xml content, *XmlWriteOptions xmlOptions, FileWriteOption fileWriteOption =
                              OVERWRITE) returns Error? {
     WritableByteChannel|Error byteChannel;
     if (xmlOptions.xmlEntityType == DOCUMENT_ENTITY) {

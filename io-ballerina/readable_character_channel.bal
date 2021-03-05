@@ -26,7 +26,7 @@ public class ReadableCharacterChannel {
     # 
     # + byteChannel - The `ReadableByteChannel`, which would be used to read the characters
     # + charset - The character set, which would be used to encode/decode the given bytes to characters
-    public function init(ReadableByteChannel byteChannel, string charset) {
+    public isolated function init(ReadableByteChannel byteChannel, string charset) {
         self.byteChannel = byteChannel;
         self.charset = charset;
         initReadableCharacterChannel(self, byteChannel, charset);
@@ -40,7 +40,7 @@ public class ReadableCharacterChannel {
     #
     # + numberOfChars - Number of characters, which should be read
     # + return - Content, which is read, an `EofError` once the channel reaches the end or else an `io:Error`
-    public function read(@untainted int numberOfChars) returns @tainted string|Error {
+    public isolated function read(@untainted int numberOfChars) returns @tainted string|Error {
         return readExtern(self, numberOfChars);
     }
 
@@ -49,7 +49,7 @@ public class ReadableCharacterChannel {
     # string|io:Error content = readableCharChannel.readString();
     # ```
     # + return - Either a string or `io:Error`
-    public function readString() returns @tainted string|Error {
+    public isolated function readString() returns @tainted string|Error {
         return readAllAsStringExtern(self);
     }
 
@@ -58,7 +58,7 @@ public class ReadableCharacterChannel {
     # string[]|io:Error content = readableCharChannel.readAllLines();
     # ```
     # + return - Either a string array or `io:Error`
-    public function readAllLines() returns @tainted string[]|Error {
+    public isolated function readAllLines() returns @tainted string[]|Error {
         return readAllLinesExtern(self);
     }
 
@@ -68,7 +68,7 @@ public class ReadableCharacterChannel {
     # ```
     #
     # + return - The read JSON string or else an `io:Error`
-    public function readJson() returns @tainted json|Error {
+    public isolated function readJson() returns @tainted json|Error {
         return readJsonExtern(self);
     }
 
@@ -78,7 +78,7 @@ public class ReadableCharacterChannel {
     # ```
     #
     # + return - The read XML or else an `io:Error`
-    public function readXml() returns @tainted xml|Error {
+    public isolated function readXml() returns @tainted xml|Error {
         return readXmlExtern(self);
     }
 
@@ -89,7 +89,7 @@ public class ReadableCharacterChannel {
     # + key - The property key needs to read.
     # + defaultValue - Default value to be return.
     # + return - The read property value or else an `io:Error`
-    public function readProperty(string key, string defaultValue = "") returns @tainted string|Error {
+    public isolated function readProperty(string key, string defaultValue = "") returns @tainted string|Error {
         return readPropertyExtern(self, key, defaultValue);
     }
 
@@ -99,7 +99,7 @@ public class ReadableCharacterChannel {
     # ```
     #
     # + return - Either a stream of strings(lines) or an io:Error.
-    public function lineStream() returns stream<string, Error>|Error {
+    public isolated function lineStream() returns stream<string, Error>|Error {
         LineStream lineStream = new (self);
         return new stream<string, Error>(lineStream);
     }
@@ -110,7 +110,7 @@ public class ReadableCharacterChannel {
     # ```
     #
     # + return - A map that contains all properties
-    public function readAllProperties() returns @tainted map<string>|Error {
+    public isolated function readAllProperties() returns @tainted map<string>|Error {
         return readAllPropertiesExtern(self);
     }
 
@@ -121,55 +121,55 @@ public class ReadableCharacterChannel {
     # ```
     #
     # + return - If an error occurred while writing
-    public function close() returns Error? {
+    public isolated function close() returns Error? {
         return closeReadableCharacterChannel(self);
     }
 }
 
-function initReadableCharacterChannel(ReadableCharacterChannel characterChannel, ReadableByteChannel byteChannel, 
+isolated function initReadableCharacterChannel(ReadableCharacterChannel characterChannel, ReadableByteChannel byteChannel,
                                       string charset) = @java:Method {
     name: "initCharacterChannel",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.CharacterChannelUtils"
 } external;
 
-function readExtern(ReadableCharacterChannel characterChannel, @untainted int numberOfChars) returns @tainted string|
+isolated function readExtern(ReadableCharacterChannel characterChannel, @untainted int numberOfChars) returns @tainted string|
 Error = @java:Method {
     name: "read",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.CharacterChannelUtils"
 } external;
 
-function readAllLinesExtern(ReadableCharacterChannel characterChannel) returns @tainted string[]|Error = @java:Method {
+isolated function readAllLinesExtern(ReadableCharacterChannel characterChannel) returns @tainted string[]|Error = @java:Method {
     name: "readAllLines",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.CharacterChannelUtils"
 } external;
 
-function readAllAsStringExtern(ReadableCharacterChannel characterChannel) returns @tainted string|Error = @java:Method {
+isolated function readAllAsStringExtern(ReadableCharacterChannel characterChannel) returns @tainted string|Error = @java:Method {
     name: "readString",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.CharacterChannelUtils"
 } external;
 
-function readJsonExtern(ReadableCharacterChannel characterChannel) returns @tainted json|Error = @java:Method {
+isolated function readJsonExtern(ReadableCharacterChannel characterChannel) returns @tainted json|Error = @java:Method {
     name: "readJson",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.CharacterChannelUtils"
 } external;
 
-function readXmlExtern(ReadableCharacterChannel characterChannel) returns @tainted xml|Error = @java:Method {
+isolated function readXmlExtern(ReadableCharacterChannel characterChannel) returns @tainted xml|Error = @java:Method {
     name: "readXml",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.CharacterChannelUtils"
 } external;
 
-function readPropertyExtern(ReadableCharacterChannel characterChannel, string key, string defaultValue) returns @tainted string|
+isolated function readPropertyExtern(ReadableCharacterChannel characterChannel, string key, string defaultValue) returns @tainted string|
 Error = @java:Method {
     name: "readProperty",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.CharacterChannelUtils"
 } external;
 
-function readAllPropertiesExtern(ReadableCharacterChannel characterChannel) returns @tainted map<string>|Error = @java:Method {
+isolated function readAllPropertiesExtern(ReadableCharacterChannel characterChannel) returns @tainted map<string>|Error = @java:Method {
     name: "readAllProperties",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.CharacterChannelUtils"
 } external;
 
-function closeReadableCharacterChannel(ReadableCharacterChannel characterChannel) returns Error? = @java:Method {
+isolated function closeReadableCharacterChannel(ReadableCharacterChannel characterChannel) returns Error? = @java:Method {
     name: "close",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.CharacterChannelUtils"
 } external;
