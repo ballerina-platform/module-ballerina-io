@@ -29,7 +29,7 @@ public class BlockStream {
     #
     # + readableByteChannel - The `io:ReadableByteChannel` that this block stream is referred to
     # + blockSize - The size of a block as an integer
-    public function init(ReadableByteChannel readableByteChannel, int blockSize) {
+    public isolated function init(ReadableByteChannel readableByteChannel, int blockSize) {
         self.readableByteChannel = readableByteChannel;
         self.blockSize = blockSize;
     }

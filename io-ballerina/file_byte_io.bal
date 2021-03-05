@@ -20,7 +20,7 @@
 # ```
 # + path - The path of the file
 # + return - Either a read only byte array or `io:Error`
-public function fileReadBytes(@untainted string path) returns @tainted readonly & byte[]|Error {
+public isolated function fileReadBytes(@untainted string path) returns @tainted readonly & byte[]|Error {
     var byteChannel = openReadableFile(path);
     if (byteChannel is ReadableByteChannel) {
         return channelReadBytes(byteChannel);
@@ -36,7 +36,7 @@ public function fileReadBytes(@untainted string path) returns @tainted readonly 
 # + path - The path of the file
 # + blockSize - An optional size of the byte block. Default size is 4KB
 # + return - Either a byte block stream or `io:Error`
-public function fileReadBlocksAsStream(string path, int blockSize=4096) returns @tainted stream<Block, Error>|Error {
+public isolated function fileReadBlocksAsStream(string path, int blockSize=4096) returns @tainted stream<Block, Error>|Error {
     var byteChannel = openReadableFile(path);
     if (byteChannel is ReadableByteChannel) {
         return channelReadBlocksAsStream(byteChannel, blockSize);
@@ -54,7 +54,7 @@ public function fileReadBlocksAsStream(string path, int blockSize=4096) returns 
 # + content - Byte content to write
 # + option - To indicate whether to overwrite or append the given content
 # + return - `io:Error` or else `()`
-public function fileWriteBytes(@untainted string path, byte[] content,
+public isolated function fileWriteBytes(@untainted string path, byte[] content,
                             FileWriteOption option = OVERWRITE) returns Error? {
     var byteChannel = openWritableFile(path, option);
     if (byteChannel is WritableByteChannel) {
@@ -74,7 +74,7 @@ public function fileWriteBytes(@untainted string path, byte[] content,
 # + byteStream - Byte stream to write
 # + option - To indicate whether to overwrite or append the given content
 # + return - `io:Error` or else `()`
-public function fileWriteBlocksFromStream(@untainted string path, stream<byte[], Error> byteStream,
+public isolated function fileWriteBlocksFromStream(@untainted string path, stream<byte[], Error> byteStream,
                         FileWriteOption option = OVERWRITE) returns Error? {
 
     var byteChannel = openWritableFile(path, option);

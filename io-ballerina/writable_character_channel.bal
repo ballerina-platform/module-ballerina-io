@@ -26,7 +26,7 @@ public class WritableCharacterChannel {
     # 
     # + bChannel - The `WritableByteChannel`, which would be used to write the characters
     # + charset - The character set, which would be used to encode the given bytes to characters
-    public function init(WritableByteChannel bChannel, string charset) {
+    public isolated function init(WritableByteChannel bChannel, string charset) {
         self.bChannel = bChannel;
         self.charset = charset;
         initWritableCharacterChannel(self, bChannel, charset);
@@ -40,7 +40,7 @@ public class WritableCharacterChannel {
     # + content - Content to be written
     # + startOffset - Number of characters to be offset when writing the content
     # + return - Content length that written or else `io:Error`
-    public function write(string content, int startOffset) returns int|Error {
+    public isolated function write(string content, int startOffset) returns int|Error {
         return writeExtern(self, content, startOffset);
     }
 
@@ -51,7 +51,7 @@ public class WritableCharacterChannel {
     #
     # + content - Content to be written
     # + return - Returns null if the writing was successful or an `io:Error`
-    public function writeLine(string content) returns Error? {
+    public isolated function writeLine(string content) returns Error? {
         string lineContent = content + NEW_LINE;
         var result = writeExtern(self, lineContent, 0);
         if (result is Error) {
@@ -68,7 +68,7 @@ public class WritableCharacterChannel {
     #
     # + content - The JSON to be written
     # + return - Returns null if the writing was successful or an `io:Error`
-    public function writeJson(json content) returns Error? {
+    public isolated function writeJson(json content) returns Error? {
         return writeJsonExtern(self, content);
     }
 
@@ -80,7 +80,7 @@ public class WritableCharacterChannel {
     # + content - The XML to be written
     # + xmlDoctype - Optional argument to specify the XML DOCTYPE configurations
     # + return - `()` or else `io:Error` if any error occurred
-    public function writeXml(xml content, XmlDoctype? xmlDoctype = ()) returns Error? {
+    public isolated function writeXml(xml content, XmlDoctype? xmlDoctype = ()) returns Error? {
         string doctype = "";
         if (xmlDoctype != ()) {
             doctype = populateDoctype(content, <XmlDoctype>xmlDoctype);
@@ -95,7 +95,7 @@ public class WritableCharacterChannel {
     # + properties - The map<string> that contains keys and values
     # + comment - Comment describing the property list
     # + return - `()` or else `io:Error` if any error occurred
-    public function writeProperties(map<string> properties, string comment) returns Error? {
+    public isolated function writeProperties(map<string> properties, string comment) returns Error? {
         return writePropertiesExtern(self, properties, comment);
     }
 
@@ -106,12 +106,12 @@ public class WritableCharacterChannel {
     # ```
     #
     # + return - `()` or else an `io:Error` if any error occurred
-    public function close() returns Error? {
+    public isolated function close() returns Error? {
         return closeWritableCharacterChannel(self);
     }
 }
 
-function populateDoctype(xml content, XmlDoctype doctype) returns string {
+isolated function populateDoctype(xml content, XmlDoctype doctype) returns string {
     // Generate <!DOCTYPE rootElementName PUBLIC|SYSTEM PublicIdentifier SystemIdentifier internalSubset>
     string doctypeElement = "";
     string startElement = "<!DOCTYPE";
@@ -136,34 +136,34 @@ function populateDoctype(xml content, XmlDoctype doctype) returns string {
     return doctypeElement;
 }
 
-function initWritableCharacterChannel(WritableCharacterChannel characterChannel, WritableByteChannel byteChannel, 
+isolated function initWritableCharacterChannel(WritableCharacterChannel characterChannel, WritableByteChannel byteChannel,
                                       string charset) = @java:Method {
     name: "initCharacterChannel",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.CharacterChannelUtils"
 } external;
 
-function writeExtern(WritableCharacterChannel characterChannel, string content, int startOffset) returns int|Error = @java:Method {
+isolated function writeExtern(WritableCharacterChannel characterChannel, string content, int startOffset) returns int|Error = @java:Method {
     name: "write",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.CharacterChannelUtils"
 } external;
 
-function writeJsonExtern(WritableCharacterChannel characterChannel, json content) returns Error? = @java:Method {
+isolated function writeJsonExtern(WritableCharacterChannel characterChannel, json content) returns Error? = @java:Method {
     name: "writeJson",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.CharacterChannelUtils"
 } external;
 
-function writeXmlExtern(WritableCharacterChannel characterChannel, xml content, string doctype) returns Error? = @java:Method {
+isolated function writeXmlExtern(WritableCharacterChannel characterChannel, xml content, string doctype) returns Error? = @java:Method {
     name: "writeXml",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.CharacterChannelUtils"
 } external;
 
-function writePropertiesExtern(WritableCharacterChannel characterChannel, map<string> properties, string comment) returns 
+isolated function writePropertiesExtern(WritableCharacterChannel characterChannel, map<string> properties, string comment) returns
 Error? = @java:Method {
     name: "writeProperties",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.CharacterChannelUtils"
 } external;
 
-function closeWritableCharacterChannel(WritableCharacterChannel characterChannel) returns Error? = @java:Method {
+isolated function closeWritableCharacterChannel(WritableCharacterChannel characterChannel) returns Error? = @java:Method {
     name: "close",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.CharacterChannelUtils"
 } external;

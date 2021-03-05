@@ -36,7 +36,7 @@ public class WritableDataChannel {
     #
     # + byteChannel - channel which would represent the source to read/write data
     # + bOrder - network byte order
-    public function init(WritableByteChannel byteChannel, ByteOrder bOrder = "BE") {
+    public isolated function init(WritableByteChannel byteChannel, ByteOrder bOrder = "BE") {
         // Remove temp once this got fixed #19842
         string temp = bOrder;
         initWritableDataChannel(self, byteChannel, temp);
@@ -49,7 +49,7 @@ public class WritableDataChannel {
     #
     # + value - The integer, which will be written
     # + return - `()` if the content is written successfully or else an `io:Error` if any error occurred
-    public function writeInt16(int value) returns Error? {
+    public isolated function writeInt16(int value) returns Error? {
         return writeInt16Extern(self, value);
     }
 
@@ -60,7 +60,7 @@ public class WritableDataChannel {
     #
     # + value - The integer, which will be written
     # + return - `()` if the content is written successfully or else `io:Error` if any error occurred
-    public function writeInt32(int value) returns Error? {
+    public isolated function writeInt32(int value) returns Error? {
         return writeInt32Extern(self, value);
     }
 
@@ -71,7 +71,7 @@ public class WritableDataChannel {
     #
     # + value - The integer, which will be written
     # + return - `()` if the content is written successfully or else `io:Error` if any error occurred
-    public function writeInt64(int value) returns Error? {
+    public isolated function writeInt64(int value) returns Error? {
         return writeInt64Extern(self, value);
     }
 
@@ -82,7 +82,7 @@ public class WritableDataChannel {
     #
     # + value - The float, which will be written
     # + return - `()` if the float is written successfully or else `io:Error` if any error occurred
-    public function writeFloat32(float value) returns Error? {
+    public isolated function writeFloat32(float value) returns Error? {
         return writeFloat32Extern(self, value);
     }
 
@@ -93,7 +93,7 @@ public class WritableDataChannel {
     #
     # + value - The float, which will be written
     # + return - `()` if the float is written successfully or else `io:Error` if any error occurred
-    public function writeFloat64(float value) returns Error? {
+    public isolated function writeFloat64(float value) returns Error? {
         return writeFloat64Extern(self, value);
     }
 
@@ -104,7 +104,7 @@ public class WritableDataChannel {
     #
     # + value - The boolean, which will be written
     # + return - `()` if the content is written successfully or else `io:Error` if any error occurred
-    public function writeBool(boolean value) returns Error? {
+    public isolated function writeBool(boolean value) returns Error? {
         return writeBoolExtern(self, value);
     }
 
@@ -116,7 +116,7 @@ public class WritableDataChannel {
     # + value - The value, which should be written
     # + encoding - The encoding, which will represent the value string
     # + return - `()` if the content is written successfully or else `io:Error` if any error occurred
-    public function writeString(string value, string encoding) returns Error? {
+    public isolated function writeString(string value, string encoding) returns Error? {
         return writeStringExtern(self, value, encoding);
     }
 
@@ -127,7 +127,7 @@ public class WritableDataChannel {
     #
     # + value - The int, which will be written
     # + return - The value of the integer, which is written or else `io:Error` if any error occurred
-    public function writeVarInt(int value) returns Error? {
+    public isolated function writeVarInt(int value) returns Error? {
         return writeVarIntExtern(self, value);
     }
 
@@ -138,57 +138,57 @@ public class WritableDataChannel {
     # ```
     #
     # + return - `()` if the channel is closed successfully or else `io:Error` if any error occurred
-    public function close() returns Error? {
+    public isolated function close() returns Error? {
         return closeWritableDataChannelExtern(self);
     }
 }
 
-function initWritableDataChannel(WritableDataChannel dataChannel, WritableByteChannel byteChannel, string bOrder) = @java:Method {
+isolated function initWritableDataChannel(WritableDataChannel dataChannel, WritableByteChannel byteChannel, string bOrder) = @java:Method {
     name: "initWritableDataChannel",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.DataChannelUtils"
 } external;
 
-function writeInt16Extern(WritableDataChannel dataChannel, int value) returns Error? = @java:Method {
+isolated function writeInt16Extern(WritableDataChannel dataChannel, int value) returns Error? = @java:Method {
     name: "writeInt16",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.DataChannelUtils"
 } external;
 
-function writeInt32Extern(WritableDataChannel dataChannel, int value) returns Error? = @java:Method {
+isolated function writeInt32Extern(WritableDataChannel dataChannel, int value) returns Error? = @java:Method {
     name: "writeInt32",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.DataChannelUtils"
 } external;
 
-function writeInt64Extern(WritableDataChannel dataChannel, int value) returns Error? = @java:Method {
+isolated function writeInt64Extern(WritableDataChannel dataChannel, int value) returns Error? = @java:Method {
     name: "writeInt64",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.DataChannelUtils"
 } external;
 
-function writeFloat32Extern(WritableDataChannel dataChannel, float value) returns Error? = @java:Method {
+isolated function writeFloat32Extern(WritableDataChannel dataChannel, float value) returns Error? = @java:Method {
     name: "writeFloat32",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.DataChannelUtils"
 } external;
 
-function writeFloat64Extern(WritableDataChannel dataChannel, float value) returns Error? = @java:Method {
+isolated function writeFloat64Extern(WritableDataChannel dataChannel, float value) returns Error? = @java:Method {
     name: "writeFloat64",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.DataChannelUtils"
 } external;
 
-function writeBoolExtern(WritableDataChannel dataChannel, boolean value) returns Error? = @java:Method {
+isolated function writeBoolExtern(WritableDataChannel dataChannel, boolean value) returns Error? = @java:Method {
     name: "writeBool",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.DataChannelUtils"
 } external;
 
-function writeStringExtern(WritableDataChannel dataChannel, string value, string encoding) returns Error? = @java:Method {
+isolated function writeStringExtern(WritableDataChannel dataChannel, string value, string encoding) returns Error? = @java:Method {
     name: "writeString",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.DataChannelUtils"
 } external;
 
-function writeVarIntExtern(WritableDataChannel dataChannel, int value) returns Error? = @java:Method {
+isolated function writeVarIntExtern(WritableDataChannel dataChannel, int value) returns Error? = @java:Method {
     name: "writeVarInt",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.DataChannelUtils"
 } external;
 
-function closeWritableDataChannelExtern(WritableDataChannel dataChannel) returns Error? = @java:Method {
+isolated function closeWritableDataChannelExtern(WritableDataChannel dataChannel) returns Error? = @java:Method {
     name: "closeDataChannel",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.DataChannelUtils"
 } external;

@@ -16,7 +16,7 @@
 
 import ballerina/lang.'value;
 
-function channelReadString(ReadableChannel readableChannel) returns @tainted string|Error {
+isolated function channelReadString(ReadableChannel readableChannel) returns @tainted string|Error {
     var characterChannel = getReadableCharacterChannel(readableChannel);
     if (characterChannel is ReadableCharacterChannel) {
         var result = characterChannel.readString();
@@ -27,7 +27,7 @@ function channelReadString(ReadableChannel readableChannel) returns @tainted str
     }
 }
 
-function channelReadLines(ReadableChannel readableChannel) returns @tainted string[]|Error {
+isolated function channelReadLines(ReadableChannel readableChannel) returns @tainted string[]|Error {
     var characterChannel = getReadableCharacterChannel(readableChannel);
     if (characterChannel is ReadableCharacterChannel) {
         var result = characterChannel.readAllLines();
@@ -38,7 +38,7 @@ function channelReadLines(ReadableChannel readableChannel) returns @tainted stri
     }
 }
 
-function channelReadLinesAsStream(ReadableChannel readableChannel) returns @tainted stream<string, Error>|Error {
+isolated function channelReadLinesAsStream(ReadableChannel readableChannel) returns @tainted stream<string, Error>|Error {
     var characterChannel = getReadableCharacterChannel(readableChannel);
     if (characterChannel is ReadableCharacterChannel) {
         return characterChannel.lineStream();
@@ -47,7 +47,7 @@ function channelReadLinesAsStream(ReadableChannel readableChannel) returns @tain
     }
 }
 
-function channelReadJson(ReadableChannel readableChannel) returns @tainted json|Error {
+isolated function channelReadJson(ReadableChannel readableChannel) returns @tainted json|Error {
     var characterChannel = getReadableCharacterChannel(readableChannel);
     if (characterChannel is ReadableCharacterChannel) {
         var result = characterChannel.readJson();
@@ -58,7 +58,7 @@ function channelReadJson(ReadableChannel readableChannel) returns @tainted json|
     }
 }
 
-function channelReadXml(ReadableChannel readableChannel) returns @tainted xml|Error {
+isolated function channelReadXml(ReadableChannel readableChannel) returns @tainted xml|Error {
     var characterChannel = getReadableCharacterChannel(readableChannel);
     if (characterChannel is ReadableCharacterChannel) {
         var result = characterChannel.readXml();
@@ -69,7 +69,7 @@ function channelReadXml(ReadableChannel readableChannel) returns @tainted xml|Er
     }
 }
 
-function channelWriteString(WritableChannel writableChannel, string content) returns Error? {
+isolated function channelWriteString(WritableChannel writableChannel, string content) returns Error? {
     var characterChannel = getWritableCharacterChannel(writableChannel);
     if (characterChannel is WritableCharacterChannel) {
         var writeResult = characterChannel.write(content, 0);
@@ -86,7 +86,7 @@ function channelWriteString(WritableChannel writableChannel, string content) ret
     }
 }
 
-function channelWriteLines(WritableChannel writableChannel, string[] content) returns Error? {
+isolated function channelWriteLines(WritableChannel writableChannel, string[] content) returns Error? {
     var characterChannel = getWritableCharacterChannel(writableChannel);
     if (characterChannel is WritableCharacterChannel) {
         string writeContent = "";
@@ -107,18 +107,18 @@ function channelWriteLines(WritableChannel writableChannel, string[] content) re
     }
 }
 
-function channelWriteLinesFromStream(WritableChannel writableChannel, stream<string, Error> lineStream) returns Error? {
+isolated function channelWriteLinesFromStream(WritableChannel writableChannel, stream<string, Error> lineStream) returns Error? {
     var characterChannel = getWritableCharacterChannel(writableChannel);
     if (characterChannel is WritableCharacterChannel) {
-        error? e = lineStream.forEach(function(string stringContent) {
-                                          if (characterChannel is WritableCharacterChannel) {
-                                              var r = characterChannel.writeLine(stringContent);
-                                          }
-                                      });
-        if (e is Error) {
-            return e;
+        record {| string value; |}|Error? line = lineStream.next();
+        while(line is record {| string value; |}) {
+            var writeResult = characterChannel.writeLine(line.value);
+            line = lineStream.next();
         }
         var closeResult = characterChannel.close();
+        if (line is Error) {
+            return line;
+        }
         if (closeResult is Error) {
             return closeResult;
         }
@@ -128,7 +128,7 @@ function channelWriteLinesFromStream(WritableChannel writableChannel, stream<str
     }
 }
 
-function channelWriteJson(WritableChannel writableChannel, json content) returns @tainted Error? {
+isolated function channelWriteJson(WritableChannel writableChannel, json content) returns @tainted Error? {
     var characterChannel = getWritableCharacterChannel(writableChannel);
     if (characterChannel is WritableCharacterChannel) {
         var writeResult = characterChannel.writeJson(content);
@@ -145,7 +145,7 @@ function channelWriteJson(WritableChannel writableChannel, json content) returns
     }
 }
 
-function channelWriteXml(WritableChannel writableChannel, xml content, XmlDoctype? xmlDoctype = ()) returns Error? {
+isolated function channelWriteXml(WritableChannel writableChannel, xml content, XmlDoctype? xmlDoctype = ()) returns Error? {
     var characterChannel = getWritableCharacterChannel(writableChannel);
     if (characterChannel is WritableCharacterChannel) {
         Error? writeResult = ();
@@ -167,7 +167,7 @@ function channelWriteXml(WritableChannel writableChannel, xml content, XmlDoctyp
     }
 }
 
-function getReadableCharacterChannel(ReadableChannel readableChannel) returns ReadableCharacterChannel|Error {
+isolated function getReadableCharacterChannel(ReadableChannel readableChannel) returns ReadableCharacterChannel|Error {
     ReadableCharacterChannel readableCharacterChannel;
     if (readableChannel is ReadableByteChannel) {
         readableCharacterChannel = new (readableChannel, DEFAULT_ENCODING);
@@ -181,7 +181,7 @@ function getReadableCharacterChannel(ReadableChannel readableChannel) returns Re
     return readableCharacterChannel;
 }
 
-function getWritableCharacterChannel(WritableChannel writableChannel) returns WritableCharacterChannel|Error {
+isolated function getWritableCharacterChannel(WritableChannel writableChannel) returns WritableCharacterChannel|Error {
     WritableCharacterChannel writableCharacterChannel;
     if (writableChannel is WritableByteChannel) {
         writableCharacterChannel = new (writableChannel, DEFAULT_ENCODING);

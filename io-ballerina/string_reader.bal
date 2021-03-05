@@ -22,7 +22,7 @@ public class StringReader {
     #
     # + content - The content, which should be written
     # + encoding - Encoding of the characters of the content
-    public function init(string content, string encoding = "UTF-8") {
+    public isolated function init(string content, string encoding = "UTF-8") {
         byte[] contentBytes = content.toBytes();
         ReadableByteChannel byteChannel = checkpanic createReadableChannel(contentBytes);
         self.charChannel = new ReadableCharacterChannel(byteChannel, encoding);
@@ -35,7 +35,7 @@ public class StringReader {
     # ```
     #
     # + return - JSON or else `io:Error` if any error occurred
-    public function readJson() returns @tainted json|Error {
+    public isolated function readJson() returns @tainted json|Error {
         if (self.charChannel is ReadableCharacterChannel) {
             var result = <ReadableCharacterChannel>self.charChannel;
             return result.readJson();
@@ -50,7 +50,7 @@ public class StringReader {
     # ```
     #
     # + return - XML or else `io:Error` if any error occurred
-    public function readXml() returns @tainted xml|Error? {
+    public isolated function readXml() returns @tainted xml|Error? {
         if (self.charChannel is ReadableCharacterChannel) {
             var result = <ReadableCharacterChannel>self.charChannel;
             return result.readXml();
@@ -66,7 +66,7 @@ public class StringReader {
     #
     # + nCharacters - Number of characters to be read
     # + return - String or else `io:Error` if any error occurred
-    public function readChar(int nCharacters) returns @tainted string|Error? {
+    public isolated function readChar(int nCharacters) returns @tainted string|Error? {
         if (self.charChannel is ReadableCharacterChannel) {
             var result = <ReadableCharacterChannel>self.charChannel;
             return result.read(nCharacters);
@@ -80,7 +80,7 @@ public class StringReader {
     # ```
     #
     # + return - An `io:Error` if could not close the channel or else `()`
-    public function close() returns Error? {
+    public isolated function close() returns Error? {
         if (self.charChannel is ReadableCharacterChannel) {
             var result = <ReadableCharacterChannel>self.charChannel;
             return result.close();

@@ -21,7 +21,7 @@
 # + path - The CSV file path
 # + skipHeaders - Number of headers, which should be skipped prior to reading records
 # + return - The entire CSV content in the channel as an array of string arrays or an `io:Error`
-public function fileReadCsv(@untainted string path, int skipHeaders = 0) returns @tainted string[][]|Error {
+public isolated function fileReadCsv(@untainted string path, int skipHeaders = 0) returns @tainted string[][]|Error {
 
     var csvChannel = openReadableCsvFile(path, COMMA, DEFAULT_ENCODING, skipHeaders);
     if (csvChannel is ReadableCSVChannel) {
@@ -37,7 +37,7 @@ public function fileReadCsv(@untainted string path, int skipHeaders = 0) returns
 # ```
 # + path - The CSV file path
 # + return - The entire CSV content in the channel a stream of string arrays or an `io:Error`
-public function fileReadCsvAsStream(@untainted string path) returns @tainted stream<string[], Error>|Error {
+public isolated function fileReadCsvAsStream(@untainted string path) returns @tainted stream<string[], Error>|Error {
     var csvChannel = openReadableCsvFile(path);
     if (csvChannel is ReadableCSVChannel) {
         return csvChannel.csvStream();
@@ -55,7 +55,7 @@ public function fileReadCsvAsStream(@untainted string path) returns @tainted str
 # + content - CSV content as an array of string arrays
 # + option - To indicate whether to overwrite or append the given content
 # + return - Either an `io:Error` or the null `()` value when the writing was successful
-public function fileWriteCsv(@untainted string path, string[][] content,
+public isolated function fileWriteCsv(@untainted string path, string[][] content,
                         FileWriteOption option = OVERWRITE) returns Error? {
     var csvChannel = openWritableCsvFile(path, option=option);
     if (csvChannel is WritableCSVChannel) {
@@ -75,7 +75,7 @@ public function fileWriteCsv(@untainted string path, string[][] content,
 # + content - A CSV record stream to be written
 # + option - To indicate whether to overwrite or append the given content
 # + return - Either an `io:Error` or the null `()` value when the writing was successful
-public function fileWriteCsvFromStream(@untainted string path, stream<string[], Error> content,
+public isolated function fileWriteCsvFromStream(@untainted string path, stream<string[], Error> content,
                     FileWriteOption option = OVERWRITE) returns Error? {
     var csvChannel = openWritableCsvFile(path, option=option);
     if (csvChannel is WritableCSVChannel) {

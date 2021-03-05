@@ -16,7 +16,7 @@
 
 import ballerina/lang.'value;
 
-function channelReadCsv(ReadableChannel readableChannel, int skipHeaders = 0) returns @tainted string[][]|Error {
+isolated function channelReadCsv(ReadableChannel readableChannel, int skipHeaders = 0) returns @tainted string[][]|Error {
     var csvChannel = getReadableCSVChannel(readableChannel, skipHeaders);
     if (csvChannel is ReadableCSVChannel) {
         string[][] results = [];
@@ -39,7 +39,7 @@ function channelReadCsv(ReadableChannel readableChannel, int skipHeaders = 0) re
     }
 }
 
-function channelReadCsvAsStream(ReadableChannel readableChannel) returns @tainted stream<string[], Error>|Error {
+isolated function channelReadCsvAsStream(ReadableChannel readableChannel) returns @tainted stream<string[], Error>|Error {
     var csvChannel = getReadableCSVChannel(readableChannel, 0);
     if (csvChannel is ReadableCSVChannel) {
         return csvChannel.csvStream();
@@ -48,7 +48,7 @@ function channelReadCsvAsStream(ReadableChannel readableChannel) returns @tainte
     }
 }
 
-function channelWriteCsv(WritableChannel writableChannel, string[][] content) returns Error? {
+isolated function channelWriteCsv(WritableChannel writableChannel, string[][] content) returns Error? {
     var csvChannel = getWritableCSVChannel(writableChannel);
     if (csvChannel is WritableCSVChannel) {
         foreach string[] r in content {
@@ -67,18 +67,18 @@ function channelWriteCsv(WritableChannel writableChannel, string[][] content) re
     }
 }
 
-function channelWriteCsvFromStream(WritableChannel writableChannel, stream<string[], Error> content) returns Error? {
+isolated function channelWriteCsvFromStream(WritableChannel writableChannel, stream<string[], Error> csvStream) returns Error? {
     var csvChannel = getWritableCSVChannel(writableChannel);
     if (csvChannel is WritableCSVChannel) {
-        error? e = content.forEach(function(string[] stringContent) {
-                                       if (csvChannel is WritableCSVChannel) {
-                                           var r = csvChannel.write(stringContent);
-                                       }
-                                   });
-        if (e is Error) {
-            return e;
+        record {| string[] value; |}|Error? csvRecord = csvStream.next();
+        while(csvRecord is record {| string[] value; |}) {
+            var writeResult = csvChannel.write(csvRecord.value);
+            csvRecord = csvStream.next();
         }
         var closeResult = csvChannel.close();
+        if (csvRecord is Error) {
+            return csvRecord;
+        }
         if (closeResult is Error) {
             return closeResult;
         }
@@ -87,7 +87,7 @@ function channelWriteCsvFromStream(WritableChannel writableChannel, stream<strin
     }
 }
 
-function getReadableCSVChannel(ReadableChannel readableChannel, int skipHeaders) returns ReadableCSVChannel|Error {
+isolated function getReadableCSVChannel(ReadableChannel readableChannel, int skipHeaders) returns ReadableCSVChannel|Error {
     ReadableCSVChannel readableCSVChannel;
 
     if (readableChannel is ReadableByteChannel) {
@@ -106,7 +106,7 @@ function getReadableCSVChannel(ReadableChannel readableChannel, int skipHeaders)
     return readableCSVChannel;
 }
 
-function getWritableCSVChannel(WritableChannel writableChannel) returns WritableCSVChannel|Error {
+isolated function getWritableCSVChannel(WritableChannel writableChannel) returns WritableCSVChannel|Error {
     WritableCSVChannel writableCSVChannel;
 
     if (writableChannel is WritableByteChannel) {

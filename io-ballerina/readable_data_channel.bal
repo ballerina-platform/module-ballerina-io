@@ -23,7 +23,7 @@ public class ReadableDataChannel {
     # 
     # + byteChannel - The channel, which would represent the source to read/write data
     # + bOrder - network byte order
-    public function init(ReadableByteChannel byteChannel, ByteOrder bOrder = "BE") {
+    public isolated function init(ReadableByteChannel byteChannel, ByteOrder bOrder = "BE") {
         // Remove temp once this got fixed #19842
         string temp = bOrder;
         initReadableDataChannel(self, byteChannel, temp);
@@ -35,7 +35,7 @@ public class ReadableDataChannel {
     # ```
     #
     # + return - The value of the integer, which is read or else an `io:Error` if any error occurred
-    public function readInt16() returns int|Error {
+    public isolated function readInt16() returns int|Error {
         return readInt16Extern(self);
     }
 
@@ -45,7 +45,7 @@ public class ReadableDataChannel {
     # ```
     #
     # + return - The value of the integer, which is read or else an `io:Error` if any error occurred
-    public function readInt32() returns int|Error {
+    public isolated function readInt32() returns int|Error {
         return readInt32Extern(self);
     }
 
@@ -55,7 +55,7 @@ public class ReadableDataChannel {
     # ```
     #
     # + return - The value of the integer, which is read or else an `io:Error` if any error occurred
-    public function readInt64() returns int|Error {
+    public isolated function readInt64() returns int|Error {
         return readInt64Extern(self);
     }
 
@@ -65,7 +65,7 @@ public class ReadableDataChannel {
     # ```
     #
     # + return - The value of the float which is read or else `io:Error` if any error occurred
-    public function readFloat32() returns float|Error {
+    public isolated function readFloat32() returns float|Error {
         return readFloat32Extern(self);
     }
 
@@ -75,7 +75,7 @@ public class ReadableDataChannel {
     # ```
     #
     # + return - The value of the float which is read or else `io:Error` if any error occurred
-    public function readFloat64() returns float|Error {
+    public isolated function readFloat64() returns float|Error {
         return readFloat64Extern(self);
     }
 
@@ -85,7 +85,7 @@ public class ReadableDataChannel {
     # ```
     #
     # + return - boolean value which is read or else `io:Error` if any error occurred
-    public function readBool() returns boolean|Error {
+    public isolated function readBool() returns boolean|Error {
         return readBoolExtern(self);
     }
 
@@ -97,7 +97,7 @@ public class ReadableDataChannel {
     # + nBytes - Specifies the number of bytes, which represents the string
     # + encoding - Specifies the char-set encoding of the string
     # + return - The value of the string or else `io:Error` if any error occurred
-    public function readString(int nBytes, string encoding) returns string|Error {
+    public isolated function readString(int nBytes, string encoding) returns string|Error {
         return readStringExtern(self, nBytes, encoding);
     }
 
@@ -107,7 +107,7 @@ public class ReadableDataChannel {
     # ```
     #
     # + return - The value of the integer which is read or else `io:Error` if any error occurred
-    public function readVarInt() returns int|Error {
+    public isolated function readVarInt() returns int|Error {
         return readVarIntExtern(self);
     }
 
@@ -117,57 +117,57 @@ public class ReadableDataChannel {
     # io:Error? err = dataChannel.close();
     # ```
     # + return - `()` if the channel is closed successfully or else an `io:Error` if any error occurred
-    public function close() returns Error? {
+    public isolated function close() returns Error? {
         return closeReadableDataChannelExtern(self);
     }
 }
 
-function initReadableDataChannel(ReadableDataChannel dataChannel, ReadableByteChannel byteChannel, string bOrder) = @java:Method {
+isolated function initReadableDataChannel(ReadableDataChannel dataChannel, ReadableByteChannel byteChannel, string bOrder) = @java:Method {
     name: "initReadableDataChannel",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.DataChannelUtils"
 } external;
 
-function readInt16Extern(ReadableDataChannel dataChannel) returns int|Error = @java:Method {
+isolated function readInt16Extern(ReadableDataChannel dataChannel) returns int|Error = @java:Method {
     name: "readInt16",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.DataChannelUtils"
 } external;
 
-function readInt32Extern(ReadableDataChannel dataChannel) returns int|Error = @java:Method {
+isolated function readInt32Extern(ReadableDataChannel dataChannel) returns int|Error = @java:Method {
     name: "readInt32",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.DataChannelUtils"
 } external;
 
-function readInt64Extern(ReadableDataChannel dataChannel) returns int|Error = @java:Method {
+isolated function readInt64Extern(ReadableDataChannel dataChannel) returns int|Error = @java:Method {
     name: "readInt64",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.DataChannelUtils"
 } external;
 
-function readFloat32Extern(ReadableDataChannel dataChannel) returns float|Error = @java:Method {
+isolated function readFloat32Extern(ReadableDataChannel dataChannel) returns float|Error = @java:Method {
     name: "readFloat32",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.DataChannelUtils"
 } external;
 
-function readFloat64Extern(ReadableDataChannel dataChannel) returns float|Error = @java:Method {
+isolated function readFloat64Extern(ReadableDataChannel dataChannel) returns float|Error = @java:Method {
     name: "readFloat64",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.DataChannelUtils"
 } external;
 
-function readBoolExtern(ReadableDataChannel dataChannel) returns boolean|Error = @java:Method {
+isolated function readBoolExtern(ReadableDataChannel dataChannel) returns boolean|Error = @java:Method {
     name: "readBool",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.DataChannelUtils"
 } external;
 
-function readStringExtern(ReadableDataChannel dataChannel, int nBytes, string encoding) returns string|Error = @java:Method {
+isolated function readStringExtern(ReadableDataChannel dataChannel, int nBytes, string encoding) returns string|Error = @java:Method {
     name: "readString",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.DataChannelUtils"
 } external;
 
-function readVarIntExtern(ReadableDataChannel dataChannel) returns int|Error = @java:Method {
+isolated function readVarIntExtern(ReadableDataChannel dataChannel) returns int|Error = @java:Method {
     name: "readVarInt",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.DataChannelUtils"
 } external;
 
-function closeReadableDataChannelExtern(ReadableDataChannel dataChannel) returns Error? = @java:Method {
+isolated function closeReadableDataChannelExtern(ReadableDataChannel dataChannel) returns Error? = @java:Method {
     name: "closeDataChannel",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.DataChannelUtils"
 } external;

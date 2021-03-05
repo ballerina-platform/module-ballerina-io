@@ -25,7 +25,7 @@ public class CSVStream {
     # Initialize a `CSVStream` using a `io:ReadableTextRecordChannel`.
     #
     # + readableTextRecordChannel - The `io:ReadableTextRecordChannel` that this CSV stream is referred to
-    public function init(ReadableTextRecordChannel readableTextRecordChannel) {
+    public isolated function init(ReadableTextRecordChannel readableTextRecordChannel) {
         self.readableTextRecordChannel = readableTextRecordChannel;
     }
 

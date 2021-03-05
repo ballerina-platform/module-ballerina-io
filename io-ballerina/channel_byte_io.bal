@@ -16,7 +16,7 @@
 
 import ballerina/lang.'value;
 
-function channelReadBytes(ReadableChannel readableChannel) returns @tainted readonly & byte[]|Error {
+isolated function channelReadBytes(ReadableChannel readableChannel) returns @tainted readonly & byte[]|Error {
     if (readableChannel is ReadableByteChannel) {
         var result = readableChannel.readAll();
         var closeResult = readableChannel.close();
@@ -28,7 +28,7 @@ function channelReadBytes(ReadableChannel readableChannel) returns @tainted read
     }
 }
 
-function channelReadBlocksAsStream(ReadableChannel readableChannel, int blockSize=4096) returns @tainted stream<Block, Error>|Error {
+isolated function channelReadBlocksAsStream(ReadableChannel readableChannel, int blockSize=4096) returns @tainted stream<Block, Error>|Error {
     if (readableChannel is ReadableByteChannel) {
         return readableChannel.blockStream(blockSize);
     } else {
@@ -38,7 +38,7 @@ function channelReadBlocksAsStream(ReadableChannel readableChannel, int blockSiz
     }
 }
 
-function channelWriteBytes(WritableChannel writableChannel, byte[] content) returns Error? {
+isolated function channelWriteBytes(WritableChannel writableChannel, byte[] content) returns Error? {
     if (writableChannel is WritableByteChannel) {
         var r = writableChannel.write(content, 0);
         var closeResult = writableChannel.close();
@@ -52,16 +52,16 @@ function channelWriteBytes(WritableChannel writableChannel, byte[] content) retu
     }
 }
 
-function channelWriteBlocksFromStream(WritableChannel writableChannel, stream<byte[], Error> byteStream) returns Error? {
+isolated function channelWriteBlocksFromStream(WritableChannel writableChannel, stream<byte[], Error> byteStream) returns Error? {
     if (writableChannel is WritableByteChannel) {
-        error? e = byteStream.forEach(function(byte[] byteContent) {
-                                          if (writableChannel is WritableByteChannel) {
-                                              var r = writableChannel.write(byteContent, 0);
-                                          }
-                                      });
+        record {| byte[] value; |}|Error? block = byteStream.next();
+        while(block is record {| byte[] value; |}) {
+            var writeResult = writableChannel.write(block.value, 0);
+            block = byteStream.next();
+        }
         var closeResult = writableChannel.close();
-        if (e is Error) {
-            return e;
+        if (block is Error) {
+            return block;
         }
         if (closeResult is Error) {
             return closeResult;
