@@ -18,7 +18,6 @@ The console I/O APIs, which help the user to read from the console as well as wr
 - print
 - println
 - readln
-- sprintf
 
 ### Bytes I/O
 The bytes I/O APIs provide the reading and writing APIs in both streaming and non-streaming ways. Those APIs are,
