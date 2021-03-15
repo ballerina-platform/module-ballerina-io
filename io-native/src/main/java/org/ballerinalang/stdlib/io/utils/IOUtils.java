@@ -73,14 +73,15 @@ public class IOUtils {
     }
 
     /**
-     * Creates an error message with given error type.
+     * Creates an error message with specific ID.
      *
-     * @param code     the error code which represent the error type
-     * @param errorMsg the error message
+     * @param errorId Ballerina level error ID
+     * @param errorMsg Error message to be returned
      * @return an error which will be propagated to ballerina user
      */
-    public static BError createError(IOConstants.ErrorCode code, String errorMsg) {
-        return ErrorCreator.createDistinctError(code.errorCode(), getIOPackage(), StringUtils.fromString(errorMsg));
+    public static BError createError(IOConstants.ErrorCode errorId, String errorMsg) {
+        return ErrorCreator.createError(ModuleUtils.getModule(), errorId.errorCode(), StringUtils.fromString(errorMsg),
+        null, null);
     }
 
     /**
