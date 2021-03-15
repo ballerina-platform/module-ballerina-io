@@ -489,10 +489,12 @@ function testFileWriteLinesWithAppend() {
 }
 
 @test:Config {}
-function testFileWriteLinesFromStream() {
+function testFileWriteLinesFromStream() returns Error? {
     string filePath = TEMP_DIR + "stringContentAsLines2.txt";
-    string[] content = ["The Big Bang Theory", "F.R.I.E.N.D.S", "Game of Thrones", "LOST"];
-    var result = fileWriteLinesFromStream(filePath, content.toStream());
+    string resourceFilePath = TEST_RESOURCE_PATH + "stringResourceFile1.txt";
+    stream<string, Error> lineStream = check fileReadLinesAsStream(resourceFilePath);
+
+    var result = fileWriteLinesFromStream(filePath, lineStream);
     if (result is Error) {
         test:assertFail(msg = result.message());
     }
@@ -520,13 +522,17 @@ function testFileReadLinesAsStream() {
 }
 
 @test:Config {}
-function testFileWriteLinesFromStreamWithOverwrite() {
+function testFileWriteLinesFromStreamWithOverwrite() returns Error? {
     string filePath = TEMP_DIR + "stringContentAsLines2.txt";
+    string resourceFilePath1 = TEST_RESOURCE_PATH + "stringResourceFile1.txt";
+    string resourceFilePath2 = TEST_RESOURCE_PATH + "stringResourceFile2.txt";
+    stream<string, Error> lineStream1 = check fileReadLinesAsStream(resourceFilePath1);
+    stream<string, Error> lineStream2 = check fileReadLinesAsStream(resourceFilePath2);
     string[] content1 = ["The Big Bang Theory", "F.R.I.E.N.D.S", "Game of Thrones", "LOST"];
     string[] content2 = ["WSO2", "Google", "Microsoft", "Facebook", "Apple"];
 
     // Check content 01
-    var result1 = fileWriteLinesFromStream(filePath, content1.toStream());
+    var result1 = fileWriteLinesFromStream(filePath, lineStream1);
     if (result1 is Error) {
         test:assertFail(msg = result1.message());
     }
@@ -547,7 +553,7 @@ function testFileWriteLinesFromStreamWithOverwrite() {
     }
 
     // Check content 02
-    var result3 = fileWriteLinesFromStream(filePath, content2.toStream());
+    var result3 = fileWriteLinesFromStream(filePath, lineStream2);
     if (result3 is Error) {
         test:assertFail(msg = result3.message());
     }
@@ -569,14 +575,17 @@ function testFileWriteLinesFromStreamWithOverwrite() {
 }
 
 @test:Config {}
-function testFileWriteLinesFromStreamWithAppend() {
+function testFileWriteLinesFromStreamWithAppend() returns Error? {
     string filePath = TEMP_DIR + "stringContentAsLines2.txt";
-    string[] content1 = ["The Big Bang Theory", "F.R.I.E.N.D.S", "Game of Thrones", "LOST"];
-    string[] content2 = ["WSO2", "Google", "Microsoft", "Facebook", "Apple"];
+    string resourceFilePath1 = TEST_RESOURCE_PATH + "stringResourceFile1.txt";
+    string resourceFilePath2 = TEST_RESOURCE_PATH + "stringResourceFile2.txt";
+    stream<string, Error> lineStream1 = check fileReadLinesAsStream(resourceFilePath1);
+    stream<string, Error> lineStream2 = check fileReadLinesAsStream(resourceFilePath2);
+    string[] initialContent = ["The Big Bang Theory", "F.R.I.E.N.D.S", "Game of Thrones", "LOST"];
     string[] expectedLines = ["The Big Bang Theory", "F.R.I.E.N.D.S", "Game of Thrones", "LOST",
                                 "WSO2", "Google", "Microsoft", "Facebook", "Apple"];
     // Check content 01
-    var result1 = fileWriteLinesFromStream(filePath, content1.toStream());
+    var result1 = fileWriteLinesFromStream(filePath, lineStream1);
     if (result1 is Error) {
         test:assertFail(msg = result1.message());
     }
@@ -584,7 +593,7 @@ function testFileWriteLinesFromStreamWithAppend() {
     if (result2 is stream<string, error?>) {
         int i = 0;
         error? e = result2.forEach(function(string val) {
-                               test:assertEquals(val, content1[i]);
+                               test:assertEquals(val, initialContent[i]);
                                i += 1;
                            });
 
@@ -597,7 +606,7 @@ function testFileWriteLinesFromStreamWithAppend() {
     }
 
     // Check content 01 + 02
-    var result3 = fileWriteLinesFromStream(filePath, content2.toStream(), APPEND);
+    var result3 = fileWriteLinesFromStream(filePath, lineStream2, APPEND);
     if (result3 is Error) {
         test:assertFail(msg = result3.message());
     }

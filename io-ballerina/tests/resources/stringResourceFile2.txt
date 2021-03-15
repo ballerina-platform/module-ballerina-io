@@ -1,0 +1,5 @@
+WSO2
+Google
+Microsoft
+Facebook
+Apple
