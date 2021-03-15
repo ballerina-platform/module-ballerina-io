@@ -16,3 +16,4 @@
 
 const string RESOURCES_BASE_PATH = "../io-native/src/test/resources/";
 const string TEMP_DIR = "build/tmpdir/";
+const string TEST_RESOURCE_PATH = "tests/resources/";
