@@ -185,8 +185,8 @@ public class ByteChannelUtils extends AbstractNativeChannel {
                     bufferedInputStream
             );
         } catch (BallerinaIOException | IOException e) {
-            return IOUtils.createError(e);
-        } catch (BError e) {
+            return IOUtils.createError(IOConstants.ErrorCode.GenericError, e.getMessage());
+        }  catch (BError e) {
             return e;
         }
         return readableByteChannel;
