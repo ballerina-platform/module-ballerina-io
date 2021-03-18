@@ -26,7 +26,7 @@ The bytes I/O APIs provide the reading and writing APIs in both streaming and no
 - `io:fileWriteBytes`
 - `io:fileWriteBlocksFromStream`
 
-To learn how to use bytes read and write APIs, see the [Read/Write Bytes example](https://ballerina.io/learn/by-example/byte-io.html).
+To learn how to use bytes read and write APIs, see the [Read/Write Bytes example](https://ballerina.io/learn/by-example/bytes-io.html).
 
 ### Strings I/O
 The strings I/O APIs provide the reading and writing APIs in 3 different ways:
