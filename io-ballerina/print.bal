@@ -23,8 +23,7 @@ import ballerina/jballerina.java;
 public type Printable any|error|PrintableRawTemplate;
 
 # Represents raw templates.
-# For example:
-#   - `The respective int value is ${val}`
+# e.g: `The respective int value is ${val}`
 # + strings - string values of the template as an array
 # + insertions - parameterized values/expressions after evaluations as an array
 public type PrintableRawTemplate object {
