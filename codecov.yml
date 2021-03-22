@@ -1,9 +1,2 @@
-codecov:
-  require_ci_to_pass: no
-
-fixes:
-  - "ballerina/io/*/::io-ballerina/"
-
 ignore:
-  - "**/tests"
   - "io-test-utils/"
