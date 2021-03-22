@@ -31,7 +31,8 @@ public isolated function fileReadBytes(@untainted string path) returns @tainted 
 # + path - The path of the file
 # + blockSize - An optional size of the byte block. Default size is 4KB
 # + return - Either a byte block stream or `io:Error`
-public isolated function fileReadBlocksAsStream(string path, int blockSize=4096) returns @tainted stream<Block, Error>|Error {
+public isolated function fileReadBlocksAsStream(string path, int blockSize = 4096) returns @tainted stream<Block, Error>|
+Error {
     return channelReadBlocksAsStream(check openReadableFile(path), blockSize);
 }
 
@@ -44,8 +45,8 @@ public isolated function fileReadBlocksAsStream(string path, int blockSize=4096)
 # + content - Byte content to write
 # + option - To indicate whether to overwrite or append the given content
 # + return - `io:Error` or else `()`
-public isolated function fileWriteBytes(@untainted string path, byte[] content,
-                            FileWriteOption option = OVERWRITE) returns Error? {
+public isolated function fileWriteBytes(@untainted string path, byte[] content, FileWriteOption option = OVERWRITE) returns 
+Error? {
     return channelWriteBytes(check openWritableFile(path, option), content);
 }
 
@@ -59,7 +60,7 @@ public isolated function fileWriteBytes(@untainted string path, byte[] content,
 # + byteStream - Byte stream to write
 # + option - To indicate whether to overwrite or append the given content
 # + return - `io:Error` or else `()`
-public isolated function fileWriteBlocksFromStream(@untainted string path, stream<byte[], Error> byteStream,
-                        FileWriteOption option = OVERWRITE) returns Error? {
+public isolated function fileWriteBlocksFromStream(@untainted string path, stream<byte[], Error> byteStream, 
+                                                   FileWriteOption option = OVERWRITE) returns Error? {
     return channelWriteBlocksFromStream(check openWritableFile(path, option), byteStream);
 }

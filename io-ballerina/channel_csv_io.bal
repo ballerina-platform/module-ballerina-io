@@ -13,10 +13,10 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-
 import ballerina/lang.'value;
 
-isolated function channelReadCsv(ReadableChannel readableChannel, int skipHeaders = 0) returns @tainted string[][]|Error {
+isolated function channelReadCsv(ReadableChannel readableChannel, int skipHeaders = 0) returns @tainted string[][]|
+Error {
     ReadableCSVChannel csvChannel = check getReadableCSVChannel(readableChannel, skipHeaders);
     string[][] results = [];
     int i = 0;
@@ -35,7 +35,8 @@ isolated function channelReadCsv(ReadableChannel readableChannel, int skipHeader
     return results;
 }
 
-isolated function channelReadCsvAsStream(ReadableChannel readableChannel) returns @tainted stream<string[], Error>|Error {
+isolated function channelReadCsvAsStream(ReadableChannel readableChannel) returns @tainted stream<string[], Error>|
+Error {
     return (check getReadableCSVChannel(readableChannel, 0)).csvStream();
 }
 
@@ -51,10 +52,11 @@ isolated function channelWriteCsv(WritableChannel writableChannel, string[][] co
     check csvChannel.close();
 }
 
-isolated function channelWriteCsvFromStream(WritableChannel writableChannel, stream<string[], Error> csvStream) returns Error? {
+isolated function channelWriteCsvFromStream(WritableChannel writableChannel, stream<string[], Error> csvStream) returns 
+Error? {
     WritableCSVChannel csvChannel = check getWritableCSVChannel(writableChannel);
     record {| string[] value; |}|Error? csvRecord = csvStream.next();
-    while(csvRecord is record {| string[] value; |}) {
+    while (csvRecord is record {| string[] value; |}) {
         var writeResult = csvChannel.write(csvRecord.value);
         csvRecord = csvStream.next();
     }
@@ -67,7 +69,8 @@ isolated function channelWriteCsvFromStream(WritableChannel writableChannel, str
     }
 }
 
-isolated function getReadableCSVChannel(ReadableChannel readableChannel, int skipHeaders) returns ReadableCSVChannel|Error {
+isolated function getReadableCSVChannel(ReadableChannel readableChannel, int skipHeaders) returns ReadableCSVChannel|
+Error {
     ReadableCSVChannel readableCSVChannel;
 
     if (readableChannel is ReadableByteChannel) {
@@ -78,9 +81,8 @@ isolated function getReadableCSVChannel(ReadableChannel readableChannel, int ski
     } else if (readableChannel is ReadableCSVChannel) {
         readableCSVChannel = readableChannel;
     } else {
-        TypeMismatchError e = error TypeMismatchError(
-        "Expected ReadableByteChannel/ReadableCharacterChannel/ReadableCSVChannel but found a " + 'value:toString(typeof 
-        readableChannel));
+        TypeMismatchError e = error TypeMismatchError("Expected ReadableByteChannel/ReadableCharacterChannel/ReadableCSVChannel but found a " + 
+        'value:toString(typeof readableChannel));
         return e;
     }
     return readableCSVChannel;
@@ -97,9 +99,8 @@ isolated function getWritableCSVChannel(WritableChannel writableChannel) returns
     } else if (writableChannel is WritableCSVChannel) {
         writableCSVChannel = writableChannel;
     } else {
-        TypeMismatchError e = error TypeMismatchError(
-        "Expected WritableByteChannel/WritableCharacterChannel/WritableCSVChannel but found a " + 'value:toString(typeof 
-        writableChannel));
+        TypeMismatchError e = error TypeMismatchError("Expected WritableByteChannel/WritableCharacterChannel/WritableCSVChannel but found a " + 
+        'value:toString(typeof writableChannel));
         return e;
     }
     return writableCSVChannel;

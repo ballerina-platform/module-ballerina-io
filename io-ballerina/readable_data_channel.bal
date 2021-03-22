@@ -13,7 +13,6 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-
 import ballerina/jballerina.java;
 
 # Represents a data channel for reading data.
@@ -122,7 +121,8 @@ public class ReadableDataChannel {
     }
 }
 
-isolated function initReadableDataChannel(ReadableDataChannel dataChannel, ReadableByteChannel byteChannel, string bOrder) = @java:Method {
+isolated function initReadableDataChannel(ReadableDataChannel dataChannel, ReadableByteChannel byteChannel, 
+                                          string bOrder) = @java:Method {
     name: "initReadableDataChannel",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.DataChannelUtils"
 } external;

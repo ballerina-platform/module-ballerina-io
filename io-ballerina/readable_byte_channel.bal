@@ -13,7 +13,6 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-
 import ballerina/jballerina.java;
 
 # ReadableByteChannel represents an input resource (i.e file). which could be used to source bytes.

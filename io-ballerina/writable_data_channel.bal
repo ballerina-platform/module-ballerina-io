@@ -13,7 +13,6 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-
 import ballerina/jballerina.java;
 
 # Represents network byte order.
@@ -143,7 +142,8 @@ public class WritableDataChannel {
     }
 }
 
-isolated function initWritableDataChannel(WritableDataChannel dataChannel, WritableByteChannel byteChannel, string bOrder) = @java:Method {
+isolated function initWritableDataChannel(WritableDataChannel dataChannel, WritableByteChannel byteChannel, 
+                                          string bOrder) = @java:Method {
     name: "initWritableDataChannel",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.DataChannelUtils"
 } external;

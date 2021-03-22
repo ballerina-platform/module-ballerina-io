@@ -13,7 +13,6 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-
 import ballerina/lang.'value;
 
 isolated function channelReadString(ReadableChannel readableChannel) returns @tainted string|Error {
@@ -30,7 +29,8 @@ isolated function channelReadLines(ReadableChannel readableChannel) returns @tai
     return result;
 }
 
-isolated function channelReadLinesAsStream(ReadableChannel readableChannel) returns @tainted stream<string, Error>|Error {
+isolated function channelReadLinesAsStream(ReadableChannel readableChannel) returns @tainted stream<string, Error>|
+Error {
     return (check getReadableCharacterChannel(readableChannel)).lineStream();
 }
 
@@ -76,10 +76,11 @@ isolated function channelWriteLines(WritableChannel writableChannel, string[] co
     }
 }
 
-isolated function channelWriteLinesFromStream(WritableChannel writableChannel, stream<string, Error> lineStream) returns Error? {
+isolated function channelWriteLinesFromStream(WritableChannel writableChannel, stream<string, Error> lineStream) returns 
+Error? {
     WritableCharacterChannel characterChannel = check getWritableCharacterChannel(writableChannel);
     record {| string value; |}|Error? line = lineStream.next();
-    while(line is record {| string value; |}) {
+    while (line is record {| string value; |}) {
         var writeResult = characterChannel.writeLine(line.value);
         line = lineStream.next();
     }
@@ -106,7 +107,8 @@ isolated function channelWriteJson(WritableChannel writableChannel, json content
     return ();
 }
 
-isolated function channelWriteXml(WritableChannel writableChannel, xml content, XmlDoctype? xmlDoctype = ()) returns Error? {
+isolated function channelWriteXml(WritableChannel writableChannel, xml content, XmlDoctype? xmlDoctype = ()) returns 
+Error? {
     WritableCharacterChannel characterChannel = check getWritableCharacterChannel(writableChannel);
     Error? writeResult = ();
     if (xmlDoctype != ()) {
@@ -131,7 +133,7 @@ isolated function getReadableCharacterChannel(ReadableChannel readableChannel) r
     } else if (readableChannel is ReadableCharacterChannel) {
         readableCharacterChannel = readableChannel;
     } else {
-        TypeMismatchError e = error TypeMismatchError("Expected ReadableByteChannel/ReadableCharacterChannel but found a " +
+        TypeMismatchError e = error TypeMismatchError("Expected ReadableByteChannel/ReadableCharacterChannel but found a " + 
         'value:toString(typeof readableChannel));
         return e;
     }
@@ -145,7 +147,7 @@ isolated function getWritableCharacterChannel(WritableChannel writableChannel) r
     } else if (writableChannel is WritableCharacterChannel) {
         writableCharacterChannel = writableChannel;
     } else {
-        TypeMismatchError e = error TypeMismatchError("Expected ReadableByteChannel/ReadableCharacterChannel but found a " +
+        TypeMismatchError e = error TypeMismatchError("Expected ReadableByteChannel/ReadableCharacterChannel but found a " + 
         'value:toString(typeof writableChannel));
         return e;
     }
