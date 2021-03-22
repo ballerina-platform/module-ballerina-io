@@ -47,12 +47,8 @@ public class ReadableByteChannel {
     #
     # + return - Either a read only `byte` array or else an `io:Error`
     public isolated function readAll() returns @tainted readonly & byte[]|Error {
-        var readResult = readAllBytes(self);
-        if (readResult is byte[]) {
-            return <readonly & byte[]>readResult.cloneReadOnly();
-        } else {
-            return readResult;
-        }
+        byte[] readResult = check readAllBytes(self);
+        return <readonly & byte[]>readResult.cloneReadOnly();
     }
 
     # Return a block stream that can be used to read all `byte` blocks as a stream.

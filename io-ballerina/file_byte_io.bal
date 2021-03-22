@@ -21,12 +21,7 @@
 # + path - The path of the file
 # + return - Either a read only byte array or `io:Error`
 public isolated function fileReadBytes(@untainted string path) returns @tainted readonly & byte[]|Error {
-    var byteChannel = openReadableFile(path);
-    if (byteChannel is ReadableByteChannel) {
-        return channelReadBytes(byteChannel);
-    } else {
-        return byteChannel;
-    }
+    return channelReadBytes(check openReadableFile(path));
 }
 
 # Read the entire file content as a stream of blocks.
@@ -37,12 +32,7 @@ public isolated function fileReadBytes(@untainted string path) returns @tainted 
 # + blockSize - An optional size of the byte block. Default size is 4KB
 # + return - Either a byte block stream or `io:Error`
 public isolated function fileReadBlocksAsStream(string path, int blockSize=4096) returns @tainted stream<Block, Error>|Error {
-    var byteChannel = openReadableFile(path);
-    if (byteChannel is ReadableByteChannel) {
-        return channelReadBlocksAsStream(byteChannel, blockSize);
-    } else {
-        return byteChannel;
-    }
+    return channelReadBlocksAsStream(check openReadableFile(path), blockSize);
 }
 
 # Write a set of bytes to a file.
@@ -56,12 +46,7 @@ public isolated function fileReadBlocksAsStream(string path, int blockSize=4096)
 # + return - `io:Error` or else `()`
 public isolated function fileWriteBytes(@untainted string path, byte[] content,
                             FileWriteOption option = OVERWRITE) returns Error? {
-    var byteChannel = openWritableFile(path, option);
-    if (byteChannel is WritableByteChannel) {
-        return channelWriteBytes(byteChannel, content);
-    } else {
-        return byteChannel;
-    }
+    return channelWriteBytes(check openWritableFile(path, option), content);
 }
 
 # Write a byte stream to a file.
@@ -76,11 +61,5 @@ public isolated function fileWriteBytes(@untainted string path, byte[] content,
 # + return - `io:Error` or else `()`
 public isolated function fileWriteBlocksFromStream(@untainted string path, stream<byte[], Error> byteStream,
                         FileWriteOption option = OVERWRITE) returns Error? {
-
-    var byteChannel = openWritableFile(path, option);
-    if (byteChannel is WritableByteChannel) {
-        return channelWriteBlocksFromStream(byteChannel, byteStream);
-    } else {
-        return byteChannel;
-    }
+    return channelWriteBlocksFromStream(check openWritableFile(path, option), byteStream);
 }

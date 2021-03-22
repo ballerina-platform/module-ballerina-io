@@ -17,154 +17,111 @@
 import ballerina/lang.'value;
 
 isolated function channelReadString(ReadableChannel readableChannel) returns @tainted string|Error {
-    var characterChannel = getReadableCharacterChannel(readableChannel);
-    if (characterChannel is ReadableCharacterChannel) {
-        var result = characterChannel.readString();
-        var closeResult = characterChannel.close();
-        return result;
-    } else {
-        return characterChannel;
-    }
+    ReadableCharacterChannel characterChannel = check getReadableCharacterChannel(readableChannel);
+    var result = characterChannel.readString();
+    var closeResult = characterChannel.close();
+    return result;
 }
 
 isolated function channelReadLines(ReadableChannel readableChannel) returns @tainted string[]|Error {
-    var characterChannel = getReadableCharacterChannel(readableChannel);
-    if (characterChannel is ReadableCharacterChannel) {
-        var result = characterChannel.readAllLines();
-        var closeResult = characterChannel.close();
-        return result;
-    } else {
-        return characterChannel;
-    }
+    ReadableCharacterChannel characterChannel = check getReadableCharacterChannel(readableChannel);
+    var result = characterChannel.readAllLines();
+    var closeResult = characterChannel.close();
+    return result;
 }
 
 isolated function channelReadLinesAsStream(ReadableChannel readableChannel) returns @tainted stream<string, Error>|Error {
-    var characterChannel = getReadableCharacterChannel(readableChannel);
-    if (characterChannel is ReadableCharacterChannel) {
-        return characterChannel.lineStream();
-    } else {
-        return characterChannel;
-    }
+    return (check getReadableCharacterChannel(readableChannel)).lineStream();
 }
 
 isolated function channelReadJson(ReadableChannel readableChannel) returns @tainted json|Error {
-    var characterChannel = getReadableCharacterChannel(readableChannel);
-    if (characterChannel is ReadableCharacterChannel) {
-        var result = characterChannel.readJson();
-        var closeResult = characterChannel.close();
-        return result;
-    } else {
-        return characterChannel;
-    }
+    ReadableCharacterChannel characterChannel = check getReadableCharacterChannel(readableChannel);
+    var result = characterChannel.readJson();
+    var closeResult = characterChannel.close();
+    return result;
 }
 
 isolated function channelReadXml(ReadableChannel readableChannel) returns @tainted xml|Error {
-    var characterChannel = getReadableCharacterChannel(readableChannel);
-    if (characterChannel is ReadableCharacterChannel) {
-        var result = characterChannel.readXml();
-        var closeResult = characterChannel.close();
-        return result;
-    } else {
-        return characterChannel;
-    }
+    ReadableCharacterChannel characterChannel = check getReadableCharacterChannel(readableChannel);
+    var result = characterChannel.readXml();
+    var closeResult = characterChannel.close();
+    return result;
 }
 
 isolated function channelWriteString(WritableChannel writableChannel, string content) returns Error? {
-    var characterChannel = getWritableCharacterChannel(writableChannel);
-    if (characterChannel is WritableCharacterChannel) {
-        var writeResult = characterChannel.write(content, 0);
-        if (writeResult is Error) {
-            return writeResult;
-        }
-        var closeResult = characterChannel.close();
-        if (closeResult is Error) {
-            return closeResult;
-        }
-        return ();
-    } else {
-        return characterChannel;
+    WritableCharacterChannel characterChannel = check getWritableCharacterChannel(writableChannel);
+    var writeResult = characterChannel.write(content, 0);
+    var closeResult = characterChannel.close();
+    if (writeResult is Error) {
+        return writeResult;
+    }
+    if (closeResult is Error) {
+        return closeResult;
     }
 }
 
 isolated function channelWriteLines(WritableChannel writableChannel, string[] content) returns Error? {
-    var characterChannel = getWritableCharacterChannel(writableChannel);
-    if (characterChannel is WritableCharacterChannel) {
-        string writeContent = "";
-        foreach string line in content {
-            writeContent = writeContent + line + NEW_LINE;
-        }
-        var writeResult = characterChannel.write(writeContent, 0);
-        if (writeResult is Error) {
-            return writeResult;
-        }
-        var closeResult = characterChannel.close();
-        if (closeResult is Error) {
-            return closeResult;
-        }
-        return ();
-    } else {
-        return characterChannel;
+    WritableCharacterChannel characterChannel = check getWritableCharacterChannel(writableChannel);
+    string writeContent = "";
+    foreach string line in content {
+        writeContent = writeContent + line + NEW_LINE;
+    }
+    var writeResult = characterChannel.write(writeContent, 0);
+    var closeResult = characterChannel.close();
+    if (writeResult is Error) {
+        return writeResult;
+    }
+    if (closeResult is Error) {
+        return closeResult;
     }
 }
 
 isolated function channelWriteLinesFromStream(WritableChannel writableChannel, stream<string, Error> lineStream) returns Error? {
-    var characterChannel = getWritableCharacterChannel(writableChannel);
-    if (characterChannel is WritableCharacterChannel) {
-        record {| string value; |}|Error? line = lineStream.next();
-        while(line is record {| string value; |}) {
-            var writeResult = characterChannel.writeLine(line.value);
-            line = lineStream.next();
-        }
-        var closeResult = characterChannel.close();
-        if (line is Error) {
-            return line;
-        }
-        if (closeResult is Error) {
-            return closeResult;
-        }
-        return ();
-    } else {
-        return characterChannel;
+    WritableCharacterChannel characterChannel = check getWritableCharacterChannel(writableChannel);
+    record {| string value; |}|Error? line = lineStream.next();
+    while(line is record {| string value; |}) {
+        var writeResult = characterChannel.writeLine(line.value);
+        line = lineStream.next();
     }
+    var closeResult = characterChannel.close();
+    if (line is Error) {
+        return line;
+    }
+    if (closeResult is Error) {
+        return closeResult;
+    }
+    return ();
 }
 
 isolated function channelWriteJson(WritableChannel writableChannel, json content) returns @tainted Error? {
-    var characterChannel = getWritableCharacterChannel(writableChannel);
-    if (characterChannel is WritableCharacterChannel) {
-        var writeResult = characterChannel.writeJson(content);
-        if (writeResult is Error) {
-            return writeResult;
-        }
-        var closeResult = characterChannel.close();
-        if (closeResult is Error) {
-            return closeResult;
-        }
-        return ();
-    } else {
-        return characterChannel;
+    WritableCharacterChannel characterChannel = check getWritableCharacterChannel(writableChannel);
+    var writeResult = characterChannel.writeJson(content);
+    var closeResult = characterChannel.close();
+    if (writeResult is Error) {
+        return writeResult;
     }
+    if (closeResult is Error) {
+        return closeResult;
+    }
+    return ();
 }
 
 isolated function channelWriteXml(WritableChannel writableChannel, xml content, XmlDoctype? xmlDoctype = ()) returns Error? {
-    var characterChannel = getWritableCharacterChannel(writableChannel);
-    if (characterChannel is WritableCharacterChannel) {
-        Error? writeResult = ();
-        if (xmlDoctype != ()) {
-            writeResult = characterChannel.writeXml(content, <XmlDoctype>xmlDoctype);
-        } else {
-            writeResult = characterChannel.writeXml(content);
-        }
-        if (writeResult is Error) {
-            return writeResult;
-        }
-        var closeResult = characterChannel.close();
-        if (closeResult is Error) {
-            return closeResult;
-        }
-        return ();
+    WritableCharacterChannel characterChannel = check getWritableCharacterChannel(writableChannel);
+    Error? writeResult = ();
+    if (xmlDoctype != ()) {
+        writeResult = characterChannel.writeXml(content, <XmlDoctype>xmlDoctype);
     } else {
-        return characterChannel;
+        writeResult = characterChannel.writeXml(content);
     }
+    var closeResult = characterChannel.close();
+    if (writeResult is Error) {
+        return writeResult;
+    }
+    if (closeResult is Error) {
+        return closeResult;
+    }
+    return ();
 }
 
 isolated function getReadableCharacterChannel(ReadableChannel readableChannel) returns ReadableCharacterChannel|Error {

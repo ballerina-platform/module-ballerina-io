@@ -17,73 +17,53 @@
 import ballerina/lang.'value;
 
 isolated function channelReadCsv(ReadableChannel readableChannel, int skipHeaders = 0) returns @tainted string[][]|Error {
-    var csvChannel = getReadableCSVChannel(readableChannel, skipHeaders);
-    if (csvChannel is ReadableCSVChannel) {
-        string[][] results = [];
-        int i = 0;
+    ReadableCSVChannel csvChannel = check getReadableCSVChannel(readableChannel, skipHeaders);
+    string[][] results = [];
+    int i = 0;
 
-        while (csvChannel.hasNext()) {
-            var records = csvChannel.getNext();
-            if (records is string[]) {
-                results[i] = records;
-                i += 1;
-            } else if (records is Error) {
-                var closeResult = csvChannel.close();
-                return records;
-            }
+    while (csvChannel.hasNext()) {
+        var records = csvChannel.getNext();
+        if (records is string[]) {
+            results[i] = records;
+            i += 1;
+        } else if (records is Error) {
+            var closeResult = csvChannel.close();
+            return records;
         }
-        var closeResult = csvChannel.close();
-        return results;
-    } else {
-        return csvChannel;
     }
+    var closeResult = csvChannel.close();
+    return results;
 }
 
 isolated function channelReadCsvAsStream(ReadableChannel readableChannel) returns @tainted stream<string[], Error>|Error {
-    var csvChannel = getReadableCSVChannel(readableChannel, 0);
-    if (csvChannel is ReadableCSVChannel) {
-        return csvChannel.csvStream();
-    } else {
-        return csvChannel;
-    }
+    return (check getReadableCSVChannel(readableChannel, 0)).csvStream();
 }
 
 isolated function channelWriteCsv(WritableChannel writableChannel, string[][] content) returns Error? {
-    var csvChannel = getWritableCSVChannel(writableChannel);
-    if (csvChannel is WritableCSVChannel) {
-        foreach string[] r in content {
-            var writeResult = csvChannel.write(r);
-            if (writeResult is Error) {
-                var closeResult = csvChannel.close();
-                return writeResult;
-            }
+    WritableCSVChannel csvChannel = check getWritableCSVChannel(writableChannel);
+    foreach string[] r in content {
+        var writeResult = csvChannel.write(r);
+        if (writeResult is Error) {
+            var closeResult = csvChannel.close();
+            return writeResult;
         }
-        var closeResult = csvChannel.close();
-        if (closeResult is Error) {
-            return closeResult;
-        }
-    } else {
-        return csvChannel;
     }
+    check csvChannel.close();
 }
 
 isolated function channelWriteCsvFromStream(WritableChannel writableChannel, stream<string[], Error> csvStream) returns Error? {
-    var csvChannel = getWritableCSVChannel(writableChannel);
-    if (csvChannel is WritableCSVChannel) {
-        record {| string[] value; |}|Error? csvRecord = csvStream.next();
-        while(csvRecord is record {| string[] value; |}) {
-            var writeResult = csvChannel.write(csvRecord.value);
-            csvRecord = csvStream.next();
-        }
-        var closeResult = csvChannel.close();
-        if (csvRecord is Error) {
-            return csvRecord;
-        }
-        if (closeResult is Error) {
-            return closeResult;
-        }
-    } else {
-        return csvChannel;
+    WritableCSVChannel csvChannel = check getWritableCSVChannel(writableChannel);
+    record {| string[] value; |}|Error? csvRecord = csvStream.next();
+    while(csvRecord is record {| string[] value; |}) {
+        var writeResult = csvChannel.write(csvRecord.value);
+        csvRecord = csvStream.next();
+    }
+    var closeResult = csvChannel.close();
+    if (csvRecord is Error) {
+        return csvRecord;
+    }
+    if (closeResult is Error) {
+        return closeResult;
     }
 }
 
