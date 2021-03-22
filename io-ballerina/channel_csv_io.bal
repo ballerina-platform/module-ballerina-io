@@ -13,81 +13,64 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-
 import ballerina/lang.'value;
 
-isolated function channelReadCsv(ReadableChannel readableChannel, int skipHeaders = 0) returns @tainted string[][]|Error {
-    var csvChannel = getReadableCSVChannel(readableChannel, skipHeaders);
-    if (csvChannel is ReadableCSVChannel) {
-        string[][] results = [];
-        int i = 0;
+isolated function channelReadCsv(ReadableChannel readableChannel, int skipHeaders = 0) returns @tainted string[][]|
+Error {
+    ReadableCSVChannel csvChannel = check getReadableCSVChannel(readableChannel, skipHeaders);
+    string[][] results = [];
+    int i = 0;
 
-        while (csvChannel.hasNext()) {
-            var records = csvChannel.getNext();
-            if (records is string[]) {
-                results[i] = records;
-                i += 1;
-            } else if (records is Error) {
-                var closeResult = csvChannel.close();
-                return records;
-            }
+    while (csvChannel.hasNext()) {
+        var records = csvChannel.getNext();
+        if (records is string[]) {
+            results[i] = records;
+            i += 1;
+        } else if (records is Error) {
+            var closeResult = csvChannel.close();
+            return records;
         }
-        var closeResult = csvChannel.close();
-        return results;
-    } else {
-        return csvChannel;
     }
+    var closeResult = csvChannel.close();
+    return results;
 }
 
-isolated function channelReadCsvAsStream(ReadableChannel readableChannel) returns @tainted stream<string[], Error>|Error {
-    var csvChannel = getReadableCSVChannel(readableChannel, 0);
-    if (csvChannel is ReadableCSVChannel) {
-        return csvChannel.csvStream();
-    } else {
-        return csvChannel;
-    }
+isolated function channelReadCsvAsStream(ReadableChannel readableChannel) returns @tainted stream<string[], Error>|
+Error {
+    return (check getReadableCSVChannel(readableChannel, 0)).csvStream();
 }
 
 isolated function channelWriteCsv(WritableChannel writableChannel, string[][] content) returns Error? {
-    var csvChannel = getWritableCSVChannel(writableChannel);
-    if (csvChannel is WritableCSVChannel) {
-        foreach string[] r in content {
-            var writeResult = csvChannel.write(r);
-            if (writeResult is Error) {
-                var closeResult = csvChannel.close();
-                return writeResult;
-            }
+    WritableCSVChannel csvChannel = check getWritableCSVChannel(writableChannel);
+    foreach string[] r in content {
+        var writeResult = csvChannel.write(r);
+        if (writeResult is Error) {
+            var closeResult = csvChannel.close();
+            return writeResult;
         }
-        var closeResult = csvChannel.close();
-        if (closeResult is Error) {
-            return closeResult;
-        }
-    } else {
-        return csvChannel;
+    }
+    check csvChannel.close();
+}
+
+isolated function channelWriteCsvFromStream(WritableChannel writableChannel, stream<string[], Error> csvStream) returns 
+Error? {
+    WritableCSVChannel csvChannel = check getWritableCSVChannel(writableChannel);
+    record {| string[] value; |}|Error? csvRecord = csvStream.next();
+    while (csvRecord is record {| string[] value; |}) {
+        var writeResult = csvChannel.write(csvRecord.value);
+        csvRecord = csvStream.next();
+    }
+    var closeResult = csvChannel.close();
+    if (csvRecord is Error) {
+        return csvRecord;
+    }
+    if (closeResult is Error) {
+        return closeResult;
     }
 }
 
-isolated function channelWriteCsvFromStream(WritableChannel writableChannel, stream<string[], Error> csvStream) returns Error? {
-    var csvChannel = getWritableCSVChannel(writableChannel);
-    if (csvChannel is WritableCSVChannel) {
-        record {| string[] value; |}|Error? csvRecord = csvStream.next();
-        while(csvRecord is record {| string[] value; |}) {
-            var writeResult = csvChannel.write(csvRecord.value);
-            csvRecord = csvStream.next();
-        }
-        var closeResult = csvChannel.close();
-        if (csvRecord is Error) {
-            return csvRecord;
-        }
-        if (closeResult is Error) {
-            return closeResult;
-        }
-    } else {
-        return csvChannel;
-    }
-}
-
-isolated function getReadableCSVChannel(ReadableChannel readableChannel, int skipHeaders) returns ReadableCSVChannel|Error {
+isolated function getReadableCSVChannel(ReadableChannel readableChannel, int skipHeaders) returns ReadableCSVChannel|
+Error {
     ReadableCSVChannel readableCSVChannel;
 
     if (readableChannel is ReadableByteChannel) {
@@ -98,9 +81,8 @@ isolated function getReadableCSVChannel(ReadableChannel readableChannel, int ski
     } else if (readableChannel is ReadableCSVChannel) {
         readableCSVChannel = readableChannel;
     } else {
-        TypeMismatchError e = error TypeMismatchError(
-        "Expected ReadableByteChannel/ReadableCharacterChannel/ReadableCSVChannel but found a " + 'value:toString(typeof 
-        readableChannel));
+        TypeMismatchError e = error TypeMismatchError("Expected ReadableByteChannel/ReadableCharacterChannel/ReadableCSVChannel but found a " + 
+        'value:toString(typeof readableChannel));
         return e;
     }
     return readableCSVChannel;
@@ -117,9 +99,8 @@ isolated function getWritableCSVChannel(WritableChannel writableChannel) returns
     } else if (writableChannel is WritableCSVChannel) {
         writableCSVChannel = writableChannel;
     } else {
-        TypeMismatchError e = error TypeMismatchError(
-        "Expected WritableByteChannel/WritableCharacterChannel/WritableCSVChannel but found a " + 'value:toString(typeof 
-        writableChannel));
+        TypeMismatchError e = error TypeMismatchError("Expected WritableByteChannel/WritableCharacterChannel/WritableCSVChannel but found a " + 
+        'value:toString(typeof writableChannel));
         return e;
     }
     return writableCSVChannel;

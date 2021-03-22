@@ -13,7 +13,6 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-
 import ballerina/jballerina.java;
 
 # Represents a channel, which could be used to read characters through a given ReadableByteChannel.
@@ -126,8 +125,8 @@ public class ReadableCharacterChannel {
     }
 }
 
-isolated function initReadableCharacterChannel(ReadableCharacterChannel characterChannel, ReadableByteChannel byteChannel,
-                                      string charset) = @java:Method {
+isolated function initReadableCharacterChannel(ReadableCharacterChannel characterChannel, 
+                                               ReadableByteChannel byteChannel, string charset) = @java:Method {
     name: "initCharacterChannel",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.CharacterChannelUtils"
 } external;

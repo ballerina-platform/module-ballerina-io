@@ -13,7 +13,6 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-
 import ballerina/jballerina.java;
 
 # Represents a channel which could be used to write characters through a given WritableCharacterChannel.
@@ -136,13 +135,14 @@ isolated function populateDoctype(xml content, XmlDoctype doctype) returns strin
     return doctypeElement;
 }
 
-isolated function initWritableCharacterChannel(WritableCharacterChannel characterChannel, WritableByteChannel byteChannel,
-                                      string charset) = @java:Method {
+isolated function initWritableCharacterChannel(WritableCharacterChannel characterChannel, 
+                                               WritableByteChannel byteChannel, string charset) = @java:Method {
     name: "initCharacterChannel",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.CharacterChannelUtils"
 } external;
 
-isolated function writeExtern(WritableCharacterChannel characterChannel, string content, int startOffset) returns int|Error = @java:Method {
+isolated function writeExtern(WritableCharacterChannel characterChannel, string content, int startOffset) returns int|
+Error = @java:Method {
     name: "write",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.CharacterChannelUtils"
 } external;
@@ -157,8 +157,8 @@ isolated function writeXmlExtern(WritableCharacterChannel characterChannel, xml 
     'class: "org.ballerinalang.stdlib.io.nativeimpl.CharacterChannelUtils"
 } external;
 
-isolated function writePropertiesExtern(WritableCharacterChannel characterChannel, map<string> properties, string comment) returns
-Error? = @java:Method {
+isolated function writePropertiesExtern(WritableCharacterChannel characterChannel, map<string> properties, 
+                                        string comment) returns Error? = @java:Method {
     name: "writeProperties",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.CharacterChannelUtils"
 } external;

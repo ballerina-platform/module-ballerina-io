@@ -13,7 +13,6 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-
 import ballerina/jballerina.java;
 
 # Represents a channel which will allow to read.
@@ -28,7 +27,8 @@ public class ReadableTextRecordChannel {
     # + charChannel - CharacterChannel which will point to the input/output resource
     # + fs - Field separator (this could be a regex)
     # + rs - Record separator (this could be a regex)
-    public isolated function init(ReadableCharacterChannel charChannel, string fs = "", string rs = "", string fmt = "default") {
+    public isolated function init(ReadableCharacterChannel charChannel, string fs = "", string rs = "", 
+                                  string fmt = "default") {
         self.charChannel = charChannel;
         self.rs = rs;
         self.fs = fs;
@@ -67,8 +67,8 @@ public class ReadableTextRecordChannel {
     }
 }
 
-isolated function initReadableTextRecordChannel(ReadableTextRecordChannel textChannel, ReadableCharacterChannel charChannel,
-                                       string fs, string rs, string fmt) = @java:Method {
+isolated function initReadableTextRecordChannel(ReadableTextRecordChannel textChannel, 
+                                                ReadableCharacterChannel charChannel, string fs, string rs, string fmt) = @java:Method {
     name: "initRecordChannel",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.RecordChannelUtils"
 } external;

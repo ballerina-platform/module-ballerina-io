@@ -13,7 +13,6 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-
 import ballerina/test;
 import ballerina/jballerina.java;
 
@@ -23,18 +22,14 @@ function beforePrint() {
     initOutputStream();
 }
 
-@test:Config {
-    dependsOn: [testReadString]
-}
+@test:Config {}
 function testPrintString() {
     string s = "A Greeting from Ballerina...!!!";
     print(s);
     test:assertEquals(readOutputStream(), s);
 }
 
-@test:Config {
-    dependsOn: [testPrintString]
-}
+@test:Config {dependsOn: [testPrintString]}
 function testPrintlnString() {
     string s = "Hello World...!!!";
     string expectedOutput = s + "\n";
@@ -42,73 +37,56 @@ function testPrintlnString() {
     test:assertEquals(readOutputStream(), expectedOutput);
 }
 
-@test:Config{
-    dependsOn: [testPrintlnString]
-}
+@test:Config {dependsOn: [testPrintlnString]}
 function testPrintInt() {
     int v = 1000;
     print(v);
     test:assertEquals(readOutputStream(), "1000");
 }
 
-@test:Config{
-    dependsOn: [testPrintInt]
-}
+@test:Config {dependsOn: [testPrintInt]}
 function testPrintlnInt() {
     int v = 1;
     println(v);
     test:assertEquals(readOutputStream(), "1\n");
 }
 
-@test:Config{
-    dependsOn: [testPrintlnInt]
-}
+@test:Config {dependsOn: [testPrintlnInt]}
 function testPrintFloat() {
     float v = 1000;
     print(v);
     test:assertEquals(readOutputStream(), "1000.0");
 }
 
-@test:Config{
-    dependsOn: [testPrintFloat]
-}
+@test:Config {dependsOn: [testPrintFloat]}
 function testPrintlnFloat() {
     float v = 1;
     println(v);
     test:assertEquals(readOutputStream(), "1.0\n");
 }
 
-@test:Config{
-    dependsOn: [testPrintlnFloat]
-}
+@test:Config {dependsOn: [testPrintlnFloat]}
 function testPrintBoolean() {
     boolean b = false;
     print(b);
     test:assertEquals(readOutputStream(), "false");
 }
 
-@test:Config{
-    dependsOn: [testPrintBoolean]
-}
+@test:Config {dependsOn: [testPrintBoolean]}
 function testPrintlnBoolean() {
     boolean b = true;
     println(b);
     test:assertEquals(readOutputStream(), "true\n");
 }
 
-@test:Config{
-    dependsOn: [testPrintlnBoolean]
-}
+@test:Config {dependsOn: [testPrintlnBoolean]}
 function testPrintConnector() {
     Foo f = new Foo();
     print(f);
     test:assertEquals(readOutputStream(), "object io:Foo");
-
 }
 
-@test:Config{
-    dependsOn: [testPrintConnector]
-}
+@test:Config {dependsOn: [testPrintConnector]}
 function testPrintlnConnector() {
     Foo f = new Foo();
     println(f);
@@ -116,27 +94,21 @@ function testPrintlnConnector() {
 
 }
 
-@test:Config{
-    dependsOn: [testPrintlnConnector]
-}
+@test:Config {dependsOn: [testPrintlnConnector]}
 function testPrintFunctionPointer() {
     function (int, int) returns (int) addFunction = func1;
     print(addFunction);
     test:assertEquals(readOutputStream(), "function function (int,int) returns (int)");
 }
 
-@test:Config{
-    dependsOn: [testPrintFunctionPointer]
-}
+@test:Config {dependsOn: [testPrintFunctionPointer]}
 function testPrintlnFunctionPointer() {
     function (int, int) returns (int) addFunction = func1;
     println(addFunction);
     test:assertEquals(readOutputStream(), "function function (int,int) returns (int)\n");
 }
 
-@test:Config{
-    dependsOn: [testPrintlnFunctionPointer]
-}
+@test:Config {dependsOn: [testPrintlnFunctionPointer]}
 function testPrintVarargs() {
     string s1 = "Hello World...!!!";
     string s2 = "A Greeting from Ballerina...!!!";
@@ -146,9 +118,7 @@ function testPrintVarargs() {
     test:assertEquals(readOutputStream(), expectedOutput);
 }
 
-@test:Config{
-    dependsOn: [testPrintVarargs]
-}
+@test:Config {dependsOn: [testPrintVarargs]}
 function testPrintMixVarargs() {
     string s1 = "Hello World...!!!";
     int i1 = 123456789;
@@ -159,9 +129,7 @@ function testPrintMixVarargs() {
     test:assertEquals(readOutputStream(), expectedOutput);
 }
 
-@test:Config{
-    dependsOn: [testPrintMixVarargs]
-}
+@test:Config {dependsOn: [testPrintMixVarargs]}
 function testPrintlnVarargs() {
     string s1 = "Hello World...!!!";
     string s2 = "A Greeting from Ballerina...!!!";
@@ -171,12 +139,150 @@ function testPrintlnVarargs() {
     test:assertEquals(readOutputStream(), expectedOutput);
 }
 
-@test:Config{
-    dependsOn: [testPrintlnVarargs]
-}
+@test:Config {dependsOn: [testPrintlnVarargs]}
 function testPrintNewline() {
     string expectedOutput = "hello\n";
     print("hello\n");
+    test:assertEquals(readOutputStream(), expectedOutput);
+}
+
+@test:Config {dependsOn: [testPrintNewline]}
+function testPrintRawTemplateWithTrue() {
+    boolean val = true;
+    string expectedOutput = "The respective boolean value is true";
+    print(`The respective boolean value is ${val}`);
+    test:assertEquals(readOutputStream(), expectedOutput);
+}
+
+@test:Config {dependsOn: [testPrintRawTemplateWithTrue]}
+function testPrintRawTemplateWithFalse() {
+    boolean val = false;
+    string expectedOutput = "The respective boolean value is false";
+    print(`The respective boolean ${`value is ${val}`}`);
+    test:assertEquals(readOutputStream(), expectedOutput);
+}
+
+@test:Config {dependsOn: [testPrintRawTemplateWithFalse]}
+function testPrintRawTemplateWithInt() {
+    int val = 1050;
+    string expectedOutput = "The respective int value is 1050";
+    print(`The respective int ${`value is ${val}`}`);
+    test:assertEquals(readOutputStream(), expectedOutput);
+}
+
+@test:Config {dependsOn: [testPrintRawTemplateWithInt]}
+function testPrintRawTemplateWithDecimal() {
+    decimal val = 1050.0967;
+    string expectedOutput = "The respective decimal value is 1050.0967";
+    print(`The respective decimal ${`value is ${val}`}`);
+    test:assertEquals(readOutputStream(), expectedOutput);
+}
+
+@test:Config {dependsOn: [testPrintRawTemplateWithDecimal]}
+function testPrintRawTemplateWithString() {
+    string val = "My String";
+    string expectedOutput = "The respective string value is My String";
+    print(`The respective string ${`value is ${val}`}`);
+    test:assertEquals(readOutputStream(), expectedOutput);
+}
+
+@test:Config {dependsOn: [testPrintRawTemplateWithString]}
+function testPrintRawTemplateWithStringAndQuotes() {
+    string val = "My String";
+    string expectedOutput = "The respective string value is 'My String'";
+    print(`The respective string ${`value is '${val}'`}`);
+    test:assertEquals(readOutputStream(), expectedOutput);
+}
+
+@test:Config {dependsOn: [testPrintRawTemplateWithStringAndQuotes]}
+function testPrintRawTemplateNested() {
+    string s1 = "S1";
+    string s2 = "S2";
+    string s3 = "S3";
+    string s4 = "S4";
+    string s5 = "S5";
+    string expectedOutput = "string 01: S1; string 02: S2; string 03: S3; string 04: S4; string 05: S5";
+
+    print(`${`${`${`${`string 01: ${s1}`}; string 02: ${s2}`}; string 03: ${s3}`}; string 04: ${s4}`}; string 05: ${s5}`);
+    test:assertEquals(readOutputStream(), expectedOutput);
+}
+
+@test:Config {dependsOn: [testPrintRawTemplateNested]}
+function testPrintRawTemplateMultiple() {
+    string name1 = "James";
+    string name2 = "Lily";
+    string expectedOutput = "Hello James!!!. After long time. Why Lily didn't come?";
+    print(`Hello ${name1}!!!.`, " ", "After long time.", " ", `Why ${name2} didn't come?`);
+    test:assertEquals(readOutputStream(), expectedOutput);
+}
+
+@test:Config {dependsOn: [testPrintRawTemplateMultiple]}
+function testPrintlnRawTemplateWithTrue() {
+    boolean val = true;
+    string expectedOutput = "The respective boolean value is true\n";
+    println(`The respective boolean value is ${val}`);
+    test:assertEquals(readOutputStream(), expectedOutput);
+}
+
+@test:Config {dependsOn: [testPrintlnRawTemplateWithTrue]}
+function testPrintlnRawTemplateWithFalse() {
+    boolean val = false;
+    string expectedOutput = "The respective boolean value is false\n";
+    println(`The respective boolean ${`value is ${val}`}`);
+    test:assertEquals(readOutputStream(), expectedOutput);
+}
+
+@test:Config {dependsOn: [testPrintlnRawTemplateWithFalse]}
+function testPrintlnRawTemplateWithInt() {
+    int val = 1050;
+    string expectedOutput = "The respective int value is 1050\n";
+    println(`The respective int ${`value is ${val}`}`);
+    test:assertEquals(readOutputStream(), expectedOutput);
+}
+
+@test:Config {dependsOn: [testPrintlnRawTemplateWithInt]}
+function testPrintlnRawTemplateWithDecimal() {
+    decimal val = 1050.0967;
+    string expectedOutput = "The respective decimal value is 1050.0967\n";
+    println(`The respective decimal ${`value is ${val}`}`);
+    test:assertEquals(readOutputStream(), expectedOutput);
+}
+
+@test:Config {dependsOn: [testPrintlnRawTemplateWithDecimal]}
+function testPrintlnRawTemplateWithString() {
+    string val = "My String";
+    string expectedOutput = "The respective string value is My String\n";
+    println(`The respective string ${`value is ${val}`}`);
+    test:assertEquals(readOutputStream(), expectedOutput);
+}
+
+@test:Config {dependsOn: [testPrintlnRawTemplateWithString]}
+function testPrintlnRawTemplateWithStringAndQuotes() {
+    string val = "My String";
+    string expectedOutput = "The respective string value is 'My String'\n";
+    println(`The respective string ${`value is '${val}'`}`);
+    test:assertEquals(readOutputStream(), expectedOutput);
+}
+
+@test:Config {dependsOn: [testPrintlnRawTemplateWithStringAndQuotes]}
+function testPrintlnRawTemplateNested() {
+    string s1 = "S1";
+    string s2 = "S2";
+    string s3 = "S3";
+    string s4 = "S4";
+    string s5 = "S5";
+    string expectedOutput = "string 01: S1; string 02: S2; string 03: S3; string 04: S4; string 05: S5\n";
+    println(
+    `${`${`${`${`string 01: ${s1}`}; string 02: ${s2}`}; string 03: ${s3}`}; string 04: ${s4}`}; string 05: ${s5}`);
+    test:assertEquals(readOutputStream(), expectedOutput);
+}
+
+@test:Config {dependsOn: [testPrintlnRawTemplateNested]}
+function testPrintlnRawTemplateMultiple() {
+    string name1 = "James";
+    string name2 = "Lily";
+    string expectedOutput = "Hello James!!!. After long time. Why Lily didn't come?\n";
+    println(`Hello ${name1}!!!.`, " ", "After long time.", " ", `Why ${name2} didn't come?`);
     test:assertEquals(readOutputStream(), expectedOutput);
 }
 

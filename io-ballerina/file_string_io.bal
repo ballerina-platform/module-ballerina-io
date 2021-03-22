@@ -21,12 +21,7 @@
 # + path - The path of the file
 # + return - The entire file content as a string or an `io:Error`
 public isolated function fileReadString(@untainted string path) returns @tainted string|Error {
-    var byteChannel = openReadableFile(path);
-    if (byteChannel is ReadableByteChannel) {
-        return channelReadString(byteChannel);
-    } else {
-        return byteChannel;
-    }
+    return channelReadString(check openReadableFile(path));
 }
 
 # Reads the entire file content as a list of lines.
@@ -36,12 +31,7 @@ public isolated function fileReadString(@untainted string path) returns @tainted
 # + path - The path of the file
 # + return - The file as list of lines or an `io:Error`
 public isolated function fileReadLines(@untainted string path) returns @tainted string[]|Error {
-    var byteChannel = openReadableFile(path);
-    if (byteChannel is ReadableByteChannel) {
-        return channelReadLines(byteChannel);
-    } else {
-        return byteChannel;
-    }
+    return channelReadLines(check openReadableFile(path));
 }
 
 # Reads file content as a stream of lines.
@@ -51,12 +41,7 @@ public isolated function fileReadLines(@untainted string path) returns @tainted 
 # + path - The path of the file
 # + return - The file content as a stream of strings or an `io:Error`
 public isolated function fileReadLinesAsStream(@untainted string path) returns @tainted stream<string, Error>|Error {
-    var byteChannel = openReadableFile(path);
-    if (byteChannel is ReadableByteChannel) {
-        return channelReadLinesAsStream(byteChannel);
-    } else {
-        return byteChannel;
-    }
+    return channelReadLinesAsStream(check openReadableFile(path));
 }
 
 # Reads file content as a JSON.
@@ -66,12 +51,7 @@ public isolated function fileReadLinesAsStream(@untainted string path) returns @
 # + path - The path of the JSON file
 # + return - The file content as a JSON object or an `io:Error`
 public isolated function fileReadJson(@untainted string path) returns @tainted json|Error {
-    var byteChannel = openReadableFile(path);
-    if (byteChannel is ReadableByteChannel) {
-        return channelReadJson(byteChannel);
-    } else {
-        return byteChannel;
-    }
+    return channelReadJson(check openReadableFile(path));
 }
 
 # Reads file content as an XML.
@@ -81,12 +61,7 @@ public isolated function fileReadJson(@untainted string path) returns @tainted j
 # + path - The path of the XML file
 # + return - The file content as an XML or an `io:Error`
 public isolated function fileReadXml(@untainted string path) returns @tainted xml|Error {
-    var byteChannel = openReadableFile(path);
-    if (byteChannel is ReadableByteChannel) {
-        return channelReadXml(byteChannel);
-    } else {
-        return byteChannel;
-    }
+    return channelReadXml(check openReadableFile(path));
 }
 
 # Write a string content to a file.
@@ -98,14 +73,9 @@ public isolated function fileReadXml(@untainted string path) returns @tainted xm
 # + content - String content to write
 # + option - To indicate whether to overwrite or append the given content
 # + return - The null `()` value when the writing was successful or an `io:Error`
-public isolated function fileWriteString(@untainted string path, string content, FileWriteOption option = OVERWRITE) returns
+public isolated function fileWriteString(@untainted string path, string content, FileWriteOption option = OVERWRITE) returns 
 Error? {
-    var byteChannel = openWritableFile(path, option);
-    if (byteChannel is WritableByteChannel) {
-        return channelWriteString(byteChannel, content);
-    } else {
-        return byteChannel;
-    }
+    return channelWriteString(check openWritableFile(path, option), content);
 }
 
 # Write an array of lines to a file.
@@ -118,14 +88,9 @@ Error? {
 # + content - An array of string lines to write
 # + option - To indicate whether to overwrite or append the given content
 # + return - The null `()` value when the writing was successful or an `io:Error`
-public isolated function fileWriteLines(@untainted string path, string[] content, FileWriteOption option = OVERWRITE) returns
+public isolated function fileWriteLines(@untainted string path, string[] content, FileWriteOption option = OVERWRITE) returns 
 Error? {
-    var byteChannel = openWritableFile(path, option);
-    if (byteChannel is WritableByteChannel) {
-        return channelWriteLines(byteChannel, content);
-    } else {
-        return byteChannel;
-    }
+    return channelWriteLines(check openWritableFile(path, option), content);
 }
 
 # Write stream of lines to a file.
@@ -139,14 +104,9 @@ Error? {
 # + lineStream -  A stream of lines to write
 # + option - To indicate whether to overwrite or append the given content
 # + return - The null `()` value when the writing was successful or an `io:Error`
-public isolated function fileWriteLinesFromStream(@untainted string path, stream<string, Error> lineStream, FileWriteOption option =
-                                         OVERWRITE) returns Error? {
-    var byteChannel = openWritableFile(path, option);
-    if (byteChannel is WritableByteChannel) {
-        return channelWriteLinesFromStream(byteChannel, lineStream);
-    } else {
-        return byteChannel;
-    }
+public isolated function fileWriteLinesFromStream(@untainted string path, stream<string, Error> lineStream, 
+                                                  FileWriteOption option = OVERWRITE) returns Error? {
+    return channelWriteLinesFromStream(check openWritableFile(path, option), lineStream);
 }
 
 # Write a JSON to a file.
@@ -158,12 +118,7 @@ public isolated function fileWriteLinesFromStream(@untainted string path, stream
 # + content - JSON content to write
 # + return - The null `()` value when the writing was successful or an `io:Error`
 public isolated function fileWriteJson(@untainted string path, json content) returns @tainted Error? {
-    var byteChannel = openWritableFile(path);
-    if (byteChannel is WritableByteChannel) {
-        return channelWriteJson(byteChannel, content);
-    } else {
-        return byteChannel;
-    }
+    return channelWriteJson(check openWritableFile(path), content);
 }
 
 # Write XML content to a file.
@@ -176,9 +131,9 @@ public isolated function fileWriteJson(@untainted string path, json content) ret
 # + xmlOptions - XML writing options(XML entity type and DOCTYPE)
 # + fileWriteOption - file write option(`OVERWRITE` and `APPEND` are the possible values, and the default value is `OVERWRITE`)
 # + return - The null `()` value when the writing was successful or an `io:Error`
-public isolated function fileWriteXml(@untainted string path, xml content, *XmlWriteOptions xmlOptions, FileWriteOption fileWriteOption =
-                             OVERWRITE) returns Error? {
-    WritableByteChannel|Error byteChannel;
+public isolated function fileWriteXml(@untainted string path, xml content, *XmlWriteOptions xmlOptions, FileWriteOption fileWriteOption = 
+                                      OVERWRITE) returns Error? {
+    WritableByteChannel byteChannel;
     if (xmlOptions.xmlEntityType == DOCUMENT_ENTITY) {
         if (fileWriteOption == APPEND) {
             return error ConfigurationError("The file append operation is not allowed for Document Entity");
@@ -186,21 +141,16 @@ public isolated function fileWriteXml(@untainted string path, xml content, *XmlW
         if (xml:length(content) > 1) {
             return error ConfigurationError("The XML Document can only contains single root");
         }
-        byteChannel = openWritableFile(path);
+        byteChannel = check openWritableFile(path);
     } else {
         if (fileWriteOption == APPEND) {
-            byteChannel = openWritableFile(path, APPEND);
+            byteChannel = check openWritableFile(path, APPEND);
         } else {
-            byteChannel = openWritableFile(path);
+            byteChannel = check openWritableFile(path);
         }
     }
-
-    if (byteChannel is WritableByteChannel) {
-        if (xmlOptions.doctype != ()) {
-            return channelWriteXml(byteChannel, content, xmlOptions.doctype);
-        }
-        return channelWriteXml(byteChannel, content);
-    } else {
-        return byteChannel;
+    if (xmlOptions.doctype != ()) {
+        return channelWriteXml(byteChannel, content, xmlOptions.doctype);
     }
+    return channelWriteXml(byteChannel, content);
 }
