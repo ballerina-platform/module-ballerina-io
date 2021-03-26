@@ -17,7 +17,7 @@
 import ballerina/test;
 
 @test:Config {}
-function testReadRecordLengths() {
+isolated function testReadRecordLengths() {
     string filePath = RESOURCES_BASE_PATH + "datafiles/io/records/sample.csv";
     int expectedRecordLength = 3;
 
@@ -68,7 +68,7 @@ function testReadRecordLengths() {
 }
 
 @test:Config {}
-function testWriteRecords() {
+isolated function testWriteRecords() {
     string filePath = TEMP_DIR + "recordsFile.csv";
     string[] content = ["Name", "Email", "Telephone"];
 
@@ -92,7 +92,7 @@ function testWriteRecords() {
 }
 
 @test:Config {dependsOn: [testWriteRecords]}
-function testReadRecordContent() {
+isolated function testReadRecordContent() {
     string filePath = TEMP_DIR + "recordsFile.csv";
     string[] expectedContent = ["Name", "Email", "Telephone"];
 

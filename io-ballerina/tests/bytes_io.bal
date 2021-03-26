@@ -19,12 +19,12 @@ import ballerina/test;
 import ballerina/lang.'string as langstring;
 
 @test:BeforeSuite
-function beforeFunc() {
+isolated function beforeFunc() {
      createDirectoryExtern(TEMP_DIR);
 }
 
 @test:Config {}
-function testReadBytes() {
+isolated function testReadBytes() {
     string filePath = RESOURCES_BASE_PATH + "datafiles/io/text/charfile.txt";
     string expectedString = "123";
     int numberOfBytes = 3;
@@ -64,7 +64,7 @@ function testReadBytes() {
 }
 
 @test:Config {}
-function testWriteBytes() {
+isolated function testWriteBytes() {
     string filePath = TEMP_DIR + "bytesFile1.txt";
     byte[] content = [1, 46, 77, 90, 38];
     var byteChannel = openWritableFile(filePath);
@@ -85,7 +85,7 @@ function testWriteBytes() {
 }
 
 @test:Config {}
-function testFileWriteBytes() {
+isolated function testFileWriteBytes() {
     string filePath = TEMP_DIR + "bytesFile2.txt";
     string content = "Sheldon Cooper";
     var result = fileWriteBytes(filePath, content.toBytes());
@@ -96,7 +96,7 @@ function testFileWriteBytes() {
 }
 
 @test:Config {dependsOn: [testFileWriteBytes]}
-function testFileReadBytes() {
+isolated function testFileReadBytes() {
     string filePath = TEMP_DIR + "bytesFile2.txt";
     var result = fileReadBytes(filePath);
     string expectedString = "Sheldon Cooper";
@@ -109,7 +109,7 @@ function testFileReadBytes() {
 }
 
 @test:Config {}
-function testFileWriteBytesFromStream() returns Error? {
+isolated function testFileWriteBytesFromStream() returns Error? {
     string filePath = TEMP_DIR + "bytesFile3.txt";
     string resourceFilePath = TEMP_DIR + "bytesResourceFile.txt";
     string content = "Sheldon Cooper";
@@ -145,7 +145,7 @@ function testFileReadBytesAsStream() {
 }
 
 @test:Config {}
-function testFileChannelWriteBytes() {
+isolated function testFileChannelWriteBytes() {
     string filePath = TEMP_DIR + "bytesFile4.txt";
     string content = "Sheldon Cooper";
 
@@ -161,7 +161,7 @@ function testFileChannelWriteBytes() {
 }
 
 @test:Config {dependsOn: [testFileChannelWriteBytes]}
-function testFileChannelReadBytes() {
+isolated function testFileChannelReadBytes() {
     string filePath = TEMP_DIR + "bytesFile4.txt";
     string expectedString = "Sheldon Cooper";
 
@@ -179,7 +179,7 @@ function testFileChannelReadBytes() {
 }
 
 @test:Config {}
-function testFileChannelWriteBytesFromStream() returns Error? {
+isolated function testFileChannelWriteBytesFromStream() returns Error? {
     string filePath = TEMP_DIR + "bytesFile5.txt";
     string resourceFilePath = TEMP_DIR + "bytesResourceFile.txt";
     string content = "Sheldon Cooper";
@@ -226,7 +226,7 @@ function testFileChannelReadBytesAsStream() {
 }
 
 @test:Config {}
-function testFileCopy() {
+isolated function testFileCopy() {
     string readFilePath = RESOURCES_BASE_PATH + "datafiles/io/images/ballerina.png";
     string writeFilePath = TEMP_DIR + "ballerina.png";
     var readResult = fileReadBytes(readFilePath);
@@ -242,7 +242,7 @@ function testFileCopy() {
 }
 
 @test:Config {}
-function testFileWriteBytesWithOverwrite() {
+isolated function testFileWriteBytesWithOverwrite() {
     string filePath = TEMP_DIR + "bytesFile6.txt";
     string content1 = "Ballerina is an open source programming language and " +
     "platform for cloud-era application programmers to easily write software that just works.";
@@ -274,7 +274,7 @@ function testFileWriteBytesWithOverwrite() {
 }
 
 @test:Config {}
-function testFileWriteBytesWithAppend() {
+isolated function testFileWriteBytesWithAppend() {
     string filePath = TEMP_DIR + "bytesFile7.txt";
     string content1 = "Ballerina is an open source programming language and " +
     "platform for cloud-era application programmers to easily write software that just works. ";
@@ -423,7 +423,7 @@ function testFileWriteBytesFromStreamWithAppend() returns Error? {
     }
 }
 
-function createDirectoryExtern(string path) = @java:Method {
+isolated function createDirectoryExtern(string path) = @java:Method {
     name: "createDirectory",
     'class: "org.ballerinalang.stdlib.io.testutils.FileTestUtils"
 } external;

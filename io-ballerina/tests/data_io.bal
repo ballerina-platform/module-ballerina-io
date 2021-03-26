@@ -17,7 +17,7 @@
 import ballerina/test;
 
 @test:Config {dependsOn: [testTableWithHeader]}
-function testWriteFixedSignedInt() {
+isolated function testWriteFixedSignedInt() {
     int value = 123;
     ByteOrder byteOrder = BIG_ENDIAN;
     string path = TEMP_DIR + "integer.bin";
@@ -33,7 +33,7 @@ function testWriteFixedSignedInt() {
 }
 
 @test:Config {dependsOn: [testWriteFixedSignedInt]}
-function testReadFixedSignedInt() {
+isolated function testReadFixedSignedInt() {
     int value = 123;
     ByteOrder byteOrder = BIG_ENDIAN;
     string path = TEMP_DIR + "integer.bin";
@@ -54,7 +54,7 @@ function testReadFixedSignedInt() {
 }
 
 @test:Config {dependsOn: [testReadFixedSignedInt]}
-function testWriteVarInt() {
+isolated function testWriteVarInt() {
     var value = 456;
     ByteOrder byteOrder = BIG_ENDIAN;
     string path = TEMP_DIR + "varint.bin";
@@ -70,7 +70,7 @@ function testWriteVarInt() {
 }
 
 @test:Config {dependsOn: [testWriteVarInt]}
-function testReadVarInt() {
+isolated function testReadVarInt() {
     int value = 456;
     ByteOrder byteOrder = BIG_ENDIAN;
     string path = TEMP_DIR + "varint.bin";
@@ -91,7 +91,7 @@ function testReadVarInt() {
 }
 
 @test:Config {dependsOn: [testWriteVarInt]}
-function testWriteFixedFloat() {
+isolated function testWriteFixedFloat() {
     float value = 1359494.69;
     ByteOrder byteOrder = BIG_ENDIAN;
     string path = TEMP_DIR + "float.bin";
@@ -107,7 +107,7 @@ function testWriteFixedFloat() {
 }
 
 @test:Config {dependsOn: [testWriteFixedFloat]}
-function testReadFixedFloat() {
+isolated function testReadFixedFloat() {
     float value = 1359494.69;
     ByteOrder byteOrder = BIG_ENDIAN;
     string path = TEMP_DIR + "float.bin";
@@ -128,7 +128,7 @@ function testReadFixedFloat() {
 }
 
 @test:Config {dependsOn: [testReadFixedFloat]}
-function testWriteBool() {
+isolated function testWriteBool() {
     boolean value = true;
     ByteOrder byteOrder = BIG_ENDIAN;
     string path = TEMP_DIR + "boolean.bin";
@@ -144,7 +144,7 @@ function testWriteBool() {
 }
 
 @test:Config {dependsOn: [testWriteBool]}
-function testReadBool() {
+isolated function testReadBool() {
     boolean value = true;
     ByteOrder byteOrder = BIG_ENDIAN;
     string path = TEMP_DIR + "boolean.bin";
@@ -165,7 +165,7 @@ function testReadBool() {
 }
 
 @test:Config {dependsOn: [testReadBool]}
-function testWriteString() {
+isolated function testWriteString() {
     string value = "Ballerina";
     ByteOrder byteOrder = BIG_ENDIAN;
     string path = TEMP_DIR + "string.bin";
@@ -182,7 +182,7 @@ function testWriteString() {
 }
 
 @test:Config {dependsOn: [testWriteString]}
-function testReadString() {
+isolated function testReadString() {
     string value = "Ballerina";
     ByteOrder byteOrder = BIG_ENDIAN;
     string encoding = "UTF-8";

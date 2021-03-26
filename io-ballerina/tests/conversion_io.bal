@@ -17,7 +17,7 @@
 import ballerina/test;
 
 @test:Config {dependsOn: [testWriteRecords]}
-function testStrToJsonConvert() {
+isolated function testStrToJsonConvert() {
     string content = "{\n" + "  \"test\": { \"name\": \"Foo\" }\n" + "}";
     json expectedJson = {test: {name: "Foo"}};
     var result = getJson(content, "UTF-8");
@@ -29,7 +29,7 @@ function testStrToJsonConvert() {
 }
 
 @test:Config {dependsOn: [testStrToJsonConvert]}
-function testXmlToJsonConvert() {
+isolated function testXmlToJsonConvert() {
     string content = "<test>" + "<name>Foo</name>" + "</test>";
     xml expectedXml = xml `<test><name>Foo</name></test>`;
 
@@ -41,7 +41,7 @@ function testXmlToJsonConvert() {
     }
 }
 
-function getJson(string content, string encoding) returns @tainted json|error {
+isolated function getJson(string content, string encoding) returns @tainted json|error {
     StringReader reader = new StringReader(content, encoding);
     var readResult = reader.readJson();
     Error? closeResult = reader.close();
@@ -52,7 +52,7 @@ function getJson(string content, string encoding) returns @tainted json|error {
     }
 }
 
-function getXml(string content, string encoding) returns @tainted xml?|error {
+isolated function getXml(string content, string encoding) returns @tainted xml?|error {
     StringReader reader = new StringReader(content, encoding);
     var readResult = reader.readXml();
     Error? closeResult = reader.close();
