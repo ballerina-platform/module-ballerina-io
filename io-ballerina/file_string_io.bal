@@ -36,11 +36,11 @@ public isolated function fileReadLines(@untainted string path) returns @tainted 
 
 # Reads file content as a stream of lines.
 # ```ballerina
-# stream<string, io:Error>|io:Error content = io:fileReadLinesAsStream("./resources/myfile.txt");
+# stream<string, io:Error?>|io:Error content = io:fileReadLinesAsStream("./resources/myfile.txt");
 # ```
 # + path - The path of the file
 # + return - The file content as a stream of strings or an `io:Error`
-public isolated function fileReadLinesAsStream(@untainted string path) returns @tainted stream<string, Error>|Error {
+public isolated function fileReadLinesAsStream(@untainted string path) returns @tainted stream<string, Error?>|Error {
     return channelReadLinesAsStream(check openReadableFile(path));
 }
 
@@ -97,14 +97,14 @@ Error? {
 # During the writing operation, a newline character `\n` will be added after each line.
 # ```ballerina
 # string content = ["Hello Universe..!!", "How are you?"];
-# stream<string, io:Error> lineStream = content.toStream();
+# stream<string, io:Error?> lineStream = content.toStream();
 # io:Error? result = io:fileWriteLinesFromStream("./resources/myfile.txt", lineStream);
 # ```
 # + path - The path of the file
 # + lineStream -  A stream of lines to write
 # + option - To indicate whether to overwrite or append the given content
 # + return - The null `()` value when the writing was successful or an `io:Error`
-public isolated function fileWriteLinesFromStream(@untainted string path, stream<string, Error> lineStream, 
+public isolated function fileWriteLinesFromStream(@untainted string path, stream<string, Error?> lineStream,
                                                   FileWriteOption option = OVERWRITE) returns Error? {
     return channelWriteLinesFromStream(check openWritableFile(path, option), lineStream);
 }

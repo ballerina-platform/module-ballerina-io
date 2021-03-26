@@ -28,7 +28,7 @@ isolated function channelReadBytes(ReadableChannel readableChannel) returns @tai
 }
 
 isolated function channelReadBlocksAsStream(ReadableChannel readableChannel, int blockSize = 4096) returns @tainted stream<
-Block, Error>|Error {
+Block, Error?>|Error {
     if (readableChannel is ReadableByteChannel) {
         return readableChannel.blockStream(blockSize);
     } else {
@@ -52,7 +52,7 @@ isolated function channelWriteBytes(WritableChannel writableChannel, byte[] cont
     }
 }
 
-isolated function channelWriteBlocksFromStream(WritableChannel writableChannel, stream<byte[], Error> byteStream) returns 
+isolated function channelWriteBlocksFromStream(WritableChannel writableChannel, stream<byte[], Error?> byteStream) returns
 Error? {
     if (writableChannel is WritableByteChannel) {
         record {| byte[] value; |}|Error? block = byteStream.next();
