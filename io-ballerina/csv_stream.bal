@@ -39,7 +39,7 @@ public class CSVStream {
             record {| string[] value; |} value = {value: <string[]>recordValue.cloneReadOnly()};
             return value;
         } else if (recordValue is EofError) {
-            var closeResult = closeRecordReader(self.readableTextRecordChannel);
+            Error? closeResult = closeRecordReader(self.readableTextRecordChannel);
             return ();
         } else {
             return recordValue;

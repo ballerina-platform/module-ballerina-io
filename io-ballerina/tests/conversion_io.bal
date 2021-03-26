@@ -44,7 +44,7 @@ function testXmlToJsonConvert() {
 function getJson(string content, string encoding) returns @tainted json|error {
     StringReader reader = new StringReader(content, encoding);
     var readResult = reader.readJson();
-    var closeResult = reader.close();
+    Error? closeResult = reader.close();
     if (readResult is json) {
         return readResult;
     } else {
@@ -55,7 +55,7 @@ function getJson(string content, string encoding) returns @tainted json|error {
 function getXml(string content, string encoding) returns @tainted xml?|error {
     StringReader reader = new StringReader(content, encoding);
     var readResult = reader.readXml();
-    var closeResult = reader.close();
+    Error? closeResult = reader.close();
     if (readResult is xml?) {
         return readResult;
     } else {

@@ -18,14 +18,14 @@ import ballerina/lang.'value;
 isolated function channelReadString(ReadableChannel readableChannel) returns @tainted string|Error {
     ReadableCharacterChannel characterChannel = check getReadableCharacterChannel(readableChannel);
     var result = characterChannel.readString();
-    var closeResult = characterChannel.close();
+    Error? closeResult = characterChannel.close();
     return result;
 }
 
 isolated function channelReadLines(ReadableChannel readableChannel) returns @tainted string[]|Error {
     ReadableCharacterChannel characterChannel = check getReadableCharacterChannel(readableChannel);
     var result = characterChannel.readAllLines();
-    var closeResult = characterChannel.close();
+    Error? closeResult = characterChannel.close();
     return result;
 }
 
@@ -37,14 +37,14 @@ Error {
 isolated function channelReadJson(ReadableChannel readableChannel) returns @tainted json|Error {
     ReadableCharacterChannel characterChannel = check getReadableCharacterChannel(readableChannel);
     var result = characterChannel.readJson();
-    var closeResult = characterChannel.close();
+    Error? closeResult = characterChannel.close();
     return result;
 }
 
 isolated function channelReadXml(ReadableChannel readableChannel) returns @tainted xml|Error {
     ReadableCharacterChannel characterChannel = check getReadableCharacterChannel(readableChannel);
     var result = characterChannel.readXml();
-    var closeResult = characterChannel.close();
+    Error? closeResult = characterChannel.close();
     return result;
 }
 
@@ -81,7 +81,7 @@ Error? {
     WritableCharacterChannel characterChannel = check getWritableCharacterChannel(writableChannel);
     record {| string value; |}|Error? line = lineStream.next();
     while (line is record {| string value; |}) {
-        var writeResult = characterChannel.writeLine(line.value);
+        Error? writeResult = characterChannel.writeLine(line.value);
         line = lineStream.next();
     }
     var closeResult = characterChannel.close();

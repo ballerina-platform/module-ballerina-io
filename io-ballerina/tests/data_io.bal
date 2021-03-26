@@ -25,8 +25,8 @@ function testWriteFixedSignedInt() {
 
     if (ch is WritableByteChannel) {
         WritableDataChannel dataChannel = new (ch, byteOrder);
-        var result = dataChannel.writeInt64(value);
-        var closeResult = dataChannel.close();
+        Error? result = dataChannel.writeInt64(value);
+        Error? closeResult = dataChannel.close();
     } else {
         test:assertFail(msg = ch.message());
     }
@@ -47,7 +47,7 @@ function testReadFixedSignedInt() {
         } else {
             test:assertFail(msg = result.message());
         }
-        var closeResult = dataChannel.close();
+        Error? closeResult = dataChannel.close();
     } else {
         test:assertFail(msg = ch.message());
     }
@@ -62,8 +62,8 @@ function testWriteVarInt() {
 
     if (ch is WritableByteChannel) {
         WritableDataChannel dataChannel = new (ch, byteOrder);
-        var result = dataChannel.writeInt64(value);
-        var closeResult = dataChannel.close();
+        Error? result = dataChannel.writeInt64(value);
+        Error? closeResult = dataChannel.close();
     } else {
         test:assertFail(msg = ch.message());
     }
@@ -84,7 +84,7 @@ function testReadVarInt() {
         } else {
             test:assertFail(msg = result.message());
         }
-        var closeResult = dataChannel.close();
+        Error? closeResult = dataChannel.close();
     } else {
         test:assertFail(msg = ch.message());
     }
@@ -99,8 +99,8 @@ function testWriteFixedFloat() {
 
     if (ch is WritableByteChannel) {
         WritableDataChannel dataChannel = new (ch, byteOrder);
-        var result = dataChannel.writeFloat64(value);
-        var closeResult = dataChannel.close();
+        Error? result = dataChannel.writeFloat64(value);
+        Error? closeResult = dataChannel.close();
     } else {
         test:assertFail(msg = ch.message());
     }
@@ -121,7 +121,7 @@ function testReadFixedFloat() {
         } else {
             test:assertFail(msg = result.message());
         }
-        var closeResult = dataChannel.close();
+        Error? closeResult = dataChannel.close();
     } else {
         test:assertFail(msg = ch.message());
     }
@@ -136,8 +136,8 @@ function testWriteBool() {
 
     if (ch is WritableByteChannel) {
         WritableDataChannel dataChannel = new (ch, byteOrder);
-        var result = dataChannel.writeBool(value);
-        var closeResult = dataChannel.close();
+        Error? result = dataChannel.writeBool(value);
+        Error? closeResult = dataChannel.close();
     } else {
         test:assertFail(msg = ch.message());
     }
@@ -158,7 +158,7 @@ function testReadBool() {
         } else {
             test:assertFail(msg = result.message());
         }
-        var closeResult = dataChannel.close();
+        Error? closeResult = dataChannel.close();
     } else {
         test:assertFail(msg = ch.message());
     }
@@ -174,8 +174,8 @@ function testWriteString() {
 
     if (ch is WritableByteChannel) {
         WritableDataChannel dataChannel = new (ch, byteOrder);
-        var result = dataChannel.writeString(value, encoding);
-        var closeResult = dataChannel.close();
+        Error? result = dataChannel.writeString(value, encoding);
+        Error? closeResult = dataChannel.close();
     } else {
         test:assertFail(msg = ch.message());
     }
@@ -198,7 +198,7 @@ function testReadString() {
         } else {
             test:assertFail(msg = result.message());
         }
-        var closeResult = dataChannel.close();
+        Error? closeResult = dataChannel.close();
     } else {
         test:assertFail(msg = ch.message());
     }
