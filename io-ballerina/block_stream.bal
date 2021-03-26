@@ -18,7 +18,7 @@ import ballerina/jballerina.java;
 
 public type Block readonly & byte[];
 
-# `BlockStream` used to initialize a stream of type `io:Block`. This `BlockStream` refers to the stream that embedded to
+# `BlockStream` used to initialize a stream of type `Block`. This `BlockStream` refers to the stream that embedded to
 # the I/O byte channels.
 public class BlockStream {
     private ReadableByteChannel readableByteChannel;
