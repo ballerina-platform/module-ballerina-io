@@ -492,7 +492,7 @@ isolated function testFileWriteLinesWithAppend() {
 isolated function testFileWriteLinesFromStream() returns Error? {
     string filePath = TEMP_DIR + "stringContentAsLines2.txt";
     string resourceFilePath = TEST_RESOURCE_PATH + "stringResourceFile1.txt";
-    stream<string, Error> lineStream = check fileReadLinesAsStream(resourceFilePath);
+    stream<string, Error?> lineStream = check fileReadLinesAsStream(resourceFilePath);
 
     var result = fileWriteLinesFromStream(filePath, lineStream);
     if (result is Error) {
@@ -526,8 +526,8 @@ function testFileWriteLinesFromStreamWithOverwrite() returns Error? {
     string filePath = TEMP_DIR + "stringContentAsLines2.txt";
     string resourceFilePath1 = TEST_RESOURCE_PATH + "stringResourceFile1.txt";
     string resourceFilePath2 = TEST_RESOURCE_PATH + "stringResourceFile2.txt";
-    stream<string, Error> lineStream1 = check fileReadLinesAsStream(resourceFilePath1);
-    stream<string, Error> lineStream2 = check fileReadLinesAsStream(resourceFilePath2);
+    stream<string, Error?> lineStream1 = check fileReadLinesAsStream(resourceFilePath1);
+    stream<string, Error?> lineStream2 = check fileReadLinesAsStream(resourceFilePath2);
     string[] content1 = ["The Big Bang Theory", "F.R.I.E.N.D.S", "Game of Thrones", "LOST"];
     string[] content2 = ["WSO2", "Google", "Microsoft", "Facebook", "Apple"];
 
@@ -537,7 +537,7 @@ function testFileWriteLinesFromStreamWithOverwrite() returns Error? {
         test:assertFail(msg = result1.message());
     }
     var result2 = fileReadLinesAsStream(filePath);
-    if (result2 is stream<string, error?>) {
+    if (result2 is stream<string, Error?>) {
         int i = 0;
         error? e = result2.forEach(function(string val) {
                                test:assertEquals(val, content1[i]);
@@ -558,7 +558,7 @@ function testFileWriteLinesFromStreamWithOverwrite() returns Error? {
         test:assertFail(msg = result3.message());
     }
     var result4 = fileReadLinesAsStream(filePath);
-    if (result4 is stream<string, error?>) {
+    if (result4 is stream<string, Error?>) {
         int i = 0;
         error? e = result4.forEach(function(string val) {
                                test:assertEquals(val, content2[i]);
@@ -579,8 +579,8 @@ function testFileWriteLinesFromStreamWithAppend() returns Error? {
     string filePath = TEMP_DIR + "stringContentAsLines2.txt";
     string resourceFilePath1 = TEST_RESOURCE_PATH + "stringResourceFile1.txt";
     string resourceFilePath2 = TEST_RESOURCE_PATH + "stringResourceFile2.txt";
-    stream<string, Error> lineStream1 = check fileReadLinesAsStream(resourceFilePath1);
-    stream<string, Error> lineStream2 = check fileReadLinesAsStream(resourceFilePath2);
+    stream<string, Error?> lineStream1 = check fileReadLinesAsStream(resourceFilePath1);
+    stream<string, Error?> lineStream2 = check fileReadLinesAsStream(resourceFilePath2);
     string[] initialContent = ["The Big Bang Theory", "F.R.I.E.N.D.S", "Game of Thrones", "LOST"];
     string[] expectedLines = ["The Big Bang Theory", "F.R.I.E.N.D.S", "Game of Thrones", "LOST",
                                 "WSO2", "Google", "Microsoft", "Facebook", "Apple"];
@@ -590,7 +590,7 @@ function testFileWriteLinesFromStreamWithAppend() returns Error? {
         test:assertFail(msg = result1.message());
     }
     var result2 = fileReadLinesAsStream(filePath);
-    if (result2 is stream<string, error?>) {
+    if (result2 is stream<string, Error?>) {
         int i = 0;
         error? e = result2.forEach(function(string val) {
                                test:assertEquals(val, initialContent[i]);
@@ -611,7 +611,7 @@ function testFileWriteLinesFromStreamWithAppend() returns Error? {
         test:assertFail(msg = result3.message());
     }
     var result4 = fileReadLinesAsStream(filePath);
-    if (result4 is stream<string, error?>) {
+    if (result4 is stream<string, Error?>) {
         int i = 0;
         error? e = result4.forEach(function(string val) {
                                test:assertEquals(val, expectedLines[i]);

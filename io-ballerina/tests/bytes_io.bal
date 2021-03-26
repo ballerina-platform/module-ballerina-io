@@ -114,7 +114,7 @@ isolated function testFileWriteBytesFromStream() returns Error? {
     string resourceFilePath = TEMP_DIR + "bytesResourceFile.txt";
     string content = "Sheldon Cooper";
     check fileWriteString(resourceFilePath, content);
-    stream<Block, Error> bytesStream = check fileReadBlocksAsStream(resourceFilePath, 2);
+    stream<Block, Error?> bytesStream = check fileReadBlocksAsStream(resourceFilePath, 2);
     var result = fileWriteBlocksFromStream(filePath, bytesStream);
     if (result is Error) {
         test:assertFail(msg = result.message());
@@ -127,7 +127,7 @@ function testFileReadBytesAsStream() {
     var result = fileReadBlocksAsStream(filePath, 2);
     string expectedString = "Sheldon Cooper";
     byte[] byteArr = [];
-    if (result is stream<Block, Error>) {
+    if (result is stream<Block, Error?>) {
         error? e = result.forEach(function(Block val) {
             foreach byte b in val {
                 byteArr.push(b);
@@ -184,7 +184,7 @@ isolated function testFileChannelWriteBytesFromStream() returns Error? {
     string resourceFilePath = TEMP_DIR + "bytesResourceFile.txt";
     string content = "Sheldon Cooper";
     check fileWriteString(resourceFilePath, content);
-    stream<Block, Error> bytesStream = check fileReadBlocksAsStream(resourceFilePath, 2);
+    stream<Block, Error?> bytesStream = check fileReadBlocksAsStream(resourceFilePath, 2);
     var fileOpenResult = openWritableFile(filePath);
     if (fileOpenResult is WritableByteChannel) {
         var result = channelWriteBlocksFromStream(fileOpenResult, bytesStream);
@@ -205,7 +205,7 @@ function testFileChannelReadBytesAsStream() {
     var fileOpenResult = openReadableFile(filePath);
     if (fileOpenResult is ReadableByteChannel) {
         var result = channelReadBlocksAsStream(fileOpenResult, 2);
-        if (result is stream<Block, Error>) {
+        if (result is stream<Block, Error?>) {
             error? e = result.forEach(function(Block val) {
                                    foreach byte b in val {
                                        byteArr.push(b);
@@ -314,8 +314,8 @@ function testFileWriteBytesFromStreamWithOverride() returns Error? {
     string content2 = "open source programming language";
     check fileWriteString(resourceFilePath1, content1);
     check fileWriteString(resourceFilePath2, content2);
-    stream<Block, Error> bytesStream1 = check fileReadBlocksAsStream(resourceFilePath1, 2);
-    stream<Block, Error> bytesStream2 = check fileReadBlocksAsStream(resourceFilePath2, 2);
+    stream<Block, Error?> bytesStream1 = check fileReadBlocksAsStream(resourceFilePath1, 2);
+    stream<Block, Error?> bytesStream2 = check fileReadBlocksAsStream(resourceFilePath2, 2);
 
     // Check content 01
     var result1 = fileWriteBlocksFromStream(filePath, bytesStream1);
@@ -324,7 +324,7 @@ function testFileWriteBytesFromStreamWithOverride() returns Error? {
     }
     var result2 = fileReadBlocksAsStream(filePath, 2);
     byte[] byteArr1 = [];
-    if (result2 is stream<Block, Error>) {
+    if (result2 is stream<Block, Error?>) {
         error? e = result2.forEach(function(Block val) {
             foreach byte b in val {
                 byteArr1.push(b);
@@ -347,7 +347,7 @@ function testFileWriteBytesFromStreamWithOverride() returns Error? {
     }
     var result4 = fileReadBlocksAsStream(filePath, 2);
     byte[] byteArr2 = [];
-    if (result4 is stream<Block, Error>) {
+    if (result4 is stream<Block, Error?>) {
         error? e = result4.forEach(function(Block val) {
             foreach byte b in val {
                 byteArr2.push(b);
@@ -373,8 +373,8 @@ function testFileWriteBytesFromStreamWithAppend() returns Error? {
     string content2 = "open source programming language";
     check fileWriteString(resourceFilePath1, content1);
     check fileWriteString(resourceFilePath2, content2);
-    stream<Block, Error> bytesStream1 = check fileReadBlocksAsStream(resourceFilePath1, 2);
-    stream<Block, Error> bytesStream2 = check fileReadBlocksAsStream(resourceFilePath2, 2);
+    stream<Block, Error?> bytesStream1 = check fileReadBlocksAsStream(resourceFilePath1, 2);
+    stream<Block, Error?> bytesStream2 = check fileReadBlocksAsStream(resourceFilePath2, 2);
 
     // Check content 01
     var result1 = fileWriteBlocksFromStream(filePath, bytesStream1);
@@ -383,7 +383,7 @@ function testFileWriteBytesFromStreamWithAppend() returns Error? {
     }
     var result2 = fileReadBlocksAsStream(filePath, 2);
     byte[] byteArr1 = [];
-    if (result2 is stream<Block, Error>) {
+    if (result2 is stream<Block, Error?>) {
         error? e = result2.forEach(function(Block val) {
             foreach byte b in val {
                 byteArr1.push(b);
@@ -406,7 +406,7 @@ function testFileWriteBytesFromStreamWithAppend() returns Error? {
     }
     var result4 = fileReadBlocksAsStream(filePath, 2);
     byte[] byteArr2 = [];
-    if (result4 is stream<Block, Error>) {
+    if (result4 is stream<Block, Error?>) {
         error? e = result4.forEach(function(Block val) {
             foreach byte b in val {
                 byteArr2.push(b);
