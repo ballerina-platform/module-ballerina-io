@@ -27,11 +27,11 @@ public isolated function fileReadCsv(@untainted string path, int skipHeaders = 0
 
 # Read file content as a CSV.
 # ```ballerina
-# stream<string[], io:Error>|io:Error content = io:fileReadCsvAsStream("./resources/myfile.csv");
+# stream<string[], io:Error?>|io:Error content = io:fileReadCsvAsStream("./resources/myfile.csv");
 # ```
 # + path - The CSV file path
 # + return - The entire CSV content in the channel a stream of string arrays or an `io:Error`
-public isolated function fileReadCsvAsStream(@untainted string path) returns @tainted stream<string[], Error>|Error {
+public isolated function fileReadCsvAsStream(@untainted string path) returns @tainted stream<string[], Error?>|Error {
     return (check openReadableCsvFile(path)).csvStream();
 }
 
@@ -52,14 +52,14 @@ Error? {
 # Write CSV record stream to a file.
 # ```ballerina
 # string[][] content = [["Anne", "Johnson", "SE"], ["John", "Cameron", "QA"]];
-# stream<string[], io:Error> recordStream = content.toStream();
+# stream<string[], io:Error?> recordStream = content.toStream();
 # io:Error? result = io:fileWriteCsvFromStream("./resources/myfile.csv", recordStream);
 # ```
 # + path - The CSV file path
 # + content - A CSV record stream to be written
 # + option - To indicate whether to overwrite or append the given content
 # + return - Either an `io:Error` or the null `()` value when the writing was successful
-public isolated function fileWriteCsvFromStream(@untainted string path, stream<string[], Error> content, 
+public isolated function fileWriteCsvFromStream(@untainted string path, stream<string[], Error?> content,
                                                 FileWriteOption option = OVERWRITE) returns Error? {
     return channelWriteCsvFromStream(check openWritableCsvFile(path, option = option), content);
 }
