@@ -109,8 +109,8 @@ isolated function testFileReadBytes() {
 }
 
 @test:Config {}
-isolated function testFileWriteBytesFromStream() returns Error? {
-    string filePath = TEMP_DIR + "bytesFile3.txt";
+isolated function testFileWriteBytesFromStreamUsingIntermediateFile() returns Error? {
+    string filePath = TEMP_DIR + "bytesFile3_A.txt";
     string resourceFilePath = TEMP_DIR + "bytesResourceFile.txt";
     string content = "Sheldon Cooper";
     check fileWriteString(resourceFilePath, content);
@@ -121,9 +121,48 @@ isolated function testFileWriteBytesFromStream() returns Error? {
     }
 }
 
+@test:Config {dependsOn: [testFileWriteBytesFromStreamUsingIntermediateFile]}
+function testFileReadBytesAsStreamUsingIntermediateFile() {
+    string filePath = TEMP_DIR + "bytesFile3_A.txt";
+    var result = fileReadBlocksAsStream(filePath, 2);
+    string expectedString = "Sheldon Cooper";
+    byte[] byteArr = [];
+    if (result is stream<Block, Error?>) {
+        error? e = result.forEach(function(Block val) {
+            foreach byte b in val {
+                byteArr.push(b);
+            }
+        });
+        string|error returnedString = langstring:fromBytes(byteArr);
+        if (returnedString is string) {
+            test:assertEquals(returnedString, expectedString);
+        } else {
+            test:assertFail(msg = returnedString.message());
+        }
+    } else {
+        test:assertFail(msg = result.message());
+    }
+}
+
+@test:Config {}
+function testFileWriteBytesFromStream() {
+    string filePath = TEMP_DIR + "bytesFile3_B.txt";
+    string[] stringContent = ["Sheldon", " ", "Cooper"];
+    byte[][] byteContent = [];
+    int i = 0;
+    foreach string s in stringContent {
+        byteContent[i] = s.toBytes();
+        i += 1;
+    }
+    var result = fileWriteBlocksFromStream(filePath, byteContent.toStream());
+    if (result is Error) {
+        test:assertFail(msg = result.message());
+    }
+}
+
 @test:Config {dependsOn: [testFileWriteBytesFromStream]}
 function testFileReadBytesAsStream() {
-    string filePath = TEMP_DIR + "bytesFile3.txt";
+    string filePath = TEMP_DIR + "bytesFile3_B.txt";
     var result = fileReadBlocksAsStream(filePath, 2);
     string expectedString = "Sheldon Cooper";
     byte[] byteArr = [];
@@ -306,7 +345,7 @@ isolated function testFileWriteBytesWithAppend() {
 }
 
 @test:Config {}
-function testFileWriteBytesFromStreamWithOverride() returns Error? {
+function testFileWriteBytesFromStreamWithOverrideUsingIntermediateFile() returns Error? {
     string filePath = TEMP_DIR + "bytesFile8.txt";
     string resourceFilePath1 = TEMP_DIR + "bytesResourceFile1.txt";
     string resourceFilePath2 = TEMP_DIR + "bytesResourceFile2.txt";
@@ -365,7 +404,7 @@ function testFileWriteBytesFromStreamWithOverride() returns Error? {
 }
 
 @test:Config {}
-function testFileWriteBytesFromStreamWithAppend() returns Error? {
+function testFileWriteBytesFromStreamWithAppendUsingIntermediateFile() returns Error? {
     string filePath = TEMP_DIR + "bytesFile8.txt";
     string resourceFilePath1 = TEMP_DIR + "bytesResourceFile3.txt";
     string resourceFilePath2 = TEMP_DIR + "bytesResourceFile4.txt";
@@ -415,6 +454,138 @@ function testFileWriteBytesFromStreamWithAppend() returns Error? {
         string|error returnedString = langstring:fromBytes(byteArr2);
         if (returnedString is string) {
             test:assertEquals(returnedString, (content1 + content2));
+        } else {
+            test:assertFail(msg = returnedString.message());
+        }
+    } else {
+        test:assertFail(msg = result4.message());
+    }
+}
+
+@test:Config {}
+function testFileWriteBytesFromStreamWithOverride() {
+    string filePath = TEMP_DIR + "bytesFile9.txt";
+    string[] content1 = ["Ballerina ", "is ", "an "];
+    string[] content2 = ["open ", "source ", "programming ", "language"];
+    string expectedContent1 = "Ballerina is an ";
+    string expectedContent2 = "open source programming language";
+    byte[][] byteContent1 = [];
+    byte[][] byteContent2 = [];
+    int i = 0;
+    foreach string s in content1 {
+        byteContent1[i] = s.toBytes();
+        i += 1;
+    }
+    i = 0;
+    foreach string s in content2 {
+        byteContent2[i] = s.toBytes();
+        i += 1;
+    }
+    // Check content 01
+    var result1 = fileWriteBlocksFromStream(filePath, byteContent1.toStream());
+    if (result1 is Error) {
+        test:assertFail(msg = result1.message());
+    }
+    var result2 = fileReadBlocksAsStream(filePath, 2);
+    byte[] byteArr1 = [];
+    if (result2 is stream<Block, Error?>) {
+        error? e = result2.forEach(function(Block val) {
+            foreach byte b in val {
+                byteArr1.push(b);
+            }
+        });
+        string|error returnedString = langstring:fromBytes(byteArr1);
+        if (returnedString is string) {
+            test:assertEquals(returnedString, expectedContent1);
+        } else {
+            test:assertFail(msg = returnedString.message());
+        }
+    } else {
+        test:assertFail(msg = result2.message());
+    }
+
+    // Check content 02
+    var result3 = fileWriteBlocksFromStream(filePath, byteContent2.toStream());
+    if (result3 is Error) {
+        test:assertFail(msg = result3.message());
+    }
+    var result4 = fileReadBlocksAsStream(filePath, 2);
+    byte[] byteArr2 = [];
+    if (result4 is stream<Block, Error?>) {
+        error? e = result4.forEach(function(Block val) {
+            foreach byte b in val {
+                byteArr2.push(b);
+            }
+        });
+        string|error returnedString = langstring:fromBytes(byteArr2);
+        if (returnedString is string) {
+            test:assertEquals(returnedString, expectedContent2);
+        } else {
+            test:assertFail(msg = returnedString.message());
+        }
+    } else {
+        test:assertFail(msg = result4.message());
+    }
+}
+
+@test:Config {}
+function testFileWriteBytesFromStreamWithAppend() {
+    string filePath = TEMP_DIR + "bytesFile9.txt";
+    string[] content1 = ["Ballerina ", "is ", "an "];
+    string[] content2 = ["open ", "source ", "programming ", "language"];
+    string expectedContent1 = "Ballerina is an ";
+    string expectedContent2 = "Ballerina is an open source programming language";
+    byte[][] byteContent1 = [];
+    byte[][] byteContent2 = [];
+    int i = 0;
+    foreach string s in content1 {
+        byteContent1[i] = s.toBytes();
+        i += 1;
+    }
+    i = 0;
+    foreach string s in content2 {
+        byteContent2[i] = s.toBytes();
+        i += 1;
+    }
+    // Check content 01
+    var result1 = fileWriteBlocksFromStream(filePath, byteContent1.toStream());
+    if (result1 is Error) {
+        test:assertFail(msg = result1.message());
+    }
+    var result2 = fileReadBlocksAsStream(filePath, 2);
+    byte[] byteArr1 = [];
+    if (result2 is stream<Block, Error?>) {
+        error? e = result2.forEach(function(Block val) {
+            foreach byte b in val {
+                byteArr1.push(b);
+            }
+        });
+        string|error returnedString = langstring:fromBytes(byteArr1);
+        if (returnedString is string) {
+            test:assertEquals(returnedString, expectedContent1);
+        } else {
+            test:assertFail(msg = returnedString.message());
+        }
+    } else {
+        test:assertFail(msg = result2.message());
+    }
+
+    // Check content 01 + 02
+    var result3 = fileWriteBlocksFromStream(filePath, byteContent2.toStream(), APPEND);
+    if (result3 is Error) {
+        test:assertFail(msg = result3.message());
+    }
+    var result4 = fileReadBlocksAsStream(filePath, 2);
+    byte[] byteArr2 = [];
+    if (result4 is stream<Block, Error?>) {
+        error? e = result4.forEach(function(Block val) {
+            foreach byte b in val {
+                byteArr2.push(b);
+            }
+        });
+        string|error returnedString = langstring:fromBytes(byteArr2);
+        if (returnedString is string) {
+            test:assertEquals(returnedString, expectedContent2);
         } else {
             test:assertFail(msg = returnedString.message());
         }

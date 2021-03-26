@@ -489,8 +489,8 @@ isolated function testFileWriteLinesWithAppend() {
 }
 
 @test:Config {}
-isolated function testFileWriteLinesFromStream() returns Error? {
-    string filePath = TEMP_DIR + "stringContentAsLines2.txt";
+isolated function testFileWriteLinesFromStreamUsingIntermediateFile() returns Error? {
+    string filePath = TEMP_DIR + "stringContentAsLines2_A.txt";
     string resourceFilePath = TEST_RESOURCE_PATH + "stringResourceFile1.txt";
     stream<string, Error?> lineStream = check fileReadLinesAsStream(resourceFilePath);
 
@@ -500,9 +500,9 @@ isolated function testFileWriteLinesFromStream() returns Error? {
     }
 }
 
-@test:Config {dependsOn: [testFileWriteLinesFromStream]}
-function testFileReadLinesAsStream() {
-    string filePath = TEMP_DIR + "stringContentAsLines2.txt";
+@test:Config {dependsOn: [testFileWriteLinesFromStreamUsingIntermediateFile]}
+function testFileReadLinesAsStreamUsingIntermediateFile() {
+    string filePath = TEMP_DIR + "stringContentAsLines2_A.txt";
     string[] expectedLines = ["The Big Bang Theory", "F.R.I.E.N.D.S", "Game of Thrones", "LOST"];
     var result = fileReadLinesAsStream(filePath);
     if (result is stream<string, error?>) {
@@ -522,8 +522,39 @@ function testFileReadLinesAsStream() {
 }
 
 @test:Config {}
-function testFileWriteLinesFromStreamWithOverwrite() returns Error? {
-    string filePath = TEMP_DIR + "stringContentAsLines2.txt";
+function testFileWriteLinesFromStream() {
+    string filePath = TEMP_DIR + "stringContentAsLines2_B.txt";
+    string[] content = ["The Big Bang Theory", "F.R.I.E.N.D.S", "Game of Thrones", "LOST"];
+    var result = fileWriteLinesFromStream(filePath, content.toStream());
+    if (result is Error) {
+        test:assertFail(msg = result.message());
+    }
+}
+
+@test:Config {dependsOn: [testFileWriteLinesFromStream]}
+function testFileReadLinesAsStream() {
+    string filePath = TEMP_DIR + "stringContentAsLines2_B.txt";
+    string[] expectedLines = ["The Big Bang Theory", "F.R.I.E.N.D.S", "Game of Thrones", "LOST"];
+    var result = fileReadLinesAsStream(filePath);
+    if (result is stream<string, Error?>) {
+        int i = 0;
+        error? e = result.forEach(function(string val) {
+                               test:assertEquals(val, expectedLines[i]);
+                               i += 1;
+                           });
+
+        if (e is error) {
+            test:assertFail(msg = e.message());
+        }
+        test:assertEquals(i, 4);
+    } else {
+        test:assertFail(msg = result.message());
+    }
+}
+
+@test:Config {}
+function testFileWriteLinesFromStreamWithOverwriteUsingIntermediateFile() returns Error? {
+    string filePath = TEMP_DIR + "stringContentAsLines2_A.txt";
     string resourceFilePath1 = TEST_RESOURCE_PATH + "stringResourceFile1.txt";
     string resourceFilePath2 = TEST_RESOURCE_PATH + "stringResourceFile2.txt";
     stream<string, Error?> lineStream1 = check fileReadLinesAsStream(resourceFilePath1);
@@ -575,8 +606,8 @@ function testFileWriteLinesFromStreamWithOverwrite() returns Error? {
 }
 
 @test:Config {}
-function testFileWriteLinesFromStreamWithAppend() returns Error? {
-    string filePath = TEMP_DIR + "stringContentAsLines2.txt";
+function testFileWriteLinesFromStreamWithAppendUsingIntermediateFile() returns Error? {
+    string filePath = TEMP_DIR + "stringContentAsLines2_A.txt";
     string resourceFilePath1 = TEST_RESOURCE_PATH + "stringResourceFile1.txt";
     string resourceFilePath2 = TEST_RESOURCE_PATH + "stringResourceFile2.txt";
     stream<string, Error?> lineStream1 = check fileReadLinesAsStream(resourceFilePath1);
@@ -612,6 +643,105 @@ function testFileWriteLinesFromStreamWithAppend() returns Error? {
     }
     var result4 = fileReadLinesAsStream(filePath);
     if (result4 is stream<string, Error?>) {
+        int i = 0;
+        error? e = result4.forEach(function(string val) {
+                               test:assertEquals(val, expectedLines[i]);
+                               i += 1;
+                           });
+
+        if (e is error) {
+            test:assertFail(msg = e.message());
+        }
+        test:assertEquals(i, 9);
+    } else {
+        test:assertFail(msg = result4.message());
+    }
+}
+
+@test:Config {}
+function testFileWriteLinesFromStreamWithOverwrite() {
+    string filePath = TEMP_DIR + "stringContentAsLines2_B.txt";
+    string[] content1 = ["The Big Bang Theory", "F.R.I.E.N.D.S", "Game of Thrones", "LOST"];
+    string[] content2 = ["WSO2", "Google", "Microsoft", "Facebook", "Apple"];
+
+    // Check content 01
+    var result1 = fileWriteLinesFromStream(filePath, content1.toStream());
+    if (result1 is Error) {
+        test:assertFail(msg = result1.message());
+    }
+    var result2 = fileReadLinesAsStream(filePath);
+    if (result2 is stream<string, error?>) {
+        int i = 0;
+        error? e = result2.forEach(function(string val) {
+                               test:assertEquals(val, content1[i]);
+                               i += 1;
+                           });
+
+        if (e is error) {
+            test:assertFail(msg = e.message());
+        }
+        test:assertEquals(i, 4);
+    } else {
+        test:assertFail(msg = result2.message());
+    }
+
+    // Check content 02
+    var result3 = fileWriteLinesFromStream(filePath, content2.toStream());
+    if (result3 is Error) {
+        test:assertFail(msg = result3.message());
+    }
+    var result4 = fileReadLinesAsStream(filePath);
+    if (result4 is stream<string, error?>) {
+        int i = 0;
+        error? e = result4.forEach(function(string val) {
+                               test:assertEquals(val, content2[i]);
+                               i += 1;
+                           });
+
+        if (e is error) {
+            test:assertFail(msg = e.message());
+        }
+        test:assertEquals(i, 5);
+    } else {
+        test:assertFail(msg = result4.message());
+    }
+}
+
+@test:Config {}
+function testFileWriteLinesFromStreamWithAppend() {
+    string filePath = TEMP_DIR + "stringContentAsLines2_B.txt";
+    string[] content1 = ["The Big Bang Theory", "F.R.I.E.N.D.S", "Game of Thrones", "LOST"];
+    string[] content2 = ["WSO2", "Google", "Microsoft", "Facebook", "Apple"];
+    string[] expectedLines = ["The Big Bang Theory", "F.R.I.E.N.D.S", "Game of Thrones", "LOST",
+                                "WSO2", "Google", "Microsoft", "Facebook", "Apple"];
+    // Check content 01
+    var result1 = fileWriteLinesFromStream(filePath, content1.toStream());
+    if (result1 is Error) {
+        test:assertFail(msg = result1.message());
+    }
+    var result2 = fileReadLinesAsStream(filePath);
+    if (result2 is stream<string, error?>) {
+        int i = 0;
+        error? e = result2.forEach(function(string val) {
+                               test:assertEquals(val, content1[i]);
+                               i += 1;
+                           });
+
+        if (e is error) {
+            test:assertFail(msg = e.message());
+        }
+        test:assertEquals(i, 4);
+    } else {
+        test:assertFail(msg = result2.message());
+    }
+
+    // Check content 01 + 02
+    var result3 = fileWriteLinesFromStream(filePath, content2.toStream(), APPEND);
+    if (result3 is Error) {
+        test:assertFail(msg = result3.message());
+    }
+    var result4 = fileReadLinesAsStream(filePath);
+    if (result4 is stream<string, error?>) {
         int i = 0;
         error? e = result4.forEach(function(string val) {
                                test:assertEquals(val, expectedLines[i]);
