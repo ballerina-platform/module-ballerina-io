@@ -18,7 +18,7 @@ import ballerina/jballerina.java;
 import ballerina/test;
 
 @test:Config {}
-function testReadCharacters() {
+isolated function testReadCharacters() {
     string filePath = RESOURCES_BASE_PATH + "datafiles/io/text/utf8file.txt";
     string expectedCharacters = "aaa";
     int numberOfCharacters = 3;
@@ -59,7 +59,7 @@ function testReadCharacters() {
 }
 
 @test:Config {}
-function testReadAllCharacters() {
+isolated function testReadAllCharacters() {
     string filePath = RESOURCES_BASE_PATH + "datafiles/io/text/fileThatExceeds2MB.txt";
     string result = "";
     int expectedNumberOfCharsInWindows = 2297329;
@@ -100,7 +100,7 @@ function testReadAllCharacters() {
 }
 
 @test:Config {}
-function testReadAllCharactersFromEmptyFile() {
+isolated function testReadAllCharactersFromEmptyFile() {
     string filePath = RESOURCES_BASE_PATH + "datafiles/io/text/emptyFile.txt";
     string result = "";
     int expectedNumberOfCharacters = 0;
@@ -136,7 +136,7 @@ function testReadAllCharactersFromEmptyFile() {
 }
 
 @test:Config {}
-function testWriteCharacters() {
+isolated function testWriteCharacters() {
     string filePath = TEMP_DIR + "characterFile.txt";
     string content = "The quick brown fox jumps over the lazy dog";
 
@@ -158,7 +158,7 @@ function testWriteCharacters() {
 }
 
 @test:Config {dependsOn: [testWriteCharacters]}
-function testAppendCharacters() {
+isolated function testAppendCharacters() {
     string filePath = TEMP_DIR + "appendCharacterFile.txt";
     string initialContent = "Hi, I'm the initial content. ";
     string appendingContent = "Hi, I was appended later. ";
@@ -203,7 +203,7 @@ function testAppendCharacters() {
 }
 
 @test:Config {}
-function testReadAvailableProperty() {
+isolated function testReadAvailableProperty() {
     string filePath = RESOURCES_BASE_PATH + "datafiles/io/text/person.properties";
     string expectedProperty = "John Smith";
     string key = "name";
@@ -228,7 +228,7 @@ function testReadAvailableProperty() {
 }
 
 @test:Config {}
-function testAllProperties() {
+isolated function testAllProperties() {
     string filePath = RESOURCES_BASE_PATH + "datafiles/io/text/person.properties";
 
     var byteChannel = openReadableFile(filePath);
@@ -249,7 +249,7 @@ function testAllProperties() {
 }
 
 @test:Config {}
-function testReadUnavailableProperty() {
+isolated function testReadUnavailableProperty() {
     string filePath = RESOURCES_BASE_PATH + "datafiles/io/text/person.properties";
     string defaultValue = "Default";
 
@@ -273,7 +273,7 @@ function testReadUnavailableProperty() {
 }
 
 @test:Config {}
-function testWriteProperties() {
+isolated function testWriteProperties() {
     string filePath = TEMP_DIR + "/tmp_person.properties";
     map<string> properties = {
         name: "Anna Johnson",
@@ -298,7 +298,7 @@ function testWriteProperties() {
 }
 
 @test:Config {}
-function testFileWriteString() {
+isolated function testFileWriteString() {
     string filePath = TEMP_DIR + "stringContent1.txt";
     string content = "The Big Bang Theory";
     var result = fileWriteString(filePath, content);
@@ -308,7 +308,7 @@ function testFileWriteString() {
 }
 
 @test:Config {dependsOn: [testFileWriteString]}
-function testFileReadString() {
+isolated function testFileReadString() {
     string filePath = TEMP_DIR + "stringContent1.txt";
     string expectedString = "The Big Bang Theory";
     var result = fileReadString(filePath);
@@ -320,7 +320,7 @@ function testFileReadString() {
 }
 
 @test:Config {}
-function testFileWriteStringWithOverwrite() {
+isolated function testFileWriteStringWithOverwrite() {
     string filePath = TEMP_DIR + "stringContent2.txt";
     string content1 = "Ballerina is an open source programming language and " +
     "platform for cloud-era application programmers to easily write software that just works.";
@@ -352,7 +352,7 @@ function testFileWriteStringWithOverwrite() {
 }
 
 @test:Config {}
-function testFileWriteStringWithAppend() {
+isolated function testFileWriteStringWithAppend() {
     string filePath = TEMP_DIR + "stringContent3.txt";
     string content1 = "Ballerina is an open source programming language and " +
     "platform for cloud-era application programmers to easily write software that just works.";
@@ -384,7 +384,7 @@ function testFileWriteStringWithAppend() {
 }
 
 @test:Config {}
-function testFileWriteLines() {
+isolated function testFileWriteLines() {
     string filePath = TEMP_DIR + "stringContentAsLines1.txt";
     string[] content = ["The Big Bang Theory", "F.R.I.E.N.D.S", "Game of Thrones", "LOST"];
     var result = fileWriteLines(filePath, content);
@@ -394,7 +394,7 @@ function testFileWriteLines() {
 }
 
 @test:Config {dependsOn: [testFileWriteLines]}
-function testFileReadLines() {
+isolated function testFileReadLines() {
     string filePath = TEMP_DIR + "stringContentAsLines1.txt";
     string[] expectedLines = ["The Big Bang Theory", "F.R.I.E.N.D.S", "Game of Thrones", "LOST"];
     var result = fileReadLines(filePath);
@@ -410,7 +410,7 @@ function testFileReadLines() {
 }
 
 @test:Config {}
-function testFileWriteLinesWithOverwrite() {
+isolated function testFileWriteLinesWithOverwrite() {
     string filePath = TEMP_DIR + "stringContentAsLines2.txt";
     string[] content1 = ["The Big Bang Theory", "F.R.I.E.N.D.S", "Game of Thrones", "LOST"];
     string[] content2 = ["WSO2", "Google", "Microsoft", "Facebook", "Apple"];
@@ -449,7 +449,7 @@ function testFileWriteLinesWithOverwrite() {
 }
 
 @test:Config {}
-function testFileWriteLinesWithAppend() {
+isolated function testFileWriteLinesWithAppend() {
     string filePath = TEMP_DIR + "stringContentAsLines2.txt";
     string[] content1 = ["The Big Bang Theory", "F.R.I.E.N.D.S", "Game of Thrones", "LOST"];
     string[] content2 = ["WSO2", "Google", "Microsoft", "Facebook", "Apple"];
@@ -489,7 +489,7 @@ function testFileWriteLinesWithAppend() {
 }
 
 @test:Config {}
-function testFileWriteLinesFromStream() returns Error? {
+isolated function testFileWriteLinesFromStream() returns Error? {
     string filePath = TEMP_DIR + "stringContentAsLines2.txt";
     string resourceFilePath = TEST_RESOURCE_PATH + "stringResourceFile1.txt";
     stream<string, Error> lineStream = check fileReadLinesAsStream(resourceFilePath);
@@ -628,7 +628,7 @@ function testFileWriteLinesFromStreamWithAppend() returns Error? {
 }
 
 @test:Config {}
-function testFileChannelWriteStringWithByteChannel() {
+isolated function testFileChannelWriteStringWithByteChannel() {
     string filePath = TEMP_DIR + "stringContent3.txt";
     string content = "The Big Bang Theory";
 
@@ -644,7 +644,7 @@ function testFileChannelWriteStringWithByteChannel() {
 }
 
 @test:Config {dependsOn: [testFileChannelWriteStringWithByteChannel]}
-function testFileChannelReadStringWithByteChannel() {
+isolated function testFileChannelReadStringWithByteChannel() {
     string filePath = TEMP_DIR + "stringContent3.txt";
     string expectedString = "The Big Bang Theory";
 
@@ -662,7 +662,7 @@ function testFileChannelReadStringWithByteChannel() {
 }
 
 @test:Config {}
-function testFileChannelWriteLinesWithByteChannel() {
+isolated function testFileChannelWriteLinesWithByteChannel() {
     string filePath = TEMP_DIR + "stringContent3.txt";
     string content = "The Big Bang Theory";
 
@@ -678,7 +678,7 @@ function testFileChannelWriteLinesWithByteChannel() {
 }
 
 @test:Config {dependsOn: [testFileChannelWriteLinesWithByteChannel]}
-function testFileChannelReadLinesWithByteChannel() {
+isolated function testFileChannelReadLinesWithByteChannel() {
     string filePath = TEMP_DIR + "stringContent3.txt";
     string expectedString = "The Big Bang Theory";
 
@@ -695,7 +695,7 @@ function testFileChannelReadLinesWithByteChannel() {
     }
 }
 
-function isWindowsEnvironment() returns boolean = @java:Method {
+isolated function isWindowsEnvironment() returns boolean = @java:Method {
     name: "isWindowsEnvironment",
     'class: "org.ballerinalang.stdlib.io.testutils.EnvironmentTestUtils"
 } external;

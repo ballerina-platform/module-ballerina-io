@@ -27,11 +27,11 @@ Error {
             results[i] = records;
             i += 1;
         } else if (records is Error) {
-            var closeResult = csvChannel.close();
+            Error? closeResult = csvChannel.close();
             return records;
         }
     }
-    var closeResult = csvChannel.close();
+    Error? closeResult = csvChannel.close();
     return results;
 }
 
@@ -45,7 +45,7 @@ isolated function channelWriteCsv(WritableChannel writableChannel, string[][] co
     foreach string[] r in content {
         var writeResult = csvChannel.write(r);
         if (writeResult is Error) {
-            var closeResult = csvChannel.close();
+            Error? closeResult = csvChannel.close();
             return writeResult;
         }
     }
@@ -57,7 +57,7 @@ Error? {
     WritableCSVChannel csvChannel = check getWritableCSVChannel(writableChannel);
     record {| string[] value; |}|Error? csvRecord = csvStream.next();
     while (csvRecord is record {| string[] value; |}) {
-        var writeResult = csvChannel.write(csvRecord.value);
+        Error? writeResult = csvChannel.write(csvRecord.value);
         csvRecord = csvStream.next();
     }
     var closeResult = csvChannel.close();

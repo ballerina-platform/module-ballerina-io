@@ -16,7 +16,7 @@
 import ballerina/test;
 
 @test:Config {}
-function testWriteXml() {
+isolated function testWriteXml() {
     string filePath = TEMP_DIR + "xmlCharsFile1.xml";
     xml content = xml `<CATALOG>
                        <CD>
@@ -62,7 +62,7 @@ function testWriteXml() {
 }
 
 @test:Config {dependsOn: [testWriteXml]}
-function testReadXml() {
+isolated function testReadXml() {
     string filePath = TEMP_DIR + "xmlCharsFile1.xml";
     xml expectedXml = xml `<CATALOG>
                        <CD>
@@ -110,7 +110,7 @@ function testReadXml() {
 }
 
 @test:Config {}
-function testFileWriteXml() {
+isolated function testFileWriteXml() {
     string filePath = TEMP_DIR + "xmlCharsFile2.xml";
     xml content = xml `<CATALOG>
                        <CD>
@@ -145,7 +145,7 @@ function testFileWriteXml() {
 }
 
 @test:Config {dependsOn: [testFileWriteXml]}
-function testFileReadXml() {
+isolated function testFileReadXml() {
     string filePath = TEMP_DIR + "xmlCharsFile2.xml";
     xml expectedXml = xml `<CATALOG>
                        <CD>
@@ -182,7 +182,7 @@ function testFileReadXml() {
 }
 
 @test:Config {}
-function testFileWriteXmlWithOverwrite() {
+isolated function testFileWriteXmlWithOverwrite() {
     string filePath = TEMP_DIR + "xmlCharsFile3.xml";
     xml content1 = xml `<CATALOG>
                        <CD>
@@ -237,7 +237,7 @@ function testFileWriteXmlWithOverwrite() {
 }
 
 @test:Config {}
-function testFileWriteDocTypedXml() {
+isolated function testFileWriteDocTypedXml() {
     string filePath = TEMP_DIR + "xmlCharsFile4.xml";
     string resultFilePath = "tests/resources/expectedXmlCharsFile4.xml";
     string originalFilePath = "tests/resources/originalXmlContent.xml";
@@ -254,7 +254,7 @@ function testFileWriteDocTypedXml() {
 }
 
 @test:Config {}
-function testFileWriteDocTypedWithMultiRoots() {
+isolated function testFileWriteDocTypedWithMultiRoots() {
     string filePath = TEMP_DIR + "xmlCharsFile4.xml";
     string originalFilePath = "tests/resources/originalXmlContent.xml";
 
@@ -270,7 +270,7 @@ function testFileWriteDocTypedWithMultiRoots() {
 }
 
 @test:Config {}
-function testFileWriteDocTypedWithAppend() {
+isolated function testFileWriteDocTypedWithAppend() {
     string filePath = TEMP_DIR + "xmlCharsFile4.xml";
     string originalFilePath = "tests/resources/originalXmlContent.xml";
 
@@ -284,7 +284,7 @@ function testFileWriteDocTypedWithAppend() {
 }
 
 @test:Config {}
-function testFileAppendDocTypedXml() {
+isolated function testFileAppendDocTypedXml() {
     string filePath = TEMP_DIR + "xmlCharsFile5.xml";
     string originalFilePath = "tests/resources/originalXmlContent.xml";
     string resultFilePath = "tests/resources/expectedXmlCharsFile5.xml";
@@ -305,7 +305,7 @@ function testFileAppendDocTypedXml() {
 }
 
 @test:Config {}
-function testFileWriteDocTypedXmlWithInternalSubset() {
+isolated function testFileWriteDocTypedXmlWithInternalSubset() {
     string filePath = TEMP_DIR + "xmlCharsFile6.xml";
     string originalFilePath = "tests/resources/originalXmlContent.xml";
     string resultFilePath = "tests/resources/expectedXmlCharsFile6.xml";
@@ -330,7 +330,7 @@ function testFileWriteDocTypedXmlWithInternalSubset() {
 }
 
 @test:Config {}
-function testFileWriteDocTypedXmlWithPrioritizeInternalSubset() {
+isolated function testFileWriteDocTypedXmlWithPrioritizeInternalSubset() {
     string filePath = TEMP_DIR + "xmlCharsFile6.xml";
     string originalFilePath = "tests/resources/originalXmlContent.xml";
     string resultFilePath = "tests/resources/expectedXmlCharsFile6.xml";
@@ -356,7 +356,7 @@ function testFileWriteDocTypedXmlWithPrioritizeInternalSubset() {
 }
 
 @test:Config {}
-function testFileWriteDocTypedXmlWithPublic() {
+isolated function testFileWriteDocTypedXmlWithPublic() {
     string filePath = TEMP_DIR + "xmlCharsFile7.xml";
     string originalFilePath = "tests/resources/originalXmlContent.xml";
     string resultFilePath = "tests/resources/expectedXmlCharsFile7.xml";

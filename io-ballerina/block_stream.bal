@@ -18,7 +18,7 @@ import ballerina/jballerina.java;
 
 public type Block readonly & byte[];
 
-# `BlockStream` used to initialize a stream of type `io:Block`. This `BlockStream` refers to the stream that embedded to
+# `BlockStream` used to initialize a stream of type `Block`. This `BlockStream` refers to the stream that embedded to
 # the I/O byte channels.
 public class BlockStream {
     private ReadableByteChannel readableByteChannel;
@@ -38,12 +38,12 @@ public class BlockStream {
     #
     # + return - Returns a `io:Block` when a block is avaliable in the stream or return null when the stream reaches the end
     public isolated function next() returns record {| Block value; |}|Error? {
-        var block = readBlock(self.readableByteChannel, self.blockSize);
+        byte[]|Error block = readBlock(self.readableByteChannel, self.blockSize);
         if (block is byte[]) {
             record {| Block value; |} value = {value: <Block>block.cloneReadOnly()};
             return value;
         } else if (block is EofError){
-            var closeResult = closeInputStream(self.readableByteChannel);
+            Error? closeResult = closeInputStream(self.readableByteChannel);
             return ();
         } else {
             return block;

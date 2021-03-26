@@ -17,7 +17,7 @@
 import ballerina/test;
 
 @test:Config {dependsOn: [testTableWithHeader]}
-function testWriteFixedSignedInt() {
+isolated function testWriteFixedSignedInt() {
     int value = 123;
     ByteOrder byteOrder = BIG_ENDIAN;
     string path = TEMP_DIR + "integer.bin";
@@ -25,15 +25,15 @@ function testWriteFixedSignedInt() {
 
     if (ch is WritableByteChannel) {
         WritableDataChannel dataChannel = new (ch, byteOrder);
-        var result = dataChannel.writeInt64(value);
-        var closeResult = dataChannel.close();
+        Error? result = dataChannel.writeInt64(value);
+        Error? closeResult = dataChannel.close();
     } else {
         test:assertFail(msg = ch.message());
     }
 }
 
 @test:Config {dependsOn: [testWriteFixedSignedInt]}
-function testReadFixedSignedInt() {
+isolated function testReadFixedSignedInt() {
     int value = 123;
     ByteOrder byteOrder = BIG_ENDIAN;
     string path = TEMP_DIR + "integer.bin";
@@ -47,14 +47,14 @@ function testReadFixedSignedInt() {
         } else {
             test:assertFail(msg = result.message());
         }
-        var closeResult = dataChannel.close();
+        Error? closeResult = dataChannel.close();
     } else {
         test:assertFail(msg = ch.message());
     }
 }
 
 @test:Config {dependsOn: [testReadFixedSignedInt]}
-function testWriteVarInt() {
+isolated function testWriteVarInt() {
     var value = 456;
     ByteOrder byteOrder = BIG_ENDIAN;
     string path = TEMP_DIR + "varint.bin";
@@ -62,15 +62,15 @@ function testWriteVarInt() {
 
     if (ch is WritableByteChannel) {
         WritableDataChannel dataChannel = new (ch, byteOrder);
-        var result = dataChannel.writeInt64(value);
-        var closeResult = dataChannel.close();
+        Error? result = dataChannel.writeInt64(value);
+        Error? closeResult = dataChannel.close();
     } else {
         test:assertFail(msg = ch.message());
     }
 }
 
 @test:Config {dependsOn: [testWriteVarInt]}
-function testReadVarInt() {
+isolated function testReadVarInt() {
     int value = 456;
     ByteOrder byteOrder = BIG_ENDIAN;
     string path = TEMP_DIR + "varint.bin";
@@ -84,14 +84,14 @@ function testReadVarInt() {
         } else {
             test:assertFail(msg = result.message());
         }
-        var closeResult = dataChannel.close();
+        Error? closeResult = dataChannel.close();
     } else {
         test:assertFail(msg = ch.message());
     }
 }
 
 @test:Config {dependsOn: [testWriteVarInt]}
-function testWriteFixedFloat() {
+isolated function testWriteFixedFloat() {
     float value = 1359494.69;
     ByteOrder byteOrder = BIG_ENDIAN;
     string path = TEMP_DIR + "float.bin";
@@ -99,15 +99,15 @@ function testWriteFixedFloat() {
 
     if (ch is WritableByteChannel) {
         WritableDataChannel dataChannel = new (ch, byteOrder);
-        var result = dataChannel.writeFloat64(value);
-        var closeResult = dataChannel.close();
+        Error? result = dataChannel.writeFloat64(value);
+        Error? closeResult = dataChannel.close();
     } else {
         test:assertFail(msg = ch.message());
     }
 }
 
 @test:Config {dependsOn: [testWriteFixedFloat]}
-function testReadFixedFloat() {
+isolated function testReadFixedFloat() {
     float value = 1359494.69;
     ByteOrder byteOrder = BIG_ENDIAN;
     string path = TEMP_DIR + "float.bin";
@@ -121,14 +121,14 @@ function testReadFixedFloat() {
         } else {
             test:assertFail(msg = result.message());
         }
-        var closeResult = dataChannel.close();
+        Error? closeResult = dataChannel.close();
     } else {
         test:assertFail(msg = ch.message());
     }
 }
 
 @test:Config {dependsOn: [testReadFixedFloat]}
-function testWriteBool() {
+isolated function testWriteBool() {
     boolean value = true;
     ByteOrder byteOrder = BIG_ENDIAN;
     string path = TEMP_DIR + "boolean.bin";
@@ -136,15 +136,15 @@ function testWriteBool() {
 
     if (ch is WritableByteChannel) {
         WritableDataChannel dataChannel = new (ch, byteOrder);
-        var result = dataChannel.writeBool(value);
-        var closeResult = dataChannel.close();
+        Error? result = dataChannel.writeBool(value);
+        Error? closeResult = dataChannel.close();
     } else {
         test:assertFail(msg = ch.message());
     }
 }
 
 @test:Config {dependsOn: [testWriteBool]}
-function testReadBool() {
+isolated function testReadBool() {
     boolean value = true;
     ByteOrder byteOrder = BIG_ENDIAN;
     string path = TEMP_DIR + "boolean.bin";
@@ -158,14 +158,14 @@ function testReadBool() {
         } else {
             test:assertFail(msg = result.message());
         }
-        var closeResult = dataChannel.close();
+        Error? closeResult = dataChannel.close();
     } else {
         test:assertFail(msg = ch.message());
     }
 }
 
 @test:Config {dependsOn: [testReadBool]}
-function testWriteString() {
+isolated function testWriteString() {
     string value = "Ballerina";
     ByteOrder byteOrder = BIG_ENDIAN;
     string path = TEMP_DIR + "string.bin";
@@ -174,15 +174,15 @@ function testWriteString() {
 
     if (ch is WritableByteChannel) {
         WritableDataChannel dataChannel = new (ch, byteOrder);
-        var result = dataChannel.writeString(value, encoding);
-        var closeResult = dataChannel.close();
+        Error? result = dataChannel.writeString(value, encoding);
+        Error? closeResult = dataChannel.close();
     } else {
         test:assertFail(msg = ch.message());
     }
 }
 
 @test:Config {dependsOn: [testWriteString]}
-function testReadString() {
+isolated function testReadString() {
     string value = "Ballerina";
     ByteOrder byteOrder = BIG_ENDIAN;
     string encoding = "UTF-8";
@@ -198,7 +198,7 @@ function testReadString() {
         } else {
             test:assertFail(msg = result.message());
         }
-        var closeResult = dataChannel.close();
+        Error? closeResult = dataChannel.close();
     } else {
         test:assertFail(msg = ch.message());
     }

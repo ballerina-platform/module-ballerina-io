@@ -17,7 +17,7 @@
 import ballerina/test;
 
 @test:Config {}
-function testWriteJson() {
+isolated function testWriteJson() {
     string filePath = TEMP_DIR + "jsonCharsFile1.json";
     json content = {"web-app": {"servlet-mapping": {
                 "cofaxCDS": "/",
@@ -45,7 +45,7 @@ function testWriteJson() {
 }
 
 @test:Config {dependsOn: [testWriteJson]}
-function testReadJson() {
+isolated function testReadJson() {
     string filePath = TEMP_DIR + "jsonCharsFile1.json";
     json expectedJson = {"web-app": {"servlet-mapping": {
                 "cofaxCDS": "/",
@@ -75,7 +75,7 @@ function testReadJson() {
 }
 
 @test:Config {}
-function testFileWriteJson() {
+isolated function testFileWriteJson() {
     string filePath = TEMP_DIR + "jsonCharsFile2.json";
     json content = {"web-app": {"servlet-mapping": {
                 "cofaxCDS": "/",
@@ -92,7 +92,7 @@ function testFileWriteJson() {
 }
 
 @test:Config {dependsOn: [testFileWriteJson]}
-function testFileReadJson() {
+isolated function testFileReadJson() {
     string filePath = TEMP_DIR + "jsonCharsFile2.json";
     json expectedJson = {"web-app": {"servlet-mapping": {
                 "cofaxCDS": "/",
@@ -111,7 +111,7 @@ function testFileReadJson() {
 }
 
 @test:Config {}
-function testFileWriteJsonWithTruncate() {
+isolated function testFileWriteJsonWithTruncate() {
     string filePath = TEMP_DIR + "jsonCharsFile3.json";
     json content1 = {"web-app": {"servlet-mapping": {
                 "cofaxCDS": "/",
@@ -148,7 +148,7 @@ function testFileWriteJsonWithTruncate() {
 }
 
 @test:Config {}
-function testWriteHigherUnicodeJson() {
+isolated function testWriteHigherUnicodeJson() {
     string filePath = TEMP_DIR + "higherUniJsonCharsFile.json";
     json content = {"loop": "É"};
 
@@ -170,7 +170,7 @@ function testWriteHigherUnicodeJson() {
 }
 
 @test:Config {dependsOn: [testWriteHigherUnicodeJson]}
-function testReadHigherUnicodeJson() {
+isolated function testReadHigherUnicodeJson() {
     string filePath = TEMP_DIR + "higherUniJsonCharsFile.json";
     json expectedJson = {"loop": "É"};
     var byteChannel = openReadableFile(filePath);

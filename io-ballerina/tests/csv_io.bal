@@ -55,7 +55,7 @@ type CommonApp record {
 };
 
 @test:Config {}
-function testReadCsv() {
+isolated function testReadCsv() {
     string filePath = RESOURCES_BASE_PATH + "datafiles/io/records/sample.csv";
     int expectedRecordLength = 3;
 
@@ -112,7 +112,7 @@ function testReadCsv() {
 }
 
 @test:Config {}
-function testOpenAndReadCsv() {
+isolated function testOpenAndReadCsv() {
     string filePath = RESOURCES_BASE_PATH + "datafiles/io/records/sample.csv";
     int expectedRecordLength = 3;
 
@@ -166,7 +166,7 @@ function testOpenAndReadCsv() {
 }
 
 @test:Config {}
-function testOpenAndReadColonDelimitedFile() {
+isolated function testOpenAndReadColonDelimitedFile() {
     string filePath = RESOURCES_BASE_PATH + "datafiles/io/records/sampleWithColon.txt";
     int expectedRecordLength = 3;
 
@@ -223,7 +223,7 @@ function testOpenAndReadColonDelimitedFile() {
 }
 
 @test:Config {dependsOn: [testOpenAndReadColonDelimitedFile]}
-function testOpenAndReadCsvWithHeaders() {
+isolated function testOpenAndReadCsvWithHeaders() {
     string filePath = RESOURCES_BASE_PATH + "datafiles/io/records/sampleWithHeader.csv";
     int expectedRecordLength = 3;
 
@@ -259,7 +259,7 @@ function testOpenAndReadCsvWithHeaders() {
 }
 
 @test:Config {}
-function testReadRfc() {
+isolated function testReadRfc() {
     string filePath = RESOURCES_BASE_PATH + "datafiles/io/records/sampleRfc.csv";
     int expectedRecordLength = 3;
 
@@ -308,7 +308,7 @@ function testReadRfc() {
 }
 
 @test:Config {}
-function testReadTdf() {
+isolated function testReadTdf() {
     string filePath = RESOURCES_BASE_PATH + "datafiles/io/records/sampleTdf.tsv";
     int expectedRecordLength = 3;
 
@@ -362,7 +362,7 @@ function testReadTdf() {
 }
 
 @test:Config {}
-function testWriteDefaultCsv() {
+isolated function testWriteDefaultCsv() {
     string filePath = TEMP_DIR + "recordsDefault.csv";
     string[] content1 = ["Name", "Email", "Telephone"];
     string[] content2 = ["Foo,12", "foo@ballerina/io", "332424242"];
@@ -429,7 +429,7 @@ function testWriteDefaultCsv() {
 }
 
 @test:Config {}
-function testReadWriteCustomSeparator() {
+isolated function testReadWriteCustomSeparator() {
     string filePath = TEMP_DIR + "recordsUserDefine.csv";
     string[][] data = [["1", "James", "10000"], ["2", "Nathan", "150000"], ["3", "Ronald", "120000"], ["4", "Roy", 
     "6000"], ["5", "Oliver", "1100000"]];
@@ -479,7 +479,7 @@ function testReadWriteCustomSeparator() {
 }
 
 @test:Config {}
-function testWriteTdf() {
+isolated function testWriteTdf() {
     string filePath = TEMP_DIR + "recordsTdf.csv";
     string[] content = ["Name", "Email", "Telephone"];
 
@@ -499,7 +499,7 @@ function testWriteTdf() {
 }
 
 @test:Config {}
-function testTableContent() {
+isolated function testTableContent() {
     string filePath = RESOURCES_BASE_PATH + "datafiles/io/records/sample5.csv";
     float expectedValue = 60001.00;
     float total = 0.0;
@@ -526,7 +526,7 @@ function testTableContent() {
 }
 
 @test:Config {}
-function testTableWithNull() {
+isolated function testTableWithNull() {
     string filePath = RESOURCES_BASE_PATH + "datafiles/io/records/sample6.csv";
     string name = "";
     string dep = "";
@@ -556,7 +556,7 @@ function testTableWithNull() {
 }
 
 @test:Config {}
-function testTableWithHeader() {
+isolated function testTableWithHeader() {
     string filePath = RESOURCES_BASE_PATH + "datafiles/io/records/sample7.csv";
     string[] expectedOutput = ["Common App ID", "11111111", "22222222", "33333333", "44444444", "55555555", "55555556"];
     string[] keys = [];
@@ -589,7 +589,7 @@ function testTableWithHeader() {
 }
 
 @test:Config {}
-function testFileCsvWrite() {
+isolated function testFileCsvWrite() {
     string[][] content = [["Anne Hamiltom", "Software Engineer", "Microsoft", "26 years", "New York"], ["John Thomson", 
     "Software Architect", "WSO2", "38 years", "Colombo"], ["Mary Thompson", "Banker", "Sampath Bank", "30 years", 
     "Colombo"]];
@@ -601,7 +601,7 @@ function testFileCsvWrite() {
 }
 
 @test:Config {dependsOn: [testFileCsvWrite]}
-function testFileCsvRead() {
+isolated function testFileCsvRead() {
     string[][] expectedContent = [["Anne Hamiltom", "Software Engineer", "Microsoft", "26 years", "New York"], [
     "John Thomson", "Software Architect", "WSO2", "38 years", "Colombo"], ["Mary Thompson", "Banker", "Sampath Bank", 
     "30 years", "Colombo"]];
@@ -623,7 +623,7 @@ function testFileCsvRead() {
 }
 
 @test:Config {}
-function testFileCsvWriteWithSkipHeaders() {
+isolated function testFileCsvWriteWithSkipHeaders() {
     string[][] content = [["Name", "Occupation", "Company", "Age", "Hometown"], ["Ross Meton", "Civil Engineer", 
     "ABC Construction", "26 years", "Sydney"], ["Matt Jason", "Architect", "Typer", "38 years", "Colombo"]];
     string filePath = TEMP_DIR + "workers2.csv";
@@ -634,7 +634,7 @@ function testFileCsvWriteWithSkipHeaders() {
 }
 
 @test:Config {dependsOn: [testFileCsvWriteWithSkipHeaders]}
-function testFileCsvReadWithSkipHeaders() {
+isolated function testFileCsvReadWithSkipHeaders() {
     string[][] expectedContent = [["Ross Meton", "Civil Engineer",
     "ABC Construction", "26 years", "Sydney"], ["Matt Jason", "Architect", "Typer", "38 years", "Colombo"]];
     string filePath = TEMP_DIR + "workers2.csv";
@@ -655,7 +655,7 @@ function testFileCsvReadWithSkipHeaders() {
 }
 
 @test:Config {}
-function testFileWriteCsvFromStream() returns Error? {
+isolated function testFileWriteCsvFromStream() returns Error? {
     string filePath = TEMP_DIR + "workers4.csv";
     string resourceFilePath = TEST_RESOURCE_PATH + "csvResourceFile1.csv";
     stream<string[], Error> csvStream = check fileReadCsvAsStream(resourceFilePath);
@@ -692,7 +692,7 @@ function testFileReadCsvAsStream() {
 }
 
 @test:Config {}
-function testFileCsvWriteWithOverwrite() {
+isolated function testFileCsvWriteWithOverwrite() {
     string filePath = TEMP_DIR + "workers2.csv";
     string[][] content1 = [["Anne Hamiltom", "Software Engineer", "Microsoft", "26 years", "New York"], ["John Thomson",
     "Software Architect", "WSO2", "38 years", "Colombo"], ["Mary Thompson", "Banker", "Sampath Bank", "30 years",
@@ -742,7 +742,7 @@ function testFileCsvWriteWithOverwrite() {
 }
 
 @test:Config {}
-function testFileCsvWriteWithAppend() {
+isolated function testFileCsvWriteWithAppend() {
     string filePath = TEMP_DIR + "workers3.csv";
     string[][] content1 = [["Anne Hamiltom", "Software Engineer", "Microsoft", "26 years", "New York"], ["John Thomson",
     "Software Architect", "WSO2", "38 years", "Colombo"], ["Mary Thompson", "Banker", "Sampath Bank", "30 years",
