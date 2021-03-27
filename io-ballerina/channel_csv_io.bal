@@ -35,7 +35,7 @@ Error {
     return results;
 }
 
-isolated function channelReadCsvAsStream(ReadableChannel readableChannel) returns @tainted stream<string[], Error>|
+isolated function channelReadCsvAsStream(ReadableChannel readableChannel) returns @tainted stream<string[], Error?>|
 Error {
     return (check getReadableCSVChannel(readableChannel, 0)).csvStream();
 }
@@ -52,7 +52,7 @@ isolated function channelWriteCsv(WritableChannel writableChannel, string[][] co
     check csvChannel.close();
 }
 
-isolated function channelWriteCsvFromStream(WritableChannel writableChannel, stream<string[], Error> csvStream) returns 
+isolated function channelWriteCsvFromStream(WritableChannel writableChannel, stream<string[], Error?> csvStream) returns
 Error? {
     WritableCSVChannel csvChannel = check getWritableCSVChannel(writableChannel);
     record {| string[] value; |}|Error? csvRecord = csvStream.next();

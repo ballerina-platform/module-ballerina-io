@@ -26,12 +26,12 @@ public isolated function fileReadBytes(@untainted string path) returns @tainted 
 
 # Read the entire file content as a stream of blocks.
 # ```ballerina
-# stream<io:Block, io:Error>|io:Error content = io:fileReadBlocksAsStream("./resources/myfile.txt", 1000);
+# stream<io:Block, io:Error?>|io:Error content = io:fileReadBlocksAsStream("./resources/myfile.txt", 1000);
 # ```
 # + path - The path of the file
 # + blockSize - An optional size of the byte block. Default size is 4KB
 # + return - Either a byte block stream or `io:Error`
-public isolated function fileReadBlocksAsStream(string path, int blockSize = 4096) returns @tainted stream<Block, Error>|
+public isolated function fileReadBlocksAsStream(string path, int blockSize = 4096) returns @tainted stream<Block, Error?>|
 Error {
     return channelReadBlocksAsStream(check openReadableFile(path), blockSize);
 }
@@ -53,14 +53,14 @@ Error? {
 # Write a byte stream to a file.
 # ```ballerina
 # byte[] content = [[60, 78, 39, 28]];
-# stream<byte[], io:Error> byteStream = content.toStream();
+# stream<byte[], io:Error?> byteStream = content.toStream();
 # io:Error? result = io:fileWriteBlocksFromStream("./resources/myfile.txt", byteStream);
 # ```
 # + path - The path of the file
 # + byteStream - Byte stream to write
 # + option - To indicate whether to overwrite or append the given content
 # + return - `io:Error` or else `()`
-public isolated function fileWriteBlocksFromStream(@untainted string path, stream<byte[], Error> byteStream, 
+public isolated function fileWriteBlocksFromStream(@untainted string path, stream<byte[], Error?> byteStream,
                                                    FileWriteOption option = OVERWRITE) returns Error? {
     return channelWriteBlocksFromStream(check openWritableFile(path, option), byteStream);
 }

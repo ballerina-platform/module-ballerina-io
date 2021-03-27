@@ -29,7 +29,7 @@ isolated function channelReadLines(ReadableChannel readableChannel) returns @tai
     return result;
 }
 
-isolated function channelReadLinesAsStream(ReadableChannel readableChannel) returns @tainted stream<string, Error>|
+isolated function channelReadLinesAsStream(ReadableChannel readableChannel) returns @tainted stream<string, Error?>|
 Error {
     return (check getReadableCharacterChannel(readableChannel)).lineStream();
 }
@@ -76,7 +76,7 @@ isolated function channelWriteLines(WritableChannel writableChannel, string[] co
     }
 }
 
-isolated function channelWriteLinesFromStream(WritableChannel writableChannel, stream<string, Error> lineStream) returns 
+isolated function channelWriteLinesFromStream(WritableChannel writableChannel, stream<string, Error?> lineStream) returns
 Error? {
     WritableCharacterChannel characterChannel = check getWritableCharacterChannel(writableChannel);
     record {| string value; |}|Error? line = lineStream.next();

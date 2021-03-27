@@ -56,9 +56,9 @@ public class ReadableByteChannel {
     # ```
     # + blockSize - A positive integer. Size of the block.
     # + return - Either a block stream or else an `io:Error`
-    public isolated function blockStream(int blockSize) returns @tainted stream<Block, Error>|Error {
+    public isolated function blockStream(int blockSize) returns @tainted stream<Block, Error?>|Error {
         BlockStream blockStream = new (self, blockSize);
-        return new stream<Block, Error>(blockStream);
+        return new stream<Block, Error?>(blockStream);
     }
 
     # Encodes a given `ReadableByteChannel` using the Base64 encoding scheme.

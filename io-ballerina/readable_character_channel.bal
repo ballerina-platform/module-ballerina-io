@@ -98,9 +98,9 @@ public class ReadableCharacterChannel {
     # ```
     #
     # + return - Either a stream of strings(lines) or an io:Error.
-    public isolated function lineStream() returns stream<string, Error>|Error {
+    public isolated function lineStream() returns stream<string, Error?>|Error {
         LineStream lineStream = new (self);
-        return new stream<string, Error>(lineStream);
+        return new stream<string, Error?>(lineStream);
     }
 
     # Reads all properties from a .properties file.

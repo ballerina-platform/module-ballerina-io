@@ -655,11 +655,49 @@ isolated function testFileCsvReadWithSkipHeaders() {
 }
 
 @test:Config {}
-isolated function testFileWriteCsvFromStream() returns Error? {
-    string filePath = TEMP_DIR + "workers4.csv";
+isolated function testFileWriteCsvFromStreamUsingResourceFile() returns Error? {
+    string filePath = TEMP_DIR + "workers4_A.csv";
     string resourceFilePath = TEST_RESOURCE_PATH + "csvResourceFile1.csv";
-    stream<string[], Error> csvStream = check fileReadCsvAsStream(resourceFilePath);
+    stream<string[], Error?> csvStream = check fileReadCsvAsStream(resourceFilePath);
     var result = fileWriteCsvFromStream(filePath, csvStream);
+    if (result is Error) {
+        test:assertFail(msg = result.message());
+    }
+}
+
+@test:Config {dependsOn: [testFileWriteCsvFromStreamUsingResourceFile]}
+function testFileReadCsvAsStreamUsingResourceFile() {
+    string filePath = TEMP_DIR + "workers4_A.csv";
+    string[][] expectedContent = [["Anne Hamiltom", "Software Engineer", "Microsoft", "26 years", "New York"], [
+    "John Thomson", "Software Architect", "WSO2", "38 years", "Colombo"], ["Mary Thompson", "Banker", "Sampath Bank", 
+    "30 years", "Colombo"]];
+    var result = fileReadCsvAsStream(filePath);
+    if (result is stream<string[], Error?>) {
+        int i = 0;
+        error? e = result.forEach(function(string[] val) {
+                               int j = 0;
+                               foreach string s in val {
+                                   test:assertEquals('string:trim(s), expectedContent[i][j]);
+                                   j += 1;
+                               }
+                               i += 1;
+                           });
+        if (e is error) {
+            test:assertFail(msg = e.message());
+        }
+        test:assertEquals(i, 3);
+    } else {
+        test:assertFail(msg = result.message());
+    }
+}
+
+@test:Config {}
+function testFileWriteCsvFromStream() {
+    string filePath = TEMP_DIR + "workers4_B.csv";
+    string[][] content = [["Anne Hamiltom", "Software Engineer", "Microsoft", "26 years", "New York"], ["John Thomson",
+    "Software Architect", "WSO2", "38 years", "Colombo"], ["Mary Thompson", "Banker", "Sampath Bank", "30 years",
+    "Colombo"]];
+    var result = fileWriteCsvFromStream(filePath, content.toStream());
     if (result is Error) {
         test:assertFail(msg = result.message());
     }
@@ -667,17 +705,17 @@ isolated function testFileWriteCsvFromStream() returns Error? {
 
 @test:Config {dependsOn: [testFileWriteCsvFromStream]}
 function testFileReadCsvAsStream() {
-    string filePath = TEMP_DIR + "workers4.csv";
+    string filePath = TEMP_DIR + "workers4_B.csv";
     string[][] expectedContent = [["Anne Hamiltom", "Software Engineer", "Microsoft", "26 years", "New York"], [
-    "John Thomson", "Software Architect", "WSO2", "38 years", "Colombo"], ["Mary Thompson", "Banker", "Sampath Bank", 
+    "John Thomson", "Software Architect", "WSO2", "38 years", "Colombo"], ["Mary Thompson", "Banker", "Sampath Bank",
     "30 years", "Colombo"]];
     var result = fileReadCsvAsStream(filePath);
-    if (result is stream<string[], Error>) {
+    if (result is stream<string[], Error?>) {
         int i = 0;
         error? e = result.forEach(function(string[] val) {
                                int j = 0;
                                foreach string s in val {
-                                   test:assertEquals('string:trim(s), expectedContent[i][j]);
+                                   test:assertEquals(s, expectedContent[i][j]);
                                    j += 1;
                                }
                                i += 1;
@@ -797,12 +835,12 @@ isolated function testFileCsvWriteWithAppend() {
 }
 
 @test:Config {}
-function testFileCsvWriteFromStreamWithOverwrite() returns Error? {
+function testFileCsvWriteFromStreamWithOverwriteUsingResourceFile() returns Error? {
     string filePath = TEMP_DIR + "workers5.csv";
     string resourceFilePath1 = TEST_RESOURCE_PATH + "csvResourceFile1.csv";
     string resourceFilePath2 = TEST_RESOURCE_PATH + "csvResourceFile2.csv";
-    stream<string[], Error> csvStream1 = check fileReadCsvAsStream(resourceFilePath1);
-    stream<string[], Error> csvStream2 = check fileReadCsvAsStream(resourceFilePath2);
+    stream<string[], Error?> csvStream1 = check fileReadCsvAsStream(resourceFilePath1);
+    stream<string[], Error?> csvStream2 = check fileReadCsvAsStream(resourceFilePath2);
     string[][] content1 = [["Anne Hamiltom", "Software Engineer", "Microsoft", "26 years", "New York"], ["John Thomson",
     "Software Architect", "WSO2", "38 years", "Colombo"], ["Mary Thompson", "Banker", "Sampath Bank", "30 years",
     "Colombo"]];
@@ -815,7 +853,7 @@ function testFileCsvWriteFromStreamWithOverwrite() returns Error? {
         test:assertFail(msg = result1.message());
     }
     var result2 = fileReadCsvAsStream(filePath);
-    if (result2 is stream<string[], Error>) {
+    if (result2 is stream<string[], Error?>) {
         int i = 0;
         error? e = result2.forEach(function(string[] val) {
                                int j = 0;
@@ -839,7 +877,7 @@ function testFileCsvWriteFromStreamWithOverwrite() returns Error? {
         test:assertFail(msg = result3.message());
     }
     var result4 = fileReadCsvAsStream(filePath);
-    if (result4 is stream<string[], Error>) {
+    if (result4 is stream<string[], Error?>) {
         int i = 0;
         error? e = result4.forEach(function(string[] val) {
                                int j = 0;
@@ -859,12 +897,12 @@ function testFileCsvWriteFromStreamWithOverwrite() returns Error? {
 }
 
 @test:Config {}
-function testFileCsvWriteFromStreamWithAppend() returns Error? {
+function testFileCsvWriteFromStreamWithAppendUsingResourceFile() returns Error? {
     string filePath = TEMP_DIR + "workers6.csv";
     string resourceFilePath1 = TEST_RESOURCE_PATH + "csvResourceFile1.csv";
     string resourceFilePath2 = TEST_RESOURCE_PATH + "csvResourceFile2.csv";
-    stream<string[], Error> csvStream1 = check fileReadCsvAsStream(resourceFilePath1);
-    stream<string[], Error> csvStream2 = check fileReadCsvAsStream(resourceFilePath2);
+    stream<string[], Error?> csvStream1 = check fileReadCsvAsStream(resourceFilePath1);
+    stream<string[], Error?> csvStream2 = check fileReadCsvAsStream(resourceFilePath2);
     string[][] initialContent = [["Anne Hamiltom", "Software Engineer", "Microsoft", "26 years", "New York"], ["John Thomson",
     "Software Architect", "WSO2", "38 years", "Colombo"], ["Mary Thompson", "Banker", "Sampath Bank", "30 years",
     "Colombo"]];
@@ -880,7 +918,7 @@ function testFileCsvWriteFromStreamWithAppend() returns Error? {
         test:assertFail(msg = result1.message());
     }
     var result2 = fileReadCsvAsStream(filePath);
-    if (result2 is stream<string[], Error>) {
+    if (result2 is stream<string[], Error?>) {
         int i = 0;
         error? e = result2.forEach(function(string[] val) {
                                int j = 0;
@@ -904,12 +942,133 @@ function testFileCsvWriteFromStreamWithAppend() returns Error? {
         test:assertFail(msg = result3.message());
     }
     var result4 = fileReadCsvAsStream(filePath);
-    if (result4 is stream<string[], Error>) {
+    if (result4 is stream<string[], Error?>) {
         int i = 0;
         error? e = result4.forEach(function(string[] val) {
                                int j = 0;
                                foreach string s in val {
                                    test:assertEquals('string:trim(s), expectedCsv[i][j]);
+                                   j += 1;
+                               }
+                               i += 1;
+                           });
+        if (e is error) {
+            test:assertFail(msg = e.message());
+        }
+        test:assertEquals(i, 6);
+    } else {
+        test:assertFail(msg = result4.message());
+    }
+}
+
+@test:Config {}
+function testFileCsvWriteFromStreamWithOverwrite() {
+    string filePath = TEMP_DIR + "workers7.csv";
+    string[][] content1 = [["Anne Hamiltom", "Software Engineer", "Microsoft", "26 years", "New York"], ["John Thomson",
+    "Software Architect", "WSO2", "38 years", "Colombo"], ["Mary Thompson", "Banker", "Sampath Bank", "30 years",
+    "Colombo"]];
+    string[][] content2 = [["Distributed Computing", "A001", "Prof. Jack"], ["Quantum Computing", "A002", "Dr. Sam"],
+    ["Artificail Intelligence", "A003", "Prof. Angelina"]];
+
+    // Check content 01
+    var result1 = fileWriteCsvFromStream(filePath, content1.toStream());
+    if (result1 is Error) {
+        test:assertFail(msg = result1.message());
+    }
+    var result2 = fileReadCsvAsStream(filePath);
+    if (result2 is stream<string[], Error?>) {
+        int i = 0;
+        error? e = result2.forEach(function(string[] val) {
+                               int j = 0;
+                               foreach string s in val {
+                                   test:assertEquals(s, content1[i][j]);
+                                   j += 1;
+                               }
+                               i += 1;
+                           });
+        if (e is error) {
+            test:assertFail(msg = e.message());
+        }
+        test:assertEquals(i, 3);
+    } else {
+        test:assertFail(msg = result2.message());
+    }
+
+    // Check content 02
+    var result3 = fileWriteCsvFromStream(filePath, content2.toStream());
+    if (result3 is Error) {
+        test:assertFail(msg = result3.message());
+    }
+    var result4 = fileReadCsvAsStream(filePath);
+    if (result4 is stream<string[], Error?>) {
+        int i = 0;
+        error? e = result4.forEach(function(string[] val) {
+                               int j = 0;
+                               foreach string s in val {
+                                   test:assertEquals(s, content2[i][j]);
+                                   j += 1;
+                               }
+                               i += 1;
+                           });
+        if (e is error) {
+            test:assertFail(msg = e.message());
+        }
+        test:assertEquals(i, 3);
+    } else {
+        test:assertFail(msg = result4.message());
+    }
+}
+
+@test:Config {}
+function testFileCsvWriteFromStreamWithAppend() {
+    string filePath = TEMP_DIR + "workers8.csv";
+    string[][] content1 = [["Anne Hamiltom", "Software Engineer", "Microsoft", "26 years", "New York"], ["John Thomson",
+    "Software Architect", "WSO2", "38 years", "Colombo"], ["Mary Thompson", "Banker", "Sampath Bank", "30 years",
+    "Colombo"]];
+    string[][] content2 = [["Distributed Computing", "A001", "Prof. Jack"], ["Quantum Computing", "A002", "Dr. Sam"],
+    ["Artificail Intelligence", "A003", "Prof. Angelina"]];
+    string[][] expectedCsv = [["Anne Hamiltom", "Software Engineer", "Microsoft", "26 years", "New York"],
+    ["John Thomson", "Software Architect", "WSO2", "38 years", "Colombo"],
+    ["Mary Thompson", "Banker", "Sampath Bank", "30 years", "Colombo"],
+    ["Distributed Computing", "A001", "Prof. Jack"], ["Quantum Computing", "A002", "Dr. Sam"],
+    ["Artificail Intelligence", "A003", "Prof. Angelina"]];
+
+    // Check content 01
+    var result1 = fileWriteCsvFromStream(filePath, content1.toStream());
+    if (result1 is Error) {
+        test:assertFail(msg = result1.message());
+    }
+    var result2 = fileReadCsvAsStream(filePath);
+    if (result2 is stream<string[], Error?>) {
+        int i = 0;
+        error? e = result2.forEach(function(string[] val) {
+                               int j = 0;
+                               foreach string s in val {
+                                   test:assertEquals(s, content1[i][j]);
+                                   j += 1;
+                               }
+                               i += 1;
+                           });
+        if (e is error) {
+            test:assertFail(msg = e.message());
+        }
+        test:assertEquals(i, 3);
+    } else {
+        test:assertFail(msg = result2.message());
+    }
+
+    // Check content 02
+    var result3 = fileWriteCsvFromStream(filePath, content2.toStream(), APPEND);
+    if (result3 is Error) {
+        test:assertFail(msg = result3.message());
+    }
+    var result4 = fileReadCsvAsStream(filePath);
+    if (result4 is stream<string[], Error?>) {
+        int i = 0;
+        error? e = result4.forEach(function(string[] val) {
+                               int j = 0;
+                               foreach string s in val {
+                                   test:assertEquals(s, expectedCsv[i][j]);
                                    j += 1;
                                }
                                i += 1;
