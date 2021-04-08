@@ -22,7 +22,19 @@ description = 'Ballerina - I/O Ballerina Generator'
 def packageName = "io"
 def packageOrg = "ballerina"
 def platform = "java11"
-def tomlVersion = project.version.replace("-SNAPSHOT", "")
+def snapshotVersion = "-SNAPSHOT"
+def tomlVersion
+if (project.version.matches('.*-\\d{8}-\\d{6}-\\w.*\$')) {
+    def splitVersion = project.version.split('-');
+    if (splitVersion.length > 3) {
+        def strippedValues = splitVersion[0..-4]
+        tomlVersion = strippedValues.join('-')
+    } else {
+        tomlVersion = project.version
+    }
+} else {
+    tomlVersion = project.version.replace("${snapshotVersion}", "")
+}
 def ballerinaConfigFile = new File("${project.projectDir}/Ballerina.toml")
 def artifactBallerinaDocs = file("${project.projectDir}/build/docs_parent/")
 def artifactCacheParent = file("${project.projectDir}/build/cache_parent/")
