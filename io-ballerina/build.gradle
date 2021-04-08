@@ -23,8 +23,9 @@ def packageName = "io"
 def packageOrg = "ballerina"
 def platform = "java11"
 def snapshotVersion = "-SNAPSHOT"
+def timestampedVersionRegex = '.*-\\d{8}-\\d{6}-\\w.*\$'
 def tomlVersion
-if (project.version.matches('.*-\\d{8}-\\d{6}-\\w.*\$')) {
+if (project.version.matches(timestampedVersionRegex)) {
     def splitVersion = project.version.split('-');
     if (splitVersion.length > 3) {
         def strippedValues = splitVersion[0..-4]
@@ -194,7 +195,8 @@ task ballerinaBuild {
 
 task ballerinaPublish {
     doLast {
-        if (project.version.endsWith('-SNAPSHOT')) {
+        if (project.version.endsWith('-SNAPSHOT') ||
+                project.version.matches(timestampedVersionRegex)) {
             return
         }
         if (ballerinaCentralAccessToken != null) {
