@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - master
+      - "automated/dependency_version_update"
 
 jobs:
   build:
