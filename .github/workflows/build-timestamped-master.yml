@@ -5,12 +5,11 @@ on:
   push:
     branches:
       - master
-      - "automated/dependency_version_update"
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    if: github.repository_owner == 'ballerina-platform'
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK 11
