@@ -80,7 +80,7 @@ class PrintableClassImpl {
 
 class PrintableRawTemplateImpl {
     *object:RawTemplate;
-    Printable[] insertions;
+    public Printable[] insertions;
 
     public isolated function init(PrintableRawTemplate printableRawTemplate) {
         self.strings = printableRawTemplate.strings;
