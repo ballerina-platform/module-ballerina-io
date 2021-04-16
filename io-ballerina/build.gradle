@@ -114,6 +114,9 @@ task initializeVariables {
     if (project.hasProperty("publishToLocalCentral") && (project.findProperty("publishToLocalCentral") == "true")) {
         needPublishToLocalCentral = true
     }
+    if (project.hasProperty("publishToCentral") && (project.findProperty("publishToCentral") == "true")) {
+        needPublishToCentral = true
+    }
 
     gradle.taskGraph.whenReady { graph ->
         if (graph.hasTask(":${packageName}-ballerina:build") || graph.hasTask(":${packageName}-ballerina:publish") ||
