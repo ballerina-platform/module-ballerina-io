@@ -117,17 +117,11 @@ task initializeVariables {
     gradle.taskGraph.whenReady { graph ->
         if (graph.hasTask(":${packageName}-ballerina:build") || graph.hasTask(":${packageName}-ballerina:publish") ||
                 graph.hasTask(":${packageName}-ballerina:publishToMavenLocal")) {
-            needSeparateTest = false
 
-            if (graph.hasTask(":${packageName}-ballerina:build")) {
-                needBuildWithTest = true
-            }
+            needSeparateTest = false
+            needBuildWithTest = true
             if (graph.hasTask(":${packageName}-ballerina:publish")) {
-                needBuildWithTest = true
                 needPublishToCentral = true
-            }
-            if (graph.hasTask(":${packageName}-ballerina:publishToMavenLocal")) {
-                needBuildWithTest = true
             }
         } else {
             needSeparateTest = true
