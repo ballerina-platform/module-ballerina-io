@@ -150,9 +150,7 @@ task ballerinaBuild {
                     commandLine 'sh', '-c', "${balJavaDebugParam} ${distributionBinPath}/bal test --code-coverage --includes=* ${groupParams} ${disableGroups} ${debugParams}"
                 }
             }
-        }
-
-        if (needBuildWithTest) {
+        } else if (needBuildWithTest) {
             exec {
                 workingDir project.projectDir
                 environment "JAVA_OPTS", "-DBALLERINA_DEV_COMPILE_BALLERINA_ORG=true"
