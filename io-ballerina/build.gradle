@@ -22,20 +22,7 @@ description = 'Ballerina - I/O Ballerina Generator'
 def packageName = "io"
 def packageOrg = "ballerina"
 def platform = "java11"
-def snapshotVersion = "-SNAPSHOT"
-def timestampedVersionRegex = '.*-\\d{8}-\\d{6}-\\w.*\$'
-def tomlVersion
-if (project.version.matches(timestampedVersionRegex)) {
-    def splitVersion = project.version.split('-');
-    if (splitVersion.length > 3) {
-        def strippedValues = splitVersion[0..-4]
-        tomlVersion = strippedValues.join('-')
-    } else {
-        tomlVersion = project.version
-    }
-} else {
-    tomlVersion = project.version.replace("${snapshotVersion}", "")
-}
+def tomlVersion = stripBallerinaExtensionVersion("${project.version}")
 def ballerinaConfigFile = new File("${project.projectDir}/Ballerina.toml")
 def artifactBallerinaDocs = file("${project.projectDir}/build/docs_parent/")
 def artifactCacheParent = file("${project.projectDir}/build/cache_parent/")
@@ -43,6 +30,20 @@ def artifactLibParent = file("${project.projectDir}/build/lib_parent/")
 def ballerinaCentralAccessToken = System.getenv('BALLERINA_CENTRAL_ACCESS_TOKEN')
 def distributionBinPath = project.projectDir.absolutePath + "/build/target/extracted-distributions/jballerina-tools-zip/jballerina-tools-${ballerinaLangVersion}/bin"
 def originalConfig = ballerinaConfigFile.text
+
+def stripBallerinaExtensionVersion(String extVersion) {
+    if (extVersion.matches(project.ext.timestampedVersionRegex)) {
+        def splitVersion = extVersion.split('-');
+        if (splitVersion.length > 3) {
+            def strippedValues = splitVersion[0..-4]
+            return strippedValues.join('-')
+        } else {
+            return extVersion
+        }
+    } else {
+        return extVersion.replace("${project.ext.snapshotVersion}", "")
+    }
+}
 
 configurations {
     jbalTools
@@ -193,7 +194,7 @@ task ballerinaBuild {
 
         if (needPublishToCentral) {
             if (project.version.endsWith('-SNAPSHOT') ||
-                    project.version.matches(timestampedVersionRegex)) {
+                    project.version.matches(project.ext.timestampedVersionRegex)) {
                 return
             }
             if (ballerinaCentralAccessToken != null) {
