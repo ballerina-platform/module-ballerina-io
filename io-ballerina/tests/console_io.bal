@@ -217,6 +217,14 @@ isolated function testPrintRawTemplateMultiple() {
 }
 
 @test:Config {dependsOn: [testPrintRawTemplateMultiple]}
+isolated function testPrintError() {
+    error e = error("sample error");
+    string expectedOutput = "it's an error: sample error";
+    print(`it's an error: ${e.message()}`);
+    test:assertEquals(readOutputStream(), expectedOutput);
+}
+
+@test:Config {dependsOn: [testPrintError]}
 isolated function testPrintlnRawTemplateWithTrue() {
     boolean val = true;
     string expectedOutput = "The respective boolean value is true\n";
@@ -283,6 +291,14 @@ isolated function testPrintlnRawTemplateMultiple() {
     string name2 = "Lily";
     string expectedOutput = "Hello James!!!. After long time. Why Lily didn't come?\n";
     println(`Hello ${name1}!!!.`, " ", "After long time.", " ", `Why ${name2} didn't come?`);
+    test:assertEquals(readOutputStream(), expectedOutput);
+}
+
+@test:Config {dependsOn: [testPrintRawTemplateMultiple]}
+isolated function testPrintlnError() {
+    error e = error("sample error");
+    string expectedOutput = "it's an error: sample error\n";
+    println(`it's an error: ${e.message()}`);
     test:assertEquals(readOutputStream(), expectedOutput);
 }
 
