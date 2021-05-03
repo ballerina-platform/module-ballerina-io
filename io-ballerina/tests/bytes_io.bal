@@ -85,6 +85,32 @@ isolated function testWriteBytes() {
 }
 
 @test:Config {}
+isolated function testByteChannelInputParams() returns error? {
+    string filePath = TEST_RESOURCE_PATH + "empty.txt";
+    ReadableByteChannel readableByteChannel = check openReadableFile(filePath);
+    ReadableCharacterChannel readableCharacterChannel = new(readableByteChannel, DEFAULT_ENCODING);
+    WritableByteChannel writableByteChannel = check openWritableFile(filePath);
+    WritableCharacterChannel writableCharacterChannel = new(writableByteChannel, DEFAULT_ENCODING);
+
+    var e1 = channelReadBytes(readableCharacterChannel);
+    if !(e1 is Error) {
+        test:assertFail(msg = "Expected TypeMismatchError not found");
+    }
+    var e2 = channelReadBlocksAsStream(readableCharacterChannel);
+    if !(e2 is Error) {
+        test:assertFail(msg = "Expected TypeMismatchError not found");
+    }
+    var e3 = channelWriteBytes(writableCharacterChannel, []);
+    if !(e3 is Error) {
+        test:assertFail(msg = "Expected TypeMismatchError not found");
+    }
+    var e4 = channelWriteBlocksFromStream(writableCharacterChannel, [].toStream());
+    if !(e4 is Error) {
+        test:assertFail(msg = "Expected TypeMismatchError not found");
+    }
+}
+
+@test:Config {}
 isolated function testFileWriteBytes() {
     string filePath = TEMP_DIR + "bytesFile2.txt";
     string content = "Sheldon Cooper";
