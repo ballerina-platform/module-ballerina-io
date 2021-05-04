@@ -13,7 +13,6 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-
 import ballerina/test;
 
 @test:Config {}
@@ -120,7 +119,10 @@ isolated function testFileWriteJsonWithTruncate() {
                 "fileServlet": "/static/*",
                 "cofaxTools": ["/tools1/*", "/tools2/*", "/tools3/*"]
             }}};
-    json content2 = {"userName": "Harry Thompson", "age": 23};
+    json content2 = {
+        "userName": "Harry Thompson",
+        "age": 23
+    };
 
     // Check content 01
     var result1 = fileWriteJson(filePath, content1);
@@ -139,7 +141,7 @@ isolated function testFileWriteJsonWithTruncate() {
     if (result3 is Error) {
         test:assertFail(msg = result3.message());
     }
-    var result4= fileReadJson(filePath);
+    var result4 = fileReadJson(filePath);
     if (result4 is json) {
         test:assertEquals(result4, content2);
     } else {
@@ -189,5 +191,22 @@ isolated function testReadHigherUnicodeJson() {
         }
     } else {
         test:assertFail(msg = byteChannel.message());
+    }
+}
+
+@test:Config {}
+isolated function testReadInvalidJsonFile() {
+    string filePath = TEMP_DIR + "invalidJsonFile.json";
+    string content = "{ stuff:";
+
+    var writeResult = fileWriteString(filePath, content);
+    if (writeResult is Error) {
+        test:assertFail(msg = writeResult.message());
+    }
+    json|Error readResult = fileReadJson(filePath);
+    if (readResult is json) {
+        test:assertFail("Expected io:Error not found");
+    } else {
+        test:assertEquals(readResult.message(), "expected \" or } at line: 1 column: 3");
     }
 }
