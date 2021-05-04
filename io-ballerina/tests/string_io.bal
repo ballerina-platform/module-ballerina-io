@@ -867,6 +867,20 @@ isolated function testGetWritableCharacterChannel() returns error? {
     }
 }
 
+@test:Config {}
+isolated function testReadChar() returns error? {
+    StringReader reader = new ("Sheldon Cooper");
+    string|Error? content1 = reader.readChar(7);
+    string|Error? content2 = reader.readChar(1);
+    string|Error? content3 = reader.readChar(6);
+    string|Error? content4 = reader.readChar(3);
+
+    test:assertEquals(content1, "Sheldon");
+    test:assertEquals(content2, " ");
+    test:assertEquals(content3, "Cooper");
+    test:assertEquals(content4, "");
+}
+
 isolated function isWindowsEnvironment() returns boolean = @java:Method {
     name: "isWindowsEnvironment",
     'class: "org.ballerinalang.stdlib.io.testutils.EnvironmentTestUtils"
