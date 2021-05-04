@@ -13,6 +13,7 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
+import ballerina/lang.'float as langfloat;
 import ballerina/test;
 
 @test:Config {}
@@ -27,6 +28,7 @@ isolated function testReadWriteInt16() returns error? {
     ReadableByteChannel readableByteChannel = check openReadableFile(path);
     ReadableDataChannel readableDataChannel = new (readableByteChannel, BIG_ENDIAN);
     test:assertEquals(readableDataChannel.readInt16(), value);
+    check readableDataChannel.close();
 }
 
 @test:Config {}
@@ -41,6 +43,7 @@ isolated function testReadWriteInt32() returns error? {
     ReadableByteChannel readableByteChannel = check openReadableFile(path);
     ReadableDataChannel readableDataChannel = new (readableByteChannel, BIG_ENDIAN);
     test:assertEquals(readableDataChannel.readInt32(), value);
+    check readableDataChannel.close();
 }
 
 @test:Config {}
@@ -55,6 +58,7 @@ isolated function testReadWriteInt64() returns error? {
     ReadableByteChannel readableByteChannel = check openReadableFile(path);
     ReadableDataChannel readableDataChannel = new (readableByteChannel, BIG_ENDIAN);
     test:assertEquals(readableDataChannel.readInt64(), value);
+    check readableDataChannel.close();
 }
 
 @test:Config {}
@@ -63,16 +67,33 @@ isolated function testReadWriteVarInt() returns error? {
     string path = TEMP_DIR + "varint64.bin";
     WritableByteChannel writableByteChannel = check openWritableFile(path);
     WritableDataChannel writableDataChannel = new (writableByteChannel, BIG_ENDIAN);
-    check writableDataChannel.writeInt64(value);
+    check writableDataChannel.writeVarInt(value);
     check writableDataChannel.close();
 
     ReadableByteChannel readableByteChannel = check openReadableFile(path);
     ReadableDataChannel readableDataChannel = new (readableByteChannel, BIG_ENDIAN);
-    test:assertEquals(readableDataChannel.readInt64(), value);
+    test:assertEquals(readableDataChannel.readVarInt(), value);
+    check readableDataChannel.close();
 }
 
 @test:Config {}
-isolated function testReadWriteFixedFloat() returns error? {
+isolated function testReadWriteFixedFloat32() returns error? {
+    float value = 14.69;
+    string path = TEMP_DIR + "float.bin";
+    WritableByteChannel writableByteChannel = check openWritableFile(path);
+    WritableDataChannel writableDataChannel = new (writableByteChannel, BIG_ENDIAN);
+    check writableDataChannel.writeFloat32(value);
+    check writableDataChannel.close();
+
+    ReadableByteChannel readableByteChannel = check openReadableFile(path);
+    ReadableDataChannel readableDataChannel = new (readableByteChannel, BIG_ENDIAN);
+    float f = check readableDataChannel.readFloat32();
+    test:assertEquals((langfloat:round(f * 100.0) / 100.0), value);
+    check readableDataChannel.close();
+}
+
+@test:Config {}
+isolated function testReadWriteFixedFloat64() returns error? {
     float value = 1359494.69;
     string path = TEMP_DIR + "float.bin";
     WritableByteChannel writableByteChannel = check openWritableFile(path);
@@ -83,6 +104,7 @@ isolated function testReadWriteFixedFloat() returns error? {
     ReadableByteChannel readableByteChannel = check openReadableFile(path);
     ReadableDataChannel readableDataChannel = new (readableByteChannel, BIG_ENDIAN);
     test:assertEquals(readableDataChannel.readFloat64(), value);
+    check readableDataChannel.close();
 }
 
 @test:Config {}
@@ -97,6 +119,7 @@ isolated function testReadWriteBool() returns error? {
     ReadableByteChannel readableByteChannel = check openReadableFile(path);
     ReadableDataChannel readableDataChannel = new (readableByteChannel, BIG_ENDIAN);
     test:assertEquals(readableDataChannel.readBool(), value);
+    check readableDataChannel.close();
 
 }
 
@@ -113,4 +136,5 @@ isolated function testReadWriteString() returns error? {
     ReadableByteChannel readableByteChannel = check openReadableFile(path);
     ReadableDataChannel readableDataChannel = new (readableByteChannel, BIG_ENDIAN);
     test:assertEquals(readableDataChannel.readString(nBytes, DEFAULT_ENCODING), value);
+    check readableDataChannel.close();
 }
