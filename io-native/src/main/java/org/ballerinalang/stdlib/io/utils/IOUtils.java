@@ -58,8 +58,7 @@ public class IOUtils {
      * @return an error which will be propagated to ballerina user
      */
     public static BError createError(String errorMsg) {
-        return ErrorCreator.createDistinctError(GenericError.errorCode(), getIOPackage(),
-                                                StringUtils.fromString(errorMsg));
+        return createError(GenericError, errorMsg);
     }
 
     /**
