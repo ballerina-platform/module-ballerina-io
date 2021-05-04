@@ -13,10 +13,9 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-
 import ballerina/test;
 
-@test:Config {dependsOn: [testWriteRecords]}
+@test:Config {}
 isolated function testStrToJsonConvert() {
     string content = "{\n" + "  \"test\": { \"name\": \"Foo\" }\n" + "}";
     json expectedJson = {test: {name: "Foo"}};
@@ -28,7 +27,7 @@ isolated function testStrToJsonConvert() {
     }
 }
 
-@test:Config {dependsOn: [testStrToJsonConvert]}
+@test:Config {}
 isolated function testXmlToJsonConvert() {
     string content = "<test>" + "<name>Foo</name>" + "</test>";
     xml expectedXml = xml `<test><name>Foo</name></test>`;
