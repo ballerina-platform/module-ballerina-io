@@ -14,6 +14,7 @@
 // specific language governing permissions and limitations
 // under the License.
 import ballerina/test;
+import ballerina/lang.'string as langstring;
 
 @test:Config {}
 isolated function testWriteXml() {
@@ -244,7 +245,7 @@ isolated function testFileWriteDocTypedXml() {
 
     xml content = checkpanic fileReadXml(originalFilePath);
     string doctypeValue = "<!DOCTYPE note SYSTEM \"Note.dtd\">";
-    var writeResult = fileWriteXml(filePath, content, doctype={system:"Note.dtd"});
+    var writeResult = fileWriteXml(filePath, content, doctype = {system: "Note.dtd"});
     if (writeResult is Error) {
         test:assertFail(msg = writeResult.message());
     }
@@ -275,7 +276,7 @@ isolated function testFileWriteDocTypedWithAppend() {
     string originalFilePath = "tests/resources/originalXmlContent.xml";
 
     xml content = checkpanic fileReadXml(originalFilePath);
-    var writeResult = fileWriteXml(filePath, content, fileWriteOption=APPEND);
+    var writeResult = fileWriteXml(filePath, content, fileWriteOption = APPEND);
     if (writeResult is Error) {
         test:assertEquals(writeResult.message(), "The file append operation is not allowed for Document Entity");
     } else {
@@ -295,7 +296,8 @@ isolated function testFileAppendDocTypedXml() {
     if (writeResult is Error) {
         test:assertFail(msg = writeResult.message());
     }
-    var appendResult = fileWriteXml(filePath, content2, fileWriteOption=APPEND, xmlEntityType=EXTERNAL_PARSED_ENTITY);
+    var appendResult = 
+    fileWriteXml(filePath, content2, fileWriteOption = APPEND, xmlEntityType = EXTERNAL_PARSED_ENTITY);
     if (appendResult is Error) {
         test:assertFail(msg = appendResult.message());
     }
@@ -320,7 +322,7 @@ isolated function testFileWriteDocTypedXmlWithInternalSubset() {
         <!ELEMENT heading (#PCDATA)>
         <!ELEMENT body (#PCDATA)>
     ]`;
-    var writeResult = fileWriteXml(filePath, content, doctype={internalSubset: internalSub});
+    var writeResult = fileWriteXml(filePath, content, doctype = {internalSubset: internalSub});
     if (writeResult is Error) {
         test:assertFail(msg = writeResult.message());
     }
@@ -346,7 +348,10 @@ isolated function testFileWriteDocTypedXmlWithPrioritizeInternalSubset() {
         <!ELEMENT heading (#PCDATA)>
         <!ELEMENT body (#PCDATA)>
     ]`;
-    var writeResult = fileWriteXml(filePath, content, doctype={internalSubset: internalSub, system: systemId});
+    var writeResult = fileWriteXml(filePath, content, doctype = {
+        internalSubset: internalSub,
+        system: systemId
+    });
     if (writeResult is Error) {
         test:assertFail(msg = writeResult.message());
     }
@@ -365,11 +370,32 @@ isolated function testFileWriteDocTypedXmlWithPublic() {
     string doctypeValue = "<!DOCTYPE note PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">";
     string publicId = "-//W3C//DTD HTML 4.01 Transitional//EN";
     string systemId = "http://www.w3.org/TR/html4/loose.dtd";
-    var writeResult = fileWriteXml(filePath, content, doctype={system: systemId, 'public: publicId});
+    var writeResult = fileWriteXml(filePath, content, doctype = {
+        system: systemId,
+        'public: publicId
+    });
     if (writeResult is Error) {
         test:assertFail(msg = writeResult.message());
     }
     string readResult = checkpanic fileReadString(filePath);
     string expectedResult = checkpanic fileReadString(resultFilePath);
     test:assertEquals(readResult, expectedResult);
+}
+
+@test:Config {}
+isolated function testReadInvalidXmlFile() {
+    string filePath = TEMP_DIR + "invalidXmlFile.json";
+    string content = "{ stuff:";
+
+    var writeResult = fileWriteString(filePath, content);
+    if (writeResult is Error) {
+        test:assertFail(msg = writeResult.message());
+    }
+    xml|Error readResult = fileReadXml(filePath);
+    if (readResult is xml) {
+        test:assertFail("Expected io:Error not found");
+    } else {
+        test:assertTrue(langstring:includes(readResult.message(), 
+        "failed to create xml: Unexpected character '{' (code 123) in prolog; expected '<", 0));
+    }
 }
