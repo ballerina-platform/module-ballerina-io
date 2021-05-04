@@ -101,10 +101,10 @@ Error? {
 # io:Error? result = io:fileWriteLinesFromStream("./resources/myfile.txt", lineStream);
 # ```
 # + path - The path of the file
-# + lineStream -  A stream of lines to write
+# + lineStream - A stream of lines to write
 # + option - To indicate whether to overwrite or append the given content
 # + return - The null `()` value when the writing was successful or an `io:Error`
-public isolated function fileWriteLinesFromStream(@untainted string path, stream<string, Error?> lineStream,
+public isolated function fileWriteLinesFromStream(@untainted string path, stream<string, Error?> lineStream, 
                                                   FileWriteOption option = OVERWRITE) returns Error? {
     return channelWriteLinesFromStream(check openWritableFile(path, option), lineStream);
 }
@@ -131,8 +131,8 @@ public isolated function fileWriteJson(@untainted string path, json content) ret
 # + xmlOptions - XML writing options(XML entity type and DOCTYPE)
 # + fileWriteOption - file write option(`OVERWRITE` and `APPEND` are the possible values, and the default value is `OVERWRITE`)
 # + return - The null `()` value when the writing was successful or an `io:Error`
-public isolated function fileWriteXml(@untainted string path, xml content, *XmlWriteOptions xmlOptions, FileWriteOption fileWriteOption = 
-                                      OVERWRITE) returns Error? {
+public isolated function fileWriteXml(@untainted string path, xml content, FileWriteOption fileWriteOption = OVERWRITE, 
+                                      *XmlWriteOptions xmlOptions) returns Error? {
     WritableByteChannel byteChannel;
     if (xmlOptions.xmlEntityType == DOCUMENT_ENTITY) {
         if (fileWriteOption == APPEND) {
