@@ -356,7 +356,7 @@ isolated function testFileWriteDocTypedXmlWithPrioritizeInternalSubset() {
 }
 
 @test:Config {}
-isolated function testFileWriteDocTypedXmlWithPublic() {
+isolated function testFileWriteDocTypedXmlWithPublicAndSystemId() {
     string filePath = TEMP_DIR + "xmlCharsFile7.xml";
     string originalFilePath = "tests/resources/originalXmlContent.xml";
     string resultFilePath = "tests/resources/expectedXmlCharsFile7.xml";
@@ -366,6 +366,24 @@ isolated function testFileWriteDocTypedXmlWithPublic() {
     string publicId = "-//W3C//DTD HTML 4.01 Transitional//EN";
     string systemId = "http://www.w3.org/TR/html4/loose.dtd";
     var writeResult = fileWriteXml(filePath, content, doctype={system: systemId, 'public: publicId});
+    if (writeResult is Error) {
+        test:assertFail(msg = writeResult.message());
+    }
+    string readResult = checkpanic fileReadString(filePath);
+    string expectedResult = checkpanic fileReadString(resultFilePath);
+    test:assertEquals(readResult, expectedResult);
+}
+
+@test:Config {}
+isolated function testFileWriteDocTypedXmlWithPublic() {
+    string filePath = TEMP_DIR + "xmlCharsFile7.xml";
+    string originalFilePath = "tests/resources/originalXmlContent.xml";
+    string resultFilePath = "tests/resources/expectedXmlCharsFile8.xml";
+
+    xml content = checkpanic fileReadXml(originalFilePath);
+    string doctypeValue = "<!DOCTYPE note PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">";
+    string publicId = "-//W3C//DTD HTML 4.01 Transitional//EN";
+    var writeResult = fileWriteXml(filePath, content, doctype={'public: publicId});
     if (writeResult is Error) {
         test:assertFail(msg = writeResult.message());
     }
