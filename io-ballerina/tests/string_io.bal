@@ -825,6 +825,48 @@ isolated function testFileChannelReadLinesWithByteChannel() {
     }
 }
 
+@test:Config {}
+isolated function testGetReadableCharacterChannel() returns error? {
+    string filePath = TEST_RESOURCE_PATH + "empty.txt";
+    ReadableByteChannel readableByteChannel = check openReadableFile(filePath);
+    ReadableCharacterChannel readableCharacterChannel = new(readableByteChannel, DEFAULT_ENCODING);
+    ReadableCSVChannel readableCsvChannel = new(readableCharacterChannel);
+
+    var readableCsvChannel1 = getReadableCharacterChannel(readableByteChannel);
+    if !(readableCsvChannel1 is ReadableCharacterChannel) {
+        test:assertFail(msg = "Expected ReadableCharacterChannel not found");
+    }
+    var readableCsvChannel2 = getReadableCharacterChannel(readableCharacterChannel);
+    if !(readableCsvChannel2 is ReadableCharacterChannel) {
+        test:assertFail(msg = "Expected ReadableCharacterChannel not found");
+    }
+    var err = getReadableCharacterChannel(readableCsvChannel);
+    if !(err is TypeMismatchError) {
+        test:assertFail(msg = "Expected TypeMismatchError not found");
+    }
+}
+
+@test:Config {}
+isolated function testGetWritableCharacterChannel() returns error? {
+    string filePath = TEST_RESOURCE_PATH + "empty.txt";
+    WritableByteChannel writableByteChannel = check openWritableFile(filePath);
+    WritableCharacterChannel writableCharacterChannel = new(writableByteChannel, DEFAULT_ENCODING);
+    WritableCSVChannel writableCsvChannel = new(writableCharacterChannel);
+
+    var writableCsvChannel1 = getWritableCharacterChannel(writableByteChannel);
+    if !(writableCsvChannel1 is WritableCharacterChannel) {
+        test:assertFail(msg = "Expected WritableCharacterChannel not found");
+    }
+    var writableCsvChannel2 = getWritableCharacterChannel(writableCharacterChannel);
+    if !(writableCsvChannel2 is WritableCharacterChannel) {
+        test:assertFail(msg = "Expected WritableCharacterChannel not found");
+    }
+    var err = getWritableCharacterChannel(writableCsvChannel);
+    if !(err is TypeMismatchError) {
+        test:assertFail(msg = "Expected TypeMismatchError not found");
+    }
+}
+
 isolated function isWindowsEnvironment() returns boolean = @java:Method {
     name: "isWindowsEnvironment",
     'class: "org.ballerinalang.stdlib.io.testutils.EnvironmentTestUtils"
