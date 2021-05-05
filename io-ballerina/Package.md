@@ -1,5 +1,8 @@
 ## Package Overview
 
+The I/O package APIs allow read and write operations of the different kinds of file types such as bytes, text, CSV, JSON, and XML.
+Further, these APIs can be categorized as streaming and non-streaming APIs.
+
 The following diagram depicts the overview architecture of the I/O package.
 
 ![architecture](./resources/package-architecture.svg)
