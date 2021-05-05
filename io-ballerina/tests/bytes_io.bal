@@ -488,7 +488,7 @@ function testFileWriteBytesFromStreamWithAppendUsingIntermediateFile() returns E
 }
 
 @test:Config {}
-function testFileWriteBytesFromStreamWithOverride() {
+function testFileWriteBytesFromStreamWithOverride() returns Error? {
     string filePath = TEMP_DIR + "bytesFile9.txt";
     string[] content1 = ["Ballerina ", "is ", "an "];
     string[] content2 = ["open ", "source ", "programming ", "language"];
@@ -525,6 +525,7 @@ function testFileWriteBytesFromStreamWithOverride() {
         } else {
             test:assertFail(msg = returnedString.message());
         }
+        check result2.close();
     } else {
         test:assertFail(msg = result2.message());
     }
@@ -548,6 +549,7 @@ function testFileWriteBytesFromStreamWithOverride() {
         } else {
             test:assertFail(msg = returnedString.message());
         }
+        check result4.close();
     } else {
         test:assertFail(msg = result4.message());
     }

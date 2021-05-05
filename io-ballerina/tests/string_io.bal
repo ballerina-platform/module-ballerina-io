@@ -659,7 +659,7 @@ function testFileWriteLinesFromStreamWithAppendUsingIntermediateFile() returns E
 }
 
 @test:Config {}
-function testFileWriteLinesFromStreamWithOverwrite() {
+function testFileWriteLinesFromStreamWithOverwrite() returns Error? {
     string filePath = TEMP_DIR + "stringContentAsLines2_B.txt";
     string[] content1 = ["The Big Bang Theory", "F.R.I.E.N.D.S", "Game of Thrones", "LOST"];
     string[] content2 = ["WSO2", "Google", "Microsoft", "Facebook", "Apple"];
@@ -681,6 +681,7 @@ function testFileWriteLinesFromStreamWithOverwrite() {
             test:assertFail(msg = e.message());
         }
         test:assertEquals(i, 4);
+        check result2.close();
     } else {
         test:assertFail(msg = result2.message());
     }
@@ -702,6 +703,7 @@ function testFileWriteLinesFromStreamWithOverwrite() {
             test:assertFail(msg = e.message());
         }
         test:assertEquals(i, 5);
+        check result4.close();
     } else {
         test:assertFail(msg = result4.message());
     }
