@@ -18,6 +18,7 @@
 apply plugin: "java"
 apply plugin: "com.github.spotbugs"
 apply plugin: "checkstyle"
+apply plugin: "jacoco"
 
 description = 'Ballerina - I/O Java Utils'
 
@@ -35,6 +36,18 @@ dependencies {
 
 test {
     useTestNG() {}
+    finalizedBy jacocoTestReport
+}
+
+jacoco {
+    toolVersion = "${jacocoVersion}"
+}
+
+jacocoTestReport {
+    dependsOn test
+    reports {
+        xml.enabled true
+    }
 }
 
 spotbugsMain {
