@@ -13,14 +13,13 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-
 import ballerina/jballerina.java;
 import ballerina/test;
 import ballerina/lang.'string as langstring;
 
 @test:BeforeSuite
 isolated function beforeFunc() {
-     createDirectoryExtern(TEMP_DIR);
+    createDirectoryExtern(TEMP_DIR);
 }
 
 @test:Config {}
@@ -85,6 +84,32 @@ isolated function testWriteBytes() {
 }
 
 @test:Config {}
+isolated function testByteChannelInputParams() returns error? {
+    string filePath = TEST_RESOURCE_PATH + "empty.txt";
+    ReadableByteChannel readableByteChannel = check openReadableFile(filePath);
+    ReadableCharacterChannel readableCharacterChannel = new (readableByteChannel, DEFAULT_ENCODING);
+    WritableByteChannel writableByteChannel = check openWritableFile(filePath);
+    WritableCharacterChannel writableCharacterChannel = new (writableByteChannel, DEFAULT_ENCODING);
+
+    var e1 = channelReadBytes(readableCharacterChannel);
+    if !(e1 is Error) {
+        test:assertFail(msg = "Expected TypeMismatchError not found");
+    }
+    var e2 = channelReadBlocksAsStream(readableCharacterChannel);
+    if !(e2 is Error) {
+        test:assertFail(msg = "Expected TypeMismatchError not found");
+    }
+    var e3 = channelWriteBytes(writableCharacterChannel, []);
+    if !(e3 is Error) {
+        test:assertFail(msg = "Expected TypeMismatchError not found");
+    }
+    var e4 = channelWriteBlocksFromStream(writableCharacterChannel, [].toStream());
+    if !(e4 is Error) {
+        test:assertFail(msg = "Expected TypeMismatchError not found");
+    }
+}
+
+@test:Config {}
 isolated function testFileWriteBytes() {
     string filePath = TEMP_DIR + "bytesFile2.txt";
     string content = "Sheldon Cooper";
@@ -129,10 +154,10 @@ function testFileReadBytesAsStreamUsingIntermediateFile() {
     byte[] byteArr = [];
     if (result is stream<Block, Error?>) {
         error? e = result.forEach(function(Block val) {
-            foreach byte b in val {
-                byteArr.push(b);
-            }
-        });
+                                      foreach byte b in val {
+                                          byteArr.push(b);
+                                      }
+                                  });
         string|error returnedString = langstring:fromBytes(byteArr);
         if (returnedString is string) {
             test:assertEquals(returnedString, expectedString);
@@ -168,10 +193,10 @@ function testFileReadBytesAsStream() {
     byte[] byteArr = [];
     if (result is stream<Block, Error?>) {
         error? e = result.forEach(function(Block val) {
-            foreach byte b in val {
-                byteArr.push(b);
-            }
-        });
+                                      foreach byte b in val {
+                                          byteArr.push(b);
+                                      }
+                                  });
         string|error returnedString = langstring:fromBytes(byteArr);
         if (returnedString is string) {
             test:assertEquals(returnedString, expectedString);
@@ -246,10 +271,10 @@ function testFileChannelReadBytesAsStream() {
         var result = channelReadBlocksAsStream(fileOpenResult, 2);
         if (result is stream<Block, Error?>) {
             error? e = result.forEach(function(Block val) {
-                                   foreach byte b in val {
-                                       byteArr.push(b);
-                                   }
-                               });
+                                          foreach byte b in val {
+                                              byteArr.push(b);
+                                          }
+                                      });
             string|error returnedString = langstring:fromBytes(byteArr);
             if (returnedString is string) {
                 test:assertEquals(returnedString, expectedString);
@@ -283,8 +308,8 @@ isolated function testFileCopy() {
 @test:Config {}
 isolated function testFileWriteBytesWithOverwrite() {
     string filePath = TEMP_DIR + "bytesFile6.txt";
-    string content1 = "Ballerina is an open source programming language and " +
-    "platform for cloud-era application programmers to easily write software that just works.";
+    string content1 = 
+    "Ballerina is an open source programming language and " + "platform for cloud-era application programmers to easily write software that just works.";
     string content2 = "Ann Johnson is a banker.";
 
     // Check content 01
@@ -315,8 +340,8 @@ isolated function testFileWriteBytesWithOverwrite() {
 @test:Config {}
 isolated function testFileWriteBytesWithAppend() {
     string filePath = TEMP_DIR + "bytesFile7.txt";
-    string content1 = "Ballerina is an open source programming language and " +
-    "platform for cloud-era application programmers to easily write software that just works. ";
+    string content1 = 
+    "Ballerina is an open source programming language and " + "platform for cloud-era application programmers to easily write software that just works. ";
     string content2 = "Ann Johnson is a banker.";
 
     // Check content 01
@@ -338,7 +363,7 @@ isolated function testFileWriteBytesWithAppend() {
     }
     var result4 = fileReadBytes(filePath);
     if (result4 is (readonly & byte[])) {
-        test:assertEquals(result4, (content1+content2).toBytes());
+        test:assertEquals(result4, (content1 + content2).toBytes());
     } else {
         test:assertFail(msg = result4.message());
     }
@@ -365,10 +390,10 @@ function testFileWriteBytesFromStreamWithOverrideUsingIntermediateFile() returns
     byte[] byteArr1 = [];
     if (result2 is stream<Block, Error?>) {
         error? e = result2.forEach(function(Block val) {
-            foreach byte b in val {
-                byteArr1.push(b);
-            }
-        });
+                                       foreach byte b in val {
+                                           byteArr1.push(b);
+                                       }
+                                   });
         string|error returnedString = langstring:fromBytes(byteArr1);
         if (returnedString is string) {
             test:assertEquals(returnedString, content1);
@@ -388,10 +413,10 @@ function testFileWriteBytesFromStreamWithOverrideUsingIntermediateFile() returns
     byte[] byteArr2 = [];
     if (result4 is stream<Block, Error?>) {
         error? e = result4.forEach(function(Block val) {
-            foreach byte b in val {
-                byteArr2.push(b);
-            }
-        });
+                                       foreach byte b in val {
+                                           byteArr2.push(b);
+                                       }
+                                   });
         string|error returnedString = langstring:fromBytes(byteArr2);
         if (returnedString is string) {
             test:assertEquals(returnedString, content2);
@@ -424,10 +449,10 @@ function testFileWriteBytesFromStreamWithAppendUsingIntermediateFile() returns E
     byte[] byteArr1 = [];
     if (result2 is stream<Block, Error?>) {
         error? e = result2.forEach(function(Block val) {
-            foreach byte b in val {
-                byteArr1.push(b);
-            }
-        });
+                                       foreach byte b in val {
+                                           byteArr1.push(b);
+                                       }
+                                   });
         string|error returnedString = langstring:fromBytes(byteArr1);
         if (returnedString is string) {
             test:assertEquals(returnedString, content1);
@@ -447,10 +472,10 @@ function testFileWriteBytesFromStreamWithAppendUsingIntermediateFile() returns E
     byte[] byteArr2 = [];
     if (result4 is stream<Block, Error?>) {
         error? e = result4.forEach(function(Block val) {
-            foreach byte b in val {
-                byteArr2.push(b);
-            }
-        });
+                                       foreach byte b in val {
+                                           byteArr2.push(b);
+                                       }
+                                   });
         string|error returnedString = langstring:fromBytes(byteArr2);
         if (returnedString is string) {
             test:assertEquals(returnedString, (content1 + content2));
@@ -490,10 +515,10 @@ function testFileWriteBytesFromStreamWithOverride() {
     byte[] byteArr1 = [];
     if (result2 is stream<Block, Error?>) {
         error? e = result2.forEach(function(Block val) {
-            foreach byte b in val {
-                byteArr1.push(b);
-            }
-        });
+                                       foreach byte b in val {
+                                           byteArr1.push(b);
+                                       }
+                                   });
         string|error returnedString = langstring:fromBytes(byteArr1);
         if (returnedString is string) {
             test:assertEquals(returnedString, expectedContent1);
@@ -513,10 +538,10 @@ function testFileWriteBytesFromStreamWithOverride() {
     byte[] byteArr2 = [];
     if (result4 is stream<Block, Error?>) {
         error? e = result4.forEach(function(Block val) {
-            foreach byte b in val {
-                byteArr2.push(b);
-            }
-        });
+                                       foreach byte b in val {
+                                           byteArr2.push(b);
+                                       }
+                                   });
         string|error returnedString = langstring:fromBytes(byteArr2);
         if (returnedString is string) {
             test:assertEquals(returnedString, expectedContent2);
@@ -556,10 +581,10 @@ function testFileWriteBytesFromStreamWithAppend() {
     byte[] byteArr1 = [];
     if (result2 is stream<Block, Error?>) {
         error? e = result2.forEach(function(Block val) {
-            foreach byte b in val {
-                byteArr1.push(b);
-            }
-        });
+                                       foreach byte b in val {
+                                           byteArr1.push(b);
+                                       }
+                                   });
         string|error returnedString = langstring:fromBytes(byteArr1);
         if (returnedString is string) {
             test:assertEquals(returnedString, expectedContent1);
@@ -579,10 +604,10 @@ function testFileWriteBytesFromStreamWithAppend() {
     byte[] byteArr2 = [];
     if (result4 is stream<Block, Error?>) {
         error? e = result4.forEach(function(Block val) {
-            foreach byte b in val {
-                byteArr2.push(b);
-            }
-        });
+                                       foreach byte b in val {
+                                           byteArr2.push(b);
+                                       }
+                                   });
         string|error returnedString = langstring:fromBytes(byteArr2);
         if (returnedString is string) {
             test:assertEquals(returnedString, expectedContent2);
@@ -592,6 +617,18 @@ function testFileWriteBytesFromStreamWithAppend() {
     } else {
         test:assertFail(msg = result4.message());
     }
+}
+
+@test:Config {}
+isolated function testBase64EncodeAndDecode() returns error? {
+    string filePath = TEMP_DIR + "bytesFile10.txt";
+    string expectedString = "Ballerina is an open source programming language.";
+    check fileWriteString(filePath, expectedString);
+    ReadableByteChannel byteChannel = check openReadableFile(filePath);
+    ReadableByteChannel encodedByteChannel = check byteChannel.base64Encode();
+    ReadableByteChannel decodedByteChannel = check encodedByteChannel.base64Decode();
+    test:assertEquals(langstring:fromBytes(check decodedByteChannel.readAll()), expectedString);
+
 }
 
 isolated function createDirectoryExtern(string path) = @java:Method {

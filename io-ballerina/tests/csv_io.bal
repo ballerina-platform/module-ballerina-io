@@ -736,7 +736,7 @@ isolated function testFileCsvWriteWithOverwrite() {
     "Software Architect", "WSO2", "38 years", "Colombo"], ["Mary Thompson", "Banker", "Sampath Bank", "30 years",
     "Colombo"]];
     string[][] content2 = [["Distributed Computing", "A001", "Prof. Jack"], ["Quantum Computing", "A002", "Dr. Sam"],
-    ["Artificail Intelligence", "A003", "Prof. Angelina"]];
+    ["Artificial Intelligence", "A003", "Prof. Angelina"]];
 
     // Check content 01
     var result1 = fileWriteCsv(filePath, content1);
@@ -786,12 +786,12 @@ isolated function testFileCsvWriteWithAppend() {
     "Software Architect", "WSO2", "38 years", "Colombo"], ["Mary Thompson", "Banker", "Sampath Bank", "30 years",
     "Colombo"]];
     string[][] content2 = [["Distributed Computing", "A001", "Prof. Jack"], ["Quantum Computing", "A002", "Dr. Sam"],
-    ["Artificail Intelligence", "A003", "Prof. Angelina"]];
+    ["Artificial Intelligence", "A003", "Prof. Angelina"]];
     string[][] expectedCsv = [["Anne Hamiltom", "Software Engineer", "Microsoft", "26 years", "New York"],
     ["John Thomson", "Software Architect", "WSO2", "38 years", "Colombo"],
     ["Mary Thompson", "Banker", "Sampath Bank", "30 years", "Colombo"],
     ["Distributed Computing", "A001", "Prof. Jack"], ["Quantum Computing", "A002", "Dr. Sam"],
-    ["Artificail Intelligence", "A003", "Prof. Angelina"]];
+    ["Artificial Intelligence", "A003", "Prof. Angelina"]];
 
     // Check content 01
     var result1 = fileWriteCsv(filePath, content1);
@@ -845,7 +845,7 @@ function testFileCsvWriteFromStreamWithOverwriteUsingResourceFile() returns Erro
     "Software Architect", "WSO2", "38 years", "Colombo"], ["Mary Thompson", "Banker", "Sampath Bank", "30 years",
     "Colombo"]];
     string[][] content2 = [["Distributed Computing", "A001", "Prof. Jack"], ["Quantum Computing", "A002", "Dr. Sam"],
-    ["Artificail Intelligence", "A003", "Prof. Angelina"]];
+    ["Artificial Intelligence", "A003", "Prof. Angelina"]];
 
     // Check content 01
     var result1 = fileWriteCsvFromStream(filePath, csvStream1);
@@ -910,7 +910,7 @@ function testFileCsvWriteFromStreamWithAppendUsingResourceFile() returns Error? 
     ["John Thomson", "Software Architect", "WSO2", "38 years", "Colombo"],
     ["Mary Thompson", "Banker", "Sampath Bank", "30 years", "Colombo"],
     ["Distributed Computing", "A001", "Prof. Jack"], ["Quantum Computing", "A002", "Dr. Sam"],
-    ["Artificail Intelligence", "A003", "Prof. Angelina"]];
+    ["Artificial Intelligence", "A003", "Prof. Angelina"]];
 
     // Check content 01
     var result1 = fileWriteCsvFromStream(filePath, csvStream1);
@@ -968,7 +968,7 @@ function testFileCsvWriteFromStreamWithOverwrite() {
     "Software Architect", "WSO2", "38 years", "Colombo"], ["Mary Thompson", "Banker", "Sampath Bank", "30 years",
     "Colombo"]];
     string[][] content2 = [["Distributed Computing", "A001", "Prof. Jack"], ["Quantum Computing", "A002", "Dr. Sam"],
-    ["Artificail Intelligence", "A003", "Prof. Angelina"]];
+    ["Artificial Intelligence", "A003", "Prof. Angelina"]];
 
     // Check content 01
     var result1 = fileWriteCsvFromStream(filePath, content1.toStream());
@@ -1026,12 +1026,12 @@ function testFileCsvWriteFromStreamWithAppend() {
     "Software Architect", "WSO2", "38 years", "Colombo"], ["Mary Thompson", "Banker", "Sampath Bank", "30 years",
     "Colombo"]];
     string[][] content2 = [["Distributed Computing", "A001", "Prof. Jack"], ["Quantum Computing", "A002", "Dr. Sam"],
-    ["Artificail Intelligence", "A003", "Prof. Angelina"]];
+    ["Artificial Intelligence", "A003", "Prof. Angelina"]];
     string[][] expectedCsv = [["Anne Hamiltom", "Software Engineer", "Microsoft", "26 years", "New York"],
     ["John Thomson", "Software Architect", "WSO2", "38 years", "Colombo"],
     ["Mary Thompson", "Banker", "Sampath Bank", "30 years", "Colombo"],
     ["Distributed Computing", "A001", "Prof. Jack"], ["Quantum Computing", "A002", "Dr. Sam"],
-    ["Artificail Intelligence", "A003", "Prof. Angelina"]];
+    ["Artificial Intelligence", "A003", "Prof. Angelina"]];
 
     // Check content 01
     var result1 = fileWriteCsvFromStream(filePath, content1.toStream());
@@ -1081,3 +1081,46 @@ function testFileCsvWriteFromStreamWithAppend() {
         test:assertFail(msg = result4.message());
     }
 }
+
+@test:Config {}
+isolated function testGetReadableCSVChannel() returns error? {
+    string filePath = TEST_RESOURCE_PATH + "csvResourceFileForUtils.csv";
+    ReadableByteChannel readableByteChannel = check openReadableFile(filePath);
+    ReadableCharacterChannel readableCharacterChannel = new(readableByteChannel, DEFAULT_ENCODING);
+    ReadableCSVChannel readableCsvChannel = new(readableCharacterChannel);
+
+    var readableCsvChannel1 = getReadableCSVChannel(readableByteChannel, 0);
+    if !(readableCsvChannel1 is ReadableCSVChannel) {
+        test:assertFail(msg = "Expected ReadableCSVChannel not found");
+    }
+    var readableCsvChannel2 = getReadableCSVChannel(readableCharacterChannel, 0);
+    if !(readableCsvChannel2 is ReadableCSVChannel) {
+        test:assertFail(msg = "Expected ReadableCSVChannel not found");
+    }
+    var readableCsvChannel3 = getReadableCSVChannel(readableCsvChannel, 0);
+    if !(readableCsvChannel3 is ReadableCSVChannel) {
+        test:assertFail(msg = "Expected ReadableCSVChannel not found");
+    }
+}
+
+@test:Config {}
+isolated function testGetWritableCSVChannel() returns error? {
+    string filePath = TEST_RESOURCE_PATH + "csvResourceFileForUtils.csv";
+    WritableByteChannel writableByteChannel = check openWritableFile(filePath);
+    WritableCharacterChannel writableCharacterChannel = new(writableByteChannel, DEFAULT_ENCODING);
+    WritableCSVChannel writableCsvChannel = new(writableCharacterChannel);
+
+    var writableCsvChannel1 = getWritableCSVChannel(writableByteChannel);
+    if !(writableCsvChannel1 is WritableCSVChannel) {
+        test:assertFail(msg = "Expected WritableCSVChannel not found");
+    }
+    var writableCsvChannel2 = getWritableCSVChannel(writableCharacterChannel);
+    if !(writableCsvChannel2 is WritableCSVChannel) {
+        test:assertFail(msg = "Expected WritableCSVChannel not found");
+    }
+    var writableCsvChannel3 = getWritableCSVChannel(writableCsvChannel);
+    if !(writableCsvChannel3 is WritableCSVChannel) {
+        test:assertFail(msg = "Expected WritableCSVChannel not found");
+    }
+}
+

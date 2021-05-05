@@ -13,193 +13,128 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-
+import ballerina/lang.'float as langfloat;
 import ballerina/test;
 
-@test:Config {dependsOn: [testTableWithHeader]}
-isolated function testWriteFixedSignedInt() {
-    int value = 123;
-    ByteOrder byteOrder = BIG_ENDIAN;
-    string path = TEMP_DIR + "integer.bin";
-    var ch = openWritableFile(path);
+@test:Config {}
+isolated function testReadWriteInt16() returns error? {
+    int value = 32767;
+    string path = TEMP_DIR + "integer16.bin";
+    WritableByteChannel writableByteChannel = check openWritableFile(path);
+    WritableDataChannel writableDataChannel = new (writableByteChannel, BIG_ENDIAN);
+    check writableDataChannel.writeInt16(value);
+    check writableDataChannel.close();
 
-    if (ch is WritableByteChannel) {
-        WritableDataChannel dataChannel = new (ch, byteOrder);
-        Error? result = dataChannel.writeInt64(value);
-        Error? closeResult = dataChannel.close();
-    } else {
-        test:assertFail(msg = ch.message());
-    }
+    ReadableByteChannel readableByteChannel = check openReadableFile(path);
+    ReadableDataChannel readableDataChannel = new (readableByteChannel, BIG_ENDIAN);
+    test:assertEquals(readableDataChannel.readInt16(), value);
+    check readableDataChannel.close();
 }
 
-@test:Config {dependsOn: [testWriteFixedSignedInt]}
-isolated function testReadFixedSignedInt() {
-    int value = 123;
-    ByteOrder byteOrder = BIG_ENDIAN;
-    string path = TEMP_DIR + "integer.bin";
+@test:Config {}
+isolated function testReadWriteInt32() returns error? {
+    int value = 2147483647;
+    string path = TEMP_DIR + "integer32.bin";
+    WritableByteChannel writableByteChannel = check openWritableFile(path);
+    WritableDataChannel writableDataChannel = new (writableByteChannel, BIG_ENDIAN);
+    check writableDataChannel.writeInt32(value);
+    check writableDataChannel.close();
 
-    var ch = openReadableFile(path);
-    if (ch is ReadableByteChannel) {
-        ReadableDataChannel dataChannel = new (ch, byteOrder);
-        var result = dataChannel.readInt64();
-        if (result is int) {
-            test:assertEquals(result, value);
-        } else {
-            test:assertFail(msg = result.message());
-        }
-        Error? closeResult = dataChannel.close();
-    } else {
-        test:assertFail(msg = ch.message());
-    }
+    ReadableByteChannel readableByteChannel = check openReadableFile(path);
+    ReadableDataChannel readableDataChannel = new (readableByteChannel, BIG_ENDIAN);
+    test:assertEquals(readableDataChannel.readInt32(), value);
+    check readableDataChannel.close();
 }
 
-@test:Config {dependsOn: [testReadFixedSignedInt]}
-isolated function testWriteVarInt() {
-    var value = 456;
-    ByteOrder byteOrder = BIG_ENDIAN;
-    string path = TEMP_DIR + "varint.bin";
-    var ch = openWritableFile(path);
+@test:Config {}
+isolated function testReadWriteInt64() returns error? {
+    int value = 342147483647;
+    string path = TEMP_DIR + "integer64.bin";
+    WritableByteChannel writableByteChannel = check openWritableFile(path);
+    WritableDataChannel writableDataChannel = new (writableByteChannel, BIG_ENDIAN);
+    check writableDataChannel.writeInt64(value);
+    check writableDataChannel.close();
 
-    if (ch is WritableByteChannel) {
-        WritableDataChannel dataChannel = new (ch, byteOrder);
-        Error? result = dataChannel.writeInt64(value);
-        Error? closeResult = dataChannel.close();
-    } else {
-        test:assertFail(msg = ch.message());
-    }
+    ReadableByteChannel readableByteChannel = check openReadableFile(path);
+    ReadableDataChannel readableDataChannel = new (readableByteChannel, BIG_ENDIAN);
+    test:assertEquals(readableDataChannel.readInt64(), value);
+    check readableDataChannel.close();
 }
 
-@test:Config {dependsOn: [testWriteVarInt]}
-isolated function testReadVarInt() {
-    int value = 456;
-    ByteOrder byteOrder = BIG_ENDIAN;
-    string path = TEMP_DIR + "varint.bin";
+@test:Config {}
+isolated function testReadWriteVarInt() returns error? {
+    var value = 342147483647;
+    string path = TEMP_DIR + "varint64.bin";
+    WritableByteChannel writableByteChannel = check openWritableFile(path);
+    WritableDataChannel writableDataChannel = new (writableByteChannel, BIG_ENDIAN);
+    check writableDataChannel.writeVarInt(value);
+    check writableDataChannel.close();
 
-    var ch = openReadableFile(path);
-    if (ch is ReadableByteChannel) {
-        ReadableDataChannel dataChannel = new (ch, byteOrder);
-        var result = dataChannel.readInt64();
-        if (result is int) {
-            test:assertEquals(result, value);
-        } else {
-            test:assertFail(msg = result.message());
-        }
-        Error? closeResult = dataChannel.close();
-    } else {
-        test:assertFail(msg = ch.message());
-    }
+    ReadableByteChannel readableByteChannel = check openReadableFile(path);
+    ReadableDataChannel readableDataChannel = new (readableByteChannel, BIG_ENDIAN);
+    test:assertEquals(readableDataChannel.readVarInt(), value);
+    check readableDataChannel.close();
 }
 
-@test:Config {dependsOn: [testWriteVarInt]}
-isolated function testWriteFixedFloat() {
-    float value = 1359494.69;
-    ByteOrder byteOrder = BIG_ENDIAN;
+@test:Config {}
+isolated function testReadWriteFixedFloat32() returns error? {
+    float value = 14.69;
     string path = TEMP_DIR + "float.bin";
-    var ch = openWritableFile(path);
+    WritableByteChannel writableByteChannel = check openWritableFile(path);
+    WritableDataChannel writableDataChannel = new (writableByteChannel, BIG_ENDIAN);
+    check writableDataChannel.writeFloat32(value);
+    check writableDataChannel.close();
 
-    if (ch is WritableByteChannel) {
-        WritableDataChannel dataChannel = new (ch, byteOrder);
-        Error? result = dataChannel.writeFloat64(value);
-        Error? closeResult = dataChannel.close();
-    } else {
-        test:assertFail(msg = ch.message());
-    }
+    ReadableByteChannel readableByteChannel = check openReadableFile(path);
+    ReadableDataChannel readableDataChannel = new (readableByteChannel, BIG_ENDIAN);
+    float f = check readableDataChannel.readFloat32();
+    test:assertEquals((langfloat:round(f * 100.0) / 100.0), value);
+    check readableDataChannel.close();
 }
 
-@test:Config {dependsOn: [testWriteFixedFloat]}
-isolated function testReadFixedFloat() {
+@test:Config {}
+isolated function testReadWriteFixedFloat64() returns error? {
     float value = 1359494.69;
-    ByteOrder byteOrder = BIG_ENDIAN;
     string path = TEMP_DIR + "float.bin";
-    var ch = openReadableFile(path);
+    WritableByteChannel writableByteChannel = check openWritableFile(path);
+    WritableDataChannel writableDataChannel = new (writableByteChannel, BIG_ENDIAN);
+    check writableDataChannel.writeFloat64(value);
+    check writableDataChannel.close();
 
-    if (ch is ReadableByteChannel) {
-        ReadableDataChannel dataChannel = new (ch, byteOrder);
-        var result = dataChannel.readFloat64();
-        if (result is float) {
-            test:assertEquals(result, value);
-        } else {
-            test:assertFail(msg = result.message());
-        }
-        Error? closeResult = dataChannel.close();
-    } else {
-        test:assertFail(msg = ch.message());
-    }
+    ReadableByteChannel readableByteChannel = check openReadableFile(path);
+    ReadableDataChannel readableDataChannel = new (readableByteChannel, BIG_ENDIAN);
+    test:assertEquals(readableDataChannel.readFloat64(), value);
+    check readableDataChannel.close();
 }
 
-@test:Config {dependsOn: [testReadFixedFloat]}
-isolated function testWriteBool() {
+@test:Config {}
+isolated function testReadWriteBool() returns error? {
     boolean value = true;
-    ByteOrder byteOrder = BIG_ENDIAN;
     string path = TEMP_DIR + "boolean.bin";
-    var ch = openWritableFile(path);
+    WritableByteChannel writableByteChannel = check openWritableFile(path);
+    WritableDataChannel writableDataChannel = new (writableByteChannel, BIG_ENDIAN);
+    check writableDataChannel.writeBool(value);
+    check writableDataChannel.close();
 
-    if (ch is WritableByteChannel) {
-        WritableDataChannel dataChannel = new (ch, byteOrder);
-        Error? result = dataChannel.writeBool(value);
-        Error? closeResult = dataChannel.close();
-    } else {
-        test:assertFail(msg = ch.message());
-    }
+    ReadableByteChannel readableByteChannel = check openReadableFile(path);
+    ReadableDataChannel readableDataChannel = new (readableByteChannel, BIG_ENDIAN);
+    test:assertEquals(readableDataChannel.readBool(), value);
+    check readableDataChannel.close();
+
 }
 
-@test:Config {dependsOn: [testWriteBool]}
-isolated function testReadBool() {
-    boolean value = true;
-    ByteOrder byteOrder = BIG_ENDIAN;
-    string path = TEMP_DIR + "boolean.bin";
-    var ch = openReadableFile(path);
-
-    if (ch is ReadableByteChannel) {
-        ReadableDataChannel dataChannel = new (ch, byteOrder);
-        var result = dataChannel.readBool();
-        if (result is boolean) {
-            test:assertTrue(result);
-        } else {
-            test:assertFail(msg = result.message());
-        }
-        Error? closeResult = dataChannel.close();
-    } else {
-        test:assertFail(msg = ch.message());
-    }
-}
-
-@test:Config {dependsOn: [testReadBool]}
-isolated function testWriteString() {
+@test:Config {}
+isolated function testReadWriteString() returns error? {
     string value = "Ballerina";
-    ByteOrder byteOrder = BIG_ENDIAN;
-    string path = TEMP_DIR + "string.bin";
-    string encoding = "UTF-8";
-    var ch = openWritableFile(path);
-
-    if (ch is WritableByteChannel) {
-        WritableDataChannel dataChannel = new (ch, byteOrder);
-        Error? result = dataChannel.writeString(value, encoding);
-        Error? closeResult = dataChannel.close();
-    } else {
-        test:assertFail(msg = ch.message());
-    }
-}
-
-@test:Config {dependsOn: [testWriteString]}
-isolated function testReadString() {
-    string value = "Ballerina";
-    ByteOrder byteOrder = BIG_ENDIAN;
-    string encoding = "UTF-8";
     string path = TEMP_DIR + "string.bin";
     int nBytes = value.toBytes().length();
+    WritableByteChannel writableByteChannel = check openWritableFile(path);
+    WritableDataChannel writableDataChannel = new (writableByteChannel, BIG_ENDIAN);
+    check writableDataChannel.writeString(value, DEFAULT_ENCODING);
+    check writableDataChannel.close();
 
-    var ch = openReadableFile(path);
-    if (ch is ReadableByteChannel) {
-        ReadableDataChannel dataChannel = new (ch, byteOrder);
-        var result = dataChannel.readString(nBytes, encoding);
-        if (result is string) {
-            test:assertEquals(result, value);
-        } else {
-            test:assertFail(msg = result.message());
-        }
-        Error? closeResult = dataChannel.close();
-    } else {
-        test:assertFail(msg = ch.message());
-    }
+    ReadableByteChannel readableByteChannel = check openReadableFile(path);
+    ReadableDataChannel readableDataChannel = new (readableByteChannel, BIG_ENDIAN);
+    test:assertEquals(readableDataChannel.readString(nBytes, DEFAULT_ENCODING), value);
+    check readableDataChannel.close();
 }
