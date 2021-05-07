@@ -61,9 +61,11 @@ public class ByteChannelUtils extends AbstractNativeChannel {
     private static final String STREAM_BLOCK_ENTRY = "value";
 
     private ByteChannelUtils() {
+
     }
 
     public static Object read(BObject channel, long nBytes) {
+
         int arraySize = nBytes <= 0 ? IOConstants.CHANNEL_BUFFER_SIZE : (int) nBytes;
         Channel byteChannel = (Channel) channel.getNativeData(BYTE_CHANNEL_NAME);
         ByteBuffer content = ByteBuffer.wrap(new byte[arraySize]);
@@ -82,6 +84,7 @@ public class ByteChannelUtils extends AbstractNativeChannel {
     }
 
     public static Object readAll(BObject channel) {
+
         try {
             BufferedInputStream bufferedInputStream = getBufferedInputStream(channel);
             if (bufferedInputStream != null) {
@@ -94,6 +97,7 @@ public class ByteChannelUtils extends AbstractNativeChannel {
     }
 
     public static Object readBlock(BObject channel, long blockSize) {
+
         int blockSizeInt = (int) blockSize;
         try {
             BufferedInputStream bufferedInputStream = getBufferedInputStream(channel);
@@ -116,6 +120,7 @@ public class ByteChannelUtils extends AbstractNativeChannel {
     }
 
     private static byte[] getContentData(final ByteBuffer contentBuffer) {
+
         int bufferSize = contentBuffer.limit();
         int readPosition = contentBuffer.position();
         byte[] content = contentBuffer.array();
@@ -127,14 +132,17 @@ public class ByteChannelUtils extends AbstractNativeChannel {
     }
 
     public static Object base64Encode(BObject channel) {
+
         return Utils.encodeByteChannel(channel, false);
     }
 
     public static Object base64Decode(BObject channel) {
+
         return Utils.decodeByteChannel(channel, false);
     }
 
     public static Object closeByteChannel(BObject channel) {
+
         Channel byteChannel = (Channel) channel.getNativeData(BYTE_CHANNEL_NAME);
         try {
             BufferedInputStream bufferedInputStream = getBufferedInputStream(channel);
@@ -151,6 +159,7 @@ public class ByteChannelUtils extends AbstractNativeChannel {
     }
 
     public static Object closeInputStream(BObject channel) {
+
         try {
             BufferedInputStream bufferedInputStream = getBufferedInputStream(channel);
             if (bufferedInputStream != null) {
@@ -163,18 +172,28 @@ public class ByteChannelUtils extends AbstractNativeChannel {
     }
 
     public static Object write(BObject channel, BArray content, long offset) {
+
         Channel byteChannel = (Channel) channel.getNativeData(BYTE_CHANNEL_NAME);
         ByteBuffer writeBuffer = ByteBuffer.wrap(content.getBytes());
         writeBuffer.position((int) offset);
         try {
-            return byteChannel.write(writeBuffer);
+            if (byteChannel != null) {
+                return byteChannel.write(writeBuffer);
+            }
+            return IOUtils.createError(IOConstants.ErrorCode.GenericError,
+                    "WritableByteChannel is not initialized");
         } catch (IOException e) {
             log.error("Error occurred while writing to the channel.", e);
+            if (e instanceof ClosedChannelException) {
+                return IOUtils.createError(IOConstants.ErrorCode.GenericError,
+                        "WritableByteChannel is already closed");
+            }
             return IOUtils.createError(e);
         }
     }
 
     public static Object openReadableFile(BString pathUrl) {
+
         BObject readableByteChannel;
         try {
             readableByteChannel = createChannel(inFlow(pathUrl.getValue(), IOConstants.FileOpenOption.READ));
@@ -193,6 +212,7 @@ public class ByteChannelUtils extends AbstractNativeChannel {
     }
 
     public static Object openWritableFile(BString pathUrl, BString option) {
+
         try {
             if (IOConstants.FileOpenOption.OVERWRITE.name().equals(option.getValue())) {
                 return createChannel(inFlow(pathUrl.getValue(), IOConstants.FileOpenOption.OVERWRITE));
@@ -207,6 +227,7 @@ public class ByteChannelUtils extends AbstractNativeChannel {
     }
 
     public static Object createReadableChannel(BArray content) {
+
         try {
             Channel channel = inFlow(content);
             return createChannel(channel);
@@ -216,6 +237,7 @@ public class ByteChannelUtils extends AbstractNativeChannel {
     }
 
     private static Channel inFlow(String pathUrl, IOConstants.FileOpenOption option) throws BallerinaIOException {
+
         Path path = Paths.get(pathUrl);
         FileChannel fileChannel;
         Channel channel;
@@ -231,6 +253,7 @@ public class ByteChannelUtils extends AbstractNativeChannel {
     }
 
     private static Channel inFlow(BArray contentArr) {
+
         byte[] content = shrink(contentArr);
         ByteArrayInputStream contentStream = new ByteArrayInputStream(content);
         ReadableByteChannel readableByteChannel = Channels.newChannel(contentStream);
@@ -238,6 +261,7 @@ public class ByteChannelUtils extends AbstractNativeChannel {
     }
 
     private static byte[] shrink(BArray array) {
+
         int contentLength = array.size();
         byte[] content = new byte[contentLength];
         System.arraycopy(array.getBytes(), 0, content, 0, contentLength);
@@ -245,6 +269,7 @@ public class ByteChannelUtils extends AbstractNativeChannel {
     }
 
     private static BufferedInputStream getBufferedInputStream(BObject channel) throws IOException {
+
         if (channel.getNativeData(IOConstants.BUFFERED_INPUT_STREAM_ENTRY) != null) {
             return (BufferedInputStream) channel.getNativeData(IOConstants.BUFFERED_INPUT_STREAM_ENTRY);
         } else {
