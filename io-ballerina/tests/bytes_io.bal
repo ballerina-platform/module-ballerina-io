@@ -488,7 +488,7 @@ function testFileWriteBytesFromStreamWithAppendUsingIntermediateFile() returns E
 }
 
 @test:Config {}
-function testFileWriteBytesFromStreamWithOverride() {
+function testFileWriteBytesFromStreamWithOverride() returns Error? {
     string filePath = TEMP_DIR + "bytesFile9.txt";
     string[] content1 = ["Ballerina ", "is ", "an "];
     string[] content2 = ["open ", "source ", "programming ", "language"];
@@ -525,6 +525,7 @@ function testFileWriteBytesFromStreamWithOverride() {
         } else {
             test:assertFail(msg = returnedString.message());
         }
+        check result2.close();
     } else {
         test:assertFail(msg = result2.message());
     }
@@ -548,6 +549,7 @@ function testFileWriteBytesFromStreamWithOverride() {
         } else {
             test:assertFail(msg = returnedString.message());
         }
+        check result4.close();
     } else {
         test:assertFail(msg = result4.message());
     }
@@ -629,6 +631,72 @@ isolated function testBase64EncodeAndDecode() returns error? {
     ReadableByteChannel decodedByteChannel = check encodedByteChannel.base64Decode();
     test:assertEquals(langstring:fromBytes(check decodedByteChannel.readAll()), expectedString);
 
+}
+
+@test:Config {}
+isolated function testByteChannelReadAfterClose() returns error? {
+    string filePath = TEST_RESOURCE_PATH + "stringResourceFile1.txt";
+    ReadableByteChannel readableByteChannel = check openReadableFile(filePath);
+    check readableByteChannel.close();
+    var err = readableByteChannel.read(2);
+    if (err is Error) {
+        test:assertEquals(err.message(), "error occurred while reading bytes from the channel. null");
+    } else {
+        test:assertFail(msg = "Expected io:Error not found");
+    }
+
+}
+
+@test:Config {}
+isolated function testByteChannelReadAllAfterClose() returns error? {
+    string filePath = TEST_RESOURCE_PATH + "stringResourceFile1.txt";
+    ReadableByteChannel readableByteChannel = check openReadableFile(filePath);
+    check readableByteChannel.close();
+    var err = readableByteChannel.readAll();
+    if (err is Error) {
+        test:assertEquals(err.message(), "Stream closed");
+    } else {
+        test:assertFail(msg = "Expected io:Error not found");
+    }
+}
+
+@test:Config {}
+isolated function testByteChannelBase64EncodeAfterClose() returns error? {
+    string filePath = TEST_RESOURCE_PATH + "stringResourceFile1.txt";
+    ReadableByteChannel readableByteChannel = check openReadableFile(filePath);
+    check readableByteChannel.close();
+    var err = readableByteChannel.base64Encode();
+    if (err is Error) {
+        test:assertEquals(err.message(), "Channel is already closed.");
+    } else {
+        test:assertFail(msg = "Expected io:Error not found");
+    }
+}
+
+@test:Config {}
+isolated function testByteChannelBase64DecodeAfterClose() returns error? {
+    string filePath = TEST_RESOURCE_PATH + "stringResourceFile1.txt";
+    ReadableByteChannel readableByteChannel = check openReadableFile(filePath);
+    check readableByteChannel.close();
+    var err = readableByteChannel.base64Decode();
+    if (err is Error) {
+        test:assertEquals(err.message(), "Channel is already closed.");
+    } else {
+        test:assertFail(msg = "Expected io:Error not found");
+    }
+}
+
+@test:Config {}
+isolated function testByteChannelWriteAfterClose() returns error? {
+    string filePath = TEMP_DIR + "temp.txt";
+    WritableByteChannel writableByteChannel = check openWritableFile(filePath);
+    check writableByteChannel.close();
+    var err = writableByteChannel.write([], 0);
+    if (err is Error) {
+        test:assertEquals(err.message(), "WritableByteChannel is already closed");
+    } else {
+        test:assertFail(msg = "Expected io:Error not found");
+    }
 }
 
 isolated function createDirectoryExtern(string path) = @java:Method {

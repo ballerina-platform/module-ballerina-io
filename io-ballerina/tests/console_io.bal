@@ -241,6 +241,12 @@ isolated function testPrintError() {
 }
 
 @test:Config {dependsOn: [testPrintError]}
+isolated function testPrintNil() {
+    print(());
+    test:assertEquals(readOutputStream(), "");
+}
+
+@test:Config {dependsOn: [testPrintNil]}
 isolated function testPrintlnRawTemplateWithTrue() {
     boolean val = true;
     string expectedOutput = "The respective boolean value is true\n";
@@ -332,6 +338,12 @@ isolated function testPrintlnError() {
     string expectedOutput = "error(\"sample error\")\n";
     println(e);
     test:assertEquals(readOutputStream(), expectedOutput);
+}
+
+@test:Config {dependsOn: [testPrintlnError]}
+isolated function testPrintlnNil() {
+    println(());
+    test:assertEquals(readOutputStream(), "\n");
 }
 
 isolated function func1(int a, int b) returns (int) {

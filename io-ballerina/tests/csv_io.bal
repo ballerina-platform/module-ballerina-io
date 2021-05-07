@@ -962,7 +962,7 @@ function testFileCsvWriteFromStreamWithAppendUsingResourceFile() returns Error? 
 }
 
 @test:Config {}
-function testFileCsvWriteFromStreamWithOverwrite() {
+function testFileCsvWriteFromStreamWithOverwrite() returns Error? {
     string filePath = TEMP_DIR + "workers7.csv";
     string[][] content1 = [["Anne Hamiltom", "Software Engineer", "Microsoft", "26 years", "New York"], ["John Thomson",
     "Software Architect", "WSO2", "38 years", "Colombo"], ["Mary Thompson", "Banker", "Sampath Bank", "30 years",
@@ -990,6 +990,7 @@ function testFileCsvWriteFromStreamWithOverwrite() {
             test:assertFail(msg = e.message());
         }
         test:assertEquals(i, 3);
+        check result2.close();
     } else {
         test:assertFail(msg = result2.message());
     }
@@ -1014,6 +1015,7 @@ function testFileCsvWriteFromStreamWithOverwrite() {
             test:assertFail(msg = e.message());
         }
         test:assertEquals(i, 3);
+        check result4.close();
     } else {
         test:assertFail(msg = result4.message());
     }

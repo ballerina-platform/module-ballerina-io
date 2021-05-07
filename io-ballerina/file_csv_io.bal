@@ -32,7 +32,7 @@ public isolated function fileReadCsv(@untainted string path, int skipHeaders = 0
 # + path - The CSV file path
 # + return - The entire CSV content in the channel a stream of string arrays or an `io:Error`
 public isolated function fileReadCsvAsStream(@untainted string path) returns @tainted stream<string[], Error?>|Error {
-    return (check openReadableCsvFile(path)).csvStream();
+    return channelReadCsvAsStream(check openReadableCsvFile(path));
 }
 
 # Write CSV content to a file.

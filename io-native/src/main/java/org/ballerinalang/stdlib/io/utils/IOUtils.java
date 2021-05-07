@@ -28,6 +28,7 @@ import org.ballerinalang.stdlib.io.nativeimpl.ModuleUtils;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.channels.ClosedChannelException;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
 import java.nio.file.AccessDeniedException;
@@ -154,6 +155,8 @@ public class IOUtils {
                                 totalNumberOfCharsWritten);
                 throw new BallerinaIOException(message);
             }
+        }  catch (ClosedChannelException e) {
+            throw new BallerinaIOException("writable channel is already closed", e);
         } catch (IOException e) {
             throw new BallerinaIOException("unable to write the content fully", e);
         }
