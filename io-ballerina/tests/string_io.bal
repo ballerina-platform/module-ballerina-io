@@ -986,6 +986,79 @@ isolated function testCharacterChannelReadAllPropertiesAfterClose() returns erro
     }
 }
 
+@test:Config {}
+isolated function testCharacterChannelWriteAfterClose() returns error? {
+    string filePath = TEMP_DIR + "tmpFile.txt";
+    WritableByteChannel byteChannel = check openWritableFile(filePath);
+    WritableCharacterChannel characterChannel = new (byteChannel, DEFAULT_ENCODING);
+    check characterChannel.close();
+    var err = characterChannel.write("", 0);
+    if (err is Error) {
+        test:assertEquals(err.message(), "WritableCharacterChannel is already closed");
+    } else {
+        test:assertFail(msg = "Expected io:Error not found");
+    }
+}
+
+@test:Config {}
+isolated function testCharacterChannelWriteLineAfterClose() returns error? {
+    string filePath = TEMP_DIR + "tmpFile.txt";
+    WritableByteChannel byteChannel = check openWritableFile(filePath);
+    WritableCharacterChannel characterChannel = new (byteChannel, DEFAULT_ENCODING);
+    check characterChannel.close();
+    var err = characterChannel.writeLine("");
+    if (err is Error) {
+        test:assertEquals(err.message(), "WritableCharacterChannel is already closed");
+    } else {
+        test:assertFail(msg = "Expected io:Error not found");
+    }
+}
+
+@test:Config {}
+isolated function testCharacterChannelWriteJsonAfterClose() returns error? {
+    string filePath = TEMP_DIR + "tmpFile.txt";
+    json j = {};
+    WritableByteChannel byteChannel = check openWritableFile(filePath);
+    WritableCharacterChannel characterChannel = new (byteChannel, DEFAULT_ENCODING);
+    check characterChannel.close();
+    var err = characterChannel.writeJson(j);
+    if (err is Error) {
+        test:assertEquals(err.message(), "writable channel is already closed");
+    } else {
+        test:assertFail(msg = "Expected io:Error not found");
+    }
+}
+
+@test:Config {}
+isolated function testCharacterChannelWriteXmlAfterClose() returns error? {
+    string filePath = TEMP_DIR + "tmpFile.txt";
+    xml x = xml `<book>The Lost World</book>`;
+    WritableByteChannel byteChannel = check openWritableFile(filePath);
+    WritableCharacterChannel characterChannel = new (byteChannel, DEFAULT_ENCODING);
+    check characterChannel.close();
+    var err = characterChannel.writeXml(x);
+    if (err is Error) {
+        test:assertEquals(err.message(), "writable channel is already closed");
+    } else {
+        test:assertFail(msg = "Expected io:Error not found");
+    }
+}
+
+@test:Config {}
+isolated function testCharacterChannelWritePropertiesAfterClose() returns error? {
+    string filePath = TEMP_DIR + "tmpFile.txt";
+    map<string> properties = {};
+    WritableByteChannel byteChannel = check openWritableFile(filePath);
+    WritableCharacterChannel characterChannel = new (byteChannel, DEFAULT_ENCODING);
+    check characterChannel.close();
+    var err = characterChannel.writeProperties(properties, "");
+    if (err is Error) {
+        test:assertEquals(err.message(), "WritableCharacterChannel is already closed");
+    } else {
+        test:assertFail(msg = "Expected io:Error not found");
+    }
+}
+
 isolated function isWindowsEnvironment() returns boolean = @java:Method {
     name: "isWindowsEnvironment",
     'class: "org.ballerinalang.stdlib.io.testutils.EnvironmentTestUtils"
