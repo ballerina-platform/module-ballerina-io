@@ -686,6 +686,19 @@ isolated function testByteChannelBase64DecodeAfterClose() returns error? {
     }
 }
 
+@test:Config {}
+isolated function testByteChannelWriteAfterClose() returns error? {
+    string filePath = TEMP_DIR + "temp.txt";
+    WritableByteChannel writableByteChannel = check openWritableFile(filePath);
+    check writableByteChannel.close();
+    var err = writableByteChannel.write([], 0);
+    if (err is Error) {
+        test:assertEquals(err.message(), "WritableByteChannel is already closed");
+    } else {
+        test:assertFail(msg = "Expected io:Error not found");
+    }
+}
+
 isolated function createDirectoryExtern(string path) = @java:Method {
     name: "createDirectory",
     'class: "org.ballerinalang.stdlib.io.testutils.FileTestUtils"
