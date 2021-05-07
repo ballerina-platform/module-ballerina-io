@@ -13,7 +13,6 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-
 import ballerina/jballerina.java;
 import ballerina/test;
 
@@ -322,8 +321,8 @@ isolated function testFileReadString() {
 @test:Config {}
 isolated function testFileWriteStringWithOverwrite() {
     string filePath = TEMP_DIR + "stringContent2.txt";
-    string content1 = "Ballerina is an open source programming language and " +
-    "platform for cloud-era application programmers to easily write software that just works.";
+    string content1 = 
+    "Ballerina is an open source programming language and " + "platform for cloud-era application programmers to easily write software that just works.";
     string content2 = "Ann Johnson is a banker.";
 
     // Check content 01
@@ -354,8 +353,8 @@ isolated function testFileWriteStringWithOverwrite() {
 @test:Config {}
 isolated function testFileWriteStringWithAppend() {
     string filePath = TEMP_DIR + "stringContent3.txt";
-    string content1 = "Ballerina is an open source programming language and " +
-    "platform for cloud-era application programmers to easily write software that just works.";
+    string content1 = 
+    "Ballerina is an open source programming language and " + "platform for cloud-era application programmers to easily write software that just works.";
     string content2 = "Ann Johnson is a banker.";
 
     // Check content 01
@@ -377,7 +376,7 @@ isolated function testFileWriteStringWithAppend() {
     }
     var result4 = fileReadString(filePath);
     if (result4 is string) {
-        test:assertEquals(result4, (content1+content2));
+        test:assertEquals(result4, (content1 + content2));
     } else {
         test:assertFail(msg = result4.message());
     }
@@ -453,8 +452,8 @@ isolated function testFileWriteLinesWithAppend() {
     string filePath = TEMP_DIR + "stringContentAsLines2.txt";
     string[] content1 = ["The Big Bang Theory", "F.R.I.E.N.D.S", "Game of Thrones", "LOST"];
     string[] content2 = ["WSO2", "Google", "Microsoft", "Facebook", "Apple"];
-    string[] expectedLines = ["The Big Bang Theory", "F.R.I.E.N.D.S", "Game of Thrones", "LOST",
-                                "WSO2", "Google", "Microsoft", "Facebook", "Apple"];
+    string[] expectedLines = 
+    ["The Big Bang Theory", "F.R.I.E.N.D.S", "Game of Thrones", "LOST", "WSO2", "Google", "Microsoft", "Facebook", "Apple"];
     // Check content 01
     var result1 = fileWriteLines(filePath, content1);
     if (result1 is Error) {
@@ -508,9 +507,9 @@ function testFileReadLinesAsStreamUsingIntermediateFile() {
     if (result is stream<string, error?>) {
         int i = 0;
         error? e = result.forEach(function(string val) {
-                               test:assertEquals(val, expectedLines[i]);
-                               i += 1;
-                           });
+                                      test:assertEquals(val, expectedLines[i]);
+                                      i += 1;
+                                  });
 
         if (e is error) {
             test:assertFail(msg = e.message());
@@ -613,8 +612,8 @@ function testFileWriteLinesFromStreamWithAppendUsingIntermediateFile() returns E
     stream<string, Error?> lineStream1 = check fileReadLinesAsStream(resourceFilePath1);
     stream<string, Error?> lineStream2 = check fileReadLinesAsStream(resourceFilePath2);
     string[] initialContent = ["The Big Bang Theory", "F.R.I.E.N.D.S", "Game of Thrones", "LOST"];
-    string[] expectedLines = ["The Big Bang Theory", "F.R.I.E.N.D.S", "Game of Thrones", "LOST",
-                                "WSO2", "Google", "Microsoft", "Facebook", "Apple"];
+    string[] expectedLines = 
+    ["The Big Bang Theory", "F.R.I.E.N.D.S", "Game of Thrones", "LOST", "WSO2", "Google", "Microsoft", "Facebook", "Apple"];
     // Check content 01
     var result1 = fileWriteLinesFromStream(filePath, lineStream1);
     if (result1 is Error) {
@@ -645,9 +644,9 @@ function testFileWriteLinesFromStreamWithAppendUsingIntermediateFile() returns E
     if (result4 is stream<string, Error?>) {
         int i = 0;
         error? e = result4.forEach(function(string val) {
-                               test:assertEquals(val, expectedLines[i]);
-                               i += 1;
-                           });
+                                       test:assertEquals(val, expectedLines[i]);
+                                       i += 1;
+                                   });
 
         if (e is error) {
             test:assertFail(msg = e.message());
@@ -695,9 +694,9 @@ function testFileWriteLinesFromStreamWithOverwrite() returns Error? {
     if (result4 is stream<string, error?>) {
         int i = 0;
         error? e = result4.forEach(function(string val) {
-                               test:assertEquals(val, content2[i]);
-                               i += 1;
-                           });
+                                       test:assertEquals(val, content2[i]);
+                                       i += 1;
+                                   });
 
         if (e is error) {
             test:assertFail(msg = e.message());
@@ -714,8 +713,8 @@ function testFileWriteLinesFromStreamWithAppend() {
     string filePath = TEMP_DIR + "stringContentAsLines2_B.txt";
     string[] content1 = ["The Big Bang Theory", "F.R.I.E.N.D.S", "Game of Thrones", "LOST"];
     string[] content2 = ["WSO2", "Google", "Microsoft", "Facebook", "Apple"];
-    string[] expectedLines = ["The Big Bang Theory", "F.R.I.E.N.D.S", "Game of Thrones", "LOST",
-                                "WSO2", "Google", "Microsoft", "Facebook", "Apple"];
+    string[] expectedLines = 
+    ["The Big Bang Theory", "F.R.I.E.N.D.S", "Game of Thrones", "LOST", "WSO2", "Google", "Microsoft", "Facebook", "Apple"];
     // Check content 01
     var result1 = fileWriteLinesFromStream(filePath, content1.toStream());
     if (result1 is Error) {
@@ -725,9 +724,9 @@ function testFileWriteLinesFromStreamWithAppend() {
     if (result2 is stream<string, error?>) {
         int i = 0;
         error? e = result2.forEach(function(string val) {
-                               test:assertEquals(val, content1[i]);
-                               i += 1;
-                           });
+                                       test:assertEquals(val, content1[i]);
+                                       i += 1;
+                                   });
 
         if (e is error) {
             test:assertFail(msg = e.message());
@@ -831,8 +830,8 @@ isolated function testFileChannelReadLinesWithByteChannel() {
 isolated function testGetReadableCharacterChannel() returns error? {
     string filePath = TEST_RESOURCE_PATH + "empty.txt";
     ReadableByteChannel readableByteChannel = check openReadableFile(filePath);
-    ReadableCharacterChannel readableCharacterChannel = new(readableByteChannel, DEFAULT_ENCODING);
-    ReadableCSVChannel readableCsvChannel = new(readableCharacterChannel);
+    ReadableCharacterChannel readableCharacterChannel = new (readableByteChannel, DEFAULT_ENCODING);
+    ReadableCSVChannel readableCsvChannel = new (readableCharacterChannel);
 
     var readableCsvChannel1 = getReadableCharacterChannel(readableByteChannel);
     if !(readableCsvChannel1 is ReadableCharacterChannel) {
@@ -852,8 +851,8 @@ isolated function testGetReadableCharacterChannel() returns error? {
 isolated function testGetWritableCharacterChannel() returns error? {
     string filePath = TEST_RESOURCE_PATH + "empty.txt";
     WritableByteChannel writableByteChannel = check openWritableFile(filePath);
-    WritableCharacterChannel writableCharacterChannel = new(writableByteChannel, DEFAULT_ENCODING);
-    WritableCSVChannel writableCsvChannel = new(writableCharacterChannel);
+    WritableCharacterChannel writableCharacterChannel = new (writableByteChannel, DEFAULT_ENCODING);
+    WritableCSVChannel writableCsvChannel = new (writableCharacterChannel);
 
     var writableCsvChannel1 = getWritableCharacterChannel(writableByteChannel);
     if !(writableCsvChannel1 is WritableCharacterChannel) {
@@ -881,6 +880,110 @@ isolated function testReadChar() returns error? {
     test:assertEquals(content2, " ");
     test:assertEquals(content3, "Cooper");
     test:assertEquals(content4, "");
+}
+
+@test:Config {}
+isolated function testCharacterChannelReadAfterClose() returns error? {
+    string filePath = TEST_RESOURCE_PATH + "stringResourceFile1.txt";
+    ReadableByteChannel byteChannel = check openReadableFile(filePath);
+    ReadableCharacterChannel characterChannel = new (byteChannel, DEFAULT_ENCODING);
+    check characterChannel.close();
+    var err = characterChannel.read(2);
+    if (err is Error) {
+        test:assertEquals(err.message(), "error occurred while reading from channel: null");
+    } else {
+        test:assertFail(msg = "Expected io:Error not found");
+    }
+}
+
+@test:Config {}
+isolated function testCharacterChannelReadStringAfterClose() returns error? {
+    string filePath = TEST_RESOURCE_PATH + "stringResourceFile1.txt";
+    ReadableByteChannel byteChannel = check openReadableFile(filePath);
+    ReadableCharacterChannel characterChannel = new (byteChannel, DEFAULT_ENCODING);
+    check characterChannel.close();
+    var err = characterChannel.readString();
+    if (err is Error) {
+        test:assertEquals(err.message(), "java.io.IOException: Stream closed");
+    } else {
+        test:assertFail(msg = "Expected io:Error not found");
+    }
+}
+
+@test:Config {}
+isolated function testCharacterChannelReadAllLinesAfterClose() returns error? {
+    string filePath = TEST_RESOURCE_PATH + "stringResourceFile1.txt";
+    ReadableByteChannel byteChannel = check openReadableFile(filePath);
+    ReadableCharacterChannel characterChannel = new (byteChannel, DEFAULT_ENCODING);
+    check characterChannel.close();
+    var err = characterChannel.readAllLines();
+    if (err is Error) {
+        test:assertEquals(err.message(), "java.io.IOException: Stream closed");
+    } else {
+        test:assertFail(msg = "Expected io:Error not found");
+    }
+}
+
+@test:Config {}
+isolated function testCharacterChannelReadJsonAfterClose() returns error? {
+    string filePath = TEST_RESOURCE_PATH + "empty.txt";
+    ReadableByteChannel byteChannel = check openReadableFile(filePath);
+    ReadableCharacterChannel characterChannel = new (byteChannel, DEFAULT_ENCODING);
+    check characterChannel.close();
+    var err = characterChannel.readJson();
+    if (err is Error) {
+
+        test:assertEquals(err.message(), 
+        "Error reading JSON: org.ballerinalang.stdlib.io.utils.BallerinaIOException: error occurred while reading from channel: null");
+    } else {
+        test:assertFail(msg = "Expected io:Error not found");
+    }
+}
+
+@test:Config {}
+isolated function testCharacterChannelReadXmlAfterClose() returns error? {
+    string filePath = TEST_RESOURCE_PATH + "empty.txt";
+    ReadableByteChannel byteChannel = check openReadableFile(filePath);
+    ReadableCharacterChannel characterChannel = new (byteChannel, DEFAULT_ENCODING);
+    check characterChannel.close();
+    var err = characterChannel.readXml();
+    if (err is Error) {
+
+        test:assertEquals(err.message(), 
+        "failed to create xml: org.ballerinalang.stdlib.io.utils.BallerinaIOException: error occurred while reading from channel: null");
+    } else {
+        test:assertFail(msg = "Expected io:Error not found");
+    }
+}
+
+@test:Config {}
+isolated function testCharacterChannelReadPropertyAfterClose() returns error? {
+    string filePath = TEST_RESOURCE_PATH + "empty.txt";
+    ReadableByteChannel byteChannel = check openReadableFile(filePath);
+    ReadableCharacterChannel characterChannel = new (byteChannel, DEFAULT_ENCODING);
+    check characterChannel.close();
+    var err = characterChannel.readProperty("xxx");
+    if (err is Error) {
+        test:assertEquals(err.message(), 
+        "org.ballerinalang.stdlib.io.utils.BallerinaIOException: error occurred while reading from channel: null");
+    } else {
+        test:assertFail(msg = "Expected io:Error not found");
+    }
+}
+
+@test:Config {}
+isolated function testCharacterChannelReadAllPropertiesAfterClose() returns error? {
+    string filePath = TEST_RESOURCE_PATH + "empty.txt";
+    ReadableByteChannel byteChannel = check openReadableFile(filePath);
+    ReadableCharacterChannel characterChannel = new (byteChannel, DEFAULT_ENCODING);
+    check characterChannel.close();
+    var err = characterChannel.readAllProperties();
+    if (err is Error) {
+        test:assertEquals(err.message(), 
+        "org.ballerinalang.stdlib.io.utils.BallerinaIOException: error occurred while reading from channel: null");
+    } else {
+        test:assertFail(msg = "Expected io:Error not found");
+    }
 }
 
 isolated function isWindowsEnvironment() returns boolean = @java:Method {
