@@ -31,7 +31,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 /**
- * The unit test of the FileIOChannelTest class.
+ * The unit test of the FileIOChannel class.
  */
 public class FileIOChannelTest {
 
