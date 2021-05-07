@@ -633,6 +633,59 @@ isolated function testBase64EncodeAndDecode() returns error? {
 
 }
 
+@test:Config {}
+isolated function testByteChannelReadAfterClose() returns error? {
+    string filePath = TEST_RESOURCE_PATH + "stringResourceFile1.txt";
+    ReadableByteChannel readableByteChannel = check openReadableFile(filePath);
+    check readableByteChannel.close();
+    var err = readableByteChannel.read(2);
+    if (err is Error) {
+        test:assertEquals(err.message(), "error occurred while reading bytes from the channel. null");
+    } else {
+        test:assertFail(msg = "Expected io:Error not found");
+    }
+
+}
+
+@test:Config {}
+isolated function testByteChannelReadAllAfterClose() returns error? {
+    string filePath = TEST_RESOURCE_PATH + "stringResourceFile1.txt";
+    ReadableByteChannel readableByteChannel = check openReadableFile(filePath);
+    check readableByteChannel.close();
+    var err = readableByteChannel.readAll();
+    if (err is Error) {
+        test:assertEquals(err.message(), "Stream closed");
+    } else {
+        test:assertFail(msg = "Expected io:Error not found");
+    }
+}
+
+@test:Config {}
+isolated function testByteChannelBase64EncodeAfterClose() returns error? {
+    string filePath = TEST_RESOURCE_PATH + "stringResourceFile1.txt";
+    ReadableByteChannel readableByteChannel = check openReadableFile(filePath);
+    check readableByteChannel.close();
+    var err = readableByteChannel.base64Encode();
+    if (err is Error) {
+        test:assertEquals(err.message(), "Channel is already closed.");
+    } else {
+        test:assertFail(msg = "Expected io:Error not found");
+    }
+}
+
+@test:Config {}
+isolated function testByteChannelBase64DecodeAfterClose() returns error? {
+    string filePath = TEST_RESOURCE_PATH + "stringResourceFile1.txt";
+    ReadableByteChannel readableByteChannel = check openReadableFile(filePath);
+    check readableByteChannel.close();
+    var err = readableByteChannel.base64Decode();
+    if (err is Error) {
+        test:assertEquals(err.message(), "Channel is already closed.");
+    } else {
+        test:assertFail(msg = "Expected io:Error not found");
+    }
+}
+
 isolated function createDirectoryExtern(string path) = @java:Method {
     name: "createDirectory",
     'class: "org.ballerinalang.stdlib.io.testutils.FileTestUtils"
