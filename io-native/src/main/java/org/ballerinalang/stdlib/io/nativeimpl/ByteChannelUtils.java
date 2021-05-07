@@ -182,12 +182,11 @@ public class ByteChannelUtils extends AbstractNativeChannel {
             }
             return IOUtils.createError(IOConstants.ErrorCode.GenericError,
                     "WritableByteChannel is not initialized");
+        }  catch (ClosedChannelException e) {
+            return IOUtils.createError(IOConstants.ErrorCode.GenericError,
+            "WritableByteChannel is already closed");
         } catch (IOException e) {
             log.error("Error occurred while writing to the channel.", e);
-            if (e instanceof ClosedChannelException) {
-                return IOUtils.createError(IOConstants.ErrorCode.GenericError,
-                        "WritableByteChannel is already closed");
-            }
             return IOUtils.createError(e);
         }
     }

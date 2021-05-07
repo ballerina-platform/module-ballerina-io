@@ -155,10 +155,9 @@ public class IOUtils {
                                 totalNumberOfCharsWritten);
                 throw new BallerinaIOException(message);
             }
+        }  catch (ClosedChannelException e) {
+            throw new BallerinaIOException("writable channel is already closed", e);
         } catch (IOException e) {
-            if (e instanceof ClosedChannelException) {
-                throw new BallerinaIOException("writable channel is already closed", e);
-            }
             throw new BallerinaIOException("unable to write the content fully", e);
         }
     }

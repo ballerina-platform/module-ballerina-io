@@ -222,11 +222,10 @@ public class CharacterChannelUtils {
         CharacterChannel characterChannel = (CharacterChannel) channel.getNativeData(CHARACTER_CHANNEL_NAME);
         try {
             return characterChannel.write(content.getValue(), (int) startOffset);
+        } catch (ClosedChannelException e) {
+            return IOUtils.createError(IOConstants.ErrorCode.GenericError,
+                    "WritableCharacterChannel is already closed");
         } catch (IOException e) {
-            if (e instanceof ClosedChannelException) {
-                return IOUtils.createError(IOConstants.ErrorCode.GenericError,
-                        "WritableCharacterChannel is already closed");
-            }
             return IOUtils.createError(e);
         }
     }
@@ -268,11 +267,10 @@ public class CharacterChannelUtils {
             CharacterChannel characterChannel = (CharacterChannel) characterChannelObj
                     .getNativeData(CHARACTER_CHANNEL_NAME);
             PropertyUtils.writePropertyContent(characterChannel, propertyMap, comment);
+        } catch (ClosedChannelException e) {
+            return IOUtils.createError(IOConstants.ErrorCode.GenericError,
+                    "WritableCharacterChannel is already closed");
         } catch (IOException e) {
-            if (e instanceof ClosedChannelException) {
-                return IOUtils.createError(IOConstants.ErrorCode.GenericError,
-                        "WritableCharacterChannel is already closed");
-            }
             return IOUtils.createError(e);
         }
         return null;
