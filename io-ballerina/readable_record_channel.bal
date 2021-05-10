@@ -40,7 +40,7 @@ public class ReadableTextRecordChannel {
     # boolean hasNext = readableRecChannel.hasNext();
     # ```
     #
-    # + return - True if there's a record left to be read
+    # + return - True if there is a record left to be read
     public isolated function hasNext() returns boolean {
         return hasNextExtern(self);
     }

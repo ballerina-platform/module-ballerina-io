@@ -72,7 +72,7 @@ public isolated function fileReadXml(@untainted string path) returns @tainted xm
 # + path - The path of the file
 # + content - String content to write
 # + option - To indicate whether to overwrite or append the given content
-# + return - The null `()` value when the writing was successful or an `io:Error`
+# + return - A nil `()` value when the writing was successful or an `io:Error`
 public isolated function fileWriteString(@untainted string path, string content, FileWriteOption option = OVERWRITE) returns 
 Error? {
     return channelWriteString(check openWritableFile(path, option), content);
@@ -87,7 +87,7 @@ Error? {
 # + path - The path of the file
 # + content - An array of string lines to write
 # + option - To indicate whether to overwrite or append the given content
-# + return - The null `()` value when the writing was successful or an `io:Error`
+# + return - A nil `()` value when the writing was successful or an `io:Error`
 public isolated function fileWriteLines(@untainted string path, string[] content, FileWriteOption option = OVERWRITE) returns 
 Error? {
     return channelWriteLines(check openWritableFile(path, option), content);
@@ -103,7 +103,7 @@ Error? {
 # + path - The path of the file
 # + lineStream - A stream of lines to write
 # + option - To indicate whether to overwrite or append the given content
-# + return - The null `()` value when the writing was successful or an `io:Error`
+# + return - A nil `()` value when the writing was successful or an `io:Error`
 public isolated function fileWriteLinesFromStream(@untainted string path, stream<string, Error?> lineStream, 
                                                   FileWriteOption option = OVERWRITE) returns Error? {
     return channelWriteLinesFromStream(check openWritableFile(path, option), lineStream);
@@ -116,7 +116,7 @@ public isolated function fileWriteLinesFromStream(@untainted string path, stream
 # ```
 # + path - The path of the JSON file
 # + content - JSON content to write
-# + return - The null `()` value when the writing was successful or an `io:Error`
+# + return - A nil `()` value when the writing was successful or an `io:Error`
 public isolated function fileWriteJson(@untainted string path, json content) returns @tainted Error? {
     return channelWriteJson(check openWritableFile(path), content);
 }
@@ -130,7 +130,7 @@ public isolated function fileWriteJson(@untainted string path, json content) ret
 # + content - XML content to write
 # + xmlOptions - XML writing options(XML entity type and DOCTYPE)
 # + fileWriteOption - file write option(`OVERWRITE` and `APPEND` are the possible values, and the default value is `OVERWRITE`)
-# + return - The null `()` value when the writing was successful or an `io:Error`
+# + return - A nil `()` value when the writing was successful or an `io:Error`
 public isolated function fileWriteXml(@untainted string path, xml content, FileWriteOption fileWriteOption = OVERWRITE, 
                                       *XmlWriteOptions xmlOptions) returns Error? {
     WritableByteChannel byteChannel;

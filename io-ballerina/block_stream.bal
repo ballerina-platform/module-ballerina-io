@@ -13,9 +13,9 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-
 import ballerina/jballerina.java;
 
+# Readonly byte array that used to read byte content from streams.
 public type Block readonly & byte[];
 
 # `BlockStream` used to initialize a stream of type `Block`. This `BlockStream` refers to the stream that embedded to
@@ -36,13 +36,13 @@ public class BlockStream {
 
     # The next function reads and return the next block of the related stream.
     #
-    # + return - Returns a `io:Block` when a block is avaliable in the stream or return null when the stream reaches the end
+    # + return - An `io:Block` when a block is avaliable in the stream or return nil when the stream reaches the end
     public isolated function next() returns record {| Block value; |}|Error? {
         byte[]|Error block = readBlock(self.readableByteChannel, self.blockSize);
         if (block is byte[]) {
             record {| Block value; |} value = {value: <Block>block.cloneReadOnly()};
             return value;
-        } else if (block is EofError){
+        } else if (block is EofError) {
             Error? closeResult = closeInputStream(self.readableByteChannel);
             return ();
         } else {
@@ -53,7 +53,7 @@ public class BlockStream {
     # Close the stream. The primary usage of this function is to close the stream without reaching the end.
     # If the stream reaches the end, the `blockStream.next()` will automatically close the stream.
     #
-    # + return - Returns null when the closing was successful or an `io:Error`
+    # + return - A nil when the closing was successful or an `io:Error`
     public isolated function close() returns Error? {
         if (!self.isClosed) {
             var closeResult = closeInputStream(self.readableByteChannel);

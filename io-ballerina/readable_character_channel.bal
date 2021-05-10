@@ -22,9 +22,9 @@ public class ReadableCharacterChannel {
     private string charset;
 
     # Constructs a `ReadableCharacterChannel` from a given `ReadableByteChannel` and `Charset`.
-    # 
+    #
     # + byteChannel - The `ReadableByteChannel`, which would be used to read the characters
-    # + charset - The character set, which would be used to encode/decode the given bytes to characters
+    # + charset - The character set, which is used to encode/decode the given bytes to characters
     public isolated function init(ReadableByteChannel byteChannel, string charset) {
         self.byteChannel = byteChannel;
         self.charset = charset;
@@ -38,7 +38,8 @@ public class ReadableCharacterChannel {
     # ```
     #
     # + numberOfChars - Number of characters, which should be read
-    # + return - Content, which is read, an `EofError` once the channel reaches the end or else an `io:Error`
+    # + return - The characters that read as a string, an `io:EofError` once the channel reaches the end, or else an
+    # `io:Error` if something went wrong while reading
     public isolated function read(@untainted int numberOfChars) returns @tainted string|Error {
         return readExtern(self, numberOfChars);
     }
@@ -47,7 +48,7 @@ public class ReadableCharacterChannel {
     # ```ballerina
     # string|io:Error content = readableCharChannel.readString();
     # ```
-    # + return - Either a string or `io:Error`
+    # + return - The content that read as a string or an `io:Error`
     public isolated function readString() returns @tainted string|Error {
         return readAllAsStringExtern(self);
     }
@@ -56,7 +57,7 @@ public class ReadableCharacterChannel {
     # ```ballerina
     # string[]|io:Error content = readableCharChannel.readAllLines();
     # ```
-    # + return - Either a string array or `io:Error`
+    # + return - The content that read as an array of lines(seperated by `\n` character) or an `io:Error`
     public isolated function readAllLines() returns @tainted string[]|Error {
         return readAllLinesExtern(self);
     }
@@ -66,7 +67,7 @@ public class ReadableCharacterChannel {
     # json|io:Error result = readableCharChannel.readJson();
     # ```
     #
-    # + return - The read JSON string or else an `io:Error`
+    # + return - The content that read as a JSON or else an `io:Error`
     public isolated function readJson() returns @tainted json|Error {
         return readJsonExtern(self);
     }
@@ -76,7 +77,7 @@ public class ReadableCharacterChannel {
     # json|io:Error result = readableCharChannel.readXml();
     # ```
     #
-    # + return - The read XML or else an `io:Error`
+    # + return - The content that read as an XML or else an `io:Error`
     public isolated function readXml() returns @tainted xml|Error {
         return readXmlExtern(self);
     }
@@ -87,7 +88,7 @@ public class ReadableCharacterChannel {
     # ```
     # + key - The property key needs to read.
     # + defaultValue - Default value to be return.
-    # + return - The read property value or else an `io:Error`
+    # + return - The property value related to the given key or else an `io:Error`
     public isolated function readProperty(string key, string defaultValue = "") returns @tainted string|Error {
         return readPropertyExtern(self, key, defaultValue);
     }
@@ -97,7 +98,7 @@ public class ReadableCharacterChannel {
     # stream<string, io:Error>|io:Error? result = readableCharChannel.lineStream();
     # ```
     #
-    # + return - Either a stream of strings(lines) or an io:Error.
+    # + return - A stream of strings(lines) or an io:Error
     public isolated function lineStream() returns stream<string, Error?>|Error {
         LineStream lineStream = new (self);
         return new stream<string, Error?>(lineStream);
@@ -108,7 +109,7 @@ public class ReadableCharacterChannel {
     # map<string>|io:Error result = readableCharChannel.readAllProperties();
     # ```
     #
-    # + return - A map that contains all properties
+    # + return - A map of strings that contains all properties
     public isolated function readAllProperties() returns @tainted map<string>|Error {
         return readAllPropertiesExtern(self);
     }
@@ -119,7 +120,7 @@ public class ReadableCharacterChannel {
     # io:Error? err = readableCharChannel.close();
     # ```
     #
-    # + return - If an error occurred while writing
+    # + return - An error if something goes wrong while closing
     public isolated function close() returns Error? {
         return closeReadableCharacterChannel(self);
     }
