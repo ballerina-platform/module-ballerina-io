@@ -238,28 +238,28 @@ isolated function testFileWriteXmlWithOverwrite() {
 }
 
 @test:Config {}
-isolated function testFileWriteDocTypedXml() {
+isolated function testFileWriteDocTypedXml() returns Error? {
     string filePath = TEMP_DIR + "xmlCharsFile4.xml";
     string resultFilePath = "tests/resources/expectedXmlCharsFile4.xml";
     string originalFilePath = "tests/resources/originalXmlContent.xml";
 
-    xml content = checkpanic fileReadXml(originalFilePath);
+    xml content = check fileReadXml(originalFilePath);
     string doctypeValue = "<!DOCTYPE note SYSTEM \"Note.dtd\">";
     var writeResult = fileWriteXml(filePath, content, doctype = {system: "Note.dtd"});
     if (writeResult is Error) {
         test:assertFail(msg = writeResult.message());
     }
-    string readResult = checkpanic fileReadString(filePath);
-    string expectedResult = checkpanic fileReadString(resultFilePath);
+    string readResult = check fileReadString(filePath);
+    string expectedResult = check fileReadString(resultFilePath);
     test:assertEquals(readResult, expectedResult);
 }
 
 @test:Config {}
-isolated function testFileWriteDocTypedWithMultiRoots() {
+isolated function testFileWriteDocTypedWithMultiRoots() returns Error? {
     string filePath = TEMP_DIR + "xmlCharsFile4.xml";
     string originalFilePath = "tests/resources/originalXmlContent.xml";
 
-    xml content = checkpanic fileReadXml(originalFilePath);
+    xml content = check fileReadXml(originalFilePath);
     xml x1 = xml `<body>Don't forget me this weekend!</body>`;
 
     var writeResult = fileWriteXml(filePath, xml:concat(content, x1));
@@ -271,11 +271,11 @@ isolated function testFileWriteDocTypedWithMultiRoots() {
 }
 
 @test:Config {}
-isolated function testFileWriteDocTypedWithAppend() {
+isolated function testFileWriteDocTypedWithAppend() returns Error? {
     string filePath = TEMP_DIR + "xmlCharsFile4.xml";
     string originalFilePath = "tests/resources/originalXmlContent.xml";
 
-    xml content = checkpanic fileReadXml(originalFilePath);
+    xml content = check fileReadXml(originalFilePath);
     var writeResult = fileWriteXml(filePath, content, fileWriteOption = APPEND);
     if (writeResult is Error) {
         test:assertEquals(writeResult.message(), "The file append operation is not allowed for Document Entity");
@@ -285,12 +285,12 @@ isolated function testFileWriteDocTypedWithAppend() {
 }
 
 @test:Config {}
-isolated function testFileAppendDocTypedXml() {
+isolated function testFileAppendDocTypedXml() returns Error? {
     string filePath = TEMP_DIR + "xmlCharsFile5.xml";
     string originalFilePath = "tests/resources/originalXmlContent.xml";
     string resultFilePath = "tests/resources/expectedXmlCharsFile5.xml";
 
-    xml content1 = checkpanic fileReadXml(originalFilePath);
+    xml content1 = check fileReadXml(originalFilePath);
     xml content2 = xml `<body>Don't forget me this weekend!</body>`;
     var writeResult = fileWriteXml(filePath, content1);
     if (writeResult is Error) {
@@ -301,18 +301,18 @@ isolated function testFileAppendDocTypedXml() {
     if (appendResult is Error) {
         test:assertFail(msg = appendResult.message());
     }
-    string readResult = checkpanic fileReadString(filePath);
-    string expectedResult = checkpanic fileReadString(resultFilePath);
+    string readResult = check fileReadString(filePath);
+    string expectedResult = check fileReadString(resultFilePath);
     test:assertEquals(readResult, expectedResult);
 }
 
 @test:Config {}
-isolated function testFileWriteDocTypedXmlWithInternalSubset() {
+isolated function testFileWriteDocTypedXmlWithInternalSubset() returns Error? {
     string filePath = TEMP_DIR + "xmlCharsFile6.xml";
     string originalFilePath = "tests/resources/originalXmlContent.xml";
     string resultFilePath = "tests/resources/expectedXmlCharsFile6.xml";
 
-    xml content = checkpanic fileReadXml(originalFilePath);
+    xml content = check fileReadXml(originalFilePath);
     string startElement = "<!DOCTYPE note ";
     string endElement = ">";
     string internalSub = string `[
@@ -326,18 +326,18 @@ isolated function testFileWriteDocTypedXmlWithInternalSubset() {
     if (writeResult is Error) {
         test:assertFail(msg = writeResult.message());
     }
-    string readResult = checkpanic fileReadString(filePath);
-    string expectedResult = checkpanic fileReadString(resultFilePath);
+    string readResult = check fileReadString(filePath);
+    string expectedResult = check fileReadString(resultFilePath);
     test:assertEquals(readResult, expectedResult);
 }
 
 @test:Config {}
-isolated function testFileWriteDocTypedXmlWithPrioritizeInternalSubset() {
+isolated function testFileWriteDocTypedXmlWithPrioritizeInternalSubset() returns Error? {
     string filePath = TEMP_DIR + "xmlCharsFile6.xml";
     string originalFilePath = "tests/resources/originalXmlContent.xml";
     string resultFilePath = "tests/resources/expectedXmlCharsFile6.xml";
 
-    xml content = checkpanic fileReadXml(originalFilePath);
+    xml content = check fileReadXml(originalFilePath);
     string startElement = "<!DOCTYPE note ";
     string endElement = ">";
     string systemId = "http://www.w3.org/TR/html4/loose.dtd";
@@ -355,18 +355,18 @@ isolated function testFileWriteDocTypedXmlWithPrioritizeInternalSubset() {
     if (writeResult is Error) {
         test:assertFail(msg = writeResult.message());
     }
-    string readResult = checkpanic fileReadString(filePath);
-    string expectedResult = checkpanic fileReadString(resultFilePath);
+    string readResult = check fileReadString(filePath);
+    string expectedResult = check fileReadString(resultFilePath);
     test:assertEquals(readResult, expectedResult);
 }
 
 @test:Config {}
-isolated function testFileWriteDocTypedXmlWithPublicAndSystemId() {
+isolated function testFileWriteDocTypedXmlWithPublicAndSystemId() returns Error? {
     string filePath = TEMP_DIR + "xmlCharsFile7.xml";
     string originalFilePath = "tests/resources/originalXmlContent.xml";
     string resultFilePath = "tests/resources/expectedXmlCharsFile7.xml";
 
-    xml content = checkpanic fileReadXml(originalFilePath);
+    xml content = check fileReadXml(originalFilePath);
     string doctypeValue = "<!DOCTYPE note PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">";
     string publicId = "-//W3C//DTD HTML 4.01 Transitional//EN";
     string systemId = "http://www.w3.org/TR/html4/loose.dtd";
@@ -377,26 +377,26 @@ isolated function testFileWriteDocTypedXmlWithPublicAndSystemId() {
     if (writeResult is Error) {
         test:assertFail(msg = writeResult.message());
     }
-    string readResult = checkpanic fileReadString(filePath);
-    string expectedResult = checkpanic fileReadString(resultFilePath);
+    string readResult = check fileReadString(filePath);
+    string expectedResult = check fileReadString(resultFilePath);
     test:assertEquals(readResult, expectedResult);
 }
 
 @test:Config {}
-isolated function testFileWriteDocTypedXmlWithPublic() {
+isolated function testFileWriteDocTypedXmlWithPublic() returns Error? {
     string filePath = TEMP_DIR + "xmlCharsFile7.xml";
     string originalFilePath = "tests/resources/originalXmlContent.xml";
     string resultFilePath = "tests/resources/expectedXmlCharsFile8.xml";
 
-    xml content = checkpanic fileReadXml(originalFilePath);
+    xml content = check fileReadXml(originalFilePath);
     string doctypeValue = "<!DOCTYPE note PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">";
     string publicId = "-//W3C//DTD HTML 4.01 Transitional//EN";
     var writeResult = fileWriteXml(filePath, content, doctype={'public: publicId});
     if (writeResult is Error) {
         test:assertFail(msg = writeResult.message());
     }
-    string readResult = checkpanic fileReadString(filePath);
-    string expectedResult = checkpanic fileReadString(resultFilePath);
+    string readResult = check fileReadString(filePath);
+    string expectedResult = check fileReadString(resultFilePath);
     test:assertEquals(readResult, expectedResult);
 }
 
