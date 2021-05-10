@@ -15,7 +15,7 @@
 // under the License.
 import ballerina/jballerina.java;
 
-# `LineStream` used to initialize a stream of type strings(lines). This `LineStream` refers to the stream that embedded to
+# `io:CSVStream` used to initialize a stream of type CSV records. This `io:CSVStream` refers to the stream that embedded to
 # the I/O record channels.
 public class CSVStream {
     private ReadableTextRecordChannel readableTextRecordChannel;

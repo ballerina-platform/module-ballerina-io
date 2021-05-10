@@ -21,9 +21,9 @@ public class WritableCharacterChannel {
     private WritableByteChannel bChannel;
     private string charset;
 
-    # Constructs a `WritableByteChannel` from a given `WritableByteChannel` and `Charset`.
+    # Constructs a `io:WritableByteChannel` from a given `io:WritableByteChannel` and `Charset`.
     #
-    # + bChannel - The `WritableByteChannel`, which would be used to write the characters
+    # + bChannel - The `io:WritableByteChannel`, which would be used to write the characters
     # + charset - The character set, which would be used to encode the given bytes to characters
     public isolated function init(WritableByteChannel bChannel, string charset) {
         self.bChannel = bChannel;
@@ -98,7 +98,7 @@ public class WritableCharacterChannel {
         return writePropertiesExtern(self, properties, comment);
     }
 
-    # Closes a given `WritableCharacterChannel` channel.
+    # Closes the `io:WritableCharacterChannel`.
     # After a channel is closed, any further writing operations will cause an error.
     # ```ballerina
     # io:Error err = writableCharChannel.close();

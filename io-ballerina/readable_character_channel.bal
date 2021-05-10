@@ -21,9 +21,9 @@ public class ReadableCharacterChannel {
     private ReadableByteChannel byteChannel;
     private string charset;
 
-    # Constructs a `ReadableCharacterChannel` from a given `ReadableByteChannel` and `Charset`.
+    # Constructs a `io:ReadableCharacterChannel` from a given `io:ReadableByteChannel` and `Charset`.
     #
-    # + byteChannel - The `ReadableByteChannel`, which would be used to read the characters
+    # + byteChannel - The `io:ReadableByteChannel`, which would be used to read the characters
     # + charset - The character set, which is used to encode/decode the given bytes to characters
     public isolated function init(ReadableByteChannel byteChannel, string charset) {
         self.byteChannel = byteChannel;
@@ -114,7 +114,7 @@ public class ReadableCharacterChannel {
         return readAllPropertiesExtern(self);
     }
 
-    # Closes a given character channel.
+    # Closes the character channel.
     # After a channel is closed, any further reading operations will cause an error.
     # ```ballerina
     # io:Error? err = readableCharChannel.close();

@@ -62,7 +62,7 @@ public class ReadableByteChannel {
         return new stream<Block, Error?>(blockStream);
     }
 
-    # Encodes a given `ReadableByteChannel` using the Base64 encoding scheme.
+    # Encodes a given `io:ReadableByteChannel` using the Base64 encoding scheme.
     # ```ballerina
     # io:ReadableByteChannel|Error encodedChannel = readableByteChannel.base64Encode();
     # ```
@@ -82,7 +82,7 @@ public class ReadableByteChannel {
         return base64DecodeExtern(self);
     }
 
-    # Closes a given `ReadableByteChannel`.
+    # Closes the `io:ReadableByteChannel`.
     # After a channel is closed, any further reading operations will cause an error.
     # ```ballerina
     # io:Error? err = readableByteChannel.close();

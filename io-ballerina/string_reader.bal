@@ -78,7 +78,7 @@ public class StringReader {
         return ();
     }
 
-    # Closes the reader.
+    # Closes the string reader.
     # ```ballerina
     # io:Error? err = reader.close();
     # ```

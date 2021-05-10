@@ -33,7 +33,7 @@ public type PrintableRawTemplate object {
 
 # Prints `any`, `error`, or string templates(such as `The respective int value is ${val}`) value(s) to the STDOUT.
 #```ballerina
-#io:print("Start processing the CSV file from ", srcFileName);
+# io:print("Start processing the CSV file from ", srcFileName);
 #```
 #
 # + values - The value(s) to be printed

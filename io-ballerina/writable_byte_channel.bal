@@ -40,7 +40,7 @@ public class WritableByteChannel {
         return byteWriteExtern(self, content, offset);
     }
 
-    # Closes a given byte channel.
+    # Closes the byte channel.
     # After a channel is closed, any further writing operations will cause an error.
     # ```ballerina
     # io:Error err = writableByteChannel.close();

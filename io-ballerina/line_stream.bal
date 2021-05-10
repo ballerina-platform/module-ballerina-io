@@ -15,13 +15,13 @@
 // under the License.
 import ballerina/jballerina.java;
 
-# `LineStream` used to initialize a stream of type strings(lines). This `LineStream` refers to the stream that embedded to
+# `io:LineStream` used to initialize a stream of type strings(lines). This `io:LineStream` refers to the stream that embedded to
 # the I/O character channels.
 public class LineStream {
     private ReadableCharacterChannel readableCharacterChannel;
     private boolean isClosed = false;
 
-    # Initialize a `LineStream` using a `io:ReadableCharacterChannel`.
+    # Initialize a `io:LineStream` using a `io:ReadableCharacterChannel`.
     #
     # + readableCharacterChannel - The `io:ReadableCharacterChannel` that the line stream is referred to
     public isolated function init(ReadableCharacterChannel readableCharacterChannel) {

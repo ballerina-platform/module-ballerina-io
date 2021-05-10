@@ -58,7 +58,7 @@ public class WritableCSVChannel {
         return ();
     }
 
-    # Closes a given `CSVChannel`.
+    # Closes the `io:WritableCSVChannel`.
     # After a channel is closed, any further writing operations will cause an error.
     # ```ballerina
     # io:Error? err = csvChannel.close();
