@@ -13,7 +13,6 @@ The file I/O operations can be further categorized based on serialization and de
 - JSON I/O
 - XML I/O
 
-
 ### Console I/O
 The console I/O APIs, which help the user to read from the console as well as write to the console are as follows.
 - print
