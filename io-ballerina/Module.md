@@ -1,6 +1,6 @@
 ## Module Overview
 
-This module provides two major types of APIs: file read/write APIs and console print/read APIs. The file APIs allow read and write operations on different kinds of file types such as bytes, text, CSV, JSON, and XML. Further, these file APIs can be categorized as streaming and non-streaming APIs.
+This module provides file read/write APIs and console print/read APIs. The file APIs allow read and write operations on different kinds of file types such as bytes, text, CSV, JSON, and XML. Further, these file APIs can be categorized as streaming and non-streaming APIs.
 
 The following diagram depicts the overview architecture of the I/O module.
 
