@@ -5,7 +5,6 @@ The I/O library is one of the standard library packages of the<a target="_blank"
 
 This package provides APIs for file input/output operations and the console input/output.
 
-For example demonstrations of the usage, go to [Ballerina By Examples](https://ballerina.io/learn/by-example/).
 
 ### Report Issues
 
