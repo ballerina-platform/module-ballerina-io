@@ -29,8 +29,8 @@ The bytes I/O APIs provide the reading and writing APIs in both streaming and no
 ### Strings I/O
 The strings I/O APIs provide the reading and writing APIs in 3 different ways:
 1. Read the whole file content as a string and write a given string to a file
-1. Read the whole file content as a set of lines and write a given set of lines to a file
-1. Read the whole file content as a stream of lines and write a given stream of lines to a file
+2. Read the whole file content as a set of lines and write a given set of lines to a file
+3. Read the whole file content as a stream of lines and write a given stream of lines to a file
 
 The strings I/O APIs are as follows:
 - `io:fileReadString`
