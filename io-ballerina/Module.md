@@ -15,9 +15,9 @@ The file I/O operations can be further categorized based on serialization and de
 
 ### Console I/O
 The console I/O APIs, which help the user to read from the console as well as write to the console are as follows.
-- print
-- println
-- readln
+- `io:print`
+- `io:println`
+- `io:readln`
 
 ### Bytes I/O
 The bytes I/O APIs provide the reading and writing APIs in both streaming and non-streaming ways. Those APIs are,
