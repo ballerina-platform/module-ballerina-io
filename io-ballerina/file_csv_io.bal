@@ -43,7 +43,7 @@ public isolated function fileReadCsvAsStream(@untainted string path) returns @ta
 # + path - The CSV file path
 # + content - CSV content as an array of string arrays
 # + option - To indicate whether to overwrite or append the given content
-# + return - An `io:Error` or a nil `()` value when the writing was successful
+# + return - An `io:Error` or a nil value when the writing was successful
 public isolated function fileWriteCsv(@untainted string path, string[][] content, FileWriteOption option = OVERWRITE) returns 
 Error? {
     return channelWriteCsv(check openWritableCsvFile(path, option = option), content);
@@ -58,7 +58,7 @@ Error? {
 # + path - The CSV file path
 # + content - A CSV record stream to be written
 # + option - To indicate whether to overwrite or append the given content
-# + return - An `io:Error` or a nil `()` value when the writing was successful
+# + return - An `io:Error` or a nil value when the writing was successful
 public isolated function fileWriteCsvFromStream(@untainted string path, stream<string[], Error?> content, 
                                                 FileWriteOption option = OVERWRITE) returns Error? {
     return channelWriteCsvFromStream(check openWritableCsvFile(path, option = option), content);
