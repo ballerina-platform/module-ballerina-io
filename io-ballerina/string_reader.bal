@@ -24,8 +24,12 @@ public class StringReader {
     # + encoding - Encoding of the characters of the content
     public isolated function init(string content, string encoding = "UTF-8") {
         byte[] contentBytes = content.toBytes();
-        ReadableByteChannel byteChannel = checkpanic createReadableChannel(contentBytes);
-        self.charChannel = new ReadableCharacterChannel(byteChannel, encoding);
+        ReadableByteChannel|Error byteChannel = createReadableChannel(contentBytes);
+        if byteChannel is Error {
+            self.charChannel = ();
+        } else {
+            self.charChannel = new ReadableCharacterChannel(byteChannel, encoding);
+        }
     }
 
     # Reads string as JSON using the reader.
