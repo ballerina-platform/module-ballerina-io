@@ -47,7 +47,7 @@ public class WritableDataChannel {
     # ```
     #
     # + value - The integer, which will be written
-    # + return - A nil value if the content is written successfully or else an `io:Error` if any error occurred
+    # + return - `()` if the content is written successfully or else an `io:Error` if any error occurred
     public isolated function writeInt16(int value) returns Error? {
         return writeInt16Extern(self, value);
     }
@@ -58,7 +58,7 @@ public class WritableDataChannel {
     # ```
     #
     # + value - The integer, which will be written
-    # + return - A nil value if the content is written successfully or else `io:Error` if any error occurred
+    # + return - `()` if the content is written successfully or else an `io:Error` if any error occurred
     public isolated function writeInt32(int value) returns Error? {
         return writeInt32Extern(self, value);
     }
@@ -69,7 +69,7 @@ public class WritableDataChannel {
     # ```
     #
     # + value - The integer, which will be written
-    # + return - A nil value if the content is written successfully or else `io:Error` if any error occurred
+    # + return - `()` if the content is written successfully or else an `io:Error` if any error occurred
     public isolated function writeInt64(int value) returns Error? {
         return writeInt64Extern(self, value);
     }
@@ -80,7 +80,7 @@ public class WritableDataChannel {
     # ```
     #
     # + value - The float, which will be written
-    # + return - A nil value if the float is written successfully or else `io:Error` if any error occurred
+    # + return - `()` if the float is written successfully or else an `io:Error` if any error occurred
     public isolated function writeFloat32(float value) returns Error? {
         return writeFloat32Extern(self, value);
     }
@@ -91,7 +91,7 @@ public class WritableDataChannel {
     # ```
     #
     # + value - The float, which will be written
-    # + return - A nil value if the float is written successfully or else `io:Error` if any error occurred
+    # + return - `()` if the float is written successfully or else an `io:Error` if any error occurred
     public isolated function writeFloat64(float value) returns Error? {
         return writeFloat64Extern(self, value);
     }
@@ -102,7 +102,7 @@ public class WritableDataChannel {
     # ```
     #
     # + value - The boolean, which will be written
-    # + return - A nil value if the content is written successfully or else `io:Error` if any error occurred
+    # + return - `()` if the content is written successfully or else an `io:Error` if any error occurred
     public isolated function writeBool(boolean value) returns Error? {
         return writeBoolExtern(self, value);
     }
@@ -114,7 +114,7 @@ public class WritableDataChannel {
     #
     # + value - The value, which should be written
     # + encoding - The encoding, which will represent the value string
-    # + return - A nil value if the content is written successfully or else `io:Error` if any error occurred
+    # + return - `()` if the content is written successfully or else an `io:Error` if any error occurred
     public isolated function writeString(string value, string encoding) returns Error? {
         return writeStringExtern(self, value, encoding);
     }
@@ -125,7 +125,7 @@ public class WritableDataChannel {
     # ```
     #
     # + value - The int, which will be written
-    # + return - The value of the integer, which is written or else `io:Error` if any error occurred
+    # + return - The value of the integer, which is written or else an `io:Error` if any error occurred
     public isolated function writeVarInt(int value) returns Error? {
         return writeVarIntExtern(self, value);
     }
@@ -136,7 +136,7 @@ public class WritableDataChannel {
     # io:Error? err = dataChannel.close();
     # ```
     #
-    # + return - A nil value if the channel is closed successfully or else `io:Error` if any error occurred
+    # + return - `()` if the channel is closed successfully or else an `io:Error` if any error occurred
     public isolated function close() returns Error? {
         return closeWritableDataChannelExtern(self);
     }

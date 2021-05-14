@@ -21,10 +21,10 @@
 #
 # CSV - Field separator will be "," and the record separator will be a new line.
 #
-# TDF - Field separator will be a tab and record separator will be a new line.
+# TDF - Field separator will be a tab and the record separator will be a new line.
 public type Format DEFAULT|CSV|TDF;
 
-# Default value is the format specified by the CSVChannel. Precedence will be given to the field separator and record separator.
+# The default value is the format specified by the CSVChannel. Precedence will be given to the field separator and record separator.
 public const DEFAULT = "default";
 
 # Field separator will be "," and the record separator will be a new line.

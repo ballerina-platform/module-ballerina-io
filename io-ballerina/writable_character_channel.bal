@@ -21,7 +21,7 @@ public class WritableCharacterChannel {
     private WritableByteChannel bChannel;
     private string charset;
 
-    # Constructs a `io:WritableByteChannel` from a given `io:WritableByteChannel` and `Charset`.
+    # Constructs an `io:WritableByteChannel` from a given `io:WritableByteChannel` and `Charset`.
     #
     # + bChannel - The `io:WritableByteChannel`, which would be used to write the characters
     # + charset - The character set, which would be used to encode the given bytes to characters
@@ -38,7 +38,7 @@ public class WritableCharacterChannel {
     #
     # + content - Content to be written
     # + startOffset - Number of characters to be offset when writing the content
-    # + return - Content length that written or else `io:Error`
+    # + return - Content length that written or else an `io:Error`
     public isolated function write(string content, int startOffset) returns int|Error {
         return writeExtern(self, content, startOffset);
     }
@@ -49,7 +49,7 @@ public class WritableCharacterChannel {
     # ```
     #
     # + content - Content to be written
-    # + return - A nil value if the writing was successful or an `io:Error`
+    # + return - `()` if the writing was successful or an `io:Error`
     public isolated function writeLine(string content) returns Error? {
         string lineContent = content + NEW_LINE;
         var result = writeExtern(self, lineContent, 0);
@@ -66,7 +66,7 @@ public class WritableCharacterChannel {
     # ```
     #
     # + content - The JSON to be written
-    # + return - A nil value if the writing was successful or an `io:Error`
+    # + return - `()` if the writing was successful or an `io:Error`
     public isolated function writeJson(json content) returns Error? {
         return writeJsonExtern(self, content);
     }
@@ -78,7 +78,7 @@ public class WritableCharacterChannel {
     #
     # + content - The XML to be written
     # + xmlDoctype - Optional argument to specify the XML DOCTYPE configurations
-    # + return - A nil value or else `io:Error` if any error occurred
+    # + return - `()` or else an `io:Error` if any error occurred
     public isolated function writeXml(xml content, XmlDoctype? xmlDoctype = ()) returns Error? {
         string doctype = "";
         if (xmlDoctype != ()) {
@@ -93,7 +93,7 @@ public class WritableCharacterChannel {
     # ```
     # + properties - The map<string> that contains keys and values
     # + comment - Comment describing the property list
-    # + return - A nil value or else `io:Error` if any error occurred
+    # + return - `()` or else an `io:Error` if any error occurred
     public isolated function writeProperties(map<string> properties, string comment) returns Error? {
         return writePropertiesExtern(self, properties, comment);
     }
@@ -104,7 +104,7 @@ public class WritableCharacterChannel {
     # io:Error err = writableCharChannel.close();
     # ```
     #
-    # + return - A nil value or else an `io:Error` if any error occurred
+    # + return - `()` or else an `io:Error` if any error occurred
     public isolated function close() returns Error? {
         return closeWritableCharacterChannel(self);
     }

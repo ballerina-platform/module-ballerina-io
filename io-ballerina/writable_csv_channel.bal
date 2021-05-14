@@ -64,7 +64,7 @@ public class WritableCSVChannel {
     # io:Error? err = csvChannel.close();
     # ```
     #
-    # + return - A nil value or else `io:Error` if any error occurred
+    # + return - `()` or else an `io:Error` if any error occurred
     public isolated function close() returns Error? {
         if (self.dc is WritableTextRecordChannel) {
             var result = <WritableTextRecordChannel>self.dc;

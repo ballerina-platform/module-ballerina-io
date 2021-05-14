@@ -15,12 +15,12 @@
 // under the License.
 import ballerina/jballerina.java;
 
-# ReadableByteChannel represents an input resource (i.e file). which could be used to source bytes.
-# A file path or an in-memory `byte` array can be used to obtain a `io:ReadableByteChannel`.
-# A `io:ReadableByteChannel` do not support initilization, and it should be obtained using the following methods or implement natively.
+# ReadableByteChannel represents an input resource (i.e file), which could be used to source bytes.
+# A file path or an in-memory `byte` array can be used to obtain an `io:ReadableByteChannel`.
+# An `io:ReadableByteChannel` does not support initialization, and it should be obtained using the following methods or implemented natively.
 #
-# `io:openReadableFile("./files/sample.txt")` - used to obtain a `io:ReadableByteChannel` from a given file path
-# `io:createReadableChannel(byteArray)` - used to obtain a `io:ReadableByteChannel` from a given `byte` array
+# `io:openReadableFile("./files/sample.txt")` - used to obtain an `io:ReadableByteChannel` from a given file path
+# `io:createReadableChannel(byteArray)` - used to obtain an `io:ReadableByteChannel` from a given `byte` array
 public class ReadableByteChannel {
 
     # Adding default init function to prevent object getting initialized from the user code.
@@ -45,7 +45,7 @@ public class ReadableByteChannel {
     # byte[]|io:Error result = readableByteChannel.readAll();
     # ```
     #
-    # + return - A read only `byte` array or else an `io:Error`
+    # + return - A read-only `byte` array or else an `io:Error`
     public isolated function readAll() returns @tainted readonly & byte[]|Error {
         byte[] readResult = check readAllBytes(self);
         return <readonly & byte[]>readResult.cloneReadOnly();
@@ -88,7 +88,7 @@ public class ReadableByteChannel {
     # io:Error? err = readableByteChannel.close();
     # ```
     #
-    # + return - Will return a nil if there is no error
+    # + return - Will returns `()` if there is no error
     public isolated function close() returns Error? {
         return closeReadableByteChannelExtern(self);
     }

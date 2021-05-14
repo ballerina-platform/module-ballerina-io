@@ -6,7 +6,7 @@ The following diagram depicts the overview architecture of the I/O module.
 
 ![architecture](./resources/architecture.svg)
 
-The file I/O operations can be further categorized based on serialization and deserialization types such as:
+The file I/O operations can be categorized further based on the serialization and deserialization types such as:
 - Bytes I/O
 - Strings I/O
 - CSV I/O
@@ -14,7 +14,7 @@ The file I/O operations can be further categorized based on serialization and de
 - XML I/O
 
 ### Console I/O
-The console I/O APIs, which help the user to read from the console as well as write to the console are as follows.
+The console I/O APIs, which help you to read from the console as well as write to the console are as follows.
 - `io:print`
 - `io:println`
 - `io:readln`
@@ -28,9 +28,9 @@ The bytes I/O APIs provide the reading and writing APIs in both streaming and no
 
 ### Strings I/O
 The strings I/O APIs provide the reading and writing APIs in 3 different ways:
-1. Read the whole file content as a string and write a given string to a file
-2. Read the whole file content as a set of lines and write a given set of lines to a file
-3. Read the whole file content as a stream of lines and write a given stream of lines to a file
+1. Read the complete file content as a string and write a given string to a file
+2. Read the complete file content as a set of lines and write a given set of lines to a file
+3. Read the complete file content as a stream of lines and write a given stream of lines to a file
 
 The strings I/O APIs are as follows:
 - `io:fileReadString`

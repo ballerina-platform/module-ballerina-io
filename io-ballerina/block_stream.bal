@@ -15,17 +15,17 @@
 // under the License.
 import ballerina/jballerina.java;
 
-# Readonly byte array that used to read byte content from streams.
+# The read-only byte array that is used to read the byte content from the streams.
 public type Block readonly & byte[];
 
-# `io:BlockStream` used to initialize a stream of type `io:Block`. This `io:BlockStream` refers to the stream that embedded to
+# The `io:BlockStream` is used to initialize a stream of type `io:Block`. This `io:BlockStream` refers to the stream that is embedded to
 # the I/O byte channels.
 public class BlockStream {
     private ReadableByteChannel readableByteChannel;
     private int blockSize;
     private boolean isClosed = false;
 
-    # Initialize a `BlockStream` using a `io:ReadableByteChannel`.
+    # Initialize a `BlockStream` using an `io:ReadableByteChannel`.
     #
     # + readableByteChannel - The `io:ReadableByteChannel` that this block stream is referred to
     # + blockSize - The size of a block as an integer
@@ -34,9 +34,9 @@ public class BlockStream {
         self.blockSize = blockSize;
     }
 
-    # The next function reads and return the next block of the related stream.
+    # The next function reads and returns the next block of the related stream.
     #
-    # + return - An `io:Block` when a block is avaliable in the stream or return nil when the stream reaches the end
+    # + return - An `io:Block` when a block is avaliable in the stream or returns `()` when the stream reaches the end
     public isolated function next() returns record {| Block value; |}|Error? {
         byte[]|Error block = readBlock(self.readableByteChannel, self.blockSize);
         if (block is byte[]) {
@@ -50,10 +50,10 @@ public class BlockStream {
         }
     }
 
-    # Close the stream. The primary usage of this function is to close the stream without reaching the end.
+    # Closes the stream. The primary usage of this function is to close the stream without reaching the end
     # If the stream reaches the end, the `blockStream.next()` will automatically close the stream.
     #
-    # + return - A nil when the closing was successful or an `io:Error`
+    # + return - `()` when the closing was successful or an `io:Error`
     public isolated function close() returns Error? {
         if (!self.isClosed) {
             var closeResult = closeInputStream(self.readableByteChannel);
