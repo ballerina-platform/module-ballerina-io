@@ -19,16 +19,16 @@ import org.apache.tools.ant.taskdefs.condition.Os
 
 buildscript {
     repositories {
-       maven {
-           url = 'https://maven.pkg.github.com/ballerina-platform/plugin-gradle'
-           credentials {
-               username System.getenv("packageUser")
-               password System.getenv("packagePAT")
-           }
-       }
+        maven {
+            url = 'https://maven.pkg.github.com/ballerina-platform/plugin-gradle'
+            credentials {
+                username System.getenv("packageUser")
+                password System.getenv("packagePAT")
+            }
+        }
     }
     dependencies {
-        classpath "io.ballerina:plugin-gradle:0.8.1-SNAPSHOT"
+        classpath "io.ballerina:plugin-gradle:${project.pluginVersion}"
     }
 }
 
@@ -59,6 +59,7 @@ def stripBallerinaExtensionVersion(String extVersion) {
 ballerina{
     module = packageName
     langVersion = ballerinaLangVersion
+    testCoverageParam = "--code-coverage --jacoco-xml --includes=org.ballerinalang.stdlib.io.*:ballerina.io.*"
 }
 
 task updateTomlVersions {
