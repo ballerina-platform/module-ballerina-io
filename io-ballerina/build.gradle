@@ -28,7 +28,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath "io.ballerina:plugin-gradle:${project.pluginVersion}"
+        classpath "io.ballerina:plugin-gradle:${project.ballerinaGradlePluginVersion}"
     }
 }
 
@@ -59,7 +59,6 @@ def stripBallerinaExtensionVersion(String extVersion) {
 ballerina{
     module = packageName
     langVersion = ballerinaLangVersion
-    testCoverageParam = "--code-coverage --jacoco-xml --includes=org.ballerinalang.stdlib.io.*:ballerina.io.*"
 }
 
 task updateTomlVersions {
