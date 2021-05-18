@@ -54,11 +54,12 @@ def stripBallerinaExtensionVersion(String extVersion) {
 }
 
 ballerina {
+    packageOrganization = packageOrg
     module = packageName
     langVersion = ballerinaLangVersion
 }
 
-task updateTomlVersions {
+task updateTomlFiles {
     doLast {
         def newConfig = ballerinaConfigFile.text.replace("@project.version@", project.version)
         newConfig = newConfig.replace("@toml.version@", tomlVersion)
@@ -67,7 +68,7 @@ task updateTomlVersions {
     }
 }
 
-task revertTomlFile {
+task revertTomlFiles {
     doLast {
         ballerinaConfigFile.text = originalConfig
     }
@@ -92,12 +93,13 @@ publishing {
     }
 }
 
+updateTomlFiles.dependsOn unpackJballerinaTools
+
 test.dependsOn ":${packageName}-native:build"
 test.dependsOn ":${packageName}-native:test"
 test.dependsOn ":${packageName}-test-utils:build"
 build.dependsOn ":${packageName}-native:build"
 build.dependsOn ":${packageName}-native:test"
 build.dependsOn ":${packageName}-test-utils:build"
-updateTomlVersions.dependsOn unpackJballerinaTools
 publishToMavenLocal.dependsOn build
 publish.dependsOn build
