@@ -35,12 +35,12 @@ public class ReadableTextRecordChannel {
         initReadableTextRecordChannel(self, charChannel, fs, rs, fmt);
     }
 
-    # Checks whether there's a record left to be read.
+    # Checks whether there is a record left to be read.
     # ```ballerina
     # boolean hasNext = readableRecChannel.hasNext();
     # ```
     #
-    # + return - True if there's a record left to be read
+    # + return - True if there is a record left to be read
     public isolated function hasNext() returns boolean {
         return hasNextExtern(self);
     }
@@ -55,7 +55,7 @@ public class ReadableTextRecordChannel {
         return getNextExtern(self);
     }
 
-    # Closes a given record channel.
+    # Closes the record channel.
     # After a channel is closed, any further reading operations will cause an error.
     # ```ballerina
     # io:Error err = readableRecChannel.close();

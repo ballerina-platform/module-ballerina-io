@@ -17,14 +17,14 @@
 # The format, which will be used to represent the CSV.
 #
 # DEFAULT - The default value is the format specified by the CSVChannel. Precedence will be given to the field
-#           separator and record separator.
+# separator and record separator.
 #
 # CSV - Field separator will be "," and the record separator will be a new line.
 #
-# TDF - Field separator will be a tab and record separator will be a new line.
+# TDF - Field separator will be a tab and the record separator will be a new line.
 public type Format DEFAULT|CSV|TDF;
 
-#  Default value is the format specified by the CSVChannel. Precedence will be given to the field separator and record separator.
+# The default value is the format specified by the CSVChannel. Precedence will be given to the field separator and record separator.
 public const DEFAULT = "default";
 
 # Field separator will be "," and the record separator will be a new line.
@@ -54,10 +54,10 @@ public const COLON = ":";
 # New line character.
 public const NEW_LINE = "\n";
 
-# Single space character
+# Single space character.
 const SINGLE_SPACE = " ";
 
-# Double quote character
+# Double quote character.
 const DOUBLE_QUOTE = "\"";
 
 # Default encoding for the abstract read/write APIs.

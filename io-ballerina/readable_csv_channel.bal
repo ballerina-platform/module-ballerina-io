@@ -56,7 +56,7 @@ public class ReadableCSVChannel {
     # boolean hasNext = readableCSVChannel.hasNext();
     # ```
     #
-    # + return - True if there's a record
+    # + return - True if there is a record
     public isolated function hasNext() returns boolean {
         var recordChannel = self.dc;
         if (recordChannel is ReadableTextRecordChannel) {
@@ -86,7 +86,7 @@ public class ReadableCSVChannel {
     # stream<string[], io:Error>|io:Error? record = readableCSVChannel.csvStream();
     # ```
     #
-    # + return - Either a stream of records(string[]) or else an `io:Error`
+    # + return - A stream of records(string[]) or else an `io:Error`
     public isolated function csvStream() returns stream<string[], Error?>|Error {
         var recordChannel = self.dc;
         if (recordChannel is ReadableTextRecordChannel) {
@@ -98,13 +98,13 @@ public class ReadableCSVChannel {
         }
     }
 
-    # Closes a given `CSVChannel`.
+    # Closes the `io:ReadableCSVChannel`.
     # After a channel is closed, any further reading operations will cause an error.
     # ```ballerina
     # io:Error? err = readableCSVChannel.close();
     # ```
     #
-    # + return - `io:Error` if any error occurred
+    # + return - An `io:Error` if any error occurred
     public isolated function close() returns Error? {
         if (self.dc is ReadableTextRecordChannel) {
             var result = <ReadableTextRecordChannel>self.dc;

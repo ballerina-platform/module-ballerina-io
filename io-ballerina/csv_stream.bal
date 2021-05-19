@@ -13,26 +13,25 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-
 import ballerina/jballerina.java;
 
-# `LineStream` used to initialize a stream of type strings(lines). This `LineStream` refers to the stream that embedded to
-# the I/O record channels.
+# The `io:CSVStream` is used to initialize a stream of type CSV records. This `io:CSVStream` refers to the stream
+# that is embedded to the I/O record channels.
 public class CSVStream {
     private ReadableTextRecordChannel readableTextRecordChannel;
     private boolean isClosed = false;
 
-    # Initialize a `CSVStream` using a `io:ReadableTextRecordChannel`.
+    # Initialize a `CSVStream` using an `io:ReadableTextRecordChannel`.
     #
     # + readableTextRecordChannel - The `io:ReadableTextRecordChannel` that this CSV stream is referred to
     public isolated function init(ReadableTextRecordChannel readableTextRecordChannel) {
         self.readableTextRecordChannel = readableTextRecordChannel;
     }
 
-    # The next function reads and return the next CSV record of the related stream.
+    # The next function reads and returns the next CSV record of the related stream.
     #
-    # + return - Returns a CSV record as a string array when a record is avaliable in the stream or
-    # return null when the stream reaches the end
+    # + return - A CSV record as a string array when a record is avaliable in the stream or
+    # `()` when the stream reaches the end
     public isolated function next() returns record {| string[] value; |}|Error? {
         var recordValue = readRecord(self.readableTextRecordChannel, COMMA);
         if (recordValue is string[]) {
@@ -49,7 +48,7 @@ public class CSVStream {
     # Close the stream. The primary usage of this function is to close the stream without reaching the end.
     # If the stream reaches the end, the `csvStream.next()` will automatically close the stream.
     #
-    # + return - Returns null when the closing was successful or an `io:Error`
+    # + return - `()` when the closing was successful or an `io:Error`
     public isolated function close() returns Error? {
         if (!self.isClosed) {
             var closeResult = closeRecordReader(self.readableTextRecordChannel);

@@ -1,70 +1,17 @@
 ## Package Overview
 
-The I/O package APIs allow read and write operations on different kinds of file types such as bytes, text, CSV, JSON, and XML.
-Further, these APIs can be categorized as streaming and non-streaming APIs.
+The I/O library is one of the standard library packages of the<a target="_blank" href="https://ballerina.io/"> Ballerina
+</a> language.
 
-The following diagram depicts the overview architecture of the I/O package.
-
-![architecture](./resources/package-architecture.svg)
-
-The I/O package allows you to read from the console or a file. 
-Further, the file I/O operations can be categorized based on serialization and deserialization types such as:
-- Bytes I/O
-- Strings I/O
-- CSV I/O
-- JSON I/O
-- XML I/O
+This package provides APIs for file input/output operations and the console input/output.
 
 
-### Console I/O
-The console I/O APIs, which help the user to read from the console as well as write to the console are as follows.
-- print
-- println
-- readln
+### Report Issues
 
-### Bytes I/O
-The bytes I/O APIs provide the reading and writing APIs in both streaming and non-streaming ways. Those APIs are,
-- `io:fileReadBytes`
-- `io:fileReadBlocksAsStream`
-- `io:fileWriteBytes`
-- `io:fileWriteBlocksFromStream`
+To report bugs, request new features, start new discussions, view project boards, etc., go to the [Ballerina Standard Library parent repository](https://github.com/ballerina-platform/ballerina-standard-library).
 
-To learn how to use bytes read and write APIs, see the [Read/Write Bytes example](https://ballerina.io/learn/by-example/bytes-io.html).
+## Useful Links
 
-### Strings I/O
-The strings I/O APIs provide the reading and writing APIs in 3 different ways:
-1. Read the whole file content as a string and write a given string to a file
-1. Read the whole file content as a set of lines and write a given set of lines to a file
-1. Read the whole file content as a stream of lines and write a given stream of lines to a file
-
-The strings I/O APIs are as follows:
-- `io:fileReadString`
-- `io:fileReadLines`
-- `io:fileReadLinesAsStream`
-- `io:fileWriteLines`
-- `io:fileWriteLinesFromStream`
-
-To learn how to use strings read and write APIs, see the  [Read/Write Strings example](https://ballerina.io/learn/by-example/strings-io.html).
-
-### CSV I/O
-The CSV I/O APIs provide the reading and writing APIs in both streaming and non-streaming ways. Those APIs are,
-- `io:fileReadCsv`
-- `io:fileReadCsvAsStream`
-- `io:fileWriteCsv`
-- `io:fileWriteCsvFromStream`
-
-To learn how to use CSV read and write APIs, see the [Read/Write CSV example](https://ballerina.io/learn/by-example/csv-io.html).
-
-### JSON I/O
-The JSON I/O APIs provide the reading and writing APIs for JSON content. Those APIs are,
-- `io:fileReadJson`
-- `io:fileWriteJson`
-
-To learn how to use JSON read and write APIs, see the [Read/Write JSON example](https://ballerina.io/learn/by-example/json-io.html).
-
-### XML I/O
-The XML I/O APIs provide the reading and writing APIs for XML content. Those APIs are,
-- `io:fileReadXml`
-- `io:fileWriteXml`
-
-To learn how to use XML read and write APIs, see the [Read/Write XML example](https://ballerina.io/learn/by-example/json-io.html).
+* Discuss code changes of the Ballerina project in [ballerina-dev@googlegroups.com](mailto:ballerina-dev@googlegroups.com).
+* Chat live with us via our [Slack channel](https://ballerina.io/community/slack/).
+* Post all technical questions on Stack Overflow with the [#ballerina](https://stackoverflow.com/questions/tagged/ballerina) tag.

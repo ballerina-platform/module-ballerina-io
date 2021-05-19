@@ -13,31 +13,30 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-
 import ballerina/jballerina.java;
 
 # Retrieves a `ReadableByteChannel` from a given file path.
-#```ballerina
+# ```ballerina
 # io:ReadableByteChannel readableFieldResult = check io:openReadableFile("./files/sample.txt");
-#```
+# ```
 #
 # + path - Relative/absolute path string to locate the file
-# + return - The `ByteChannel` representation of the file resource or else an `io:Error` if any error occurred
+# + return - The `io:ReadableByteChannel` related to the given file or else an `io:Error` if there is an error while opening
 public isolated function openReadableFile(@untainted string path) returns ReadableByteChannel|Error = @java:Method {
     name: "openReadableFile",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.ByteChannelUtils"
 } external;
 
 # Retrieves a `WritableByteChannel` from a given file path.
-#```ballerina
+# ```ballerina
 # io:WritableByteChannel writableFileResult = check io:openWritableFile("./files/sampleResponse.txt");
 # ```
 #
 # + path - Relative/absolute path string to locate the file
 # + option - To indicate whether to overwrite or append the given content
-# + return - The `ByteChannel` representation of the file resource or else an `io:Error` if any error occurred
-public isolated function openWritableFile(@untainted string path, FileWriteOption option = OVERWRITE)
-    returns WritableByteChannel|Error = @java:Method {
+# + return - The `io:WritableByteChannel` related to the given file or else an `io:Error` if any error occurred
+public isolated function openWritableFile(@untainted string path, FileWriteOption option = OVERWRITE) returns 
+WritableByteChannel|Error = @java:Method {
     name: "openWritableFile",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.ByteChannelUtils"
 } external;
@@ -48,7 +47,7 @@ public isolated function openWritableFile(@untainted string path, FileWriteOptio
 # ```
 #
 # + content - Content, which should be exposed as a channel
-# + return - The `ByteChannel` representation to read the memory content or else an `io:Error` if any error occurred
+# + return - The `io:ReadableByteChannel` related to the given bytes or else an `io:Error` if any error occurred
 public isolated function createReadableChannel(byte[] content) returns ReadableByteChannel|Error = @java:Method {
     name: "createReadableChannel",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.ByteChannelUtils"
@@ -63,13 +62,12 @@ public isolated function createReadableChannel(byte[] content) returns ReadableB
 # + fieldSeparator - CSV record separator (i.e., comma or tab)
 # + charset - Representation of the encoding characters in the file
 # + skipHeaders - Number of headers, which should be skipped
-# + return - The `ReadableCSVChannel`, which could be used to iterate through the CSV records or else an `io:Error` if any error occurred
-public isolated function openReadableCsvFile(@untainted string path,
-                                    @untainted Separator fieldSeparator = ",",
-                                    @untainted string charset = "UTF-8",
-                                    @untainted int skipHeaders = 0) returns ReadableCSVChannel|Error {
+# + return - The `io:ReadableCSVChannel`, which could be used to iterate through the CSV records or else an `io:Error` if any error occurred
+public isolated function openReadableCsvFile(@untainted string path, @untainted Separator fieldSeparator = ",", 
+                                             @untainted string charset = "UTF-8", @untainted int skipHeaders = 0) returns 
+ReadableCSVChannel|Error {
     ReadableByteChannel byteChannel = check openReadableFile(path);
-    ReadableCharacterChannel charChannel = new(byteChannel, charset);
+    ReadableCharacterChannel charChannel = new (byteChannel, charset);
     return new ReadableCSVChannel(charChannel, fieldSeparator, skipHeaders);
 }
 
@@ -84,12 +82,10 @@ public isolated function openReadableCsvFile(@untainted string path,
 # + skipHeaders - Number of headers, which should be skipped
 # + option - To indicate whether to overwrite or append the given content
 # + return - The `WritableCSVChannel`, which could be used to write the CSV records or else an `io:Error` if any error occurred
-public isolated function openWritableCsvFile(@untainted string path,
-                                    @untainted Separator fieldSeparator = ",",
-                                    @untainted string charset = "UTF-8",
-                                    @untainted int skipHeaders = 0,
-                                    FileWriteOption option = OVERWRITE) returns WritableCSVChannel|Error {
+public isolated function openWritableCsvFile(@untainted string path, @untainted Separator fieldSeparator = ",", 
+                                             @untainted string charset = "UTF-8", @untainted int skipHeaders = 0, 
+                                             FileWriteOption option = OVERWRITE) returns WritableCSVChannel|Error {
     WritableByteChannel byteChannel = check openWritableFile(path, option);
-    WritableCharacterChannel charChannel = new(byteChannel, charset);
+    WritableCharacterChannel charChannel = new (byteChannel, charset);
     return new WritableCSVChannel(charChannel, fieldSeparator);
 }

@@ -22,13 +22,13 @@ public class WritableTextRecordChannel {
     private string rs;
 
     # Constructs a DelimitedTextRecordChannel from a given WritableCharacterChannel.
-    # + characterChannel - The `WritableCharacterChannel`, which will point to the input/output resource
+    # + characterChannel - The `io:WritableCharacterChannel`, which will point to the input/output resource
     # + fs - Field separator (this could be a regex)
     # + rs - Record separator (this could be a regex)
     # + fmt - The format, which will be used to represent the CSV (this could be 
-    #         "DEFAULT" (the format specified by the CSVChannel), 
-    #         "CSV" (Field separator would be "," and record separator would be a new line) or else
-    #         "TDF" (Field separator will be a tab and record separator will be a new line). 
+    # "DEFAULT" (the format specified by the CSVChannel), 
+    # "CSV" (Field separator would be "," and record separator would be a new line) or else
+    # "TDF" (Field separator will be a tab and record separator will be a new line)
     public isolated function init(WritableCharacterChannel characterChannel, string fs = "", string rs = "", 
                                   string fmt = "default") {
         self.characterChannel = characterChannel;
@@ -48,7 +48,7 @@ public class WritableTextRecordChannel {
         return writeRecordExtern(self, textRecord);
     }
 
-    # Closes a given record channel.
+    # Closes the record channel.
     # After a channel is closed, any further writing operations will cause an error.
     # ```ballerina
     # io:Error? err = writableChannel.close();

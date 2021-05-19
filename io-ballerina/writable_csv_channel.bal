@@ -28,7 +28,7 @@ public class WritableCSVChannel {
     private WritableTextRecordChannel? dc;
 
     # Constructs a CSV channel from a `CharacterChannel` to read/write CSV records.
-    # 
+    #
     # + CharacterChannel - The `CharacterChannel`, which will represent the content in the CSV file
     # + fs - Field separator, which will separate the records in the CSV
     public isolated function init(WritableCharacterChannel characterChannel, Separator fs = ",") {
@@ -58,13 +58,13 @@ public class WritableCSVChannel {
         return ();
     }
 
-    # Closes a given `CSVChannel`.
+    # Closes the `io:WritableCSVChannel`.
     # After a channel is closed, any further writing operations will cause an error.
     # ```ballerina
     # io:Error? err = csvChannel.close();
     # ```
     #
-    # + return - `()` or else `io:Error` if any error occurred
+    # + return - `()` or else an `io:Error` if any error occurred
     public isolated function close() returns Error? {
         if (self.dc is WritableTextRecordChannel) {
             var result = <WritableTextRecordChannel>self.dc;

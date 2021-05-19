@@ -45,8 +45,8 @@ public type XmlDoctype record {|
 
 # The writing options of an XML.
 #
-# + xmlEntityType - the entity type of the XML input(default value is `DOCUMENT_ENTITY`)
-# + doctype - XML DOCTYPE value(default value is null)
+# + xmlEntityType - the entity type of the XML input (the default value is `DOCUMENT_ENTITY`)
+# + doctype - XML DOCTYPE value (the default value is `()`)
 public type XmlWriteOptions record {|
     XmlEntityType xmlEntityType = DOCUMENT_ENTITY;
     XmlDoctype? doctype = ();

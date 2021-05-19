@@ -15,11 +15,12 @@
 // under the License.
 import ballerina/jballerina.java;
 
-# ReadableByteChannel represents an input resource (i.e file). which could be used to source bytes.
-# A file path or an in-memory `byte` array can be used to obtain a `io:ReadableByteChannel`.
-# A `io:ReadableByteChannel` do not support initilization, and it should be obtained using the following methods or implement natively.
-# `io:openReadableFile("./files/sample.txt")` - used to obtain a `io:ReadableByteChannel` from a given file path
-# `io:createReadableChannel(byteArray)` - used to obtain a `io:ReadableByteChannel` from a given `byte` array
+# ReadableByteChannel represents an input resource (i.e file), which could be used to source bytes.
+# A file path or an in-memory `byte` array can be used to obtain an `io:ReadableByteChannel`.
+# An `io:ReadableByteChannel` does not support initialization, and it should be obtained using the following methods or implemented natively.
+#
+# `io:openReadableFile("./files/sample.txt")` - used to obtain an `io:ReadableByteChannel` from a given file path
+# `io:createReadableChannel(byteArray)` - used to obtain an `io:ReadableByteChannel` from a given `byte` array
 public class ReadableByteChannel {
 
     # Adding default init function to prevent object getting initialized from the user code.
@@ -44,7 +45,7 @@ public class ReadableByteChannel {
     # byte[]|io:Error result = readableByteChannel.readAll();
     # ```
     #
-    # + return - Either a read only `byte` array or else an `io:Error`
+    # + return - A read-only `byte` array or else an `io:Error`
     public isolated function readAll() returns @tainted readonly & byte[]|Error {
         byte[] readResult = check readAllBytes(self);
         return <readonly & byte[]>readResult.cloneReadOnly();
@@ -55,18 +56,18 @@ public class ReadableByteChannel {
     # stream<io:Block, io:Error>|io:Error result = readableByteChannel.blockStream();
     # ```
     # + blockSize - A positive integer. Size of the block.
-    # + return - Either a block stream or else an `io:Error`
+    # + return - A block stream or else an `io:Error`
     public isolated function blockStream(int blockSize) returns @tainted stream<Block, Error?>|Error {
         BlockStream blockStream = new (self, blockSize);
         return new stream<Block, Error?>(blockStream);
     }
 
-    # Encodes a given `ReadableByteChannel` using the Base64 encoding scheme.
+    # Encodes a given `io:ReadableByteChannel` using the Base64 encoding scheme.
     # ```ballerina
     # io:ReadableByteChannel|Error encodedChannel = readableByteChannel.base64Encode();
     # ```
     #
-    # + return - An encoded `ReadableByteChannel` or else an `io:Error`
+    # + return - An encoded `io:ReadableByteChannel` or else an `io:Error`
     public isolated function base64Encode() returns ReadableByteChannel|Error {
         return base64EncodeExtern(self);
     }
@@ -76,18 +77,18 @@ public class ReadableByteChannel {
     # io:ReadableByteChannel|Error encodedChannel = readableByteChannel.base64Decode();
     # ```
     #
-    # + return - A decoded `ReadableByteChannel` or else an `io:Error`
+    # + return - A decoded `io:ReadableByteChannel` or else an `io:Error`
     public isolated function base64Decode() returns ReadableByteChannel|Error {
         return base64DecodeExtern(self);
     }
 
-    # Closes a given `ReadableByteChannel`.
+    # Closes the `io:ReadableByteChannel`.
     # After a channel is closed, any further reading operations will cause an error.
     # ```ballerina
     # io:Error? err = readableByteChannel.close();
     # ```
     #
-    # + return - Will return `()` if there is no error
+    # + return - Will returns `()` if there is no error
     public isolated function close() returns Error? {
         return closeReadableByteChannelExtern(self);
     }
