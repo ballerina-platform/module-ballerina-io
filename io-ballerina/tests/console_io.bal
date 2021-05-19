@@ -98,14 +98,14 @@ isolated function testPrintlnConnector() {
 isolated function testPrintFunctionPointer() {
     function (int, int) returns (int) addFunction = func1;
     print(addFunction);
-    test:assertEquals(readOutputStream(), "function function (int,int) returns (int)");
+    test:assertEquals(readOutputStream(), "function isolated function (int,int) returns (int)");
 }
 
 @test:Config {dependsOn: [testPrintFunctionPointer]}
 isolated function testPrintlnFunctionPointer() {
     function (int, int) returns (int) addFunction = func1;
     println(addFunction);
-    test:assertEquals(readOutputStream(), "function function (int,int) returns (int)\n");
+    test:assertEquals(readOutputStream(), "function isolated function (int,int) returns (int)\n");
 }
 
 @test:Config {dependsOn: [testPrintlnFunctionPointer]}
