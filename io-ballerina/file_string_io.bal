@@ -15,6 +15,7 @@
 // under the License.
 
 # Reads the entire file content as a `string`.
+# The resulting string output does not contain the terminal carriage (e.g., `\r` or `\n`).
 # ```ballerina
 # string|io:Error content = io:fileReadString("./resources/myfile.txt");
 # ```
@@ -25,6 +26,7 @@ public isolated function fileReadString(@untainted string path) returns @tainted
 }
 
 # Reads the entire file content as a list of lines.
+# The resulting string array does not contain the terminal carriage (e.g., `\r` or `\n`).
 # ```ballerina
 # string[]|io:Error content = io:fileReadLines("./resources/myfile.txt");
 # ```
@@ -35,6 +37,7 @@ public isolated function fileReadLines(@untainted string path) returns @tainted 
 }
 
 # Reads file content as a stream of lines.
+# The resulting stream does not contain the terminal carriage (e.g., `\r` or `\n`).
 # ```ballerina
 # stream<string, io:Error?>|io:Error content = io:fileReadLinesAsStream("./resources/myfile.txt");
 # ```
