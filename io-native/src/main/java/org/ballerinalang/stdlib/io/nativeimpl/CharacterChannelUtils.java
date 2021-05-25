@@ -129,11 +129,11 @@ public class CharacterChannelUtils {
             for (int i = 0; i < lines.length; i++) {
                 joiner.add(lines[i]);
             }
-            return io.ballerina.runtime.api.utils.StringUtils.fromString(joiner.toString());
+            return StringUtils.fromString(joiner.toString()
+                    .replaceAll(System.lineSeparator(), "\n"));
         } catch (UncheckedIOException | BError e) {
             return IOUtils.createError(e);
         }
-
     }
 
     public static Object readJson(BObject channel) {
@@ -145,7 +145,7 @@ public class CharacterChannelUtils {
                     JsonUtils.NonStringValueProcessingMode.FROM_JSON_STRING);
             if (returnValue instanceof String) {
 
-                return io.ballerina.runtime.api.utils.StringUtils.fromString((String) returnValue);
+                return StringUtils.fromString((String) returnValue);
             }
             return returnValue;
         } catch (BError e) {
