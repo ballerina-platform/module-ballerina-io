@@ -19,7 +19,7 @@ import ballerina/jballerina.java;
 public class ReadableCSVChannel {
     private ReadableTextRecordChannel? dc;
 
-    # Constructs a CSV channel from a CharacterChannel to read/write CSV records.
+    # Constructs a CSV channel from a CharacterChannel to read CSV records.
     #
     # + byteChannel - The CharacterChannel, which will represent the content in the CSV file
     # + fs - Field separator, which will separate between the records in the CSV file
