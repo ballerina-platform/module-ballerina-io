@@ -2,10 +2,6 @@
 
 This module provides file read/write APIs and console print/read APIs. The file APIs allow read and write operations on different kinds of file types such as bytes, text, CSV, JSON, and XML. Further, these file APIs can be categorized as streaming and non-streaming APIs.
 
-The following diagram depicts the overview architecture of the I/O module.
-
-![architecture](./resources/architecture.svg)
-
 The file I/O operations can be categorized further based on the serialization and deserialization types such as:
 - Bytes I/O
 - Strings I/O
