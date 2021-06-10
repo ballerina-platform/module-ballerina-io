@@ -886,6 +886,179 @@ isolated function testFprintNilWithStderr() {
     test:assertEquals(readErrorStream(), "");
 }
 
+// io:fprintln with stderr
+
+@test:Config {dependsOn: [testFprintNilWithStderr]}
+isolated function testFprintlnStringWithStderr() {
+    string s = "A Greeting from Ballerina...!!!";
+    string expectedOutput = s + "\n";
+    fprintln(stderr, s);
+    test:assertEquals(readErrorStream(), expectedOutput);
+}
+
+@test:Config {dependsOn: [testFprintlnStringWithStderr]}
+isolated function testFprintlnIntWithStderr() {
+    int v = 1000;
+    fprintln(stderr, v);
+    test:assertEquals(readErrorStream(), "1000\n");
+}
+
+@test:Config {dependsOn: [testFprintlnIntWithStderr]}
+isolated function testFprintlnFloatWithStderr() {
+    float v = 1000;
+    fprintln(stderr, v);
+    test:assertEquals(readErrorStream(), "1000.0\n");
+}
+
+@test:Config {dependsOn: [testFprintlnFloatWithStderr]}
+isolated function testFprintlnBooleanWithStderr() {
+    boolean b = false;
+    fprintln(stderr, b);
+    test:assertEquals(readErrorStream(), "false\n");
+}
+
+@test:Config {dependsOn: [testFprintlnBooleanWithStderr]}
+isolated function testFprintlnConnectorWithStderr() {
+    Foo f = new Foo();
+    fprintln(stderr, f);
+    test:assertEquals(readErrorStream(), "object io:Foo\n");
+}
+
+@test:Config {dependsOn: [testFprintlnConnectorWithStderr]}
+isolated function testFprintlnFunctionPointerWithStderr() {
+    function (int, int) returns (int) addFunction = func1;
+    fprintln(stderr, addFunction);
+    test:assertEquals(readErrorStream(), "function isolated function (int,int) returns (int)\n");
+}
+
+@test:Config {dependsOn: [testFprintlnFunctionPointerWithStderr]}
+isolated function testFprintlnVarargsWithStderr() {
+    string s1 = "Hello World...!!!";
+    string s2 = "A Greeting from Ballerina...!!!";
+    string s3 = "Adios";
+    string expectedOutput = s1 + s2 + s3 + "\n";
+    fprintln(stderr, s1, s2, s3);
+    test:assertEquals(readErrorStream(), expectedOutput);
+}
+
+@test:Config {dependsOn: [testFprintlnVarargsWithStderr]}
+isolated function testFprintlnMixVarargsWithStderr() {
+    string s1 = "Hello World...!!!";
+    int i1 = 123456789;
+    float f1 = 123456789.123456789;
+    boolean b1 = true;
+    string expectedOutput = "Hello World...!!!1234567891.2345678912345679E8true\n";
+    fprintln(stderr, s1, i1, f1, b1);
+    test:assertEquals(readErrorStream(), expectedOutput);
+}
+
+@test:Config {dependsOn: [testFprintlnMixVarargsWithStderr]}
+isolated function testFprintlnNewlineWithStderr() {
+    string expectedOutput = "hello\n\n";
+    fprintln(stderr, "hello\n");
+    test:assertEquals(readErrorStream(), expectedOutput);
+}
+
+@test:Config {dependsOn: [testFprintlnNewlineWithStderr]}
+isolated function testFprintlnRawTemplateWithTrueWithStderr() {
+    boolean val = true;
+    string expectedOutput = "The respective boolean value is true\n";
+    fprintln(stderr, `The respective boolean value is ${val}`);
+    test:assertEquals(readErrorStream(), expectedOutput);
+}
+
+@test:Config {dependsOn: [testFprintlnRawTemplateWithTrueWithStderr]}
+isolated function testFprintlnRawTemplateWithFalseWithStderr() {
+    boolean val = false;
+    string expectedOutput = "The respective boolean value is false\n";
+    fprintln(stderr, `The respective boolean ${`value is ${val}`}`);
+    test:assertEquals(readErrorStream(), expectedOutput);
+}
+
+@test:Config {dependsOn: [testFprintlnRawTemplateWithFalseWithStderr]}
+isolated function testFprintlnRawTemplateWithIntWithStderr() {
+    int val = 1050;
+    string expectedOutput = "The respective int value is 1050\n";
+    fprintln(stderr, `The respective int ${`value is ${val}`}`);
+    test:assertEquals(readErrorStream(), expectedOutput);
+}
+
+@test:Config {dependsOn: [testFprintlnRawTemplateWithIntWithStderr]}
+isolated function testFprintlnRawTemplateWithDecimalWithStderr() {
+    decimal val = 1050.0967;
+    string expectedOutput = "The respective decimal value is 1050.0967\n";
+    fprintln(stderr, `The respective decimal ${`value is ${val}`}`);
+    test:assertEquals(readErrorStream(), expectedOutput);
+}
+
+@test:Config {dependsOn: [testFprintlnRawTemplateWithDecimalWithStderr]}
+isolated function testFprintlnRawTemplateWithStringWithStderr() {
+    string val = "My String";
+    string expectedOutput = "The respective string value is My String\n";
+    fprintln(stderr, `The respective string ${`value is ${val}`}`);
+    test:assertEquals(readErrorStream(), expectedOutput);
+}
+
+@test:Config {dependsOn: [testFprintlnRawTemplateWithStringWithStderr]}
+isolated function testFprintlnRawTemplateWithStringAndQuotesWithStderr() {
+    string val = "My String";
+    string expectedOutput = "The respective string value is 'My String'\n";
+    fprintln(stderr, `The respective string ${`value is '${val}'`}`);
+    test:assertEquals(readErrorStream(), expectedOutput);
+}
+
+@test:Config {dependsOn: [testFprintlnRawTemplateWithStringAndQuotesWithStderr]}
+isolated function testFprintlnRawTemplateNestedWithStderr() {
+    string s1 = "S1";
+    string s2 = "S2";
+    string s3 = "S3";
+    string s4 = "S4";
+    string s5 = "S5";
+    string expectedOutput = "string 01: S1; string 02: S2; string 03: S3; string 04: S4; string 05: S5\n";
+
+    fprintln(stderr, `${`${`${`${`string 01: ${s1}`}; string 02: ${s2}`}; string 03: ${s3}`}; string 04: ${s4}`}; string 05: ${s5}`);
+    test:assertEquals(readErrorStream(), expectedOutput);
+}
+
+@test:Config {dependsOn: [testFprintlnRawTemplateNestedWithStderr]}
+isolated function testFprintlnRawTemplateMultipleWithStderr() {
+    string name1 = "James";
+    string name2 = "Lily";
+    string expectedOutput = "Hello James!!!. After long time. Why Lily didn't come?\n";
+    fprintln(stderr, `Hello ${name1}!!!.`, " ", "After long time.", " ", `Why ${name2} didn't come?`);
+    test:assertEquals(readErrorStream(), expectedOutput);
+}
+
+@test:Config {dependsOn: [testFprintlnRawTemplateMultipleWithStderr]}
+isolated function testFprintlnErrorMessageWithStderr() {
+    error e = error("sample error");
+    string expectedOutput = "it's an error: sample error\n";
+    fprintln(stderr, `it's an error: ${e.message()}`);
+    test:assertEquals(readErrorStream(), expectedOutput);
+}
+
+@test:Config {dependsOn: [testFprintlnErrorMessageWithStderr]}
+isolated function testFprintlnErrorInTemplateWithStderr() {
+    error e = error("sample error");
+    string expectedOutput = "it's an error: error(\"sample error\")\n";
+    fprintln(stderr, `it's an error: ${e}`);
+    test:assertEquals(readErrorStream(), expectedOutput);
+}
+
+@test:Config {dependsOn: [testFprintlnErrorInTemplateWithStderr]}
+isolated function testFprintlnErrorWithStderr() {
+    error e = error("sample error");
+    string expectedOutput = "error(\"sample error\")\n";
+    fprintln(stderr, e);
+    test:assertEquals(readErrorStream(), expectedOutput);
+}
+
+@test:Config {dependsOn: [testFprintlnErrorWithStderr]}
+isolated function testFprintlnNilWithStderr() {
+    fprintln(stderr, ());
+    test:assertEquals(readErrorStream(), "\n");
+}
+
 isolated function func1(int a, int b) returns (int) {
     int c = a + b;
     return c;
