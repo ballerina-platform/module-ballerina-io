@@ -30,14 +30,6 @@ isolated function testPrintString() {
 }
 
 @test:Config {dependsOn: [testPrintString]}
-isolated function testPrintlnString() {
-    string s = "Hello World...!!!";
-    string expectedOutput = s + "\n";
-    println(s);
-    test:assertEquals(readOutputStream(), expectedOutput);
-}
-
-@test:Config {dependsOn: [testPrintlnString]}
 isolated function testPrintInt() {
     int v = 1000;
     print(v);
@@ -45,13 +37,6 @@ isolated function testPrintInt() {
 }
 
 @test:Config {dependsOn: [testPrintInt]}
-isolated function testPrintlnInt() {
-    int v = 1;
-    println(v);
-    test:assertEquals(readOutputStream(), "1\n");
-}
-
-@test:Config {dependsOn: [testPrintlnInt]}
 isolated function testPrintFloat() {
     float v = 1000;
     print(v);
@@ -59,13 +44,6 @@ isolated function testPrintFloat() {
 }
 
 @test:Config {dependsOn: [testPrintFloat]}
-isolated function testPrintlnFloat() {
-    float v = 1;
-    println(v);
-    test:assertEquals(readOutputStream(), "1.0\n");
-}
-
-@test:Config {dependsOn: [testPrintlnFloat]}
 isolated function testPrintBoolean() {
     boolean b = false;
     print(b);
@@ -73,13 +51,6 @@ isolated function testPrintBoolean() {
 }
 
 @test:Config {dependsOn: [testPrintBoolean]}
-isolated function testPrintlnBoolean() {
-    boolean b = true;
-    println(b);
-    test:assertEquals(readOutputStream(), "true\n");
-}
-
-@test:Config {dependsOn: [testPrintlnBoolean]}
 isolated function testPrintConnector() {
     Foo f = new Foo();
     print(f);
@@ -87,14 +58,6 @@ isolated function testPrintConnector() {
 }
 
 @test:Config {dependsOn: [testPrintConnector]}
-isolated function testPrintlnConnector() {
-    Foo f = new Foo();
-    println(f);
-    test:assertEquals(readOutputStream(), "object io:Foo\n");
-
-}
-
-@test:Config {dependsOn: [testPrintlnConnector]}
 isolated function testPrintFunctionPointer() {
     function (int, int) returns (int) addFunction = func1;
     print(addFunction);
@@ -102,13 +65,6 @@ isolated function testPrintFunctionPointer() {
 }
 
 @test:Config {dependsOn: [testPrintFunctionPointer]}
-isolated function testPrintlnFunctionPointer() {
-    function (int, int) returns (int) addFunction = func1;
-    println(addFunction);
-    test:assertEquals(readOutputStream(), "function isolated function (int,int) returns (int)\n");
-}
-
-@test:Config {dependsOn: [testPrintlnFunctionPointer]}
 isolated function testPrintVarargs() {
     string s1 = "Hello World...!!!";
     string s2 = "A Greeting from Ballerina...!!!";
@@ -130,16 +86,6 @@ isolated function testPrintMixVarargs() {
 }
 
 @test:Config {dependsOn: [testPrintMixVarargs]}
-isolated function testPrintlnVarargs() {
-    string s1 = "Hello World...!!!";
-    string s2 = "A Greeting from Ballerina...!!!";
-    string s3 = "Adios";
-    string expectedOutput = s1 + s2 + s3 + "\n";
-    println(s1, s2, s3);
-    test:assertEquals(readOutputStream(), expectedOutput);
-}
-
-@test:Config {dependsOn: [testPrintlnVarargs]}
 isolated function testPrintNewline() {
     string expectedOutput = "hello\n";
     print("hello\n");
@@ -246,7 +192,80 @@ isolated function testPrintNil() {
     test:assertEquals(readOutputStream(), "");
 }
 
+// Println tests
+
 @test:Config {dependsOn: [testPrintNil]}
+isolated function testPrintlnString() {
+    string s = "Hello World...!!!";
+    string expectedOutput = s + "\n";
+    println(s);
+    test:assertEquals(readOutputStream(), expectedOutput);
+}
+
+@test:Config {dependsOn: [testPrintlnString]}
+isolated function testPrintlnInt() {
+    int v = 1;
+    println(v);
+    test:assertEquals(readOutputStream(), "1\n");
+}
+
+@test:Config {dependsOn: [testPrintlnInt]}
+isolated function testPrintlnFloat() {
+    float v = 1;
+    println(v);
+    test:assertEquals(readOutputStream(), "1.0\n");
+}
+
+@test:Config {dependsOn: [testPrintlnFloat]}
+isolated function testPrintlnBoolean() {
+    boolean b = true;
+    println(b);
+    test:assertEquals(readOutputStream(), "true\n");
+}
+
+@test:Config {dependsOn: [testPrintlnBoolean]}
+isolated function testPrintlnConnector() {
+    Foo f = new Foo();
+    println(f);
+    test:assertEquals(readOutputStream(), "object io:Foo\n");
+}
+
+@test:Config {dependsOn: [testPrintlnConnector]}
+isolated function testPrintlnFunctionPointer() {
+    function (int, int) returns (int) addFunction = func1;
+    println(addFunction);
+    test:assertEquals(readOutputStream(), "function isolated function (int,int) returns (int)\n");
+}
+
+@test:Config {dependsOn: [testPrintlnFunctionPointer]}
+isolated function testPrintlnVarargs() {
+    string s1 = "Hello World...!!!";
+    string s2 = "A Greeting from Ballerina...!!!";
+    string s3 = "Adios";
+    string expectedOutput = s1 + s2 + s3 + "\n";
+    println(s1, s2, s3);
+    test:assertEquals(readOutputStream(), expectedOutput);
+}
+
+@test:Config {dependsOn: [testPrintlnVarargs]}
+isolated function testPrintlnMixVarargs() {
+    string s1 = "Hello World...!!!";
+    int i1 = 123456789;
+    float f1 = 123456789.123456789;
+    boolean b1 = true;
+    string expectedOutput = "Hello World...!!!1234567891.2345678912345679E8true\n";
+    println(s1, i1, f1, b1);
+    test:assertEquals(readOutputStream(), expectedOutput);
+}
+
+@test:Config {dependsOn: [testPrintlnMixVarargs]}
+isolated function testPrintlnNewline() {
+    string expectedOutput = "hello\n\n";
+    println("hello\n");
+    test:assertEquals(readOutputStream(), expectedOutput);
+}
+
+@test:Config {dependsOn: [testPrintlnNewline]}
 isolated function testPrintlnRawTemplateWithTrue() {
     boolean val = true;
     string expectedOutput = "The respective boolean value is true\n";
