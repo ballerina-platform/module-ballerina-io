@@ -62,3 +62,9 @@ const DOUBLE_QUOTE = "\"";
 
 # Default encoding for the abstract read/write APIs.
 public const DEFAULT_ENCODING = "UTF8";
+
+# Represents the standard output stream.
+public const stdout = 1;
+
+# Represents the standard error stream.
+public const stderr = 2;

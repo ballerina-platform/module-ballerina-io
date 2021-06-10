@@ -22,6 +22,11 @@ import ballerina/jballerina.java;
 # 3. `io:PrintableRawTemplate` - an raw templated value
 public type Printable any|error|PrintableRawTemplate;
 
+# Holds the output streaming types:
+# 1. `stdout` - standard output stream
+# 2. `stderr` - standard error stream
+public type FileOutputStream stdout|stderr;
+
 # Represents raw templates.
 # e.g: `The respective int value is ${val}`
 # + strings - string values of the template as an array
@@ -42,7 +47,7 @@ public isolated function print(Printable... values) {
     foreach int i in 0 ..< (values.length()) {
         printables[i] = new PrintableClassImpl(values[i]);
     }
-    externPrint(...printables);
+    externPrint(stdout, ...printables);
 }
 
 # Prints `any`, `error` or string templates(such as `The respective int value is ${val}`) value(s) to the STDOUT
@@ -57,7 +62,37 @@ public isolated function println(Printable... values) {
     foreach int i in 0 ..< (values.length()) {
         printables[i] = new PrintableClassImpl(values[i]);
     }
-    externPrintln(...printables);
+    externPrintln(stdout, ...printables);
+}
+
+# Prints `any`, `error`, or string templates(such as `The respective int value is ${val}`) value(s) to
+# a given stream(STDOUT or STDERR).
+#```ballerina
+# io:fprint(io:stderr, "Unexpected error occured");
+#```
+# + fileOutputStream - The output stream (`io:stdout` or `io:stderr`) content needs to be printed
+# + values - The value(s) to be printed
+public isolated function fprint(FileOutputStream fileOutputStream, Printable... values) {
+    PrintableClassImpl[] printables = [];
+    foreach int i in 0 ..< (values.length()) {
+        printables[i] = new PrintableClassImpl(values[i]);
+    }
+    externPrint(fileOutputStream, ...printables);
+}
+
+# Prints `any`, `error`, or string templates(such as `The respective int value is ${val}`) value(s) to
+# a given stream(STDOUT or STDERR) followed by a new line.
+#```ballerina
+# io:fprintln(io:stderr, "Unexpected error occured");
+#```
+# + fileOutputStream - The output stream (`io:stdout` or `io:stderr`) content needs to be printed
+# + values - The value(s) to be printed
+public isolated function fprintln(FileOutputStream fileOutputStream, Printable... values) {
+    PrintableClassImpl[] printables = [];
+    foreach int i in 0 ..< (values.length()) {
+        printables[i] = new PrintableClassImpl(values[i]);
+    }
+    externPrintln(fileOutputStream, ...printables);
 }
 
 class PrintableClassImpl {
@@ -104,12 +139,12 @@ class PrintableRawTemplateImpl {
     }
 }
 
-isolated function externPrint(PrintableClassImpl... values) = @java:Method {
+isolated function externPrint(int filePrintOption, PrintableClassImpl... values) = @java:Method {
     name: "print",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.PrintUtils"
 } external;
 
-isolated function externPrintln(PrintableClassImpl... values) = @java:Method {
+isolated function externPrintln(int filePrintOption, PrintableClassImpl... values) = @java:Method {
     name: "println",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.PrintUtils"
 } external;
