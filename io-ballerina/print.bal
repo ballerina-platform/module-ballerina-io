@@ -68,7 +68,7 @@ public isolated function println(Printable... values) {
 # Prints `any`, `error`, or string templates(such as `The respective int value is ${val}`) value(s) to
 # a given stream(STDOUT or STDERR).
 #```ballerina
-# io:fprint(io:stderr, "Unexpected error occured");
+# io:fprint(io:stderr, "Unexpected error occurred");
 #```
 # + fileOutputStream - The output stream (`io:stdout` or `io:stderr`) content needs to be printed
 # + values - The value(s) to be printed
@@ -83,7 +83,7 @@ public isolated function fprint(FileOutputStream fileOutputStream, Printable... 
 # Prints `any`, `error`, or string templates(such as `The respective int value is ${val}`) value(s) to
 # a given stream(STDOUT or STDERR) followed by a new line.
 #```ballerina
-# io:fprintln(io:stderr, "Unexpected error occured");
+# io:fprintln(io:stderr, "Unexpected error occurred");
 #```
 # + fileOutputStream - The output stream (`io:stdout` or `io:stderr`) content needs to be printed
 # + values - The value(s) to be printed
