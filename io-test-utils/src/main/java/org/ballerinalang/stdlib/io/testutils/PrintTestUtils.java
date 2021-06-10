@@ -31,13 +31,17 @@ import java.nio.charset.Charset;
  * PrintUtils to read the console and return the output.
  */
 public class PrintTestUtils {
+
     private static final Logger log = LoggerFactory.getLogger(PrintTestUtils.class);
-    private static final Object lock = new Object();
+    private static final Object outLock = new Object();
+    private static final Object errLock = new Object();
     static ByteArrayOutputStream outContent;
+    static ByteArrayOutputStream errContent;
 
     // Initialize output stream
     public static void initOutputStream() {
-        synchronized (lock) {
+
+        synchronized (outLock) {
             if (outContent == null) {
                 outContent = new ByteArrayOutputStream();
                 System.setOut(new PrintStream(outContent, false, Charset.defaultCharset()));
@@ -45,15 +49,42 @@ public class PrintTestUtils {
         }
     }
 
-    // Read output and return it as a ballerina string
+    // Initialize error stream
+    public static void initErrorStream() {
+
+        synchronized (errLock) {
+            if (errContent == null) {
+                errContent = new ByteArrayOutputStream();
+                System.setErr(new PrintStream(errContent, false, Charset.defaultCharset()));
+            }
+        }
+    }
+
+    // Read output stream and return it as a ballerina string
     public static BString readOutputStream() {
+
         return StringUtils.fromString(outContent.toString(Charset.defaultCharset()).replace("\r", ""));
+    }
+
+    // Read error stream and return it as a ballerina string
+    public static BString readErrorStream() {
+
+        return StringUtils.fromString(errContent.toString(Charset.defaultCharset()).replace("\r", ""));
     }
 
     // Reset output stream
     public static void resetOutputStream() {
+
         if (outContent != null) {
             outContent.reset();
+        }
+    }
+
+    // Reset error stream
+    public static void resetErrorStream() {
+
+        if (errContent != null) {
+            errContent.reset();
         }
     }
 }
