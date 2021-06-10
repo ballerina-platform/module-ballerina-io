@@ -32,8 +32,14 @@ public class PrintUtils {
     private PrintUtils() {
     }
 
-    public static void print(Object... values) {
-        PrintStream out = System.out;
+    public static void print(long printOptionFile, Object... values) {
+
+        PrintStream out;
+        if (printOptionFile == 2) {
+            out = System.err;
+        } else {
+            out = System.out;
+        }
         if (values == null) {
             out.print((Object) null);
             return;
@@ -45,8 +51,14 @@ public class PrintUtils {
         }
     }
 
-    public static void println(Object... values) {
-        PrintStream out = System.out;
+    public static void println(long printOptionFile, Object... values) {
+
+        PrintStream out;
+        if (printOptionFile == 2) {
+            out = System.err;
+        } else {
+            out = System.out;
+        }
         if (values == null) {
             out.println((Object) null);
             return;
