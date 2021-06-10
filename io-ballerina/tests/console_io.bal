@@ -19,8 +19,12 @@ import ballerina/jballerina.java;
 @test:BeforeEach
 isolated function beforePrint() {
     resetOutputStream();
+    resetErrorStream();
     initOutputStream();
+    initErrorStream();
 }
+
+// io:println tests
 
 @test:Config {}
 isolated function testPrintString() {
@@ -192,7 +196,7 @@ isolated function testPrintNil() {
     test:assertEquals(readOutputStream(), "");
 }
 
-// Println tests
+// io:println tests
 
 @test:Config {dependsOn: [testPrintNil]}
 isolated function testPrintlnString() {
@@ -365,6 +369,178 @@ isolated function testPrintlnNil() {
     test:assertEquals(readOutputStream(), "\n");
 }
 
+// io:fprint with error stream
+
+@test:Config {}
+isolated function testFprintStringWithStderr() {
+    string s = "A Greeting from Ballerina...!!!";
+    fprint(stderr, s);
+    test:assertEquals(readErrorStream(), s);
+}
+
+@test:Config {dependsOn: [testFprintStringWithStderr]}
+isolated function testFprintIntWithStderr() {
+    int v = 1000;
+    fprint(stderr, v);
+    test:assertEquals(readErrorStream(), "1000");
+}
+
+@test:Config {dependsOn: [testFprintIntWithStderr]}
+isolated function testFprintFloatWithStderr() {
+    float v = 1000;
+    fprint(stderr, v);
+    test:assertEquals(readErrorStream(), "1000.0");
+}
+
+@test:Config {dependsOn: [testFprintFloatWithStderr]}
+isolated function testFprintBooleanWithStderr() {
+    boolean b = false;
+    fprint(stderr, b);
+    test:assertEquals(readErrorStream(), "false");
+}
+
+@test:Config {dependsOn: [testFprintBooleanWithStderr]}
+isolated function testFprintConnectorWithStderr() {
+    Foo f = new Foo();
+    fprint(stderr, f);
+    test:assertEquals(readErrorStream(), "object io:Foo");
+}
+
+@test:Config {dependsOn: [testFprintConnectorWithStderr]}
+isolated function testFprintFunctionPointerWithStderr() {
+    function (int, int) returns (int) addFunction = func1;
+    fprint(stderr, addFunction);
+    test:assertEquals(readErrorStream(), "function isolated function (int,int) returns (int)");
+}
+
+@test:Config {dependsOn: [testFprintFunctionPointerWithStderr]}
+isolated function testFprintVarargsWithStderr() {
+    string s1 = "Hello World...!!!";
+    string s2 = "A Greeting from Ballerina...!!!";
+    string s3 = "Adios";
+    string expectedOutput = s1 + s2 + s3;
+    fprint(stderr, s1, s2, s3);
+    test:assertEquals(readErrorStream(), expectedOutput);
+}
+
+@test:Config {dependsOn: [testFprintVarargsWithStderr]}
+isolated function testFprintMixVarargsWithStderr() {
+    string s1 = "Hello World...!!!";
+    int i1 = 123456789;
+    float f1 = 123456789.123456789;
+    boolean b1 = true;
+    string expectedOutput = "Hello World...!!!1234567891.2345678912345679E8true";
+    fprint(stderr, s1, i1, f1, b1);
+    test:assertEquals(readErrorStream(), expectedOutput);
+}
+
+@test:Config {dependsOn: [testFprintMixVarargsWithStderr]}
+isolated function testFprintNewlineWithStderr() {
+    string expectedOutput = "hello\n";
+    fprint(stderr, "hello\n");
+    test:assertEquals(readErrorStream(), expectedOutput);
+}
+
+@test:Config {dependsOn: [testFprintNewlineWithStderr]}
+isolated function testFprintRawTemplateWithTrueWithStderr() {
+    boolean val = true;
+    string expectedOutput = "The respective boolean value is true";
+    fprint(stderr, `The respective boolean value is ${val}`);
+    test:assertEquals(readErrorStream(), expectedOutput);
+}
+
+@test:Config {dependsOn: [testFprintRawTemplateWithTrueWithStderr]}
+isolated function testFprintRawTemplateWithFalseWithStderr() {
+    boolean val = false;
+    string expectedOutput = "The respective boolean value is false";
+    fprint(stderr, `The respective boolean ${`value is ${val}`}`);
+    test:assertEquals(readErrorStream(), expectedOutput);
+}
+
+@test:Config {dependsOn: [testFprintRawTemplateWithFalseWithStderr]}
+isolated function testFprintRawTemplateWithIntWithStderr() {
+    int val = 1050;
+    string expectedOutput = "The respective int value is 1050";
+    fprint(stderr, `The respective int ${`value is ${val}`}`);
+    test:assertEquals(readErrorStream(), expectedOutput);
+}
+
+@test:Config {dependsOn: [testFprintRawTemplateWithIntWithStderr]}
+isolated function testFprintRawTemplateWithDecimalWithStderr() {
+    decimal val = 1050.0967;
+    string expectedOutput = "The respective decimal value is 1050.0967";
+    fprint(stderr, `The respective decimal ${`value is ${val}`}`);
+    test:assertEquals(readErrorStream(), expectedOutput);
+}
+
+@test:Config {dependsOn: [testFprintRawTemplateWithDecimalWithStderr]}
+isolated function testFprintRawTemplateWithStringWithStderr() {
+    string val = "My String";
+    string expectedOutput = "The respective string value is My String";
+    fprint(stderr, `The respective string ${`value is ${val}`}`);
+    test:assertEquals(readErrorStream(), expectedOutput);
+}
+
+@test:Config {dependsOn: [testFprintRawTemplateWithStringWithStderr]}
+isolated function testFprintRawTemplateWithStringAndQuotesWithStderr() {
+    string val = "My String";
+    string expectedOutput = "The respective string value is 'My String'";
+    fprint(stderr, `The respective string ${`value is '${val}'`}`);
+    test:assertEquals(readErrorStream(), expectedOutput);
+}
+
+@test:Config {dependsOn: [testFprintRawTemplateWithStringAndQuotesWithStderr]}
+isolated function testFprintRawTemplateNestedWithStderr() {
+    string s1 = "S1";
+    string s2 = "S2";
+    string s3 = "S3";
+    string s4 = "S4";
+    string s5 = "S5";
+    string expectedOutput = "string 01: S1; string 02: S2; string 03: S3; string 04: S4; string 05: S5";
+
+    fprint(stderr, `${`${`${`${`string 01: ${s1}`}; string 02: ${s2}`}; string 03: ${s3}`}; string 04: ${s4}`}; string 05: ${s5}`);
+    test:assertEquals(readErrorStream(), expectedOutput);
+}
+
+@test:Config {dependsOn: [testFprintRawTemplateNestedWithStderr]}
+isolated function testFprintRawTemplateMultipleWithStderr() {
+    string name1 = "James";
+    string name2 = "Lily";
+    string expectedOutput = "Hello James!!!. After long time. Why Lily didn't come?";
+    fprint(stderr, `Hello ${name1}!!!.`, " ", "After long time.", " ", `Why ${name2} didn't come?`);
+    test:assertEquals(readErrorStream(), expectedOutput);
+}
+
+@test:Config {dependsOn: [testFprintRawTemplateMultipleWithStderr]}
+isolated function testFprintErrorMessageWithStderr() {
+    error e = error("sample error");
+    string expectedOutput = "it's an error: sample error";
+    fprint(stderr, `it's an error: ${e.message()}`);
+    test:assertEquals(readErrorStream(), expectedOutput);
+}
+
+@test:Config {dependsOn: [testFprintErrorMessageWithStderr]}
+isolated function testFprintErrorInTemplateWithStderr() {
+    error e = error("sample error");
+    string expectedOutput = "it's an error: error(\"sample error\")";
+    fprint(stderr, `it's an error: ${e}`);
+    test:assertEquals(readErrorStream(), expectedOutput);
+}
+
+@test:Config {dependsOn: [testFprintErrorInTemplateWithStderr]}
+isolated function testFprintErrorWithStderr() {
+    error e = error("sample error");
+    string expectedOutput = "error(\"sample error\")";
+    fprint(stderr, e);
+    test:assertEquals(readErrorStream(), expectedOutput);
+}
+
+@test:Config {dependsOn: [testFprintErrorWithStderr]}
+isolated function testFprintNilWithStderr() {
+    fprint(stderr, ());
+    test:assertEquals(readErrorStream(), "");
+}
+
 isolated function func1(int a, int b) returns (int) {
     int c = a + b;
     return c;
@@ -388,5 +564,20 @@ public isolated function readOutputStream() returns string = @java:Method {
 
 public isolated function resetOutputStream() = @java:Method {
     name: "resetOutputStream",
+    'class: "org.ballerinalang.stdlib.io.testutils.PrintTestUtils"
+} external;
+
+public isolated function initErrorStream() = @java:Method {
+    name: "initErrorStream",
+    'class: "org.ballerinalang.stdlib.io.testutils.PrintTestUtils"
+} external;
+
+public isolated function readErrorStream() returns string = @java:Method {
+    name: "readErrorStream",
+    'class: "org.ballerinalang.stdlib.io.testutils.PrintTestUtils"
+} external;
+
+public isolated function resetErrorStream() = @java:Method {
+    name: "resetErrorStream",
     'class: "org.ballerinalang.stdlib.io.testutils.PrintTestUtils"
 } external;
