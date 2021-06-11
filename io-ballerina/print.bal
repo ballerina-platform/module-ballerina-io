@@ -16,13 +16,13 @@
 
 import ballerina/jballerina.java;
 
-# Define all the printable types.
+# Defines all the printable types.
 # 1. any typed value
 # 2. errors
 # 3. `io:PrintableRawTemplate` - an raw templated value
 public type Printable any|error|PrintableRawTemplate;
 
-# Holds the output streaming types:
+# Defines the output streaming types.
 # 1. `stdout` - standard output stream
 # 2. `stderr` - standard error stream
 public type FileOutputStream stdout|stderr;
