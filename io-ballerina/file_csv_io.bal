@@ -21,7 +21,7 @@
 # + path - The CSV file path
 # + skipHeaders - Number of headers, which should be skipped prior to reading records
 # + return - The entire CSV content in the channel as an array of string arrays or an `io:Error`
-public isolated function fileReadCsv(@untainted string path, int skipHeaders = 0) returns @tainted string[][]|Error {
+public isolated function fileReadCsv(string path, int skipHeaders = 0) returns string[][]|Error {
     return channelReadCsv(check openReadableCsvFile(path, COMMA, DEFAULT_ENCODING, skipHeaders));
 }
 
@@ -31,7 +31,7 @@ public isolated function fileReadCsv(@untainted string path, int skipHeaders = 0
 # ```
 # + path - The CSV file path
 # + return - The entire CSV content in the channel a stream of string arrays or an `io:Error`
-public isolated function fileReadCsvAsStream(@untainted string path) returns @tainted stream<string[], Error?>|Error {
+public isolated function fileReadCsvAsStream(string path) returns stream<string[], Error?>|Error {
     return channelReadCsvAsStream(check openReadableCsvFile(path));
 }
 
@@ -44,7 +44,7 @@ public isolated function fileReadCsvAsStream(@untainted string path) returns @ta
 # + content - CSV content as an array of string arrays
 # + option - To indicate whether to overwrite or append the given content
 # + return - An `io:Error` or `()` when the writing was successful
-public isolated function fileWriteCsv(@untainted string path, string[][] content, FileWriteOption option = OVERWRITE) returns 
+public isolated function fileWriteCsv(string path, string[][] content, FileWriteOption option = OVERWRITE) returns 
 Error? {
     return channelWriteCsv(check openWritableCsvFile(path, option = option), content);
 }
@@ -59,7 +59,7 @@ Error? {
 # + content - A CSV record stream to be written
 # + option - To indicate whether to overwrite or append the given content
 # + return - An `io:Error` or `()` when the writing was successful
-public isolated function fileWriteCsvFromStream(@untainted string path, stream<string[], Error?> content, 
+public isolated function fileWriteCsvFromStream(string path, stream<string[], Error?> content, 
                                                 FileWriteOption option = OVERWRITE) returns Error? {
     return channelWriteCsvFromStream(check openWritableCsvFile(path, option = option), content);
 }

@@ -51,7 +51,7 @@ public class ReadableTextRecordChannel {
     # ```
     #
     # + return - Set of fields included in the record or else `io:Error`
-    public isolated function getNext() returns @tainted string[]|Error {
+    public isolated function getNext() returns string[]|Error {
         return getNextExtern(self);
     }
 
@@ -78,7 +78,7 @@ isolated function hasNextExtern(ReadableTextRecordChannel textChannel) returns b
     'class: "org.ballerinalang.stdlib.io.nativeimpl.RecordChannelUtils"
 } external;
 
-isolated function getNextExtern(ReadableTextRecordChannel textChannel) returns @tainted string[]|Error = @java:Method {
+isolated function getNextExtern(ReadableTextRecordChannel textChannel) returns string[]|Error = @java:Method {
     name: "getNext",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.RecordChannelUtils"
 } external;

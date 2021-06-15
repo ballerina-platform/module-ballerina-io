@@ -73,7 +73,7 @@ public class ReadableCSVChannel {
     # ```
     #
     # + return - List of fields in the CSV or else an `io:Error`
-    public isolated function getNext() returns @tainted string[]|Error? {
+    public isolated function getNext() returns string[]|Error? {
         if (self.dc is ReadableTextRecordChannel) {
             var result = <ReadableTextRecordChannel>self.dc;
             return result.getNext();
@@ -122,13 +122,13 @@ public class ReadableCSVChannel {
     # + structType - The object in which the CSV records should be deserialized
     # + fieldNames - The names of the fields used as the (composite)key of the table
     # + return - Table, which represents the CSV records or else an `io:Error`
-    public isolated function getTable(typedesc<record { }> structType, string[] fieldNames = []) returns @tainted table<record { }>|
+    public isolated function getTable(typedesc<record { }> structType, string[] fieldNames = []) returns table<record { }>|
     Error {
         return getTableExtern(self, structType, fieldNames);
     }
 }
 
-isolated function getTableExtern(ReadableCSVChannel csvChannel, typedesc<record { }> structType, string[] fieldNames) returns @tainted table<record { }>|
+isolated function getTableExtern(ReadableCSVChannel csvChannel, typedesc<record { }> structType, string[] fieldNames) returns table<record { }>|
 Error = @java:Method {
     name: "getTable",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.GetTable"

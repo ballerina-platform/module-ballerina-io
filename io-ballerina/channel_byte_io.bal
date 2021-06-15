@@ -15,7 +15,7 @@
 // under the License.
 import ballerina/lang.'value;
 
-isolated function channelReadBytes(ReadableChannel readableChannel) returns @tainted readonly & byte[]|Error {
+isolated function channelReadBytes(ReadableChannel readableChannel) returns readonly & byte[]|Error {
     if (readableChannel is ReadableByteChannel) {
         var result = readableChannel.readAll();
         Error? closeResult = readableChannel.close();
@@ -27,7 +27,7 @@ isolated function channelReadBytes(ReadableChannel readableChannel) returns @tai
     }
 }
 
-isolated function channelReadBlocksAsStream(ReadableChannel readableChannel, int blockSize = 4096) returns @tainted stream<
+isolated function channelReadBlocksAsStream(ReadableChannel readableChannel, int blockSize = 4096) returns stream<
 Block, Error?>|Error {
     if (readableChannel is ReadableByteChannel) {
         return readableChannel.blockStream(blockSize);

@@ -22,7 +22,7 @@ import ballerina/jballerina.java;
 #
 # + path - Relative/absolute path string to locate the file
 # + return - The `io:ReadableByteChannel` related to the given file or else an `io:Error` if there is an error while opening
-public isolated function openReadableFile(@untainted string path) returns ReadableByteChannel|Error = @java:Method {
+public isolated function openReadableFile(string path) returns ReadableByteChannel|Error = @java:Method {
     name: "openReadableFile",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.ByteChannelUtils"
 } external;
@@ -35,7 +35,7 @@ public isolated function openReadableFile(@untainted string path) returns Readab
 # + path - Relative/absolute path string to locate the file
 # + option - To indicate whether to overwrite or append the given content
 # + return - The `io:WritableByteChannel` related to the given file or else an `io:Error` if any error occurred
-public isolated function openWritableFile(@untainted string path, FileWriteOption option = OVERWRITE) returns 
+public isolated function openWritableFile(string path, FileWriteOption option = OVERWRITE) returns
 WritableByteChannel|Error = @java:Method {
     name: "openWritableFile",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.ByteChannelUtils"
@@ -63,8 +63,8 @@ public isolated function createReadableChannel(byte[] content) returns ReadableB
 # + charset - Representation of the encoding characters in the file
 # + skipHeaders - Number of headers, which should be skipped
 # + return - The `io:ReadableCSVChannel`, which could be used to iterate through the CSV records or else an `io:Error` if any error occurred
-public isolated function openReadableCsvFile(@untainted string path, @untainted Separator fieldSeparator = ",", 
-                                             @untainted string charset = "UTF-8", @untainted int skipHeaders = 0) returns 
+public isolated function openReadableCsvFile(string path, Separator fieldSeparator = ",",
+                                             string charset = "UTF-8", int skipHeaders = 0) returns
 ReadableCSVChannel|Error {
     ReadableByteChannel byteChannel = check openReadableFile(path);
     ReadableCharacterChannel charChannel = new (byteChannel, charset);
@@ -82,8 +82,8 @@ ReadableCSVChannel|Error {
 # + skipHeaders - Number of headers, which should be skipped
 # + option - To indicate whether to overwrite or append the given content
 # + return - The `WritableCSVChannel`, which could be used to write the CSV records or else an `io:Error` if any error occurred
-public isolated function openWritableCsvFile(@untainted string path, @untainted Separator fieldSeparator = ",", 
-                                             @untainted string charset = "UTF-8", @untainted int skipHeaders = 0, 
+public isolated function openWritableCsvFile(string path, Separator fieldSeparator = ",",
+                                             string charset = "UTF-8", int skipHeaders = 0,
                                              FileWriteOption option = OVERWRITE) returns WritableCSVChannel|Error {
     WritableByteChannel byteChannel = check openWritableFile(path, option);
     WritableCharacterChannel charChannel = new (byteChannel, charset);

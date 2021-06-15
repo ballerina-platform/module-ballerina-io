@@ -39,7 +39,7 @@ public class StringReader {
     # ```
     #
     # + return - JSON or else an `io:Error` if any error occurred
-    public isolated function readJson() returns @tainted json|Error {
+    public isolated function readJson() returns json|Error {
         if (self.charChannel is ReadableCharacterChannel) {
             var result = <ReadableCharacterChannel>self.charChannel;
             return result.readJson();
@@ -54,7 +54,7 @@ public class StringReader {
     # ```
     #
     # + return - XML or else an `io:Error` if any error occurred
-    public isolated function readXml() returns @tainted xml|Error? {
+    public isolated function readXml() returns xml|Error? {
         if (self.charChannel is ReadableCharacterChannel) {
             var result = <ReadableCharacterChannel>self.charChannel;
             return result.readXml();
@@ -70,7 +70,7 @@ public class StringReader {
     #
     # + nCharacters - Number of characters to be read
     # + return - String or else an `io:Error` if any error occurred
-    public isolated function readChar(int nCharacters) returns @tainted string|Error? {
+    public isolated function readChar(int nCharacters) returns string|Error? {
         if (self.charChannel is ReadableCharacterChannel) {
             var result = <ReadableCharacterChannel>self.charChannel;
             return result.read(nCharacters);
