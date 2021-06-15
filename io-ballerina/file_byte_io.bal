@@ -20,7 +20,7 @@
 # ```
 # + path - The path of the file
 # + return - A read-only byte array or an `io:Error`
-public isolated function fileReadBytes(@untainted string path) returns @tainted readonly & byte[]|Error {
+public isolated function fileReadBytes(string path) returns readonly & byte[]|Error {
     return channelReadBytes(check openReadableFile(path));
 }
 
@@ -31,7 +31,7 @@ public isolated function fileReadBytes(@untainted string path) returns @tainted 
 # + path - The path of the file
 # + blockSize - An optional size of the byte block. The default size is 4KB
 # + return - A byte block stream or  an`io:Error`
-public isolated function fileReadBlocksAsStream(string path, int blockSize = 4096) returns @tainted stream<Block, Error?>|
+public isolated function fileReadBlocksAsStream(string path, int blockSize = 4096) returns stream<Block, Error?>|
 Error {
     return channelReadBlocksAsStream(check openReadableFile(path), blockSize);
 }
@@ -45,7 +45,7 @@ Error {
 # + content - Byte content to write
 # + option - To indicate whether to overwrite or append the given content
 # + return - An `io:Error` or else `()`
-public isolated function fileWriteBytes(@untainted string path, byte[] content, FileWriteOption option = OVERWRITE) returns 
+public isolated function fileWriteBytes(string path, byte[] content, FileWriteOption option = OVERWRITE) returns 
 Error? {
     return channelWriteBytes(check openWritableFile(path, option), content);
 }
@@ -60,7 +60,7 @@ Error? {
 # + byteStream - Byte stream to write
 # + option - To indicate whether to overwrite or append the given content
 # + return - An `io:Error` or else `()`
-public isolated function fileWriteBlocksFromStream(@untainted string path, stream<byte[], Error?> byteStream, 
+public isolated function fileWriteBlocksFromStream(string path, stream<byte[], Error?> byteStream, 
                                                    FileWriteOption option = OVERWRITE) returns Error? {
     return channelWriteBlocksFromStream(check openWritableFile(path, option), byteStream);
 }

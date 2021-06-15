@@ -23,7 +23,7 @@ import ballerina/jballerina.java;
 #
 # + a - Any value to be printed
 # + return - Input read from the STDIN
-public function readln(any a) returns @tainted string = @java:Method {
+public function readln(any a) returns string = @java:Method {
     name: "readln",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.ReadlnAny"
 } external;

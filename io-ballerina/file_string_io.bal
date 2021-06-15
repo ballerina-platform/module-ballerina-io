@@ -21,7 +21,7 @@
 # ```
 # + path - The path of the file
 # + return - The entire file content as a string or an `io:Error`
-public isolated function fileReadString(@untainted string path) returns @tainted string|Error {
+public isolated function fileReadString(string path) returns string|Error {
     return channelReadString(check openReadableFile(path));
 }
 
@@ -32,7 +32,7 @@ public isolated function fileReadString(@untainted string path) returns @tainted
 # ```
 # + path - The path of the file
 # + return - The file as list of lines or an `io:Error`
-public isolated function fileReadLines(@untainted string path) returns @tainted string[]|Error {
+public isolated function fileReadLines(string path) returns string[]|Error {
     return channelReadLines(check openReadableFile(path));
 }
 
@@ -43,7 +43,7 @@ public isolated function fileReadLines(@untainted string path) returns @tainted 
 # ```
 # + path - The path of the file
 # + return - The file content as a stream of strings or an `io:Error`
-public isolated function fileReadLinesAsStream(@untainted string path) returns @tainted stream<string, Error?>|Error {
+public isolated function fileReadLinesAsStream(string path) returns stream<string, Error?>|Error {
     return channelReadLinesAsStream(check openReadableFile(path));
 }
 
@@ -53,7 +53,7 @@ public isolated function fileReadLinesAsStream(@untainted string path) returns @
 # ```
 # + path - The path of the JSON file
 # + return - The file content as a JSON object or an `io:Error`
-public isolated function fileReadJson(@untainted string path) returns @tainted json|Error {
+public isolated function fileReadJson(string path) returns json|Error {
     return channelReadJson(check openReadableFile(path));
 }
 
@@ -63,7 +63,7 @@ public isolated function fileReadJson(@untainted string path) returns @tainted j
 # ```
 # + path - The path of the XML file
 # + return - The file content as an XML or an `io:Error`
-public isolated function fileReadXml(@untainted string path) returns @tainted xml|Error {
+public isolated function fileReadXml(string path) returns xml|Error {
     return channelReadXml(check openReadableFile(path));
 }
 
@@ -76,7 +76,7 @@ public isolated function fileReadXml(@untainted string path) returns @tainted xm
 # + content - String content to write
 # + option - To indicate whether to overwrite or append the given content
 # + return - `()` when the writing was successful or an `io:Error`
-public isolated function fileWriteString(@untainted string path, string content, FileWriteOption option = OVERWRITE) returns 
+public isolated function fileWriteString(string path, string content, FileWriteOption option = OVERWRITE) returns 
 Error? {
     return channelWriteString(check openWritableFile(path, option), content);
 }
@@ -91,7 +91,7 @@ Error? {
 # + content - An array of string lines to write
 # + option - To indicate whether to overwrite or append the given content
 # + return - `()` when the writing was successful or an `io:Error`
-public isolated function fileWriteLines(@untainted string path, string[] content, FileWriteOption option = OVERWRITE) returns 
+public isolated function fileWriteLines(string path, string[] content, FileWriteOption option = OVERWRITE) returns 
 Error? {
     return channelWriteLines(check openWritableFile(path, option), content);
 }
@@ -107,7 +107,7 @@ Error? {
 # + lineStream - A stream of lines to write
 # + option - To indicate whether to overwrite or append the given content
 # + return - `()` when the writing was successful or an `io:Error`
-public isolated function fileWriteLinesFromStream(@untainted string path, stream<string, Error?> lineStream, 
+public isolated function fileWriteLinesFromStream(string path, stream<string, Error?> lineStream, 
                                                   FileWriteOption option = OVERWRITE) returns Error? {
     return channelWriteLinesFromStream(check openWritableFile(path, option), lineStream);
 }
@@ -120,7 +120,7 @@ public isolated function fileWriteLinesFromStream(@untainted string path, stream
 # + path - The path of the JSON file
 # + content - JSON content to write
 # + return - `()` when the writing was successful or an `io:Error`
-public isolated function fileWriteJson(@untainted string path, json content) returns @tainted Error? {
+public isolated function fileWriteJson(string path, json content) returns Error? {
     return channelWriteJson(check openWritableFile(path), content);
 }
 
@@ -134,7 +134,7 @@ public isolated function fileWriteJson(@untainted string path, json content) ret
 # + xmlOptions - XML writing options(XML entity type and DOCTYPE)
 # + fileWriteOption - file write option(`OVERWRITE` and `APPEND` are the possible values, and the default value is `OVERWRITE`)
 # + return - `()` value when the writing was successful or an `io:Error`
-public isolated function fileWriteXml(@untainted string path, xml content, FileWriteOption fileWriteOption = OVERWRITE, 
+public isolated function fileWriteXml(string path, xml content, FileWriteOption fileWriteOption = OVERWRITE, 
                                       *XmlWriteOptions xmlOptions) returns Error? {
     WritableByteChannel byteChannel;
     if (xmlOptions.xmlEntityType == DOCUMENT_ENTITY) {

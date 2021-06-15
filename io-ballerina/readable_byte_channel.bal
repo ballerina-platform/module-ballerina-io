@@ -36,7 +36,7 @@ public class ReadableByteChannel {
     #
     # + nBytes - A positive integer. Represents the number of bytes, which should be read
     # + return - Content (the number of bytes) read, an `EofError` once the channel reaches the end or else an `io:Error`
-    public isolated function read(@untainted int nBytes) returns @tainted byte[]|Error {
+    public isolated function read(int nBytes) returns byte[]|Error {
         return byteReadExtern(self, nBytes);
     }
 
@@ -46,7 +46,7 @@ public class ReadableByteChannel {
     # ```
     #
     # + return - A read-only `byte` array or else an `io:Error`
-    public isolated function readAll() returns @tainted readonly & byte[]|Error {
+    public isolated function readAll() returns readonly & byte[]|Error {
         byte[] readResult = check readAllBytes(self);
         return <readonly & byte[]>readResult.cloneReadOnly();
     }
@@ -57,7 +57,7 @@ public class ReadableByteChannel {
     # ```
     # + blockSize - A positive integer. Size of the block.
     # + return - A block stream or else an `io:Error`
-    public isolated function blockStream(int blockSize) returns @tainted stream<Block, Error?>|Error {
+    public isolated function blockStream(int blockSize) returns stream<Block, Error?>|Error {
         BlockStream blockStream = new (self, blockSize);
         return new stream<Block, Error?>(blockStream);
     }
@@ -94,12 +94,12 @@ public class ReadableByteChannel {
     }
 }
 
-isolated function byteReadExtern(ReadableByteChannel byteChannel, @untainted int nBytes) returns @tainted byte[]|Error = @java:Method {
+isolated function byteReadExtern(ReadableByteChannel byteChannel, int nBytes) returns byte[]|Error = @java:Method {
     name: "read",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.ByteChannelUtils"
 } external;
 
-isolated function readAllBytes(ReadableByteChannel byteChannel) returns @tainted byte[]|Error = @java:Method {
+isolated function readAllBytes(ReadableByteChannel byteChannel) returns byte[]|Error = @java:Method {
     name: "readAll",
     'class: "org.ballerinalang.stdlib.io.nativeimpl.ByteChannelUtils"
 } external;

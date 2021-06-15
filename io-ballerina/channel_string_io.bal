@@ -15,33 +15,33 @@
 // under the License.
 import ballerina/lang.'value;
 
-isolated function channelReadString(ReadableChannel readableChannel) returns @tainted string|Error {
+isolated function channelReadString(ReadableChannel readableChannel) returns string|Error {
     ReadableCharacterChannel characterChannel = check getReadableCharacterChannel(readableChannel);
     var result = characterChannel.readString();
     Error? closeResult = characterChannel.close();
     return result;
 }
 
-isolated function channelReadLines(ReadableChannel readableChannel) returns @tainted string[]|Error {
+isolated function channelReadLines(ReadableChannel readableChannel) returns string[]|Error {
     ReadableCharacterChannel characterChannel = check getReadableCharacterChannel(readableChannel);
     var result = characterChannel.readAllLines();
     Error? closeResult = characterChannel.close();
     return result;
 }
 
-isolated function channelReadLinesAsStream(ReadableChannel readableChannel) returns @tainted stream<string, Error?>|
+isolated function channelReadLinesAsStream(ReadableChannel readableChannel) returns stream<string, Error?>|
 Error {
     return (check getReadableCharacterChannel(readableChannel)).lineStream();
 }
 
-isolated function channelReadJson(ReadableChannel readableChannel) returns @tainted json|Error {
+isolated function channelReadJson(ReadableChannel readableChannel) returns json|Error {
     ReadableCharacterChannel characterChannel = check getReadableCharacterChannel(readableChannel);
     var result = characterChannel.readJson();
     Error? closeResult = characterChannel.close();
     return result;
 }
 
-isolated function channelReadXml(ReadableChannel readableChannel) returns @tainted xml|Error {
+isolated function channelReadXml(ReadableChannel readableChannel) returns xml|Error {
     ReadableCharacterChannel characterChannel = check getReadableCharacterChannel(readableChannel);
     var result = characterChannel.readXml();
     Error? closeResult = characterChannel.close();
@@ -94,7 +94,7 @@ Error? {
     return ();
 }
 
-isolated function channelWriteJson(WritableChannel writableChannel, json content) returns @tainted Error? {
+isolated function channelWriteJson(WritableChannel writableChannel, json content) returns Error? {
     WritableCharacterChannel characterChannel = check getWritableCharacterChannel(writableChannel);
     var writeResult = characterChannel.writeJson(content);
     var closeResult = characterChannel.close();

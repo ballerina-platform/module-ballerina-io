@@ -40,7 +40,7 @@ isolated function testXmlToJsonConvert() {
     }
 }
 
-isolated function getJson(string content, string encoding) returns @tainted json|error {
+isolated function getJson(string content, string encoding) returns json|error {
     StringReader reader = new StringReader(content, encoding);
     var readResult = reader.readJson();
     Error? closeResult = reader.close();
@@ -51,7 +51,7 @@ isolated function getJson(string content, string encoding) returns @tainted json
     }
 }
 
-isolated function getXml(string content, string encoding) returns @tainted xml?|error {
+isolated function getXml(string content, string encoding) returns xml?|error {
     StringReader reader = new StringReader(content, encoding);
     var readResult = reader.readXml();
     Error? closeResult = reader.close();

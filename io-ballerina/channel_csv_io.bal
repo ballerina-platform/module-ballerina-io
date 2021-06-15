@@ -15,7 +15,7 @@
 // under the License.
 import ballerina/lang.'value;
 
-isolated function channelReadCsv(ReadableChannel readableChannel, int skipHeaders = 0) returns @tainted string[][]|
+isolated function channelReadCsv(ReadableChannel readableChannel, int skipHeaders = 0) returns string[][]|
 Error {
     ReadableCSVChannel csvChannel = check getReadableCSVChannel(readableChannel, skipHeaders);
     string[][] results = [];
@@ -35,7 +35,7 @@ Error {
     return results;
 }
 
-isolated function channelReadCsvAsStream(ReadableChannel readableChannel) returns @tainted stream<string[], Error?>|
+isolated function channelReadCsvAsStream(ReadableChannel readableChannel) returns stream<string[], Error?>|
 Error {
     return (check getReadableCSVChannel(readableChannel, 0)).csvStream();
 }
