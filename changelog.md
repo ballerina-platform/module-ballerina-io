@@ -4,7 +4,11 @@ This file contains all the notable changes done to the Ballerina I/O package thr
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [v0.6.0-beta.1-rc1] - 2021-05-07
+## [Unreleased]
+### Added
+- [Introduce fprint and fprintln APIs](https://github.com/ballerina-platform/ballerina-standard-library/issues/1394)
+
+## [v0.6.0-beta.1] - 2021-06-02
 ### Fixed
 - [Fixes the unexpected error return](https://github.com/ballerina-platform/ballerina-standard-library/issues/1316)
 - [Fixes the included and default parameter order in `io:fileWriteXml` API](https://github.com/ballerina-platform/ballerina-standard-library/issues/1346)
