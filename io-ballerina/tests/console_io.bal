@@ -252,6 +252,15 @@ isolated function testPrintlnVarargs() {
 }
 
 @test:Config {dependsOn: [testPrintlnVarargs]}
+isolated function testPrintlnVarargsWithEquals() {
+    string id1 = "A001";
+    string id2 = "A002";
+    string expectedOutput = "ID 1: " + id1 + "ID 1: " + id2 + "\n";
+    println("ID 1: " + id1 + "ID 1: " + id2);
+    test:assertEquals(readOutputStream(), expectedOutput);
+}
+
+@test:Config {dependsOn: [testPrintlnVarargsWithEquals]}
 isolated function testPrintlnMixVarargs() {
     string s1 = "Hello World...!!!";
     int i1 = 123456789;
