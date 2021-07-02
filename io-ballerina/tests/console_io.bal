@@ -79,6 +79,15 @@ isolated function testPrintVarargs() {
 }
 
 @test:Config {dependsOn: [testPrintVarargs]}
+isolated function testPrintVarargsWithEquals() {
+    string id1 = "A001";
+    string id2 = "A002";
+    string expectedOutput = "ID 1: " + id1 + "ID 1: " + id2;
+    print("ID 1: " + id1 + "ID 1: " + id2);
+    test:assertEquals(readOutputStream(), expectedOutput);
+}
+
+@test:Config {dependsOn: [testPrintVarargs]}
 isolated function testPrintMixVarargs() {
     string s1 = "Hello World...!!!";
     int i1 = 123456789;
@@ -433,6 +442,15 @@ isolated function testFprintVarargsWithStdout() {
 }
 
 @test:Config {dependsOn: [testFprintVarargsWithStdout]}
+isolated function testFprintVarargsWithEqualsWithStdout() {
+    string id1 = "A001";
+    string id2 = "A002";
+    string expectedOutput = "ID 1: " + id1 + "ID 1: " + id2;
+    fprint(stdout, "ID 1: " + id1 + "ID 1: " + id2);
+    test:assertEquals(readOutputStream(), expectedOutput);
+}
+
+@test:Config {dependsOn: [testFprintVarargsWithStdout]}
 isolated function testFprintMixVarargsWithStdout() {
     string s1 = "Hello World...!!!";
     int i1 = 123456789;
@@ -606,6 +624,15 @@ isolated function testFprintlnVarargsWithStdout() {
 }
 
 @test:Config {dependsOn: [testFprintlnVarargsWithStdout]}
+isolated function testFprintlnVarargsWithEqualsWithStdout() {
+    string id1 = "A001";
+    string id2 = "A002";
+    string expectedOutput = "ID 1: " + id1 + "ID 1: " + id2 + "\n";
+    fprintln(stdout, "ID 1: " + id1 + "ID 1: " + id2);
+    test:assertEquals(readOutputStream(), expectedOutput);
+}
+
+@test:Config {dependsOn: [testFprintlnVarargsWithEqualsWithStdout]}
 isolated function testFprintlnMixVarargsWithStdout() {
     string s1 = "Hello World...!!!";
     int i1 = 123456789;
@@ -778,6 +805,15 @@ isolated function testFprintVarargsWithStderr() {
 }
 
 @test:Config {dependsOn: [testFprintVarargsWithStderr]}
+isolated function testFprintVarargsWithEqualsWithStderr() {
+    string id1 = "A001";
+    string id2 = "A002";
+    string expectedOutput = "ID 1: " + id1 + "ID 1: " + id2;
+    fprint(stderr, "ID 1: " + id1 + "ID 1: " + id2);
+    test:assertEquals(readErrorStream(), expectedOutput);
+}
+
+@test:Config {dependsOn: [testFprintVarargsWithEqualsWithStderr]}
 isolated function testFprintMixVarargsWithStderr() {
     string s1 = "Hello World...!!!";
     int i1 = 123456789;
@@ -951,6 +987,15 @@ isolated function testFprintlnVarargsWithStderr() {
 }
 
 @test:Config {dependsOn: [testFprintlnVarargsWithStderr]}
+isolated function testFprintlnVarargsWithEqualsWithStderr() {
+    string id1 = "A001";
+    string id2 = "A002";
+    string expectedOutput = "ID 1: " + id1 + "ID 1: " + id2 + "\n";
+    fprintln(stderr, "ID 1: " + id1 + "ID 1: " + id2);
+    test:assertEquals(readErrorStream(), expectedOutput);
+}
+
+@test:Config {dependsOn: [testFprintlnVarargsWithEqualsWithStderr]}
 isolated function testFprintlnMixVarargsWithStderr() {
     string s1 = "Hello World...!!!";
     int i1 = 123456789;
