@@ -92,7 +92,8 @@ tasks.withType(Checkstyle) {
 }
 
 spotbugsMain.finalizedBy validateSpotbugs
-checkstyleMain.dependsOn(":build-config:checkstyle:downloadMultipleFiles")
+checkstyleMain.dependsOn ":build-config:checkstyle:downloadCheckstyleRuleFiles"
+checkstyleTest.dependsOn ":build-config:checkstyle:downloadCheckstyleRuleFiles"
 
 publishing {
     publications {
