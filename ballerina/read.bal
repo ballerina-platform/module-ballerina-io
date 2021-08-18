@@ -19,11 +19,12 @@ import ballerina/jballerina.java;
 # Retrieves the input read from the STDIN.
 # ```ballerina
 # string choice = io:readln("Enter choice 1 - 5: ");
+# string choice = io:readln();
 # ```
 #
 # + a - Any value to be printed
 # + return - Input read from the STDIN
-public function readln(any a) returns string = @java:Method {
+public function readln(any? a) returns string = @java:Method {
     name: "readln",
     'class: "io.ballerina.stdlib.io.nativeimpl.ReadlnAny"
 } external;
