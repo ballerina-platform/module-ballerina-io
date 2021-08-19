@@ -45,6 +45,8 @@ import static io.ballerina.stdlib.io.utils.IOUtils.getIOPackage;
  */
 public class Utils {
 
+    private Utils() { }
+
     private static final int READABLE_BUFFER_SIZE = 8192; //8KB
     private static final Module PACKAGE_ID_MIME = new Module(BALLERINA_BUILTIN_PKG_PREFIX, "mime", "1.0.0");
     private static final String STRUCT_TYPE = "ReadableByteChannel";
