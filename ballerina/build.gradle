@@ -14,9 +14,6 @@
  * limitations under the License.
  *
  */
-
-import org.apache.tools.ant.taskdefs.condition.Os
-
 buildscript {
     repositories {
         maven {
@@ -71,16 +68,9 @@ task updateTomlFiles {
     }
 }
 
-task commitTomlFiles {
+task revertTomlFiles {
     doLast {
-        project.exec {
-            ignoreExitValue true
-            if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-                commandLine 'cmd', '/c', "git commit Ballerina.toml -m '[Automated] Update the native jar versions'"
-            } else {
-                commandLine 'sh', '-c', "git commit Ballerina.toml -m '[Automated] Update the native jar versions'"
-            }
-        }
+        ballerinaConfigFile.text = originalConfig
     }
 }
 
