@@ -1,15 +1,15 @@
 [package]
 org = "ballerina"
 name = "io"
-version = "@toml.version@"
+version = "1.0.0"
 distribution = "slbeta3"
 
 [[platform.java11.dependency]]
-path = "../native/build/libs/io-native-@project.version@.jar"
-version = "@project.version@"
+path = "../native/build/libs/io-native-1.0.0-SNAPSHOT.jar"
+version = "1.0.0-SNAPSHOT"
 
 
 [[platform.java11.dependency]]
-path = "../test-utils/build/libs/io-test-utils-@project.version@.jar"
+path = "../test-utils/build/libs/io-test-utils-1.0.0-SNAPSHOT.jar"
 scope = "testOnly"
-version = "@project.version@"
+version = "1.0.0-SNAPSHOT"
