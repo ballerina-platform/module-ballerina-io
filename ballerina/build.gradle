@@ -39,8 +39,8 @@ description = 'Ballerina - I/O Ballerina Generator'
 def packageName = "io"
 def packageOrg = "ballerina"
 def tomlVersion = stripBallerinaExtensionVersion("${project.version}")
-def ballerinaConfigFile = new File("${project.projectDir}/Ballerina.toml")
-def originalConfig = ballerinaConfigFile.text
+def ballerinaTomlFile = new File("$project.projectDir/Ballerina.toml")
+def ballerinaTomlFilePlaceHolder = new File("${project.rootDir}/build-config/resources/Ballerina.toml")
 
 def stripBallerinaExtensionVersion(String extVersion) {
     if (extVersion.matches(project.ext.timestampedVersionRegex)) {
@@ -64,10 +64,9 @@ ballerina {
 
 task updateTomlFiles {
     doLast {
-        def newConfig = ballerinaConfigFile.text.replace("@project.version@", project.version)
-        newConfig = newConfig.replace("@toml.version@", tomlVersion)
-
-        ballerinaConfigFile.text = newConfig
+        def newBallerinaToml = ballerinaTomlFilePlaceHolder.text.replace("@project.version@", project.version)
+        newBallerinaToml = newBallerinaToml.replace("@toml.version@", tomlVersion)
+        ballerinaTomlFile.text = newBallerinaToml
     }
 }
 
