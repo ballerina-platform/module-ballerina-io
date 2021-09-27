@@ -54,6 +54,13 @@ type CommonApp record {
     string schoolLookup;
 };
 
+type Employee2 record {
+    string emp_type;
+    string emp_no;
+    string name;
+    float salary;
+};
+
 @test:Config {}
 isolated function testReadCsv() {
     string filePath = RESOURCES_BASE_PATH + "datafiles/io/records/sample.csv";
@@ -526,6 +533,33 @@ isolated function testTableContent() {
 }
 
 @test:Config {}
+isolated function testTableContent2() {
+    string filePath = RESOURCES_BASE_PATH + "datafiles/io/records/sample5.csv";
+    float expectedValue = 60001.00;
+    float total = 0.0;
+
+    var csvChannel = openReadableCsvFile(filePath);
+    if (csvChannel is ReadableCSVChannel) {
+        var tableResult = csvChannel.getTable(Employee, ["id"]);
+        if (tableResult is table<record { }>) {
+            table<Employee> tb = <table<Employee>>tableResult;
+            foreach var x in tb {
+                total = total + x.salary;
+            }
+            test:assertEquals(total, expectedValue);
+            var closeResult = csvChannel.close();
+            if (closeResult is Error) {
+                test:assertFail(msg = closeResult.message());
+            }
+        } else {
+            test:assertFail(msg = tableResult.message());
+        }
+    } else {
+        test:assertFail(msg = csvChannel.message());
+    }
+}
+
+@test:Config {}
 isolated function testTableWithNull() {
     string filePath = RESOURCES_BASE_PATH + "datafiles/io/records/sample6.csv";
     string name = "";
@@ -534,6 +568,36 @@ isolated function testTableWithNull() {
     var csvChannel = openReadableCsvFile(filePath, skipHeaders = 1);
     if (csvChannel is ReadableCSVChannel) {
         var tblResult = csvChannel.getTable(PerDiem);
+        if (tblResult is table<record { }>) {
+            table<PerDiem> tb = <table<PerDiem>>tblResult;
+            foreach var rec in tb {
+                name = name + rec.name;
+                dep = dep + (rec.department ?: "-1");
+            }
+            test:assertEquals(name, "Person1Person2Person3", msg = "Found unexpected output");
+            test:assertEquals(dep, "EngMrk-1", msg = "Found unexpected output");
+
+            var closeResult = csvChannel.close();
+            if (closeResult is Error) {
+                test:assertFail(msg = closeResult.message());
+            }
+        } else {
+            test:assertFail(msg = tblResult.message());
+        }
+    } else {
+        test:assertFail(msg = csvChannel.message());
+    }
+}
+
+@test:Config {}
+isolated function testTableWithNull2() {
+    string filePath = RESOURCES_BASE_PATH + "datafiles/io/records/sample6.csv";
+    string name = "";
+    string dep = "";
+
+    var csvChannel = openReadableCsvFile(filePath, skipHeaders = 1);
+    if (csvChannel is ReadableCSVChannel) {
+        var tblResult = csvChannel.toTable(PerDiem, ["id"]);
         if (tblResult is table<record { }>) {
             table<PerDiem> tb = <table<PerDiem>>tblResult;
             foreach var rec in tb {
@@ -582,6 +646,89 @@ isolated function testTableWithHeader() {
             }
         } else {
             test:assertFail(msg = tblResult.message());
+        }
+    } else {
+        test:assertFail(msg = csvChannel.message());
+    }
+}
+
+@test:Config {}
+isolated function testTableWithHeader2() {
+    string filePath = RESOURCES_BASE_PATH + "datafiles/io/records/sample7.csv";
+    string[] expectedOutput = ["Common App ID", "11111111", "22222222", "33333333", "44444444", "55555555", "55555556"];
+    string[] keys = [];
+
+    var csvChannel = openReadableCsvFile(filePath);
+    if (csvChannel is ReadableCSVChannel) {
+        var tblResult = csvChannel.toTable(CommonApp, ["appId"]);
+        if (tblResult is table<record { }>) {
+            table<CommonApp> tb = <table<CommonApp>>tblResult;
+            foreach var rec in tb {
+                keys.push(rec.appId);
+            }
+
+            int i = 0;
+            foreach string s in expectedOutput {
+                test:assertEquals(keys[i], s, msg = "Found unexpected output");
+                i += 1;
+            }
+
+            var closeResult = csvChannel.close();
+            if (closeResult is Error) {
+                test:assertFail(msg = closeResult.message());
+            }
+        } else {
+            test:assertFail(msg = tblResult.message());
+        }
+    } else {
+        test:assertFail(msg = csvChannel.message());
+    }
+}
+
+@test:Config {}
+isolated function testTableMultipleKeyFields() {
+    string filePath = RESOURCES_BASE_PATH + "datafiles/io/records/sample8.csv";
+    float expectedValue = 120002.00;
+    float total = 0.0;
+
+    var csvChannel = openReadableCsvFile(filePath);
+    if (csvChannel is ReadableCSVChannel) {
+        var tableResult = csvChannel.getTable(Employee2, ["emp_type", "emp_no"]);
+        if (tableResult is table<record { }>) {
+            table<Employee2> tb = <table<Employee2>>tableResult;
+            foreach var x in tb {
+                total = total + x.salary;
+            }
+            test:assertEquals(total, expectedValue);
+            var closeResult = csvChannel.close();
+            if (closeResult is Error) {
+                test:assertFail(msg = closeResult.message());
+            }
+        } else {
+            test:assertFail(msg = tableResult.message());
+        }
+    } else {
+        test:assertFail(msg = csvChannel.message());
+    }
+}
+
+@test:Config {}
+isolated function testTableNegative() {
+    string filePath = RESOURCES_BASE_PATH + "datafiles/io/records/sample8.csv";
+    float expectedValue = 120002.00;
+    float total = 0.0;
+
+    var csvChannel = openReadableCsvFile(filePath);
+    if (csvChannel is ReadableCSVChannel) {
+        var tableResult = csvChannel.toTable(Employee2, ["emp_no"]);
+        if (tableResult is error) {
+            test:assertEquals(tableResult.message(), "failed to process the delimited file: {ballerina/lang.table}KeyConstraintViolation");
+            var closeResult = csvChannel.close();
+            if (closeResult is Error) {
+                test:assertFail(msg = closeResult.message());
+            }
+        } else {
+            test:assertFail("Error expected.");
         }
     } else {
         test:assertFail(msg = csvChannel.message());
