@@ -540,7 +540,7 @@ isolated function testTableContent2() {
 
     var csvChannel = openReadableCsvFile(filePath);
     if (csvChannel is ReadableCSVChannel) {
-        var tableResult = csvChannel.getTable(Employee, ["id"]);
+        var tableResult = csvChannel.toTable(Employee, ["id"]);
         if (tableResult is table<record { }>) {
             table<Employee> tb = <table<Employee>>tableResult;
             foreach var x in tb {
@@ -693,7 +693,7 @@ isolated function testTableMultipleKeyFields() {
 
     var csvChannel = openReadableCsvFile(filePath);
     if (csvChannel is ReadableCSVChannel) {
-        var tableResult = csvChannel.getTable(Employee2, ["emp_type", "emp_no"]);
+        var tableResult = csvChannel.toTable(Employee2, ["emp_type", "emp_no"]);
         if (tableResult is table<record { }>) {
             table<Employee2> tb = <table<Employee2>>tableResult;
             foreach var x in tb {

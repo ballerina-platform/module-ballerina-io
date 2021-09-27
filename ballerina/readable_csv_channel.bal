@@ -124,7 +124,7 @@ public class ReadableCSVChannel {
     # + return - Table, which represents the CSV records or else an `io:Error`
     public isolated function getTable(typedesc<record { }> structType, string[] fieldNames = []) returns table<record { }>|
     Error {
-        return getTableExtern(self, structType, fieldNames);
+        return toTableExtern(self, structType, fieldNames);
     }
 
     # Returns a table, which corresponds to the CSV records.
@@ -137,12 +137,12 @@ public class ReadableCSVChannel {
     # + return - Table, which represents the CSV records or else an `io:Error`
     public isolated function toTable(typedesc<record { }> structType, string[] keyFieldNames) returns table<record { }>|
     Error {
-        return getTableExtern(self, structType, keyFieldNames);
+        return toTableExtern(self, structType, keyFieldNames);
     }
 }
 
-isolated function getTableExtern(ReadableCSVChannel csvChannel, typedesc<record { }> structType, string[] fieldNames) returns table<record { }>|
+isolated function toTableExtern(ReadableCSVChannel csvChannel, typedesc<record { }> structType, string[] fieldNames) returns table<record { }>|
 Error = @java:Method {
-    name: "getTable",
-    'class: "io.ballerina.stdlib.io.nativeimpl.GetTable"
+    name: "toTable",
+    'class: "io.ballerina.stdlib.io.nativeimpl.ToTable"
 } external;
