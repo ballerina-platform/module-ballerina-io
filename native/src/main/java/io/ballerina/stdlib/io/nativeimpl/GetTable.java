@@ -82,7 +82,6 @@ public class GetTable {
         Type describingType = typedescValue.getDescribingType();
         TableType newTableType;
         if (key.size() == 0) {
-            // This line should ideally never be reached.
             newTableType = TypeCreator.createTableType(describingType, false);
         } else {
             newTableType = TypeCreator.createTableType(describingType, key.getStringArray(), false);
