@@ -120,11 +120,24 @@ public class ReadableCSVChannel {
     # ```
     #
     # + structType - The object in which the CSV records should be deserialized
-    # + fieldNames - The names of the fields used as the (composite)key of the table
+    # + fieldNames - The names of the fields used as the (composite) key of the table
     # + return - Table, which represents the CSV records or else an `io:Error`
     public isolated function getTable(typedesc<record { }> structType, string[] fieldNames = []) returns table<record { }>|
     Error {
         return getTableExtern(self, structType, fieldNames);
+    }
+
+    # Returns a table, which corresponds to the CSV records.
+    # ```ballerina
+    # var tblResult = readableCSVChannel.toTable(Employee, ["id", "name"]);
+    # ```
+    #
+    # + structType - The object in which the CSV records should be deserialized
+    # + keyFieldNames - The names of the fields used as the (composite) key of the table
+    # + return - Table, which represents the CSV records or else an `io:Error`
+    public isolated function toTable(typedesc<record { }> structType, string[] keyFieldNames) returns table<record { }>|
+    Error {
+        return getTableExtern(self, structType, keyFieldNames);
     }
 }
 
