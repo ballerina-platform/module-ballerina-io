@@ -122,6 +122,10 @@ public class ReadableCSVChannel {
     # + structType - The object in which the CSV records should be deserialized
     # + fieldNames - The names of the fields used as the (composite) key of the table
     # + return - Table, which represents the CSV records or else an `io:Error`
+    #
+    # # Deprecated
+    # This function is deprecated due to the introduction of `toTable()`, making 'fieldNames' a mandatory parameter
+    @deprecated
     public isolated function getTable(typedesc<record { }> structType, string[] fieldNames = []) returns table<record { }>|
     Error {
         return toTableExtern(self, structType, fieldNames);
@@ -141,7 +145,7 @@ public class ReadableCSVChannel {
     }
 }
 
-isolated function toTableExtern(ReadableCSVChannel csvChannel, typedesc<record { }> structType, string[] fieldNames) returns table<record { }>|
+isolated function toTableExtern(ReadableCSVChannel csvChannel, typedesc<record { }> structType, string[] keyFieldNames) returns table<record { }>|
 Error = @java:Method {
     name: "toTable",
     'class: "io.ballerina.stdlib.io.nativeimpl.ToTable"
