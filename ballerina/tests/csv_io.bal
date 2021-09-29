@@ -1190,3 +1190,52 @@ isolated function testGetWritableCSVChannel() returns error? {
     }
 }
 
+@test:Config {}
+isolated function testReadCsvWithQuotedField() returns error? {
+    string filePath = RESOURCES_BASE_PATH + "datafiles/io/records/sample9.csv";
+    string[][] expectedContent = [
+        ["permanent", "one,two,three", "WSO2", "10000.50"],
+        ["permanent", "four,five,six", "WSO2", "20000.50"],
+        ["permanent", "seven,eight,nine", "WSO2", "30000.00"]
+    ];
+
+    string[][] content = check fileReadCsv(filePath);
+
+    int i = 0;
+    foreach string[] row in content {
+       int j = 0;
+       foreach string element in row {
+            test:assertEquals(element, expectedContent[i][j]);
+            j += 1;
+       }
+       i += 1;
+    }
+    test:assertEquals(i, 3);
+}
+
+@test:Config {}
+function testReadCsvAsStreamWithQuotedField() returns error? {
+    string filePath = RESOURCES_BASE_PATH + "datafiles/io/records/sample9.csv";
+    string[][] expectedContent = [
+        ["permanent", "one,two,three", "WSO2", "10000.50"],
+        ["permanent", "four,five,six", "WSO2", "20000.50"],
+        ["permanent", "seven,eight,nine", "WSO2", "30000.00"]
+    ];
+
+    stream<string[], Error?> content = check fileReadCsvAsStream(filePath);
+
+    int i = 0;
+    error? e = content.forEach(function(string[] row) {
+       int j = 0;
+       foreach string element in row {
+           test:assertEquals('string:trim(element), expectedContent[i][j]);
+           j += 1;
+       }
+       i += 1;
+    });
+
+    if (e is error) {
+        test:assertFail(msg = e.message());
+    }
+    test:assertEquals(i, 3);
+}
