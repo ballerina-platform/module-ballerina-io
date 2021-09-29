@@ -49,7 +49,13 @@ public class CSVStream {
     #
     # + return - `()` when the closing was successful or an `io:Error`
     public isolated function close() returns Error? {
-        self.isClosed = true;
+        if (!self.isClosed) {
+            var closeResult = close(self.readableTextRecordChannel);
+            if (closeResult is ()) {
+                self.isClosed = true;
+            }
+            return closeResult;
+        }
         return ();
     }
 }
