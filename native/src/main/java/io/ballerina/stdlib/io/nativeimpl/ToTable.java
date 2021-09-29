@@ -50,15 +50,15 @@ import java.util.Map;
  *
  * @since 0.970.0
  */
-public class GetTable {
+public class ToTable {
 
-    private static final Logger log = LoggerFactory.getLogger(GetTable.class);
+    private static final Logger log = LoggerFactory.getLogger(ToTable.class);
     private static final String CSV_CHANNEL_DELIMITED_STRUCT_FIELD = "dc";
 
-    private GetTable() {
+    private ToTable() {
     }
 
-    public static Object getTable(BObject csvChannel, BTypedesc typedescValue, BArray key) {
+    public static Object toTable(BObject csvChannel, BTypedesc typedescValue, BArray key) {
         try {
             final BObject delimitedObj =
                     (BObject) csvChannel.get(StringUtils.fromString(CSV_CHANNEL_DELIMITED_STRUCT_FIELD));
@@ -71,14 +71,14 @@ public class GetTable {
             while (delimitedChannel.hasNext()) {
                 records.add(delimitedChannel.read());
             }
-            return getTable(typedescValue, key, records);
+            return toTable(typedescValue, key, records);
         } catch (BallerinaIOException | BError e) {
             String msg = "failed to process the delimited file: " + e.getMessage();
             return IOUtils.createError(msg);
         }
     }
 
-    private static BTable getTable(BTypedesc typedescValue, BArray key, List<String[]> records) {
+    private static BTable toTable(BTypedesc typedescValue, BArray key, List<String[]> records) {
         Type describingType = typedescValue.getDescribingType();
         TableType newTableType;
         if (key.size() == 0) {
