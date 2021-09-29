@@ -588,7 +588,9 @@ isolated function testTableWithHeader() {
     }
 }
 
-@test:Config {}
+@test:Config {
+    groups: ["testy"]
+}
 isolated function testFileCsvWrite() {
     string[][] content = [["Anne Hamiltom", "Software Engineer", "Microsoft", "26 years", "New York"], ["John Thomson", 
     "Software Architect", "WSO2", "38 years", "Colombo"], ["Mary Thompson", "Banker", "Sampath Bank", "30 years", 
@@ -600,7 +602,10 @@ isolated function testFileCsvWrite() {
     }
 }
 
-@test:Config {dependsOn: [testFileCsvWrite]}
+@test:Config {
+    dependsOn: [testFileCsvWrite],
+    groups: ["testy"]
+}
 isolated function testFileCsvRead() {
     string[][] expectedContent = [["Anne Hamiltom", "Software Engineer", "Microsoft", "26 years", "New York"], [
     "John Thomson", "Software Architect", "WSO2", "38 years", "Colombo"], ["Mary Thompson", "Banker", "Sampath Bank", 
@@ -1021,7 +1026,9 @@ function testFileCsvWriteFromStreamWithOverwrite() returns Error? {
     }
 }
 
-@test:Config {}
+@test:Config {
+    groups: ["testx"]
+}
 function testFileCsvWriteFromStreamWithAppend() {
     string filePath = TEMP_DIR + "workers8.csv";
     string[][] content1 = [["Anne Hamiltom", "Software Engineer", "Microsoft", "26 years", "New York"], ["John Thomson",

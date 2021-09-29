@@ -25,14 +25,12 @@ import io.ballerina.runtime.api.values.BString;
 import io.ballerina.stdlib.io.channels.base.CharacterChannel;
 import io.ballerina.stdlib.io.channels.base.DelimitedRecordChannel;
 import io.ballerina.stdlib.io.csv.Format;
-import io.ballerina.stdlib.io.readers.CharacterChannelReader;
 import io.ballerina.stdlib.io.utils.BallerinaIOException;
 import io.ballerina.stdlib.io.utils.IOConstants;
 import io.ballerina.stdlib.io.utils.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.channels.ClosedChannelException;
 
@@ -47,7 +45,6 @@ public class RecordChannelUtils {
 
     private static final Logger log = LoggerFactory.getLogger(RecordChannelUtils.class);
     private static final String DEFAULT = "default";
-    private static final String BUFFERED_READER_ENTRY = "bufferedReader";
 
     private RecordChannelUtils() {
     }
@@ -58,7 +55,6 @@ public class RecordChannelUtils {
             //Will get the relevant byte channel and will create a character channel
             CharacterChannel characterChannel = (CharacterChannel) characterChannelInfo
                     .getNativeData(IOConstants.CHARACTER_CHANNEL_NAME);
-            BufferedReader bufferedReader = new BufferedReader(new CharacterChannelReader(characterChannel));
             DelimitedRecordChannel delimitedRecordChannel;
             if (DEFAULT.equals(format.getValue())) {
                 delimitedRecordChannel = new DelimitedRecordChannel(characterChannel, recordSeparator.getValue(),
@@ -68,7 +64,6 @@ public class RecordChannelUtils {
                                                                     Format.valueOf(format.getValue()));
             }
             textRecordChannel.addNativeData(TXT_RECORD_CHANNEL_NAME, delimitedRecordChannel);
-            textRecordChannel.addNativeData(BUFFERED_READER_ENTRY, bufferedReader);
         } catch (Exception e) {
             String message =
                     "error occurred while converting character channel to textRecord channel: " + e.getMessage();
@@ -98,31 +93,15 @@ public class RecordChannelUtils {
     public static Object getNext(BObject channel) {
         DelimitedRecordChannel textRecordChannel =
                 (DelimitedRecordChannel) channel.getNativeData(TXT_RECORD_CHANNEL_NAME);
-        if (textRecordChannel.hasReachedEnd()) {
-            return IOUtils.createEoFError();
-        } else {
-            try {
-                String[] records = textRecordChannel.read();
-                return StringUtils.fromStringArray(records);
-            } catch (BallerinaIOException e) {
-                log.error("error occurred while reading next text record from ReadableTextRecordChannel", e);
-                return IOUtils.createError(e);
-            }
-        }
-    }
-
-    public static Object readRecord(BObject channel, BString separator) {
-        BufferedReader bufferedReader = (BufferedReader)
-                channel.getNativeData(BUFFERED_READER_ENTRY);
+        String[] records;
         try {
-            String line = bufferedReader.readLine();
-            if (line == null) {
-                bufferedReader.close();
+            if (textRecordChannel.hasReachedEnd() || (records = textRecordChannel.read()).length == 0) {
                 return IOUtils.createEoFError();
+            } else {
+                return StringUtils.fromStringArray(records);
             }
-            String[] record = line.strip().split(separator.getValue());
-            return StringUtils.fromStringArray(record);
-        } catch (IOException e) {
+        } catch (BallerinaIOException e) {
+            log.error("error occurred while reading next text record from ReadableTextRecordChannel", e);
             return IOUtils.createError(e);
         }
     }
@@ -141,23 +120,7 @@ public class RecordChannelUtils {
     public static Object close(BObject channel) {
         DelimitedRecordChannel recordChannel = (DelimitedRecordChannel) channel.getNativeData(TXT_RECORD_CHANNEL_NAME);
         try {
-            BufferedReader bufferedReader = (BufferedReader)
-                    channel.getNativeData(BUFFERED_READER_ENTRY);
-            bufferedReader.close();
             recordChannel.close();
-        } catch (ClosedChannelException e) {
-            return IOUtils.createError("channel already closed.");
-        } catch (IOException e) {
-            return IOUtils.createError(e);
-        }
-        return null;
-    }
-
-    public static Object closeBufferedReader(BObject channel) {
-        try {
-            BufferedReader bufferedReader = (BufferedReader)
-                    channel.getNativeData(BUFFERED_READER_ENTRY);
-            bufferedReader.close();
         } catch (ClosedChannelException e) {
             return IOUtils.createError("channel already closed.");
         } catch (IOException e) {
