@@ -38,6 +38,7 @@ public class CSVStream {
             record {| string[] value; |} value = {value: <string[]>recordValue.cloneReadOnly()};
             return value;
         } else if (recordValue is EofError) {
+            Error? closeResult = self.close();
             return ();
         } else {
             return recordValue;
@@ -50,7 +51,7 @@ public class CSVStream {
     # + return - `()` when the closing was successful or an `io:Error`
     public isolated function close() returns Error? {
         if (!self.isClosed) {
-            var closeResult = close(self.readableTextRecordChannel);
+            var closeResult = closeExtern(self.readableTextRecordChannel);
             if (closeResult is ()) {
                 self.isClosed = true;
             }
@@ -66,7 +67,7 @@ Error = @java:Method {
     'class: "io.ballerina.stdlib.io.nativeimpl.RecordChannelUtils"
 } external;
 
-isolated function close(ReadableTextRecordChannel readableTextRecordChannel) returns Error? = @java:Method {
+isolated function closeExtern(ReadableTextRecordChannel readableTextRecordChannel) returns Error? = @java:Method {
     name: "close",
     'class: "io.ballerina.stdlib.io.nativeimpl.RecordChannelUtils"
 } external;

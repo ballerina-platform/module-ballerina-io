@@ -1237,5 +1237,6 @@ function testReadCsvAsStreamWithQuotedField() returns error? {
     if (e is error) {
         test:assertFail(msg = e.message());
     }
+    _ = check content.close();
     test:assertEquals(i, 3);
 }
