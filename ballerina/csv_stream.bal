@@ -33,7 +33,7 @@ public class CSVStream {
     # + return - A CSV record as a string array when a record is avaliable in the stream or
     # `()` when the stream reaches the end
     public isolated function next() returns record {| string[] value; |}|Error? {
-        var recordValue = readRecord(self.readableTextRecordChannel, COMMA);
+        var recordValue = readRecord(self.readableTextRecordChannel);
         if (recordValue is string[]) {
             record {| string[] value; |} value = {value: <string[]>recordValue.cloneReadOnly()};
             return value;
@@ -61,7 +61,7 @@ public class CSVStream {
     }
 }
 
-isolated function readRecord(ReadableTextRecordChannel readableTextRecordChannel, string seperator) returns string[]|
+isolated function readRecord(ReadableTextRecordChannel readableTextRecordChannel) returns string[]|
 Error = @java:Method {
     name: "readRecord",
     'class: "io.ballerina.stdlib.io.nativeimpl.RecordChannelUtils"

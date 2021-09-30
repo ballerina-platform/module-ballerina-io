@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - [Introduce fprint and fprintln APIs](https://github.com/ballerina-platform/ballerina-standard-library/issues/1394)
 - [Introduce toTable API](https://github.com/ballerina-platform/ballerina-standard-library/issues/1871)
+- [Add support for reading quoted fields in fileReadCsvAsStream API](https://github.com/ballerina-platform/ballerina-standard-library/issues/1890)
 
 ## [v0.6.0-beta.1] - 2021-06-02
 ### Fixed

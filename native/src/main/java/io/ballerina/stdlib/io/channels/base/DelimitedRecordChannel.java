@@ -323,7 +323,7 @@ public class DelimitedRecordChannel implements IOChannel {
      * @param record the record which contains all the fields.
      * @return fields which are separated as records.
      */
-    private String[] getFields(String record) {
+    public String[] getFields(String record) {
         String fieldSeparatorForReading = getFieldSeparatorForReading();
         if (null != format && format.shouldIgnoreBlanks()) {
             return splitIgnoreBlanks(record, fieldSeparatorForReading);
