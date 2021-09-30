@@ -111,16 +111,17 @@ public class RecordChannelUtils {
         }
     }
 
-    public static Object readRecord(BObject channel, BString separator) {
-        BufferedReader bufferedReader = (BufferedReader)
-                channel.getNativeData(BUFFERED_READER_ENTRY);
+    public static Object readRecord(BObject channel) {
+        BufferedReader bufferedReader = (BufferedReader) channel.getNativeData(BUFFERED_READER_ENTRY);
         try {
             String line = bufferedReader.readLine();
             if (line == null) {
                 bufferedReader.close();
                 return IOUtils.createEoFError();
             }
-            String[] record = line.strip().split(separator.getValue());
+            DelimitedRecordChannel textRecordChannel =
+                    (DelimitedRecordChannel) channel.getNativeData(TXT_RECORD_CHANNEL_NAME);
+            String[] record = textRecordChannel.getFields(line);
             return StringUtils.fromStringArray(record);
         } catch (IOException e) {
             return IOUtils.createError(e);
