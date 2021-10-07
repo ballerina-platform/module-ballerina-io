@@ -38,6 +38,9 @@ public class PrintTestUtils {
     static ByteArrayOutputStream outContent;
     static ByteArrayOutputStream errContent;
 
+    private PrintTestUtils() {
+    }
+
     // Initialize output stream
     public static void initOutputStream() {
 

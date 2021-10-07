@@ -26,6 +26,9 @@ import java.util.Locale;
  */
 public class EnvironmentTestUtils {
 
+    private EnvironmentTestUtils() {
+    }
+
     public static boolean isWindowsEnvironment() {
         return System.getProperty("os.name").toLowerCase(Locale.ENGLISH).contains("win");
     }
