@@ -33,6 +33,9 @@ import java.nio.file.Paths;
 public class FileTestUtils {
     private static final Logger log = LoggerFactory.getLogger(FileTestUtils.class);
 
+    private FileTestUtils() {
+    }
+
     public static void createDirectory(BString path) {
         Path directoryPath = Paths.get(path.getValue());
         if (!Files.exists(directoryPath)) {
