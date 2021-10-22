@@ -19,6 +19,7 @@ import org.apache.tools.ant.taskdefs.condition.Os
 
 buildscript {
     repositories {
+        mavenLocal()
         maven {
             url = 'https://maven.pkg.github.com/ballerina-platform/plugin-gradle'
             credentials {
