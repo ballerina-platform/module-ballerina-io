@@ -207,6 +207,6 @@ isolated function testReadInvalidJsonFile() {
     if (readResult is json) {
         test:assertFail("Expected io:Error not found");
     } else {
-        test:assertEquals(readResult.message(), "expected \" or } at line: 1 column: 3");
+        test:assertEquals(readResult.message(), "expected '\"' or '}' at line: 1 column: 3");
     }
 }
