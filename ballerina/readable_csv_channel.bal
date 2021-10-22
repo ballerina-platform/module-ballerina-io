@@ -124,7 +124,7 @@ public class ReadableCSVChannel {
     # + return - Table, which represents the CSV records or else an `io:Error`
     #
     # # Deprecated
-    # This function is deprecated due to the introduction of `toTable()`, making 'fieldNames' a mandatory parameter
+    # This function is deprecated due to the introduction of `ReadableCSVChannel.toTable()`, making 'fieldNames' a mandatory parameter
     @deprecated
     public isolated function getTable(typedesc<record { }> structType, string[] fieldNames = []) returns table<record { }>|
     Error {

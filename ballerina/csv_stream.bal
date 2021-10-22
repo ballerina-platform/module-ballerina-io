@@ -46,7 +46,7 @@ public class CSVStream {
     }
 
     # Close the stream. The primary usage of this function is to close the stream without reaching the end.
-    # If the stream reaches the end, the `csvStream.next()` will automatically close the stream.
+    # If the stream reaches the end, the `CSVStream.next()` will automatically close the stream.
     #
     # + return - `()` when the closing was successful or an `io:Error`
     public isolated function close() returns Error? {
