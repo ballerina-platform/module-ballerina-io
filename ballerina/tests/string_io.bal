@@ -497,6 +497,7 @@ isolated function testFileWriteLinesFromStreamUsingIntermediateFile() returns Er
     if (result is Error) {
         test:assertFail(msg = result.message());
     }
+    return;
 }
 
 @test:Config {dependsOn: [testFileWriteLinesFromStreamUsingIntermediateFile]}
@@ -518,6 +519,7 @@ function testFileReadLinesAsStreamUsingIntermediateFile() {
     } else {
         test:assertFail(msg = result.message());
     }
+    return;
 }
 
 @test:Config {}
@@ -602,6 +604,7 @@ function testFileWriteLinesFromStreamWithOverwriteUsingIntermediateFile() return
     } else {
         test:assertFail(msg = result4.message());
     }
+    return;
 }
 
 @test:Config {}
@@ -655,6 +658,7 @@ function testFileWriteLinesFromStreamWithAppendUsingIntermediateFile() returns E
     } else {
         test:assertFail(msg = result4.message());
     }
+    return;
 }
 
 @test:Config {}
@@ -706,6 +710,7 @@ function testFileWriteLinesFromStreamWithOverwrite() returns Error? {
     } else {
         test:assertFail(msg = result4.message());
     }
+    return;
 }
 
 @test:Config {}
@@ -845,6 +850,7 @@ isolated function testGetReadableCharacterChannel() returns error? {
     if !(err is TypeMismatchError) {
         test:assertFail(msg = "Expected TypeMismatchError not found");
     }
+    return;
 }
 
 @test:Config {}
@@ -866,6 +872,7 @@ isolated function testGetWritableCharacterChannel() returns error? {
     if !(err is TypeMismatchError) {
         test:assertFail(msg = "Expected TypeMismatchError not found");
     }
+    return;
 }
 
 @test:Config {}
@@ -880,6 +887,7 @@ isolated function testReadChar() returns error? {
     test:assertEquals(content2, " ");
     test:assertEquals(content3, "Cooper");
     test:assertEquals(content4, "");
+    return;
 }
 
 @test:Config {}
@@ -894,6 +902,7 @@ isolated function testCharacterChannelReadAfterClose() returns error? {
     } else {
         test:assertFail(msg = "Expected io:Error not found");
     }
+    return;
 }
 
 @test:Config {}
@@ -908,6 +917,7 @@ isolated function testCharacterChannelReadStringAfterClose() returns error? {
     } else {
         test:assertFail(msg = "Expected io:Error not found");
     }
+    return;
 }
 
 @test:Config {}
@@ -922,6 +932,7 @@ isolated function testCharacterChannelReadAllLinesAfterClose() returns error? {
     } else {
         test:assertFail(msg = "Expected io:Error not found");
     }
+    return;
 }
 
 @test:Config {}
@@ -938,6 +949,7 @@ isolated function testCharacterChannelReadJsonAfterClose() returns error? {
     } else {
         test:assertFail(msg = "Expected io:Error not found");
     }
+    return;
 }
 
 @test:Config {}
@@ -954,6 +966,7 @@ isolated function testCharacterChannelReadXmlAfterClose() returns error? {
     } else {
         test:assertFail(msg = "Expected io:Error not found");
     }
+    return;
 }
 
 @test:Config {}
@@ -969,6 +982,7 @@ isolated function testCharacterChannelReadPropertyAfterClose() returns error? {
     } else {
         test:assertFail(msg = "Expected io:Error not found");
     }
+    return;
 }
 
 @test:Config {}
@@ -984,6 +998,7 @@ isolated function testCharacterChannelReadAllPropertiesAfterClose() returns erro
     } else {
         test:assertFail(msg = "Expected io:Error not found");
     }
+    return;
 }
 
 @test:Config {}
@@ -998,6 +1013,7 @@ isolated function testCharacterChannelWriteAfterClose() returns error? {
     } else {
         test:assertFail(msg = "Expected io:Error not found");
     }
+    return;
 }
 
 @test:Config {}
@@ -1012,6 +1028,7 @@ isolated function testCharacterChannelWriteLineAfterClose() returns error? {
     } else {
         test:assertFail(msg = "Expected io:Error not found");
     }
+    return;
 }
 
 @test:Config {}
@@ -1027,6 +1044,7 @@ isolated function testCharacterChannelWriteJsonAfterClose() returns error? {
     } else {
         test:assertFail(msg = "Expected io:Error not found");
     }
+    return;
 }
 
 @test:Config {}
@@ -1042,6 +1060,7 @@ isolated function testCharacterChannelWriteXmlAfterClose() returns error? {
     } else {
         test:assertFail(msg = "Expected io:Error not found");
     }
+    return;
 }
 
 @test:Config {}
@@ -1057,6 +1076,7 @@ isolated function testCharacterChannelWritePropertiesAfterClose() returns error?
     } else {
         test:assertFail(msg = "Expected io:Error not found");
     }
+    return;
 }
 
 isolated function isWindowsEnvironment() returns boolean = @java:Method {

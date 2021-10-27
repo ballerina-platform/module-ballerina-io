@@ -107,6 +107,7 @@ isolated function testByteChannelInputParams() returns error? {
     if !(e4 is Error) {
         test:assertFail(msg = "Expected TypeMismatchError not found");
     }
+    return;
 }
 
 @test:Config {}
@@ -138,12 +139,14 @@ isolated function testFileWriteBytesFromStreamUsingIntermediateFile() returns Er
     string filePath = TEMP_DIR + "bytesFile3_A.txt";
     string resourceFilePath = TEMP_DIR + "bytesResourceFile.txt";
     string content = "Sheldon Cooper";
+
     check fileWriteString(resourceFilePath, content);
     stream<Block, Error?> bytesStream = check fileReadBlocksAsStream(resourceFilePath, 2);
     var result = fileWriteBlocksFromStream(filePath, bytesStream);
     if (result is Error) {
         test:assertFail(msg = result.message());
     }
+    return;
 }
 
 @test:Config {dependsOn: [testFileWriteBytesFromStreamUsingIntermediateFile]}
@@ -247,6 +250,7 @@ isolated function testFileChannelWriteBytesFromStream() returns Error? {
     string filePath = TEMP_DIR + "bytesFile5.txt";
     string resourceFilePath = TEMP_DIR + "bytesResourceFile.txt";
     string content = "Sheldon Cooper";
+
     check fileWriteString(resourceFilePath, content);
     stream<Block, Error?> bytesStream = check fileReadBlocksAsStream(resourceFilePath, 2);
     var fileOpenResult = openWritableFile(filePath);
@@ -258,6 +262,7 @@ isolated function testFileChannelWriteBytesFromStream() returns Error? {
     } else {
         test:assertFail(msg = fileOpenResult.message());
     }
+    return;
 }
 
 @test:Config {dependsOn: [testFileChannelWriteBytesFromStream]}
@@ -426,6 +431,8 @@ function testFileWriteBytesFromStreamWithOverrideUsingIntermediateFile() returns
     } else {
         test:assertFail(msg = result4.message());
     }
+
+    return;
 }
 
 @test:Config {}
@@ -485,6 +492,8 @@ function testFileWriteBytesFromStreamWithAppendUsingIntermediateFile() returns E
     } else {
         test:assertFail(msg = result4.message());
     }
+
+    return;
 }
 
 @test:Config {}
@@ -553,6 +562,8 @@ function testFileWriteBytesFromStreamWithOverride() returns Error? {
     } else {
         test:assertFail(msg = result4.message());
     }
+
+    return;
 }
 
 @test:Config {}
@@ -625,12 +636,13 @@ function testFileWriteBytesFromStreamWithAppend() {
 isolated function testBase64EncodeAndDecode() returns error? {
     string filePath = TEMP_DIR + "bytesFile10.txt";
     string expectedString = "Ballerina is an open source programming language.";
+
     check fileWriteString(filePath, expectedString);
     ReadableByteChannel byteChannel = check openReadableFile(filePath);
     ReadableByteChannel encodedByteChannel = check byteChannel.base64Encode();
     ReadableByteChannel decodedByteChannel = check encodedByteChannel.base64Decode();
     test:assertEquals(langstring:fromBytes(check decodedByteChannel.readAll()), expectedString);
-
+    return;
 }
 
 @test:Config {}
@@ -644,7 +656,7 @@ isolated function testByteChannelReadAfterClose() returns error? {
     } else {
         test:assertFail(msg = "Expected io:Error not found");
     }
-
+    return;
 }
 
 @test:Config {}
@@ -658,6 +670,7 @@ isolated function testByteChannelReadAllAfterClose() returns error? {
     } else {
         test:assertFail(msg = "Expected io:Error not found");
     }
+    return;
 }
 
 @test:Config {}
@@ -671,6 +684,7 @@ isolated function testByteChannelBase64EncodeAfterClose() returns error? {
     } else {
         test:assertFail(msg = "Expected io:Error not found");
     }
+    return;
 }
 
 @test:Config {}
@@ -684,6 +698,7 @@ isolated function testByteChannelBase64DecodeAfterClose() returns error? {
     } else {
         test:assertFail(msg = "Expected io:Error not found");
     }
+    return;
 }
 
 @test:Config {}
@@ -697,6 +712,7 @@ isolated function testByteChannelWriteAfterClose() returns error? {
     } else {
         test:assertFail(msg = "Expected io:Error not found");
     }
+    return;
 }
 
 isolated function createDirectoryExtern(string path) = @java:Method {

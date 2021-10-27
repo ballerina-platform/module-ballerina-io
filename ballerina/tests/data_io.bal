@@ -29,6 +29,7 @@ isolated function testReadWriteInt16() returns error? {
     ReadableDataChannel readableDataChannel = new (readableByteChannel, BIG_ENDIAN);
     test:assertEquals(readableDataChannel.readInt16(), value);
     check readableDataChannel.close();
+    return;
 }
 
 @test:Config {}
@@ -44,6 +45,7 @@ isolated function testReadWriteInt32() returns error? {
     ReadableDataChannel readableDataChannel = new (readableByteChannel, BIG_ENDIAN);
     test:assertEquals(readableDataChannel.readInt32(), value);
     check readableDataChannel.close();
+    return;
 }
 
 @test:Config {}
@@ -59,6 +61,7 @@ isolated function testReadWriteInt64() returns error? {
     ReadableDataChannel readableDataChannel = new (readableByteChannel, BIG_ENDIAN);
     test:assertEquals(readableDataChannel.readInt64(), value);
     check readableDataChannel.close();
+    return;
 }
 
 @test:Config {}
@@ -74,6 +77,7 @@ isolated function testReadWriteVarInt() returns error? {
     ReadableDataChannel readableDataChannel = new (readableByteChannel, BIG_ENDIAN);
     test:assertEquals(readableDataChannel.readVarInt(), value);
     check readableDataChannel.close();
+    return;
 }
 
 @test:Config {}
@@ -90,6 +94,7 @@ isolated function testReadWriteFixedFloat32() returns error? {
     float f = check readableDataChannel.readFloat32();
     test:assertEquals((langfloat:round(f * 100.0) / 100.0), value);
     check readableDataChannel.close();
+    return;
 }
 
 @test:Config {}
@@ -105,6 +110,7 @@ isolated function testReadWriteFixedFloat64() returns error? {
     ReadableDataChannel readableDataChannel = new (readableByteChannel, BIG_ENDIAN);
     test:assertEquals(readableDataChannel.readFloat64(), value);
     check readableDataChannel.close();
+    return;
 }
 
 @test:Config {}
@@ -120,7 +126,7 @@ isolated function testReadWriteBool() returns error? {
     ReadableDataChannel readableDataChannel = new (readableByteChannel, BIG_ENDIAN);
     test:assertEquals(readableDataChannel.readBool(), value);
     check readableDataChannel.close();
-
+    return;
 }
 
 @test:Config {}
@@ -137,4 +143,5 @@ isolated function testReadWriteString() returns error? {
     ReadableDataChannel readableDataChannel = new (readableByteChannel, BIG_ENDIAN);
     test:assertEquals(readableDataChannel.readString(nBytes, DEFAULT_ENCODING), value);
     check readableDataChannel.close();
+    return;
 }

@@ -21,7 +21,7 @@ isolated function channelReadBytes(ReadableChannel readableChannel) returns read
         Error? closeResult = readableChannel.close();
         return result;
     } else {
-        TypeMismatchError e = error TypeMismatchError("Expected ReadableByteChannel but found a " + 'value:toString(typeof 
+        TypeMismatchError e = error TypeMismatchError("Expected ReadableByteChannel but found a " + 'value:toString(typeof
         readableChannel));
         return e;
     }
@@ -32,7 +32,7 @@ Block, Error?>|Error {
     if (readableChannel is ReadableByteChannel) {
         return readableChannel.blockStream(blockSize);
     } else {
-        TypeMismatchError e = error TypeMismatchError("Expected ReadableByteChannel but found a " + 'value:toString(typeof 
+        TypeMismatchError e = error TypeMismatchError("Expected ReadableByteChannel but found a " + 'value:toString(typeof
         readableChannel));
         return e;
     }
@@ -46,17 +46,18 @@ isolated function channelWriteBytes(WritableChannel writableChannel, byte[] cont
             return closeResult;
         }
     } else {
-        TypeMismatchError e = error TypeMismatchError("Expected WritableByteChannel but found a " + 'value:toString(typeof 
+        TypeMismatchError e = error TypeMismatchError("Expected WritableByteChannel but found a " + 'value:toString(typeof
         writableChannel));
         return e;
     }
+    return;
 }
 
 isolated function channelWriteBlocksFromStream(WritableChannel writableChannel, stream<byte[], Error?> byteStream) returns
 Error? {
     if (writableChannel is WritableByteChannel) {
-        record {| byte[] value; |}|Error? block = byteStream.next();
-        while (block is record {| byte[] value; |}) {
+        record {|byte[] value;|}|Error? block = byteStream.next();
+        while (block is record {|byte[] value;|}) {
             int|Error writeResult = writableChannel.write(block.value, 0);
             block = byteStream.next();
         }
@@ -68,8 +69,9 @@ Error? {
             return closeResult;
         }
     } else {
-        TypeMismatchError e = error TypeMismatchError("Expected WritableByteChannel but found a " + 'value:toString(typeof 
+        TypeMismatchError e = error TypeMismatchError("Expected WritableByteChannel but found a " + 'value:toString(typeof
         writableChannel));
         return e;
     }
+    return;
 }

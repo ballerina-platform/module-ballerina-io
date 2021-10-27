@@ -252,6 +252,7 @@ isolated function testFileWriteDocTypedXml() returns Error? {
     string readResult = check fileReadString(filePath);
     string expectedResult = check fileReadString(resultFilePath);
     test:assertEquals(readResult, expectedResult);
+    return;
 }
 
 @test:Config {}
@@ -268,6 +269,7 @@ isolated function testFileWriteDocTypedWithMultiRoots() returns Error? {
     } else {
         test:assertFail("Expected ConfigurationError not found");
     }
+    return;
 }
 
 @test:Config {}
@@ -282,6 +284,7 @@ isolated function testFileWriteDocTypedWithAppend() returns Error? {
     } else {
         test:assertFail("Expected ConfigurationError not found");
     }
+    return;
 }
 
 @test:Config {}
@@ -304,6 +307,7 @@ isolated function testFileAppendDocTypedXml() returns Error? {
     string readResult = check fileReadString(filePath);
     string expectedResult = check fileReadString(resultFilePath);
     test:assertEquals(readResult, expectedResult);
+    return;
 }
 
 @test:Config {}
@@ -329,6 +333,7 @@ isolated function testFileWriteDocTypedXmlWithInternalSubset() returns Error? {
     string readResult = check fileReadString(filePath);
     string expectedResult = check fileReadString(resultFilePath);
     test:assertEquals(readResult, expectedResult);
+    return;
 }
 
 @test:Config {}
@@ -358,6 +363,7 @@ isolated function testFileWriteDocTypedXmlWithPrioritizeInternalSubset() returns
     string readResult = check fileReadString(filePath);
     string expectedResult = check fileReadString(resultFilePath);
     test:assertEquals(readResult, expectedResult);
+    return;
 }
 
 @test:Config {}
@@ -380,6 +386,7 @@ isolated function testFileWriteDocTypedXmlWithPublicAndSystemId() returns Error?
     string readResult = check fileReadString(filePath);
     string expectedResult = check fileReadString(resultFilePath);
     test:assertEquals(readResult, expectedResult);
+    return;
 }
 
 @test:Config {}
@@ -398,6 +405,7 @@ isolated function testFileWriteDocTypedXmlWithPublic() returns Error? {
     string readResult = check fileReadString(filePath);
     string expectedResult = check fileReadString(resultFilePath);
     test:assertEquals(readResult, expectedResult);
+    return;
 }
 
 @test:Config {}
