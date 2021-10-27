@@ -50,6 +50,7 @@ isolated function channelWriteCsv(WritableChannel writableChannel, string[][] co
         }
     }
     check csvChannel.close();
+    return;
 }
 
 isolated function channelWriteCsvFromStream(WritableChannel writableChannel, stream<string[], Error?> csvStream) returns
@@ -67,6 +68,7 @@ Error? {
     if (closeResult is Error) {
         return closeResult;
     }
+    return;
 }
 
 isolated function getReadableCSVChannel(ReadableChannel readableChannel, int skipHeaders) returns ReadableCSVChannel|

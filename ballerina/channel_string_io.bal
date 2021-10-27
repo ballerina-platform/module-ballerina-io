@@ -58,6 +58,7 @@ isolated function channelWriteString(WritableChannel writableChannel, string con
     if (closeResult is Error) {
         return closeResult;
     }
+    return;
 }
 
 isolated function channelWriteLines(WritableChannel writableChannel, string[] content) returns Error? {
@@ -74,6 +75,7 @@ isolated function channelWriteLines(WritableChannel writableChannel, string[] co
     if (closeResult is Error) {
         return closeResult;
     }
+    return;
 }
 
 isolated function channelWriteLinesFromStream(WritableChannel writableChannel, stream<string, Error?> lineStream) returns
