@@ -519,6 +519,7 @@ isolated function testTableContent() returns error? {
     }
     test:assertEquals(total, expectedValue);
     _ = check csvChannel.close();
+    return;
 }
 
 @test:Config {}
@@ -535,6 +536,7 @@ isolated function testTableContent2() returns error? {
     }
     test:assertEquals(total, expectedValue);
     _ = check csvChannel.close();
+    return;
 }
 
 @test:Config {}
@@ -553,6 +555,7 @@ isolated function testTableWithNull() returns error? {
     test:assertEquals(name, "Person1Person2Person3", msg = "Found unexpected output");
     test:assertEquals(dep, "EngMrk-1", msg = "Found unexpected output");
     _ = check csvChannel.close();
+    return;
 }
 
 @test:Config {}
@@ -571,6 +574,7 @@ isolated function testTableWithNull2() returns error? {
     test:assertEquals(name, "Person1Person2Person3", msg = "Found unexpected output");
     test:assertEquals(dep, "EngMrk-1", msg = "Found unexpected output");
     _ = check csvChannel.close();
+    return;
 }
 
 @test:Config {}
@@ -593,6 +597,7 @@ isolated function testTableWithHeader() returns error? {
     }
 
     _ = check csvChannel.close();
+    return;
 }
 
 @test:Config {}
@@ -615,6 +620,7 @@ isolated function testTableWithHeader2() returns error? {
     }
 
     _ = check csvChannel.close();
+    return;
 }
 
 @test:Config {}
@@ -631,6 +637,7 @@ isolated function testTableMultipleKeyFields() returns error? {
     }
     test:assertEquals(total, expectedValue);
     _ = check csvChannel.close();
+    return;
 }
 
 @test:Config {}
@@ -650,6 +657,7 @@ isolated function testTableNegative() returns error? {
     } else {
         test:assertFail("Error expected.");
     }
+    return;
 }
 
 @test:Config {}
@@ -727,6 +735,7 @@ isolated function testFileWriteCsvFromStreamUsingResourceFile() returns Error? {
     if (result is Error) {
         test:assertFail(msg = result.message());
     }
+    return;
 }
 
 @test:Config {dependsOn: [testFileWriteCsvFromStreamUsingResourceFile]}
@@ -958,6 +967,8 @@ function testFileCsvWriteFromStreamWithOverwriteUsingResourceFile() returns Erro
     } else {
         test:assertFail(msg = result4.message());
     }
+
+    return;
 }
 
 @test:Config {}
@@ -1023,6 +1034,8 @@ function testFileCsvWriteFromStreamWithAppendUsingResourceFile() returns Error? 
     } else {
         test:assertFail(msg = result4.message());
     }
+
+    return;
 }
 
 @test:Config {}
@@ -1083,6 +1096,8 @@ function testFileCsvWriteFromStreamWithOverwrite() returns Error? {
     } else {
         test:assertFail(msg = result4.message());
     }
+
+    return;
 }
 
 @test:Config {}
@@ -1167,6 +1182,7 @@ isolated function testGetReadableCSVChannel() returns error? {
     if !(readableCsvChannel3 is ReadableCSVChannel) {
         test:assertFail(msg = "Expected ReadableCSVChannel not found");
     }
+    return;
 }
 
 @test:Config {}
@@ -1188,6 +1204,7 @@ isolated function testGetWritableCSVChannel() returns error? {
     if !(writableCsvChannel3 is WritableCSVChannel) {
         test:assertFail(msg = "Expected WritableCSVChannel not found");
     }
+    return;
 }
 
 @test:Config {}
@@ -1211,6 +1228,7 @@ isolated function testReadCsvWithQuotedField() returns error? {
        i += 1;
     }
     test:assertEquals(i, 3);
+    return;
 }
 
 @test:Config {}
@@ -1239,4 +1257,6 @@ function testReadCsvAsStreamWithQuotedField() returns error? {
     }
     _ = check content.close();
     test:assertEquals(i, 3);
+
+    return;
 }
