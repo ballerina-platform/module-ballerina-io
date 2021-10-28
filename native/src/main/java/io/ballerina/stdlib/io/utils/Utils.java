@@ -145,7 +145,7 @@ public class Utils {
             } else {
                 encodedValue = Base64.getEncoder().encode(stringToBeEncoded.getBytes(charset));
             }
-            return new String(encodedValue, StandardCharsets.ISO_8859_1);
+            return StringUtils.fromString(new String(encodedValue, StandardCharsets.ISO_8859_1));
         } catch (UnsupportedEncodingException e) {
             return Utils.createBase64Error(DECODING_ERROR, e.getMessage(), isMimeSpecific);
         }
@@ -168,7 +168,7 @@ public class Utils {
                 decodedValue = Base64.getDecoder().decode(stringToBeDecoded.toString()
                                                                   .getBytes(StandardCharsets.ISO_8859_1));
             }
-           return new String(decodedValue, charset);
+           return StringUtils.fromString(new String(decodedValue, charset));
         } catch (UnsupportedEncodingException e) {
             return Utils.createBase64Error(DECODING_ERROR, e.getMessage(), isMimeSpecific);
         }
