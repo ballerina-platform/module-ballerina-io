@@ -45,9 +45,14 @@ public class ReadableCSVChannel {
     # + nHeaders - The number of headers, which should be skipped
     public isolated function skipHeaders(int nHeaders) {
         int count = MINIMUM_HEADER_COUNT;
-        while (count < nHeaders) {
+        boolean errorOccurred = false;
+        while (count < nHeaders) && !errorOccurred {
             string[]|Error? result = self.getNext();
-            count = count + 1;
+            if result is string[]? {
+                count = count + 1;
+            } else {
+                errorOccurred = true;
+            }
         }
     }
 

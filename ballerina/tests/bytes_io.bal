@@ -150,13 +150,13 @@ isolated function testFileWriteBytesFromStreamUsingIntermediateFile() returns Er
 }
 
 @test:Config {dependsOn: [testFileWriteBytesFromStreamUsingIntermediateFile]}
-function testFileReadBytesAsStreamUsingIntermediateFile() {
+function testFileReadBytesAsStreamUsingIntermediateFile() returns Error? {
     string filePath = TEMP_DIR + "bytesFile3_A.txt";
     var result = fileReadBlocksAsStream(filePath, 2);
     string expectedString = "Sheldon Cooper";
     byte[] byteArr = [];
     if (result is stream<Block, Error?>) {
-        error? e = result.forEach(function(Block val) {
+        check result.forEach(function(Block val) {
                                       foreach byte b in val {
                                           byteArr.push(b);
                                       }
@@ -189,13 +189,13 @@ function testFileWriteBytesFromStream() {
 }
 
 @test:Config {dependsOn: [testFileWriteBytesFromStream]}
-function testFileReadBytesAsStream() {
+function testFileReadBytesAsStream() returns Error? {
     string filePath = TEMP_DIR + "bytesFile3_B.txt";
     var result = fileReadBlocksAsStream(filePath, 2);
     string expectedString = "Sheldon Cooper";
     byte[] byteArr = [];
     if (result is stream<Block, Error?>) {
-        error? e = result.forEach(function(Block val) {
+        check result.forEach(function(Block val) {
                                       foreach byte b in val {
                                           byteArr.push(b);
                                       }
@@ -266,7 +266,7 @@ isolated function testFileChannelWriteBytesFromStream() returns Error? {
 }
 
 @test:Config {dependsOn: [testFileChannelWriteBytesFromStream]}
-function testFileChannelReadBytesAsStream() {
+function testFileChannelReadBytesAsStream() returns Error? {
     string filePath = TEMP_DIR + "bytesFile5.txt";
     string expectedString = "Sheldon Cooper";
     byte[] byteArr = [];
@@ -275,7 +275,7 @@ function testFileChannelReadBytesAsStream() {
     if (fileOpenResult is ReadableByteChannel) {
         var result = channelReadBlocksAsStream(fileOpenResult, 2);
         if (result is stream<Block, Error?>) {
-            error? e = result.forEach(function(Block val) {
+            check result.forEach(function(Block val) {
                                           foreach byte b in val {
                                               byteArr.push(b);
                                           }
@@ -394,7 +394,7 @@ function testFileWriteBytesFromStreamWithOverrideUsingIntermediateFile() returns
     var result2 = fileReadBlocksAsStream(filePath, 2);
     byte[] byteArr1 = [];
     if (result2 is stream<Block, Error?>) {
-        error? e = result2.forEach(function(Block val) {
+        check result2.forEach(function(Block val) {
                                        foreach byte b in val {
                                            byteArr1.push(b);
                                        }
@@ -417,7 +417,7 @@ function testFileWriteBytesFromStreamWithOverrideUsingIntermediateFile() returns
     var result4 = fileReadBlocksAsStream(filePath, 2);
     byte[] byteArr2 = [];
     if (result4 is stream<Block, Error?>) {
-        error? e = result4.forEach(function(Block val) {
+        check result4.forEach(function(Block val) {
                                        foreach byte b in val {
                                            byteArr2.push(b);
                                        }
@@ -455,7 +455,7 @@ function testFileWriteBytesFromStreamWithAppendUsingIntermediateFile() returns E
     var result2 = fileReadBlocksAsStream(filePath, 2);
     byte[] byteArr1 = [];
     if (result2 is stream<Block, Error?>) {
-        error? e = result2.forEach(function(Block val) {
+        check result2.forEach(function(Block val) {
                                        foreach byte b in val {
                                            byteArr1.push(b);
                                        }
@@ -478,7 +478,7 @@ function testFileWriteBytesFromStreamWithAppendUsingIntermediateFile() returns E
     var result4 = fileReadBlocksAsStream(filePath, 2);
     byte[] byteArr2 = [];
     if (result4 is stream<Block, Error?>) {
-        error? e = result4.forEach(function(Block val) {
+        check result4.forEach(function(Block val) {
                                        foreach byte b in val {
                                            byteArr2.push(b);
                                        }
@@ -523,7 +523,7 @@ function testFileWriteBytesFromStreamWithOverride() returns Error? {
     var result2 = fileReadBlocksAsStream(filePath, 2);
     byte[] byteArr1 = [];
     if (result2 is stream<Block, Error?>) {
-        error? e = result2.forEach(function(Block val) {
+        check result2.forEach(function(Block val) {
                                        foreach byte b in val {
                                            byteArr1.push(b);
                                        }
@@ -547,7 +547,7 @@ function testFileWriteBytesFromStreamWithOverride() returns Error? {
     var result4 = fileReadBlocksAsStream(filePath, 2);
     byte[] byteArr2 = [];
     if (result4 is stream<Block, Error?>) {
-        error? e = result4.forEach(function(Block val) {
+        check result4.forEach(function(Block val) {
                                        foreach byte b in val {
                                            byteArr2.push(b);
                                        }
@@ -567,7 +567,7 @@ function testFileWriteBytesFromStreamWithOverride() returns Error? {
 }
 
 @test:Config {}
-function testFileWriteBytesFromStreamWithAppend() {
+function testFileWriteBytesFromStreamWithAppend() returns Error? {
     string filePath = TEMP_DIR + "bytesFile9.txt";
     string[] content1 = ["Ballerina ", "is ", "an "];
     string[] content2 = ["open ", "source ", "programming ", "language"];
@@ -593,7 +593,7 @@ function testFileWriteBytesFromStreamWithAppend() {
     var result2 = fileReadBlocksAsStream(filePath, 2);
     byte[] byteArr1 = [];
     if (result2 is stream<Block, Error?>) {
-        error? e = result2.forEach(function(Block val) {
+        check result2.forEach(function(Block val) {
                                        foreach byte b in val {
                                            byteArr1.push(b);
                                        }
@@ -616,7 +616,7 @@ function testFileWriteBytesFromStreamWithAppend() {
     var result4 = fileReadBlocksAsStream(filePath, 2);
     byte[] byteArr2 = [];
     if (result4 is stream<Block, Error?>) {
-        error? e = result4.forEach(function(Block val) {
+        check result4.forEach(function(Block val) {
                                        foreach byte b in val {
                                            byteArr2.push(b);
                                        }

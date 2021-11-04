@@ -43,8 +43,7 @@ public class BlockStream {
             record {| Block value; |} value = {value: <Block>block.cloneReadOnly()};
             return value;
         } else if (block is EofError) {
-            Error? closeResult = closeInputStream(self.readableByteChannel);
-            return ();
+            return closeInputStream(self.readableByteChannel);
         } else {
             return block;
         }

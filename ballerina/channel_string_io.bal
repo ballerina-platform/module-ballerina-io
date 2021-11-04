@@ -18,14 +18,14 @@ import ballerina/lang.'value;
 isolated function channelReadString(ReadableChannel readableChannel) returns string|Error {
     ReadableCharacterChannel characterChannel = check getReadableCharacterChannel(readableChannel);
     var result = characterChannel.readString();
-    Error? closeResult = characterChannel.close();
+    check characterChannel.close();
     return result;
 }
 
 isolated function channelReadLines(ReadableChannel readableChannel) returns string[]|Error {
     ReadableCharacterChannel characterChannel = check getReadableCharacterChannel(readableChannel);
     var result = characterChannel.readAllLines();
-    Error? closeResult = characterChannel.close();
+    check characterChannel.close();
     return result;
 }
 
@@ -37,14 +37,14 @@ Error {
 isolated function channelReadJson(ReadableChannel readableChannel) returns json|Error {
     ReadableCharacterChannel characterChannel = check getReadableCharacterChannel(readableChannel);
     var result = characterChannel.readJson();
-    Error? closeResult = characterChannel.close();
+    check characterChannel.close();
     return result;
 }
 
 isolated function channelReadXml(ReadableChannel readableChannel) returns xml|Error {
     ReadableCharacterChannel characterChannel = check getReadableCharacterChannel(readableChannel);
     var result = characterChannel.readXml();
-    Error? closeResult = characterChannel.close();
+    check characterChannel.close();
     return result;
 }
 
@@ -81,19 +81,18 @@ isolated function channelWriteLines(WritableChannel writableChannel, string[] co
 isolated function channelWriteLinesFromStream(WritableChannel writableChannel, stream<string, Error?> lineStream) returns
 Error? {
     WritableCharacterChannel characterChannel = check getWritableCharacterChannel(writableChannel);
-    record {| string value; |}|Error? line = lineStream.next();
-    while (line is record {| string value; |}) {
-        Error? writeResult = characterChannel.writeLine(line.value);
-        line = lineStream.next();
+    do {
+        record {|string value;|}|Error? line = lineStream.next();
+        while (line is record {|string value;|}) {
+            check characterChannel.writeLine(line.value);
+            line = lineStream.next();
+        }
+        check characterChannel.close();
+    } on fail Error err {
+        check characterChannel.close();
+        return err;
     }
-    var closeResult = characterChannel.close();
-    if (line is Error) {
-        return line;
-    }
-    if (closeResult is Error) {
-        return closeResult;
-    }
-    return ();
+    return;
 }
 
 isolated function channelWriteJson(WritableChannel writableChannel, json content) returns Error? {
@@ -109,7 +108,7 @@ isolated function channelWriteJson(WritableChannel writableChannel, json content
     return ();
 }
 
-isolated function channelWriteXml(WritableChannel writableChannel, xml content, XmlDoctype? xmlDoctype = ()) returns 
+isolated function channelWriteXml(WritableChannel writableChannel, xml content, XmlDoctype? xmlDoctype = ()) returns
 Error? {
     WritableCharacterChannel characterChannel = check getWritableCharacterChannel(writableChannel);
     Error? writeResult = ();
@@ -135,7 +134,7 @@ isolated function getReadableCharacterChannel(ReadableChannel readableChannel) r
     } else if (readableChannel is ReadableCharacterChannel) {
         readableCharacterChannel = readableChannel;
     } else {
-        TypeMismatchError e = error TypeMismatchError("Expected ReadableByteChannel/ReadableCharacterChannel but found a " + 
+        TypeMismatchError e = error TypeMismatchError("Expected ReadableByteChannel/ReadableCharacterChannel but found a " +
         'value:toString(typeof readableChannel));
         return e;
     }
@@ -149,7 +148,7 @@ isolated function getWritableCharacterChannel(WritableChannel writableChannel) r
     } else if (writableChannel is WritableCharacterChannel) {
         writableCharacterChannel = writableChannel;
     } else {
-        TypeMismatchError e = error TypeMismatchError("Expected ReadableByteChannel/ReadableCharacterChannel but found a " + 
+        TypeMismatchError e = error TypeMismatchError("Expected ReadableByteChannel/ReadableCharacterChannel but found a " +
         'value:toString(typeof writableChannel));
         return e;
     }

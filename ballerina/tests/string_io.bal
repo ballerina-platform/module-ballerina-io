@@ -160,7 +160,6 @@ isolated function testWriteCharacters() {
 isolated function testAppendCharacters() {
     string filePath = TEMP_DIR + "appendCharacterFile.txt";
     string initialContent = "Hi, I'm the initial content. ";
-    string appendingContent = "Hi, I was appended later. ";
 
     var byteChannel = openWritableFile(filePath, APPEND);
     if (byteChannel is WritableByteChannel) {

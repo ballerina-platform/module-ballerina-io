@@ -27,11 +27,11 @@ Error {
             results[i] = records;
             i += 1;
         } else if (records is Error) {
-            Error? closeResult = csvChannel.close();
+            check csvChannel.close();
             return records;
         }
     }
-    Error? closeResult = csvChannel.close();
+    check csvChannel.close();
     return results;
 }
 
@@ -45,7 +45,7 @@ isolated function channelWriteCsv(WritableChannel writableChannel, string[][] co
     foreach string[] r in content {
         var writeResult = csvChannel.write(r);
         if (writeResult is Error) {
-            Error? closeResult = csvChannel.close();
+            check csvChannel.close();
             return writeResult;
         }
     }
@@ -56,18 +56,18 @@ isolated function channelWriteCsv(WritableChannel writableChannel, string[][] co
 isolated function channelWriteCsvFromStream(WritableChannel writableChannel, stream<string[], Error?> csvStream) returns
 Error? {
     WritableCSVChannel csvChannel = check getWritableCSVChannel(writableChannel);
-    record {| string[] value; |}|Error? csvRecord = csvStream.next();
-    while (csvRecord is record {| string[] value; |}) {
-        Error? writeResult = csvChannel.write(csvRecord.value);
-        csvRecord = csvStream.next();
+    do {
+        record {|string[] value;|}|Error? csvRecord = csvStream.next();
+        while (csvRecord is record {|string[] value;|}) {
+            check csvChannel.write(csvRecord.value);
+            csvRecord = csvStream.next();
+        }
+        check csvChannel.close();
+    } on fail Error err {
+        check csvChannel.close();
+        return err;
     }
-    var closeResult = csvChannel.close();
-    if (csvRecord is Error) {
-        return csvRecord;
-    }
-    if (closeResult is Error) {
-        return closeResult;
-    }
+
     return;
 }
 
@@ -83,7 +83,7 @@ Error {
     } else if (readableChannel is ReadableCSVChannel) {
         readableCSVChannel = readableChannel;
     } else {
-        TypeMismatchError e = error TypeMismatchError("Expected ReadableByteChannel/ReadableCharacterChannel/ReadableCSVChannel but found a " + 
+        TypeMismatchError e = error TypeMismatchError("Expected ReadableByteChannel/ReadableCharacterChannel/ReadableCSVChannel but found a " +
         'value:toString(typeof readableChannel));
         return e;
     }
@@ -101,7 +101,7 @@ isolated function getWritableCSVChannel(WritableChannel writableChannel) returns
     } else if (writableChannel is WritableCSVChannel) {
         writableCSVChannel = writableChannel;
     } else {
-        TypeMismatchError e = error TypeMismatchError("Expected WritableByteChannel/WritableCharacterChannel/WritableCSVChannel but found a " + 
+        TypeMismatchError e = error TypeMismatchError("Expected WritableByteChannel/WritableCharacterChannel/WritableCSVChannel but found a " +
         'value:toString(typeof writableChannel));
         return e;
     }
