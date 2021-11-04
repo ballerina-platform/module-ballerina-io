@@ -1165,6 +1165,7 @@ isolated function testGetReadableCSVChannel() returns error? {
     ReadableByteChannel readableByteChannel = check openReadableFile(filePath);
     ReadableCharacterChannel readableCharacterChannel = new(readableByteChannel, DEFAULT_ENCODING);
     ReadableCSVChannel readableCsvChannel = new(readableCharacterChannel);
+    ReadableTextRecordChannel readableTextRecordChannel = new(readableCharacterChannel);
 
     var readableCsvChannel1 = getReadableCSVChannel(readableByteChannel, 0);
     if !(readableCsvChannel1 is ReadableCSVChannel) {
@@ -1178,6 +1179,10 @@ isolated function testGetReadableCSVChannel() returns error? {
     if !(readableCsvChannel3 is ReadableCSVChannel) {
         test:assertFail(msg = "Expected ReadableCSVChannel not found");
     }
+    var readableCsvChannel4 = getReadableCSVChannel(readableTextRecordChannel, 0);
+    if !(readableCsvChannel4 is Error) {
+        test:assertFail(msg = "Expected error not found");
+    }
     return;
 }
 
@@ -1187,6 +1192,7 @@ isolated function testGetWritableCSVChannel() returns error? {
     WritableByteChannel writableByteChannel = check openWritableFile(filePath);
     WritableCharacterChannel writableCharacterChannel = new(writableByteChannel, DEFAULT_ENCODING);
     WritableCSVChannel writableCsvChannel = new(writableCharacterChannel);
+    WritableTextRecordChannel writableTextRecordChannel = new(writableCharacterChannel);
 
     var writableCsvChannel1 = getWritableCSVChannel(writableByteChannel);
     if !(writableCsvChannel1 is WritableCSVChannel) {
@@ -1199,6 +1205,10 @@ isolated function testGetWritableCSVChannel() returns error? {
     var writableCsvChannel3 = getWritableCSVChannel(writableCsvChannel);
     if !(writableCsvChannel3 is WritableCSVChannel) {
         test:assertFail(msg = "Expected WritableCSVChannel not found");
+    }
+    var writableCsvChannel4 = getWritableCSVChannel(writableTextRecordChannel);
+    if !(writableCsvChannel4 is Error) {
+        test:assertFail(msg = "Expected error not found");
     }
     return;
 }
