@@ -18,7 +18,7 @@ import ballerina/lang.'value;
 isolated function channelReadBytes(ReadableChannel readableChannel) returns readonly & byte[]|Error {
     if (readableChannel is ReadableByteChannel) {
         var result = readableChannel.readAll();
-        Error? closeResult = readableChannel.close();
+        check readableChannel.close();
         return result;
     } else {
         TypeMismatchError e = error TypeMismatchError("Expected ReadableByteChannel but found a " + 'value:toString(typeof
@@ -40,10 +40,12 @@ Block, Error?>|Error {
 
 isolated function channelWriteBytes(WritableChannel writableChannel, byte[] content) returns Error? {
     if (writableChannel is WritableByteChannel) {
-        int|Error r = writableChannel.write(content, 0);
-        var closeResult = writableChannel.close();
-        if (closeResult is Error) {
-            return closeResult;
+        do {
+            _ = check writableChannel.write(content, 0);
+            check writableChannel.close();
+        } on fail Error err {
+            check writableChannel.close();
+            return err;
         }
     } else {
         TypeMismatchError e = error TypeMismatchError("Expected WritableByteChannel but found a " + 'value:toString(typeof
@@ -56,17 +58,16 @@ isolated function channelWriteBytes(WritableChannel writableChannel, byte[] cont
 isolated function channelWriteBlocksFromStream(WritableChannel writableChannel, stream<byte[], Error?> byteStream) returns
 Error? {
     if (writableChannel is WritableByteChannel) {
-        record {|byte[] value;|}|Error? block = byteStream.next();
-        while (block is record {|byte[] value;|}) {
-            int|Error writeResult = writableChannel.write(block.value, 0);
-            block = byteStream.next();
-        }
-        var closeResult = writableChannel.close();
-        if (block is Error) {
-            return block;
-        }
-        if (closeResult is Error) {
-            return closeResult;
+        do {
+            record {|byte[] value;|}|Error? block = byteStream.next();
+            while (block is record {|byte[] value;|}) {
+                _ = check writableChannel.write(block.value, 0);
+                block = byteStream.next();
+            }
+            check writableChannel.close();
+        } on fail Error err {
+            check writableChannel.close();
+            return err;
         }
     } else {
         TypeMismatchError e = error TypeMismatchError("Expected WritableByteChannel but found a " + 'value:toString(typeof
