@@ -37,7 +37,7 @@ public class LineStream {
             record {| string value; |} value = {value: <string>line.cloneReadOnly()};
             return value;
         } else if (line is EofError) {
-            Error? closeResult = closeReader(self.readableCharacterChannel);
+            check closeReader(self.readableCharacterChannel);
             return ();
         } else {
             return line;
