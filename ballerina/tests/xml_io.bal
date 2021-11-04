@@ -244,7 +244,6 @@ isolated function testFileWriteDocTypedXml() returns Error? {
     string originalFilePath = "tests/resources/originalXmlContent.xml";
 
     xml content = check fileReadXml(originalFilePath);
-    string doctypeValue = "<!DOCTYPE note SYSTEM \"Note.dtd\">";
     var writeResult = fileWriteXml(filePath, content, doctype = {system: "Note.dtd"});
     if (writeResult is Error) {
         test:assertFail(msg = writeResult.message());
@@ -317,8 +316,6 @@ isolated function testFileWriteDocTypedXmlWithInternalSubset() returns Error? {
     string resultFilePath = "tests/resources/expectedXmlCharsFile6.xml";
 
     xml content = check fileReadXml(originalFilePath);
-    string startElement = "<!DOCTYPE note ";
-    string endElement = ">";
     string internalSub = string `[
         <!ELEMENT note (to,from,heading,body)>
         <!ELEMENT to (#PCDATA)>
@@ -343,8 +340,6 @@ isolated function testFileWriteDocTypedXmlWithPrioritizeInternalSubset() returns
     string resultFilePath = "tests/resources/expectedXmlCharsFile6.xml";
 
     xml content = check fileReadXml(originalFilePath);
-    string startElement = "<!DOCTYPE note ";
-    string endElement = ">";
     string systemId = "http://www.w3.org/TR/html4/loose.dtd";
     string internalSub = string `[
         <!ELEMENT note (to,from,heading,body)>
@@ -373,7 +368,6 @@ isolated function testFileWriteDocTypedXmlWithPublicAndSystemId() returns Error?
     string resultFilePath = "tests/resources/expectedXmlCharsFile7.xml";
 
     xml content = check fileReadXml(originalFilePath);
-    string doctypeValue = "<!DOCTYPE note PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">";
     string publicId = "-//W3C//DTD HTML 4.01 Transitional//EN";
     string systemId = "http://www.w3.org/TR/html4/loose.dtd";
     var writeResult = fileWriteXml(filePath, content, doctype = {
@@ -396,7 +390,6 @@ isolated function testFileWriteDocTypedXmlWithPublic() returns Error? {
     string resultFilePath = "tests/resources/expectedXmlCharsFile8.xml";
 
     xml content = check fileReadXml(originalFilePath);
-    string doctypeValue = "<!DOCTYPE note PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">";
     string publicId = "-//W3C//DTD HTML 4.01 Transitional//EN";
     var writeResult = fileWriteXml(filePath, content, doctype={'public: publicId});
     if (writeResult is Error) {

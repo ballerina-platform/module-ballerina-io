@@ -460,8 +460,7 @@ isolated function testReadWriteCustomSeparator() {
 
     var readCsvChannel = openReadableCsvFile(filePath);
     if (readCsvChannel is ReadableCSVChannel) {
-        int i = 0;
-        foreach string[] entry in data {
+        foreach int i in 0..<data.length() {
             test:assertTrue(readCsvChannel.hasNext());
             var recordResult = readCsvChannel.getNext();
             if (recordResult is string[]) {
@@ -474,7 +473,6 @@ isolated function testReadWriteCustomSeparator() {
             } else {
                 test:assertFail(msg = "Unexpected result");
             }
-            i += 1;
         }
         var closeResult = readCsvChannel.close();
         if (closeResult is Error) {
@@ -643,8 +641,6 @@ isolated function testTableMultipleKeyFields() returns error? {
 @test:Config {}
 isolated function testTableNegative() returns error? {
     string filePath = RESOURCES_BASE_PATH + "datafiles/io/records/sample8.csv";
-    float expectedValue = 120002.00;
-    float total = 0.0;
 
     ReadableCSVChannel csvChannel = check openReadableCsvFile(filePath);
     table<record {}>|error tableResult = csvChannel.toTable(Employee2, ["emp_no"]);
