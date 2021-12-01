@@ -149,6 +149,9 @@ public class ByteChannelUtils extends AbstractNativeChannel {
 
     public static Object closeByteChannel(BObject channel) {
 
+        if (isChannelClosed(channel)) {
+            return IOUtils.createError("Byte channel is already closed.");
+        }
         Channel byteChannel = (Channel) channel.getNativeData(BYTE_CHANNEL_NAME);
         try {
             BufferedInputStream bufferedInputStream = getBufferedInputStream(channel);
@@ -157,8 +160,6 @@ public class ByteChannelUtils extends AbstractNativeChannel {
             }
             byteChannel.close();
             channel.addNativeData(IS_CLOSED, true);
-        } catch (ClosedChannelException e) {
-            return IOUtils.createError("channel already closed.");
         } catch (IOException e) {
             return IOUtils.createError(e);
         }

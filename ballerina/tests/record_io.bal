@@ -167,3 +167,35 @@ isolated function testWriteRecordsAfterClosing() returns Error? {
         test:assertFail(msg = "Expected io:Error not found");
     }
 }
+
+@test:Config {}
+isolated function testReadableRecordCloseTwice() returns Error? {
+    string filePath = RESOURCES_BASE_PATH + "datafiles/io/records/sample.csv";
+    ReadableByteChannel byteChannel = check openReadableFile(filePath);
+    ReadableCharacterChannel characterChannel = new ReadableCharacterChannel(byteChannel, DEFAULT_ENCODING);
+    ReadableTextRecordChannel recordChannel = new ReadableTextRecordChannel(characterChannel, COMMA, NEW_LINE);
+
+    check recordChannel.close();
+    Error? err = recordChannel.close();
+    if err is Error {
+        test:assertEquals(err.message(), "Record channel is already closed.");
+    } else {
+        test:assertFail(msg = "Expected io:Error not found");
+    }
+}
+
+@test:Config {}
+isolated function testWritableRecordChannelCloseTwice() returns Error? {
+    string filePath = TEMP_DIR + "recordsFile2.csv";
+    WritableByteChannel byteChannel = check openWritableFile(filePath);
+    WritableCharacterChannel charChannel = new WritableCharacterChannel(byteChannel, DEFAULT_ENCODING);
+    WritableTextRecordChannel recordChannel = new WritableTextRecordChannel(charChannel, NEW_LINE, COMMA);
+
+    check recordChannel.close();
+    Error? err = recordChannel.close();
+    if err is Error {
+        test:assertEquals(err.message(), "Record channel is already closed.");
+    } else {
+        test:assertFail(msg = "Expected io:Error not found");
+    }
+}

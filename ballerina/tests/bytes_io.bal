@@ -707,6 +707,33 @@ isolated function testByteChannelWriteAfterClose() returns error? {
     return;
 }
 
+@test:Config {}
+isolated function testReadableByteChannelCloseTwice() returns error? {
+    string filePath = TEST_RESOURCE_PATH + "stringResourceFile1.txt";
+    ReadableByteChannel readableByteChannel = check openReadableFile(filePath);
+    check readableByteChannel.close();
+    Error? err = readableByteChannel.close();
+    if err is Error {
+        test:assertEquals(err.message(), "Byte channel is already closed.");
+    } else {
+        test:assertFail(msg = "Expected io:Error not found");
+    }
+}
+
+@test:Config {}
+isolated function testWritableByteChannelCloseTwice() returns error? {
+    string filePath = TEMP_DIR + "temp1.txt";
+    WritableByteChannel writableByteChannel = check openWritableFile(filePath);
+    check writableByteChannel.close();
+    Error? err = writableByteChannel.close();
+    if err is Error {
+        test:assertEquals(err.message(), "Byte channel is already closed.");
+    } else {
+        test:assertFail(msg = "Expected io:Error not found");
+    }
+    return;
+}
+
 isolated function createDirectoryExtern(string path) = @java:Method {
     name: "createDirectory",
     'class: "io.ballerina.stdlib.io.testutils.FileTestUtils"

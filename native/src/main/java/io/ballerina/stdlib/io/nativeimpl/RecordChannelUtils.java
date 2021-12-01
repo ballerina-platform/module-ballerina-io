@@ -148,6 +148,9 @@ public class RecordChannelUtils {
     }
 
     public static Object close(BObject channel) {
+        if (isChannelClosed(channel)) {
+            return IOUtils.createError("Record channel is already closed.");
+        }
         DelimitedRecordChannel recordChannel = (DelimitedRecordChannel) channel.getNativeData(TXT_RECORD_CHANNEL_NAME);
         try {
             BufferedReader bufferedReader = (BufferedReader)
@@ -155,8 +158,6 @@ public class RecordChannelUtils {
             bufferedReader.close();
             recordChannel.close();
             channel.addNativeData(IS_CLOSED, true);
-        } catch (ClosedChannelException e) {
-            return IOUtils.createError("channel already closed.");
         } catch (IOException e) {
             return IOUtils.createError(e);
         }
@@ -176,7 +177,7 @@ public class RecordChannelUtils {
                     channel.getNativeData(BUFFERED_READER_ENTRY);
             bufferedReader.close();
         } catch (ClosedChannelException e) {
-            return IOUtils.createError("channel already closed.");
+            return IOUtils.createError("Record channel is already closed.");
         } catch (IOException e) {
             return IOUtils.createError(e);
         }

@@ -31,7 +31,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.ByteOrder;
-import java.nio.channels.ClosedChannelException;
 
 import static io.ballerina.stdlib.io.utils.IOConstants.DATA_CHANNEL_NAME;
 
@@ -192,12 +191,13 @@ public class DataChannelUtils {
     }
 
     public static Object closeDataChannel(BObject dataChannel) {
+        if (isChannelClosed(dataChannel)) {
+            return IOUtils.createError("Data channel is already closed.");
+        }
         DataChannel channel = (DataChannel) dataChannel.getNativeData(DATA_CHANNEL_NAME);
         try {
             channel.close();
             dataChannel.addNativeData(IS_CLOSED, true);
-        } catch (ClosedChannelException e) {
-            return IOUtils.createError("channel already closed.");
         } catch (IOException e) {
             return IOUtils.createError(e);
         }
