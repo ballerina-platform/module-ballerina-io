@@ -59,6 +59,7 @@ public class ByteChannelUtils extends AbstractNativeChannel {
 
     private static final Logger log = LoggerFactory.getLogger(ByteChannelUtils.class);
     private static final String STREAM_BLOCK_ENTRY = "value";
+    private static final String IS_CLOSED = "isClosed";
 
     private ByteChannelUtils() {
 
@@ -75,6 +76,8 @@ public class ByteChannelUtils extends AbstractNativeChannel {
             try {
                 byteChannel.read(content);
                 return ValueCreator.createArrayValue(getContentData(content));
+            } catch (ClosedChannelException e) {
+                return IOUtils.createError("Byte channel is already closed.");
             } catch (Exception e) {
                 String msg = "error occurred while reading bytes from the channel. " + e.getMessage();
                 log.error(msg, e);
@@ -86,6 +89,9 @@ public class ByteChannelUtils extends AbstractNativeChannel {
     public static Object readAll(BObject channel) {
 
         try {
+            if (isChannelClosed(channel)) {
+                return IOUtils.createError("Byte channel is already closed.");
+            }
             BufferedInputStream bufferedInputStream = getBufferedInputStream(channel);
             if (bufferedInputStream != null) {
                 return ValueCreator.createArrayValue(bufferedInputStream.readAllBytes());
@@ -150,6 +156,7 @@ public class ByteChannelUtils extends AbstractNativeChannel {
                 bufferedInputStream.close();
             }
             byteChannel.close();
+            channel.addNativeData(IS_CLOSED, true);
         } catch (ClosedChannelException e) {
             return IOUtils.createError("channel already closed.");
         } catch (IOException e) {
@@ -184,7 +191,7 @@ public class ByteChannelUtils extends AbstractNativeChannel {
                     "WritableByteChannel is not initialized");
         }  catch (ClosedChannelException e) {
             return IOUtils.createError(IOConstants.ErrorCode.GenericError,
-            "WritableByteChannel is already closed");
+            "Byte channel is already closed.");
         } catch (IOException e) {
             log.error("Error occurred while writing to the channel.", e);
             return IOUtils.createError(e);
@@ -202,6 +209,7 @@ public class ByteChannelUtils extends AbstractNativeChannel {
                     IOConstants.BUFFERED_INPUT_STREAM_ENTRY,
                     bufferedInputStream
             );
+            readableByteChannel.addNativeData(IS_CLOSED, false);
         } catch (BallerinaIOException | IOException e) {
             return IOUtils.createError(IOConstants.ErrorCode.GenericError, e.getMessage());
         } catch (BError e) {
@@ -212,17 +220,20 @@ public class ByteChannelUtils extends AbstractNativeChannel {
 
     public static Object openWritableFile(BString pathUrl, BString option) {
 
+        BObject writableByteChannel;
         try {
             if (IOConstants.FileOpenOption.OVERWRITE.name().equals(option.getValue())) {
-                return createChannel(inFlow(pathUrl.getValue(), IOConstants.FileOpenOption.OVERWRITE));
+                writableByteChannel = createChannel(inFlow(pathUrl.getValue(), IOConstants.FileOpenOption.OVERWRITE));
             } else {
-                return createChannel(inFlow(pathUrl.getValue(), IOConstants.FileOpenOption.APPEND));
+                writableByteChannel = createChannel(inFlow(pathUrl.getValue(), IOConstants.FileOpenOption.APPEND));
             }
+            writableByteChannel.addNativeData(IS_CLOSED, false);
         } catch (BallerinaIOException e) {
             return IOUtils.createError(e);
         } catch (BError e) {
             return e;
         }
+        return writableByteChannel;
     }
 
     public static Object createReadableChannel(BArray content) {
@@ -265,6 +276,13 @@ public class ByteChannelUtils extends AbstractNativeChannel {
         byte[] content = new byte[contentLength];
         System.arraycopy(array.getBytes(), 0, content, 0, contentLength);
         return content;
+    }
+
+    private static boolean isChannelClosed(BObject channel) {
+        if (channel.getNativeData(IS_CLOSED) != null) {
+            return (boolean) channel.getNativeData(IS_CLOSED);
+        }
+        return false;
     }
 
     private static BufferedInputStream getBufferedInputStream(BObject channel) throws IOException {
