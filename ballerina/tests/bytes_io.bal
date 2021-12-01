@@ -388,9 +388,8 @@ function testFileWriteBytesFromStreamWithOverrideUsingIntermediateFile() returns
 
     // Check content 01
     var result1 = fileWriteBlocksFromStream(filePath, bytesStream1);
-    if (result1 is Error) {
-        test:assertFail(msg = result1.message());
-    }
+    test:assertFalse(result1 is Error);
+
     var result2 = fileReadBlocksAsStream(filePath, 2);
     byte[] byteArr1 = [];
     if (result2 is stream<Block, Error?>) {
@@ -411,9 +410,8 @@ function testFileWriteBytesFromStreamWithOverrideUsingIntermediateFile() returns
 
     // Check content 02
     var result3 = fileWriteBlocksFromStream(filePath, bytesStream2);
-    if (result3 is Error) {
-        test:assertFail(msg = result3.message());
-    }
+    test:assertFalse(result3 is Error);
+
     var result4 = fileReadBlocksAsStream(filePath, 2);
     byte[] byteArr2 = [];
     if (result4 is stream<Block, Error?>) {
@@ -449,9 +447,8 @@ function testFileWriteBytesFromStreamWithAppendUsingIntermediateFile() returns E
 
     // Check content 01
     var result1 = fileWriteBlocksFromStream(filePath, bytesStream1);
-    if (result1 is Error) {
-        test:assertFail(msg = result1.message());
-    }
+    test:assertFalse(result1 is Error);
+
     var result2 = fileReadBlocksAsStream(filePath, 2);
     byte[] byteArr1 = [];
     if (result2 is stream<Block, Error?>) {
@@ -472,9 +469,8 @@ function testFileWriteBytesFromStreamWithAppendUsingIntermediateFile() returns E
 
     // Check content 01 + 02
     var result3 = fileWriteBlocksFromStream(filePath, bytesStream2, APPEND);
-    if (result3 is Error) {
-        test:assertFail(msg = result3.message());
-    }
+    test:assertFalse(result3 is Error);
+
     var result4 = fileReadBlocksAsStream(filePath, 2);
     byte[] byteArr2 = [];
     if (result4 is stream<Block, Error?>) {
@@ -517,9 +513,8 @@ function testFileWriteBytesFromStreamWithOverride() returns Error? {
     }
     // Check content 01
     var result1 = fileWriteBlocksFromStream(filePath, byteContent1.toStream());
-    if (result1 is Error) {
-        test:assertFail(msg = result1.message());
-    }
+    test:assertFalse(result1 is Error);
+
     var result2 = fileReadBlocksAsStream(filePath, 2);
     byte[] byteArr1 = [];
     if (result2 is stream<Block, Error?>) {
@@ -541,9 +536,8 @@ function testFileWriteBytesFromStreamWithOverride() returns Error? {
 
     // Check content 02
     var result3 = fileWriteBlocksFromStream(filePath, byteContent2.toStream());
-    if (result3 is Error) {
-        test:assertFail(msg = result3.message());
-    }
+    test:assertFalse(result3 is Error);
+
     var result4 = fileReadBlocksAsStream(filePath, 2);
     byte[] byteArr2 = [];
     if (result4 is stream<Block, Error?>) {
@@ -587,9 +581,8 @@ function testFileWriteBytesFromStreamWithAppend() returns Error? {
     }
     // Check content 01
     var result1 = fileWriteBlocksFromStream(filePath, byteContent1.toStream());
-    if (result1 is Error) {
-        test:assertFail(msg = result1.message());
-    }
+    test:assertFalse(result1 is Error);
+
     var result2 = fileReadBlocksAsStream(filePath, 2);
     byte[] byteArr1 = [];
     if (result2 is stream<Block, Error?>) {
@@ -610,9 +603,8 @@ function testFileWriteBytesFromStreamWithAppend() returns Error? {
 
     // Check content 01 + 02
     var result3 = fileWriteBlocksFromStream(filePath, byteContent2.toStream(), APPEND);
-    if (result3 is Error) {
-        test:assertFail(msg = result3.message());
-    }
+    test:assertFalse(result3 is Error);
+
     var result4 = fileReadBlocksAsStream(filePath, 2);
     byte[] byteArr2 = [];
     if (result4 is stream<Block, Error?>) {
