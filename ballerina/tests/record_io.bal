@@ -127,3 +127,43 @@ isolated function testReadRecordContent() {
         test:assertFail(msg = byteChannel.message());
     }
 }
+
+@test:Config {}
+isolated function testReadRecordAfterClosing() returns Error? {
+    string filePath = RESOURCES_BASE_PATH + "datafiles/io/records/sample.csv";
+
+    ReadableByteChannel byteChannel = check openReadableFile(filePath);
+    ReadableCharacterChannel characterChannel = new ReadableCharacterChannel(byteChannel, DEFAULT_ENCODING);
+    ReadableTextRecordChannel recordChannel = new ReadableTextRecordChannel(characterChannel, COMMA, NEW_LINE);
+    test:assertTrue(recordChannel.hasNext());
+    _ = check recordChannel.getNext();
+
+    check recordChannel.close();
+
+    string[]|Error r2 = recordChannel.getNext();
+    if r2 is Error {
+        test:assertEquals(r2.message(), "Record channel is already closed.");
+    } else {
+        test:assertFail(msg = "Expected io:Error not found");
+    }
+}
+
+@test:Config {}
+isolated function testWriteRecordsAfterClosing() returns Error? {
+    string filePath = TEMP_DIR + "recordsFile1.csv";
+    string[] content = ["Name", "Email", "Telephone"];
+
+    WritableByteChannel byteChannel = check openWritableFile(filePath);
+    WritableCharacterChannel charChannel = new WritableCharacterChannel(byteChannel, DEFAULT_ENCODING);
+    WritableTextRecordChannel recordChannel = new WritableTextRecordChannel(charChannel, NEW_LINE, COMMA);
+    check recordChannel.write(content);
+
+    check recordChannel.close();
+
+    Error? r = recordChannel.write(content);
+    if r is Error {
+        test:assertEquals(r.message(), "Record channel is already closed.");
+    } else {
+        test:assertFail(msg = "Expected io:Error not found");
+    }
+}
