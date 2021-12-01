@@ -12,6 +12,8 @@ name = "io"
 version = "1.0.2"
 dependencies = [
 	{org = "ballerina", name = "jballerina.java"},
+	{org = "ballerina", name = "lang.float"},
+	{org = "ballerina", name = "lang.string"},
 	{org = "ballerina", name = "lang.value"},
 	{org = "ballerina", name = "test"}
 ]
@@ -25,6 +27,30 @@ name = "jballerina.java"
 version = "0.0.0"
 modules = [
 	{org = "ballerina", packageName = "jballerina.java", moduleName = "jballerina.java"}
+]
+
+[[package]]
+org = "ballerina"
+name = "lang.float"
+version = "0.0.0"
+scope = "testOnly"
+dependencies = [
+	{org = "ballerina", name = "jballerina.java"}
+]
+modules = [
+	{org = "ballerina", packageName = "lang.float", moduleName = "lang.float"}
+]
+
+[[package]]
+org = "ballerina"
+name = "lang.string"
+version = "0.0.0"
+scope = "testOnly"
+dependencies = [
+	{org = "ballerina", name = "jballerina.java"}
+]
+modules = [
+	{org = "ballerina", packageName = "lang.string", moduleName = "lang.string"}
 ]
 
 [[package]]
