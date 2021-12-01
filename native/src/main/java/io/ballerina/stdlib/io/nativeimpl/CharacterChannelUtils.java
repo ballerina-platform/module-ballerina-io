@@ -40,6 +40,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.channels.ClosedChannelException;
+import java.nio.charset.UnsupportedCharsetException;
 import java.util.StringJoiner;
 
 import static io.ballerina.stdlib.io.utils.IOConstants.CHARACTER_CHANNEL_NAME;
@@ -54,6 +55,7 @@ public class CharacterChannelUtils {
     private static final Logger log = LoggerFactory.getLogger(CharacterChannelUtils.class);
     private static final String BUFFERED_READER_ENTRY = "bufferedReader";
     private static final String NEW_LINE = "\n";
+    private static final String IS_CLOSED = "isClosed";
 
     private CharacterChannelUtils() {
 
@@ -68,6 +70,9 @@ public class CharacterChannelUtils {
             BufferedReader bufferedReader = new BufferedReader(new CharacterChannelReader(bCharacterChannel));
             characterChannel.addNativeData(CHARACTER_CHANNEL_NAME, bCharacterChannel);
             characterChannel.addNativeData(BUFFERED_READER_ENTRY, bufferedReader);
+            characterChannel.addNativeData(IS_CLOSED, false);
+        } catch (UnsupportedCharsetException e) {
+            throw IOUtils.createError("Unsupported encoding type " + encoding.getValue());
         } catch (Exception e) {
             String message = "error occurred while converting byte channel to character channel: " + e.getMessage();
             log.error(message, e);
@@ -78,6 +83,9 @@ public class CharacterChannelUtils {
     public static Object read(BObject channel, long numberOfCharacters) {
 
         CharacterChannel characterChannel = (CharacterChannel) channel.getNativeData(CHARACTER_CHANNEL_NAME);
+        if (isChannelClosed(channel)) {
+            return IOUtils.createError("Character channel is already closed.");
+        }
         if (characterChannel.hasReachedEnd()) {
             return IOUtils.createEoFError();
         } else {
@@ -92,6 +100,9 @@ public class CharacterChannelUtils {
 
     public static Object readLine(BObject channel) {
 
+        if (isChannelClosed(channel)) {
+            return IOUtils.createError("Character channel is already closed.");
+        }
         BufferedReader bufferedReader = (BufferedReader)
                 channel.getNativeData(BUFFERED_READER_ENTRY);
         try {
@@ -108,6 +119,9 @@ public class CharacterChannelUtils {
 
     public static Object readAllLines(BObject channel) {
 
+        if (isChannelClosed(channel)) {
+            return IOUtils.createError("Character channel is already closed.");
+        }
         try {
             BufferedReader bufferedReader = (BufferedReader)
                     channel.getNativeData(BUFFERED_READER_ENTRY);
@@ -121,6 +135,9 @@ public class CharacterChannelUtils {
 
     public static Object readString(BObject channel) {
 
+        if (isChannelClosed(channel)) {
+            return IOUtils.createError("Character channel is already closed.");
+        }
         try {
             BufferedReader bufferedReader = (BufferedReader)
                     channel.getNativeData(BUFFERED_READER_ENTRY);
@@ -138,6 +155,9 @@ public class CharacterChannelUtils {
 
     public static Object readJson(BObject channel) {
 
+        if (isChannelClosed(channel)) {
+            return IOUtils.createError("Character channel is already closed.");
+        }
         CharacterChannel charChannel = (CharacterChannel) channel.getNativeData(CHARACTER_CHANNEL_NAME);
         CharacterChannelReader reader = new CharacterChannelReader(charChannel);
         try {
@@ -156,6 +176,9 @@ public class CharacterChannelUtils {
 
     public static Object readXml(BObject channel) {
 
+        if (isChannelClosed(channel)) {
+            return IOUtils.createError("Character channel is already closed.");
+        }
         CharacterChannel charChannel = (CharacterChannel) channel.getNativeData(CHARACTER_CHANNEL_NAME);
         CharacterChannelReader reader = new CharacterChannelReader(charChannel);
         try {
@@ -167,6 +190,9 @@ public class CharacterChannelUtils {
 
     public static Object readProperty(BObject channel, BString key, BString defaultValue) {
 
+        if (isChannelClosed(channel)) {
+            return IOUtils.createError("Character channel is already closed.");
+        }
         CharacterChannel charChannel = (CharacterChannel) channel.getNativeData(CHARACTER_CHANNEL_NAME);
         CharacterChannelReader reader = new CharacterChannelReader(charChannel);
         try {
@@ -178,6 +204,9 @@ public class CharacterChannelUtils {
 
     public static Object readAllProperties(BObject channel) {
 
+        if (isChannelClosed(channel)) {
+            return IOUtils.createError("Character channel is already closed.");
+        }
         CharacterChannel charChannel = (CharacterChannel) channel.getNativeData(CHARACTER_CHANNEL_NAME);
         CharacterChannelReader reader = new CharacterChannelReader(charChannel);
         try {
@@ -195,6 +224,7 @@ public class CharacterChannelUtils {
                     channel.getNativeData(BUFFERED_READER_ENTRY);
             bufferedReader.close();
             charChannel.close();
+            channel.addNativeData(IS_CLOSED, true);
         } catch (ClosedChannelException e) {
             return IOUtils.createError("channel already closed.");
         } catch (IOException e) {
@@ -219,6 +249,9 @@ public class CharacterChannelUtils {
 
     public static Object write(BObject channel, BString content, long startOffset) {
 
+        if (isChannelClosed(channel)) {
+            return IOUtils.createError("Character channel is already closed.");
+        }
         CharacterChannel characterChannel = (CharacterChannel) channel.getNativeData(CHARACTER_CHANNEL_NAME);
         try {
             return characterChannel.write(content.getValue(), (int) startOffset);
@@ -232,6 +265,9 @@ public class CharacterChannelUtils {
 
     public static Object writeJson(BObject characterChannelObj, Object content) {
 
+        if (isChannelClosed(characterChannelObj)) {
+            return IOUtils.createError("Character channel is already closed.");
+        }
         try {
             CharacterChannel characterChannel = (CharacterChannel) characterChannelObj
                     .getNativeData(CHARACTER_CHANNEL_NAME);
@@ -244,6 +280,9 @@ public class CharacterChannelUtils {
 
     public static Object writeXml(BObject characterChannelObj, BXml content, BString doctype) {
 
+        if (isChannelClosed(characterChannelObj)) {
+            return IOUtils.createError("Character channel is already closed.");
+        }
         try {
             CharacterChannel characterChannel = (CharacterChannel) characterChannelObj
                     .getNativeData(CHARACTER_CHANNEL_NAME);
@@ -263,16 +302,23 @@ public class CharacterChannelUtils {
     public static Object writeProperties(BObject characterChannelObj,
                                          BMap<BString, BString> propertyMap, BString comment) {
 
+        if (isChannelClosed(characterChannelObj)) {
+            return IOUtils.createError("Character channel is already closed.");
+        }
         try {
             CharacterChannel characterChannel = (CharacterChannel) characterChannelObj
                     .getNativeData(CHARACTER_CHANNEL_NAME);
             PropertyUtils.writePropertyContent(characterChannel, propertyMap, comment);
-        } catch (ClosedChannelException e) {
-            return IOUtils.createError(IOConstants.ErrorCode.GenericError,
-                    "WritableCharacterChannel is already closed");
         } catch (IOException e) {
             return IOUtils.createError(e);
         }
         return null;
+    }
+
+    private static boolean isChannelClosed(BObject channel) {
+        if (channel.getNativeData(IS_CLOSED) != null) {
+            return (boolean) channel.getNativeData(IS_CLOSED);
+        }
+        return false;
     }
 }
