@@ -48,6 +48,7 @@ public class RecordChannelUtils {
     private static final Logger log = LoggerFactory.getLogger(RecordChannelUtils.class);
     private static final String DEFAULT = "default";
     private static final String BUFFERED_READER_ENTRY = "bufferedReader";
+    private static final String IS_CLOSED = "isClosed";
 
     private RecordChannelUtils() {
     }
@@ -69,6 +70,7 @@ public class RecordChannelUtils {
             }
             textRecordChannel.addNativeData(TXT_RECORD_CHANNEL_NAME, delimitedRecordChannel);
             textRecordChannel.addNativeData(BUFFERED_READER_ENTRY, bufferedReader);
+            textRecordChannel.addNativeData(IS_CLOSED, false);
         } catch (Exception e) {
             String message =
                     "error occurred while converting character channel to textRecord channel: " + e.getMessage();
@@ -96,6 +98,9 @@ public class RecordChannelUtils {
     }
 
     public static Object getNext(BObject channel) {
+        if (isChannelClosed(channel)) {
+            return IOUtils.createError("Record channel is already closed.");
+        }
         DelimitedRecordChannel textRecordChannel =
                 (DelimitedRecordChannel) channel.getNativeData(TXT_RECORD_CHANNEL_NAME);
         if (textRecordChannel.hasReachedEnd()) {
@@ -129,6 +134,9 @@ public class RecordChannelUtils {
     }
 
     public static Object write(BObject channel, BArray content) {
+        if (isChannelClosed(channel)) {
+            return IOUtils.createError("Record channel is already closed.");
+        }
         DelimitedRecordChannel delimitedRecordChannel = (DelimitedRecordChannel) channel
                 .getNativeData(TXT_RECORD_CHANNEL_NAME);
         try {
@@ -146,12 +154,20 @@ public class RecordChannelUtils {
                     channel.getNativeData(BUFFERED_READER_ENTRY);
             bufferedReader.close();
             recordChannel.close();
+            channel.addNativeData(IS_CLOSED, true);
         } catch (ClosedChannelException e) {
             return IOUtils.createError("channel already closed.");
         } catch (IOException e) {
             return IOUtils.createError(e);
         }
         return null;
+    }
+
+    private static boolean isChannelClosed(BObject channel) {
+        if (channel.getNativeData(IS_CLOSED) != null) {
+            return (boolean) channel.getNativeData(IS_CLOSED);
+        }
+        return false;
     }
 
     public static Object closeBufferedReader(BObject channel) {
