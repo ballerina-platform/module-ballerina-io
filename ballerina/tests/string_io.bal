@@ -897,7 +897,7 @@ isolated function testCharacterChannelReadAfterClose() returns error? {
     check characterChannel.close();
     var err = characterChannel.read(2);
     if (err is Error) {
-        test:assertEquals(err.message(), "error occurred while reading from channel: null");
+        test:assertEquals(err.message(), "Character channel is already closed.");
     } else {
         test:assertFail(msg = "Expected io:Error not found");
     }
@@ -912,7 +912,7 @@ isolated function testCharacterChannelReadStringAfterClose() returns error? {
     check characterChannel.close();
     var err = characterChannel.readString();
     if (err is Error) {
-        test:assertEquals(err.message(), "java.io.IOException: Stream closed");
+        test:assertEquals(err.message(), "Character channel is already closed.");
     } else {
         test:assertFail(msg = "Expected io:Error not found");
     }
@@ -927,7 +927,7 @@ isolated function testCharacterChannelReadAllLinesAfterClose() returns error? {
     check characterChannel.close();
     var err = characterChannel.readAllLines();
     if (err is Error) {
-        test:assertEquals(err.message(), "java.io.IOException: Stream closed");
+        test:assertEquals(err.message(), "Character channel is already closed.");
     } else {
         test:assertFail(msg = "Expected io:Error not found");
     }
@@ -942,9 +942,7 @@ isolated function testCharacterChannelReadJsonAfterClose() returns error? {
     check characterChannel.close();
     var err = characterChannel.readJson();
     if (err is Error) {
-
-        test:assertEquals(err.message(), 
-        "Error reading JSON: io.ballerina.stdlib.io.utils.BallerinaIOException: error occurred while reading from channel: null");
+        test:assertEquals(err.message(), "Character channel is already closed.");
     } else {
         test:assertFail(msg = "Expected io:Error not found");
     }
@@ -959,9 +957,7 @@ isolated function testCharacterChannelReadXmlAfterClose() returns error? {
     check characterChannel.close();
     var err = characterChannel.readXml();
     if (err is Error) {
-
-        test:assertEquals(err.message(), 
-        "failed to create xml: io.ballerina.stdlib.io.utils.BallerinaIOException: error occurred while reading from channel: null");
+        test:assertEquals(err.message(), "Character channel is already closed.");
     } else {
         test:assertFail(msg = "Expected io:Error not found");
     }
@@ -976,8 +972,7 @@ isolated function testCharacterChannelReadPropertyAfterClose() returns error? {
     check characterChannel.close();
     var err = characterChannel.readProperty("xxx");
     if (err is Error) {
-        test:assertEquals(err.message(), 
-        "io.ballerina.stdlib.io.utils.BallerinaIOException: error occurred while reading from channel: null");
+        test:assertEquals(err.message(), "Character channel is already closed.");
     } else {
         test:assertFail(msg = "Expected io:Error not found");
     }
@@ -992,8 +987,7 @@ isolated function testCharacterChannelReadAllPropertiesAfterClose() returns erro
     check characterChannel.close();
     var err = characterChannel.readAllProperties();
     if (err is Error) {
-        test:assertEquals(err.message(), 
-        "io.ballerina.stdlib.io.utils.BallerinaIOException: error occurred while reading from channel: null");
+        test:assertEquals(err.message(), "Character channel is already closed.");
     } else {
         test:assertFail(msg = "Expected io:Error not found");
     }
@@ -1008,7 +1002,7 @@ isolated function testCharacterChannelWriteAfterClose() returns error? {
     check characterChannel.close();
     var err = characterChannel.write("", 0);
     if (err is Error) {
-        test:assertEquals(err.message(), "WritableCharacterChannel is already closed");
+        test:assertEquals(err.message(), "Character channel is already closed.");
     } else {
         test:assertFail(msg = "Expected io:Error not found");
     }
@@ -1023,7 +1017,7 @@ isolated function testCharacterChannelWriteLineAfterClose() returns error? {
     check characterChannel.close();
     var err = characterChannel.writeLine("");
     if (err is Error) {
-        test:assertEquals(err.message(), "WritableCharacterChannel is already closed");
+        test:assertEquals(err.message(), "Character channel is already closed.");
     } else {
         test:assertFail(msg = "Expected io:Error not found");
     }
@@ -1039,7 +1033,7 @@ isolated function testCharacterChannelWriteJsonAfterClose() returns error? {
     check characterChannel.close();
     var err = characterChannel.writeJson(j);
     if (err is Error) {
-        test:assertEquals(err.message(), "writable channel is already closed");
+        test:assertEquals(err.message(), "Character channel is already closed.");
     } else {
         test:assertFail(msg = "Expected io:Error not found");
     }
@@ -1055,7 +1049,7 @@ isolated function testCharacterChannelWriteXmlAfterClose() returns error? {
     check characterChannel.close();
     var err = characterChannel.writeXml(x);
     if (err is Error) {
-        test:assertEquals(err.message(), "writable channel is already closed");
+        test:assertEquals(err.message(), "Character channel is already closed.");
     } else {
         test:assertFail(msg = "Expected io:Error not found");
     }
@@ -1071,7 +1065,7 @@ isolated function testCharacterChannelWritePropertiesAfterClose() returns error?
     check characterChannel.close();
     var err = characterChannel.writeProperties(properties, "");
     if (err is Error) {
-        test:assertEquals(err.message(), "WritableCharacterChannel is already closed");
+        test:assertEquals(err.message(), "Character channel is already closed.");
     } else {
         test:assertFail(msg = "Expected io:Error not found");
     }
