@@ -14,7 +14,6 @@
 // specific language governing permissions and limitations
 // under the License.
 import ballerina/test;
-import ballerina/lang.'string as langstring;
 
 @test:Config {}
 isolated function testFileNotFound() {
@@ -22,8 +21,8 @@ isolated function testFileNotFound() {
     var err = openReadableFile(filePath);
 
     if err is Error {
-        test:assertTrue(langstring:includes(err.message(), "no such file or directory:", 0));
-        test:assertTrue(langstring:includes(err.message(), "unknown.txt", 0));
+        test:assertTrue(err.message().includes("no such file or directory:"));
+        test:assertTrue(err.message().includes("unknown.txt"));
     } else {
         test:assertFail(msg = "Expected io:Error not found");
     }
