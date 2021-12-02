@@ -31,7 +31,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.ByteOrder;
-import java.nio.channels.ClosedChannelException;
 
 import static io.ballerina.stdlib.io.utils.IOConstants.DATA_CHANNEL_NAME;
 
@@ -43,6 +42,7 @@ import static io.ballerina.stdlib.io.utils.IOConstants.DATA_CHANNEL_NAME;
 public class DataChannelUtils {
 
     private static final Logger log = LoggerFactory.getLogger(DataChannelUtils.class);
+    private static final String IS_CLOSED = "isClosed";
 
     private DataChannelUtils() {
     }
@@ -70,6 +70,7 @@ public class DataChannelUtils {
             Channel channel = (Channel) byteChannelObj.getNativeData(IOConstants.BYTE_CHANNEL_NAME);
             DataChannel dataChannel = new DataChannel(channel, byteOrder);
             dataChannelObj.addNativeData(DATA_CHANNEL_NAME, dataChannel);
+            dataChannelObj.addNativeData(IS_CLOSED, false);
         } catch (Exception e) {
             String message = "error while creating data channel: " + e.getMessage();
             log.error(message, e);
@@ -78,6 +79,9 @@ public class DataChannelUtils {
     }
 
     public static Object readInt16(BObject dataChannelObj) {
+        if (isChannelClosed(dataChannelObj)) {
+            return IOUtils.createError("Data channel is already closed.");
+        }
         DataChannel channel = (DataChannel) dataChannelObj.getNativeData(DATA_CHANNEL_NAME);
         try {
             return channel.readLong(Representation.BIT_16).getValue();
@@ -88,6 +92,9 @@ public class DataChannelUtils {
     }
 
     public static Object readInt32(BObject dataChannelObj) {
+        if (isChannelClosed(dataChannelObj)) {
+            return IOUtils.createError("Data channel is already closed.");
+        }
         DataChannel channel = (DataChannel) dataChannelObj.getNativeData(DATA_CHANNEL_NAME);
         try {
             return channel.readLong(Representation.BIT_32).getValue();
@@ -98,6 +105,9 @@ public class DataChannelUtils {
     }
 
     public static Object readInt64(BObject dataChannelObj) {
+        if (isChannelClosed(dataChannelObj)) {
+            return IOUtils.createError("Data channel is already closed.");
+        }
         DataChannel channel = (DataChannel) dataChannelObj.getNativeData(DATA_CHANNEL_NAME);
         try {
             return channel.readLong(Representation.BIT_64).getValue();
@@ -108,6 +118,9 @@ public class DataChannelUtils {
     }
 
     public static Object readFloat32(BObject dataChannelObj) {
+        if (isChannelClosed(dataChannelObj)) {
+            return IOUtils.createError("Data channel is already closed.");
+        }
         DataChannel channel = (DataChannel) dataChannelObj.getNativeData(DATA_CHANNEL_NAME);
         try {
             return channel.readDouble(Representation.BIT_32);
@@ -118,6 +131,9 @@ public class DataChannelUtils {
     }
 
     public static Object readFloat64(BObject dataChannelObj) {
+        if (isChannelClosed(dataChannelObj)) {
+            return IOUtils.createError("Data channel is already closed.");
+        }
         DataChannel channel = (DataChannel) dataChannelObj.getNativeData(DATA_CHANNEL_NAME);
         try {
             return channel.readDouble(Representation.BIT_64);
@@ -128,6 +144,9 @@ public class DataChannelUtils {
     }
 
     public static Object readBool(BObject dataChannelObj) {
+        if (isChannelClosed(dataChannelObj)) {
+            return IOUtils.createError("Data channel is already closed.");
+        }
         DataChannel channel = (DataChannel) dataChannelObj.getNativeData(DATA_CHANNEL_NAME);
         try {
             return channel.readBoolean();
@@ -138,6 +157,9 @@ public class DataChannelUtils {
     }
 
     public static Object readString(BObject dataChannelObj, long nBytes, BString encoding) {
+        if (isChannelClosed(dataChannelObj)) {
+            return IOUtils.createError("Data channel is already closed.");
+        }
         DataChannel channel = (DataChannel) dataChannelObj.getNativeData(DATA_CHANNEL_NAME);
         if (channel.hasReachedEnd()) {
             if (log.isDebugEnabled()) {
@@ -156,6 +178,9 @@ public class DataChannelUtils {
     }
 
     public static Object readVarInt(BObject dataChannelObj) {
+        if (isChannelClosed(dataChannelObj)) {
+            return IOUtils.createError("Data channel is already closed.");
+        }
         DataChannel channel = (DataChannel) dataChannelObj.getNativeData(DATA_CHANNEL_NAME);
         try {
             return channel.readLong(Representation.VARIABLE).getValue();
@@ -166,11 +191,13 @@ public class DataChannelUtils {
     }
 
     public static Object closeDataChannel(BObject dataChannel) {
+        if (isChannelClosed(dataChannel)) {
+            return IOUtils.createError("Data channel is already closed.");
+        }
         DataChannel channel = (DataChannel) dataChannel.getNativeData(DATA_CHANNEL_NAME);
         try {
             channel.close();
-        } catch (ClosedChannelException e) {
-            return IOUtils.createError("channel already closed.");
+            dataChannel.addNativeData(IS_CLOSED, true);
         } catch (IOException e) {
             return IOUtils.createError(e);
         }
@@ -191,6 +218,9 @@ public class DataChannelUtils {
     }
 
     public static Object writeInt16(BObject dataChannelObj, long value) {
+        if (isChannelClosed(dataChannelObj)) {
+            return IOUtils.createError("Data channel is already closed.");
+        }
         DataChannel channel = (DataChannel) dataChannelObj.getNativeData(DATA_CHANNEL_NAME);
         try {
             channel.writeLong(value, Representation.BIT_16);
@@ -202,6 +232,9 @@ public class DataChannelUtils {
     }
 
     public static Object writeInt32(BObject dataChannelObj, long value) {
+        if (isChannelClosed(dataChannelObj)) {
+            return IOUtils.createError("Data channel is already closed.");
+        }
         DataChannel channel = (DataChannel) dataChannelObj.getNativeData(DATA_CHANNEL_NAME);
         try {
             channel.writeLong(value, Representation.BIT_32);
@@ -213,6 +246,9 @@ public class DataChannelUtils {
     }
 
     public static Object writeInt64(BObject dataChannelObj, long value) {
+        if (isChannelClosed(dataChannelObj)) {
+            return IOUtils.createError("Data channel is already closed.");
+        }
         DataChannel channel = (DataChannel) dataChannelObj.getNativeData(DATA_CHANNEL_NAME);
         try {
             channel.writeLong(value, Representation.BIT_64);
@@ -224,6 +260,9 @@ public class DataChannelUtils {
     }
 
     public static Object writeFloat32(BObject dataChannelObj, double value) {
+        if (isChannelClosed(dataChannelObj)) {
+            return IOUtils.createError("Data channel is already closed.");
+        }
         DataChannel channel = (DataChannel) dataChannelObj.getNativeData(DATA_CHANNEL_NAME);
         try {
             channel.writeDouble(value, Representation.BIT_32);
@@ -235,6 +274,9 @@ public class DataChannelUtils {
     }
 
     public static Object writeFloat64(BObject dataChannelObj, double value) {
+        if (isChannelClosed(dataChannelObj)) {
+            return IOUtils.createError("Data channel is already closed.");
+        }
         DataChannel channel = (DataChannel) dataChannelObj.getNativeData(DATA_CHANNEL_NAME);
         try {
             channel.writeDouble(value, Representation.BIT_64);
@@ -246,6 +288,9 @@ public class DataChannelUtils {
     }
 
     public static Object writeBool(BObject dataChannelObj, boolean value) {
+        if (isChannelClosed(dataChannelObj)) {
+            return IOUtils.createError("Data channel is already closed.");
+        }
         DataChannel channel = (DataChannel) dataChannelObj.getNativeData(DATA_CHANNEL_NAME);
         try {
             channel.writeBoolean(value);
@@ -257,6 +302,9 @@ public class DataChannelUtils {
     }
 
     public static Object writeString(BObject dataChannelObj, BString value, BString encoding) {
+        if (isChannelClosed(dataChannelObj)) {
+            return IOUtils.createError("Data channel is already closed.");
+        }
         DataChannel channel = (DataChannel) dataChannelObj.getNativeData(DATA_CHANNEL_NAME);
         try {
             channel.writeString(value.getValue(), encoding.getValue());
@@ -268,6 +316,9 @@ public class DataChannelUtils {
     }
 
     public static Object writeVarInt(BObject dataChannelObj, long value) {
+        if (isChannelClosed(dataChannelObj)) {
+            return IOUtils.createError("Data channel is already closed.");
+        }
         DataChannel channel = (DataChannel) dataChannelObj.getNativeData(DATA_CHANNEL_NAME);
         try {
             channel.writeLong(value, Representation.VARIABLE);
@@ -276,5 +327,12 @@ public class DataChannelUtils {
             return IOUtils.createError(e);
         }
         return null;
+    }
+
+    private static boolean isChannelClosed(BObject channel) {
+        if (channel.getNativeData(IS_CLOSED) != null) {
+            return (boolean) channel.getNativeData(IS_CLOSED);
+        }
+        return false;
     }
 }

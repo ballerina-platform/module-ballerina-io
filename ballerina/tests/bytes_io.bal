@@ -643,8 +643,8 @@ isolated function testByteChannelReadAfterClose() returns error? {
     ReadableByteChannel readableByteChannel = check openReadableFile(filePath);
     check readableByteChannel.close();
     var err = readableByteChannel.read(2);
-    if (err is Error) {
-        test:assertEquals(err.message(), "error occurred while reading bytes from the channel. null");
+    if err is Error {
+        test:assertEquals(err.message(), "Byte channel is already closed.");
     } else {
         test:assertFail(msg = "Expected io:Error not found");
     }
@@ -658,7 +658,7 @@ isolated function testByteChannelReadAllAfterClose() returns error? {
     check readableByteChannel.close();
     var err = readableByteChannel.readAll();
     if (err is Error) {
-        test:assertEquals(err.message(), "Stream closed");
+        test:assertEquals(err.message(), "Byte channel is already closed.");
     } else {
         test:assertFail(msg = "Expected io:Error not found");
     }
@@ -700,7 +700,34 @@ isolated function testByteChannelWriteAfterClose() returns error? {
     check writableByteChannel.close();
     var err = writableByteChannel.write([], 0);
     if (err is Error) {
-        test:assertEquals(err.message(), "WritableByteChannel is already closed");
+        test:assertEquals(err.message(), "Byte channel is already closed.");
+    } else {
+        test:assertFail(msg = "Expected io:Error not found");
+    }
+    return;
+}
+
+@test:Config {}
+isolated function testReadableByteChannelCloseTwice() returns error? {
+    string filePath = TEST_RESOURCE_PATH + "stringResourceFile1.txt";
+    ReadableByteChannel readableByteChannel = check openReadableFile(filePath);
+    check readableByteChannel.close();
+    Error? err = readableByteChannel.close();
+    if err is Error {
+        test:assertEquals(err.message(), "Byte channel is already closed.");
+    } else {
+        test:assertFail(msg = "Expected io:Error not found");
+    }
+}
+
+@test:Config {}
+isolated function testWritableByteChannelCloseTwice() returns error? {
+    string filePath = TEMP_DIR + "temp1.txt";
+    WritableByteChannel writableByteChannel = check openWritableFile(filePath);
+    check writableByteChannel.close();
+    Error? err = writableByteChannel.close();
+    if err is Error {
+        test:assertEquals(err.message(), "Byte channel is already closed.");
     } else {
         test:assertFail(msg = "Expected io:Error not found");
     }
