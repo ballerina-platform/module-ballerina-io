@@ -27,7 +27,6 @@ def examples = ["csv_processor"]
 
 task testExamples {
     doLast {
-        def moduleVersion = "${project.version}".replace("-SNAPSHOT", "")
         examples.each { example ->
             def exampleDirectory = "${project.projectDir}/${example}"
             try {
