@@ -6,7 +6,7 @@ authors = ["Ballerina"]
 keywords = ["io", "json", "xml", "csv", "file"]
 repository = "https://github.com/ballerina-platform/module-ballerina-io"
 license = ["Apache-2.0"]
-distribution = "slbeta3"
+distribution = "slbeta6"
 
 [[platform.java11.dependency]]
 path = "../native/build/libs/io-native-1.0.2-SNAPSHOT.jar"
