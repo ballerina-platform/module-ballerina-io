@@ -21,7 +21,6 @@ import ballerina/http;
 service http:Service /BalPerformance on new http:Listener(9090) {
 
     resource function get grpc() returns json|error {
-        io:println("call");
         stream<string[], io:Error?> performanceDataStream = check io:fileReadCsvAsStream("resources/ghz_output.csv");
         _ = check performanceDataStream.next(); // Skip the header
 
