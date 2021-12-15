@@ -1,0 +1,10 @@
+resources:
+  - csv_processor.yaml
+  - ingress.yaml
+patches:
+- path: deployment-patch.yaml
+  target:
+    group: apps
+    version: v1
+    kind: Deployment
+    name: io-csv-processor-deployment
