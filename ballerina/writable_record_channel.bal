@@ -29,8 +29,8 @@ public class WritableTextRecordChannel {
     # "DEFAULT" (the format specified by the CSVChannel), 
     # "CSV" (Field separator would be "," and record separator would be a new line) or else
     # "TDF" (Field separator will be a tab and record separator will be a new line)
-    public isolated function init(WritableCharacterChannel characterChannel, string fs = "", string rs = "", 
-                                  string fmt = "default") {
+    public isolated function init(WritableCharacterChannel characterChannel, string fs = "", string rs = "",
+                                string fmt = "default") {
         self.characterChannel = characterChannel;
         self.fs = fs;
         self.rs = rs;
@@ -60,7 +60,7 @@ public class WritableTextRecordChannel {
     }
 }
 
-isolated function initWritableTextRecordChannel(WritableTextRecordChannel textChannel, 
+isolated function initWritableTextRecordChannel(WritableTextRecordChannel textChannel,
                                                 WritableCharacterChannel charChannel, string fs, string rs, string fmt) = @java:Method {
     name: "initRecordChannel",
     'class: "io.ballerina.stdlib.io.nativeimpl.RecordChannelUtils"

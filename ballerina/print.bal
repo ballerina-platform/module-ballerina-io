@@ -37,9 +37,9 @@ public type PrintableRawTemplate object {
 };
 
 # Prints `any`, `error`, or string templates(such as `The respective int value is ${val}`) value(s) to the STDOUT.
-#```ballerina
+# ```ballerina
 # io:print("Start processing the CSV file from ", srcFileName);
-#```
+# ```
 #
 # + values - The value(s) to be printed
 public isolated function print(Printable... values) {
@@ -52,9 +52,9 @@ public isolated function print(Printable... values) {
 
 # Prints `any`, `error` or string templates(such as `The respective int value is ${val}`) value(s) to the STDOUT
 # followed by a new line.
-#```ballerina
+# ```ballerina
 # io:println("Start processing the CSV file from ", srcFileName);
-#```
+# ```
 #
 # + values - The value(s) to be printed
 public isolated function println(Printable... values) {
@@ -67,9 +67,9 @@ public isolated function println(Printable... values) {
 
 # Prints `any`, `error`, or string templates(such as `The respective int value is ${val}`) value(s) to
 # a given stream(STDOUT or STDERR).
-#```ballerina
+# ```ballerina
 # io:fprint(io:stderr, "Unexpected error occurred");
-#```
+# ```
 # + fileOutputStream - The output stream (`io:stdout` or `io:stderr`) content needs to be printed
 # + values - The value(s) to be printed
 public isolated function fprint(FileOutputStream fileOutputStream, Printable... values) {
@@ -82,9 +82,9 @@ public isolated function fprint(FileOutputStream fileOutputStream, Printable... 
 
 # Prints `any`, `error`, or string templates(such as `The respective int value is ${val}`) value(s) to
 # a given stream(STDOUT or STDERR) followed by a new line.
-#```ballerina
+# ```ballerina
 # io:fprintln(io:stderr, "Unexpected error occurred");
-#```
+# ```
 # + fileOutputStream - The output stream (`io:stdout` or `io:stderr`) content needs to be printed
 # + values - The value(s) to be printed
 public isolated function fprintln(FileOutputStream fileOutputStream, Printable... values) {
@@ -127,9 +127,9 @@ class PrintableRawTemplateImpl {
         string templatedString = templeteStrings[0];
         foreach int i in 1 ..< (templeteStrings.length()) {
             Printable templateInsert = templeteInsertions[i - 1];
-            if (templateInsert is PrintableRawTemplate) {
+            if templateInsert is PrintableRawTemplate {
                 templatedString += new PrintableRawTemplateImpl(templateInsert).toString() + templeteStrings[i];
-            } else if (templateInsert is error) {
+            } else if templateInsert is error {
                 templatedString += templateInsert.toString() + templeteStrings[i];
             } else {
                 templatedString += templateInsert.toString() + templeteStrings[i];

@@ -25,11 +25,11 @@ public class ReadableCSVChannel {
     # + fs - Field separator, which will separate between the records in the CSV file
     # + nHeaders - Number of headers, which should be skipped prior to reading records
     public isolated function init(ReadableCharacterChannel byteChannel, Separator fs = ",", int nHeaders = 0) {
-        if (fs == TAB) {
+        if fs == TAB {
             self.dc = new ReadableTextRecordChannel(byteChannel, fmt = "TDF");
-        } else if (fs == COLON) {
+        } else if fs == COLON {
             self.dc = new ReadableTextRecordChannel(byteChannel, FS_COLON, CSV_RECORD_SEPARATOR);
-        } else if (fs == COMMA) {
+        } else if fs == COMMA {
             self.dc = new ReadableTextRecordChannel(byteChannel, fmt = "CSV");
         } else {
             self.dc = new ReadableTextRecordChannel(byteChannel, fs, CSV_RECORD_SEPARATOR);
@@ -64,7 +64,7 @@ public class ReadableCSVChannel {
     # + return - True if there is a record
     public isolated function hasNext() returns boolean {
         var recordChannel = self.dc;
-        if (recordChannel is ReadableTextRecordChannel) {
+        if recordChannel is ReadableTextRecordChannel {
             return recordChannel.hasNext();
         } else {
             GenericError e = error GenericError("channel not initialized");
@@ -79,11 +79,11 @@ public class ReadableCSVChannel {
     #
     # + return - List of fields in the CSV or else an `io:Error`
     public isolated function getNext() returns string[]|Error? {
-        if (self.dc is ReadableTextRecordChannel) {
+        if self.dc is ReadableTextRecordChannel {
             var result = <ReadableTextRecordChannel>self.dc;
             return result.getNext();
         }
-        return ();
+        return;
     }
 
     # Returns a CSV record stream that can be used to CSV records as a stream.
@@ -94,7 +94,7 @@ public class ReadableCSVChannel {
     # + return - A stream of records(string[]) or else an `io:Error`
     public isolated function csvStream() returns stream<string[], Error?>|Error {
         var recordChannel = self.dc;
-        if (recordChannel is ReadableTextRecordChannel) {
+        if recordChannel is ReadableTextRecordChannel {
             CSVStream csvStream = new (recordChannel);
             return new stream<string[], Error?>(csvStream);
         } else {
@@ -111,11 +111,11 @@ public class ReadableCSVChannel {
     #
     # + return - An `io:Error` if any error occurred
     public isolated function close() returns Error? {
-        if (self.dc is ReadableTextRecordChannel) {
+        if self.dc is ReadableTextRecordChannel {
             var result = <ReadableTextRecordChannel>self.dc;
             return result.close();
         }
-        return ();
+        return;
     }
 
     # Returns a table, which corresponds to the CSV records.
@@ -131,7 +131,7 @@ public class ReadableCSVChannel {
     # # Deprecated
     # This function is deprecated due to the introduction of `ReadableCSVChannel.toTable()`, making 'fieldNames' a mandatory parameter
     @deprecated
-    public isolated function getTable(typedesc<record { }> structType, string[] fieldNames = []) returns table<record { }>|
+    public isolated function getTable(typedesc<record {}> structType, string[] fieldNames = []) returns table<record {}>|
     Error {
         return toTableExtern(self, structType, fieldNames);
     }
@@ -144,13 +144,13 @@ public class ReadableCSVChannel {
     # + structType - The object in which the CSV records should be deserialized
     # + keyFieldNames - The names of the fields used as the (composite) key of the table
     # + return - Table, which represents the CSV records or else an `io:Error`
-    public isolated function toTable(typedesc<record { }> structType, string[] keyFieldNames) returns table<record { }>|
+    public isolated function toTable(typedesc<record {}> structType, string[] keyFieldNames) returns table<record {}>|
     Error {
         return toTableExtern(self, structType, keyFieldNames);
     }
 }
 
-isolated function toTableExtern(ReadableCSVChannel csvChannel, typedesc<record { }> structType, string[] keyFieldNames) returns table<record { }>|
+isolated function toTableExtern(ReadableCSVChannel csvChannel, typedesc<record {}> structType, string[] keyFieldNames) returns table<record {}>|
 Error = @java:Method {
     name: "toTable",
     'class: "io.ballerina.stdlib.io.nativeimpl.ToTable"

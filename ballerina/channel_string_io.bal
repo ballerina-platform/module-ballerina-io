@@ -52,10 +52,10 @@ isolated function channelWriteString(WritableChannel writableChannel, string con
     WritableCharacterChannel characterChannel = check getWritableCharacterChannel(writableChannel);
     var writeResult = characterChannel.write(content, 0);
     var closeResult = characterChannel.close();
-    if (writeResult is Error) {
+    if writeResult is Error {
         return writeResult;
     }
-    if (closeResult is Error) {
+    if closeResult is Error {
         return closeResult;
     }
     return;
@@ -69,10 +69,10 @@ isolated function channelWriteLines(WritableChannel writableChannel, string[] co
     }
     var writeResult = characterChannel.write(writeContent, 0);
     var closeResult = characterChannel.close();
-    if (writeResult is Error) {
+    if writeResult is Error {
         return writeResult;
     }
-    if (closeResult is Error) {
+    if closeResult is Error {
         return closeResult;
     }
     return;
@@ -83,7 +83,7 @@ Error? {
     WritableCharacterChannel characterChannel = check getWritableCharacterChannel(writableChannel);
     do {
         record {|string value;|}|Error? line = lineStream.next();
-        while (line is record {|string value;|}) {
+        while line is record {|string value;|} {
             check characterChannel.writeLine(line.value);
             line = lineStream.next();
         }
@@ -99,39 +99,39 @@ isolated function channelWriteJson(WritableChannel writableChannel, json content
     WritableCharacterChannel characterChannel = check getWritableCharacterChannel(writableChannel);
     var writeResult = characterChannel.writeJson(content);
     var closeResult = characterChannel.close();
-    if (writeResult is Error) {
+    if writeResult is Error {
         return writeResult;
     }
-    if (closeResult is Error) {
+    if closeResult is Error {
         return closeResult;
     }
-    return ();
+    return;
 }
 
 isolated function channelWriteXml(WritableChannel writableChannel, xml content, XmlDoctype? xmlDoctype = ()) returns
 Error? {
     WritableCharacterChannel characterChannel = check getWritableCharacterChannel(writableChannel);
     Error? writeResult = ();
-    if (xmlDoctype != ()) {
+    if xmlDoctype != () {
         writeResult = characterChannel.writeXml(content, <XmlDoctype>xmlDoctype);
     } else {
         writeResult = characterChannel.writeXml(content);
     }
     var closeResult = characterChannel.close();
-    if (writeResult is Error) {
+    if writeResult is Error {
         return writeResult;
     }
-    if (closeResult is Error) {
+    if closeResult is Error {
         return closeResult;
     }
-    return ();
+    return;
 }
 
 isolated function getReadableCharacterChannel(ReadableChannel readableChannel) returns ReadableCharacterChannel|Error {
     ReadableCharacterChannel readableCharacterChannel;
-    if (readableChannel is ReadableByteChannel) {
+    if readableChannel is ReadableByteChannel {
         readableCharacterChannel = new (readableChannel, DEFAULT_ENCODING);
-    } else if (readableChannel is ReadableCharacterChannel) {
+    } else if readableChannel is ReadableCharacterChannel {
         readableCharacterChannel = readableChannel;
     } else {
         TypeMismatchError e = error TypeMismatchError("Expected ReadableByteChannel/ReadableCharacterChannel but found a " +
@@ -143,9 +143,9 @@ isolated function getReadableCharacterChannel(ReadableChannel readableChannel) r
 
 isolated function getWritableCharacterChannel(WritableChannel writableChannel) returns WritableCharacterChannel|Error {
     WritableCharacterChannel writableCharacterChannel;
-    if (writableChannel is WritableByteChannel) {
+    if writableChannel is WritableByteChannel {
         writableCharacterChannel = new (writableChannel, DEFAULT_ENCODING);
-    } else if (writableChannel is WritableCharacterChannel) {
+    } else if writableChannel is WritableCharacterChannel {
         writableCharacterChannel = writableChannel;
     } else {
         TypeMismatchError e = error TypeMismatchError("Expected ReadableByteChannel/ReadableCharacterChannel but found a " +

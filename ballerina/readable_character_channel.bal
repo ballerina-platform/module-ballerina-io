@@ -126,8 +126,8 @@ public class ReadableCharacterChannel {
     }
 }
 
-isolated function initReadableCharacterChannel(ReadableCharacterChannel characterChannel, 
-                                               ReadableByteChannel byteChannel, string charset) = @java:Method {
+isolated function initReadableCharacterChannel(ReadableCharacterChannel characterChannel,
+                                                ReadableByteChannel byteChannel, string charset) = @java:Method {
     name: "initCharacterChannel",
     'class: "io.ballerina.stdlib.io.nativeimpl.CharacterChannelUtils"
 } external;

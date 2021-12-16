@@ -53,11 +53,10 @@ public class WritableCharacterChannel {
     public isolated function writeLine(string content) returns Error? {
         string lineContent = content + NEW_LINE;
         var result = writeExtern(self, lineContent, 0);
-        if (result is Error) {
+        if result is Error {
             return result;
-        } else {
-            return ();
         }
+        return;
     }
 
     # Writes a given JSON to the given channel.
@@ -81,7 +80,7 @@ public class WritableCharacterChannel {
     # + return - `()` or else an `io:Error` if any error occurred
     public isolated function writeXml(xml content, XmlDoctype? xmlDoctype = ()) returns Error? {
         string doctype = "";
-        if (xmlDoctype != ()) {
+        if xmlDoctype != () {
             doctype = populateDoctype(content, <XmlDoctype>xmlDoctype);
         }
         return writeXmlExtern(self, content, doctype);
@@ -118,25 +117,25 @@ isolated function populateDoctype(xml content, XmlDoctype doctype) returns strin
     string systemElement = "SYSTEM";
     string publicElement = "PUBLIC";
     xml:Element rootElement = <xml:Element>content;
-    if (doctype.internalSubset != ()) {
+    if doctype.internalSubset != () {
         doctypeElement = string `${startElement} ${<string>rootElement.getName()} ${<string>doctype.internalSubset}${
         endElement}`;
-    } else if (doctype.'public != () && doctype.system != ()) {
+    } else if doctype.'public != () && doctype.system != () {
         doctypeElement = string `${startElement} ${<string>rootElement.getName()} ${publicElement} "${<string>doctype.
         'public}" "${<string>doctype.system}"${endElement}`;
 
-    } else if (doctype.'public != ()) {
+    } else if doctype.'public != () {
         doctypeElement = string `${startElement} ${<string>rootElement.getName()} ${publicElement} "${<string>doctype.
         'public}"${endElement}`;
-    } else if (doctype.system != ()) {
+    } else if doctype.system != () {
         doctypeElement = string `${startElement} ${<string>rootElement.getName()} ${systemElement} "${<string>doctype.
         system}"${endElement}`;
     }
     return doctypeElement;
 }
 
-isolated function initWritableCharacterChannel(WritableCharacterChannel characterChannel, 
-                                               WritableByteChannel byteChannel, string charset) = @java:Method {
+isolated function initWritableCharacterChannel(WritableCharacterChannel characterChannel,
+                                                WritableByteChannel byteChannel, string charset) = @java:Method {
     name: "initCharacterChannel",
     'class: "io.ballerina.stdlib.io.nativeimpl.CharacterChannelUtils"
 } external;
@@ -157,7 +156,7 @@ isolated function writeXmlExtern(WritableCharacterChannel characterChannel, xml 
     'class: "io.ballerina.stdlib.io.nativeimpl.CharacterChannelUtils"
 } external;
 
-isolated function writePropertiesExtern(WritableCharacterChannel characterChannel, map<string> properties, 
+isolated function writePropertiesExtern(WritableCharacterChannel characterChannel, map<string> properties,
                                         string comment) returns Error? = @java:Method {
     name: "writeProperties",
     'class: "io.ballerina.stdlib.io.nativeimpl.CharacterChannelUtils"

@@ -37,12 +37,12 @@ public class BlockStream {
     # The next function reads and returns the next block of the related stream.
     #
     # + return - An `io:Block` when a block is avaliable in the stream or returns `()` when the stream reaches the end
-    public isolated function next() returns record {| Block value; |}|Error? {
+    public isolated function next() returns record {|Block value;|}|Error? {
         byte[]|Error block = readBlock(self.readableByteChannel, self.blockSize);
-        if (block is byte[]) {
-            record {| Block value; |} value = {value: <Block>block.cloneReadOnly()};
+        if block is byte[] {
+            record {|Block value;|} value = {value: <Block>block.cloneReadOnly()};
             return value;
-        } else if (block is EofError) {
+        } else if block is EofError {
             return closeInputStream(self.readableByteChannel);
         } else {
             return block;
@@ -54,14 +54,14 @@ public class BlockStream {
     #
     # + return - `()` when the closing was successful or an `io:Error`
     public isolated function close() returns Error? {
-        if (!self.isClosed) {
+        if !self.isClosed {
             var closeResult = closeInputStream(self.readableByteChannel);
-            if (closeResult is ()) {
+            if closeResult is () {
                 self.isClosed = true;
             }
             return closeResult;
         }
-        return ();
+        return;
     }
 }
 

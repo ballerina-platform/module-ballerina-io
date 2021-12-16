@@ -38,4 +38,3 @@ public type EofError distinct Error;
 # This will get returned if there is an invalid configuration.
 public type ConfigurationError distinct Error;
 
-

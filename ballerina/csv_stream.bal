@@ -32,14 +32,14 @@ public class CSVStream {
     #
     # + return - A CSV record as a string array when a record is avaliable in the stream or
     # `()` when the stream reaches the end
-    public isolated function next() returns record {| string[] value; |}|Error? {
+    public isolated function next() returns record {|string[] value;|}|Error? {
         var recordValue = readRecord(self.readableTextRecordChannel);
-        if (recordValue is string[]) {
-            record {| string[] value; |} value = {value: <string[]>recordValue.cloneReadOnly()};
+        if recordValue is string[] {
+            record {|string[] value;|} value = {value: <string[]>recordValue.cloneReadOnly()};
             return value;
-        } else if (recordValue is EofError) {
+        } else if recordValue is EofError {
             check closeRecordReader(self.readableTextRecordChannel);
-            return ();
+            return;
         } else {
             return recordValue;
         }
@@ -50,14 +50,14 @@ public class CSVStream {
     #
     # + return - `()` when the closing was successful or an `io:Error`
     public isolated function close() returns Error? {
-        if (!self.isClosed) {
+        if !self.isClosed {
             var closeResult = closeRecordReader(self.readableTextRecordChannel);
-            if (closeResult is ()) {
+            if closeResult is () {
                 self.isClosed = true;
             }
             return closeResult;
         }
-        return ();
+        return;
     }
 }
 

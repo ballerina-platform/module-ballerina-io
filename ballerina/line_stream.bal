@@ -31,14 +31,14 @@ public class LineStream {
     # The next function reads and returns the next line of the related stream.
     #
     # + return - A line as a string when a line is avaliable in the stream or returns `()` when the stream reaches the end
-    public isolated function next() returns record {| string value; |}|Error? {
+    public isolated function next() returns record {|string value;|}|Error? {
         var line = readLine(self.readableCharacterChannel);
-        if (line is string) {
-            record {| string value; |} value = {value: <string>line.cloneReadOnly()};
+        if line is string {
+            record {|string value;|} value = {value: <string>line.cloneReadOnly()};
             return value;
-        } else if (line is EofError) {
+        } else if line is EofError {
             check closeReader(self.readableCharacterChannel);
-            return ();
+            return;
         } else {
             return line;
         }
@@ -49,14 +49,14 @@ public class LineStream {
     #
     # + return - `()` when the closing was successful or an `io:Error`
     public isolated function close() returns Error? {
-        if (!self.isClosed) {
+        if !self.isClosed {
             var closeResult = closeReader(self.readableCharacterChannel);
-            if (closeResult is ()) {
+            if closeResult is () {
                 self.isClosed = true;
             }
             return closeResult;
         }
-        return ();
+        return;
     }
 }
 

@@ -64,7 +64,7 @@ public isolated function createReadableChannel(byte[] content) returns ReadableB
 # + skipHeaders - Number of headers, which should be skipped
 # + return - The `io:ReadableCSVChannel`, which could be used to iterate through the CSV records or else an `io:Error` if any error occurred
 public isolated function openReadableCsvFile(string path, Separator fieldSeparator = ",",
-                                             string charset = "UTF-8", int skipHeaders = 0) returns
+                                            string charset = "UTF-8", int skipHeaders = 0) returns
 ReadableCSVChannel|Error {
     ReadableByteChannel byteChannel = check openReadableFile(path);
     ReadableCharacterChannel charChannel = new (byteChannel, charset);
@@ -83,8 +83,8 @@ ReadableCSVChannel|Error {
 # + option - To indicate whether to overwrite or append the given content
 # + return - The `WritableCSVChannel`, which could be used to write the CSV records or else an `io:Error` if any error occurred
 public isolated function openWritableCsvFile(string path, Separator fieldSeparator = ",",
-                                             string charset = "UTF-8", int skipHeaders = 0,
-                                             FileWriteOption option = OVERWRITE) returns WritableCSVChannel|Error {
+                                            string charset = "UTF-8", int skipHeaders = 0,
+                                            FileWriteOption option = OVERWRITE) returns WritableCSVChannel|Error {
     WritableByteChannel byteChannel = check openWritableFile(path, option);
     WritableCharacterChannel charChannel = new (byteChannel, charset);
     return new WritableCSVChannel(charChannel, fieldSeparator);

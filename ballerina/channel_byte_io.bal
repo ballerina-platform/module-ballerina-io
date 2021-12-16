@@ -16,7 +16,7 @@
 import ballerina/lang.'value;
 
 isolated function channelReadBytes(ReadableChannel readableChannel) returns readonly & byte[]|Error {
-    if (readableChannel is ReadableByteChannel) {
+    if readableChannel is ReadableByteChannel {
         var result = readableChannel.readAll();
         check readableChannel.close();
         return result;
@@ -29,7 +29,7 @@ isolated function channelReadBytes(ReadableChannel readableChannel) returns read
 
 isolated function channelReadBlocksAsStream(ReadableChannel readableChannel, int blockSize = 4096) returns stream<
 Block, Error?>|Error {
-    if (readableChannel is ReadableByteChannel) {
+    if readableChannel is ReadableByteChannel {
         return readableChannel.blockStream(blockSize);
     } else {
         TypeMismatchError e = error TypeMismatchError("Expected ReadableByteChannel but found a " + 'value:toString(typeof
@@ -39,7 +39,7 @@ Block, Error?>|Error {
 }
 
 isolated function channelWriteBytes(WritableChannel writableChannel, byte[] content) returns Error? {
-    if (writableChannel is WritableByteChannel) {
+    if writableChannel is WritableByteChannel {
         do {
             _ = check writableChannel.write(content, 0);
             check writableChannel.close();
@@ -57,10 +57,10 @@ isolated function channelWriteBytes(WritableChannel writableChannel, byte[] cont
 
 isolated function channelWriteBlocksFromStream(WritableChannel writableChannel, stream<byte[], Error?> byteStream) returns
 Error? {
-    if (writableChannel is WritableByteChannel) {
+    if writableChannel is WritableByteChannel {
         do {
             record {|byte[] value;|}|Error? block = byteStream.next();
-            while (block is record {|byte[] value;|}) {
+            while block is record {|byte[] value;|} {
                 _ = check writableChannel.write(block.value, 0);
                 block = byteStream.next();
             }

@@ -76,7 +76,7 @@ public isolated function fileReadXml(string path) returns xml|Error {
 # + content - String content to write
 # + option - To indicate whether to overwrite or append the given content
 # + return - `()` when the writing was successful or an `io:Error`
-public isolated function fileWriteString(string path, string content, FileWriteOption option = OVERWRITE) returns 
+public isolated function fileWriteString(string path, string content, FileWriteOption option = OVERWRITE) returns
 Error? {
     return channelWriteString(check openWritableFile(path, option), content);
 }
@@ -91,7 +91,7 @@ Error? {
 # + content - An array of string lines to write
 # + option - To indicate whether to overwrite or append the given content
 # + return - `()` when the writing was successful or an `io:Error`
-public isolated function fileWriteLines(string path, string[] content, FileWriteOption option = OVERWRITE) returns 
+public isolated function fileWriteLines(string path, string[] content, FileWriteOption option = OVERWRITE) returns
 Error? {
     return channelWriteLines(check openWritableFile(path, option), content);
 }
@@ -107,8 +107,8 @@ Error? {
 # + lineStream - A stream of lines to write
 # + option - To indicate whether to overwrite or append the given content
 # + return - `()` when the writing was successful or an `io:Error`
-public isolated function fileWriteLinesFromStream(string path, stream<string, Error?> lineStream, 
-                                                  FileWriteOption option = OVERWRITE) returns Error? {
+public isolated function fileWriteLinesFromStream(string path, stream<string, Error?> lineStream,
+                                                FileWriteOption option = OVERWRITE) returns Error? {
     return channelWriteLinesFromStream(check openWritableFile(path, option), lineStream);
 }
 
@@ -134,25 +134,25 @@ public isolated function fileWriteJson(string path, json content) returns Error?
 # + xmlOptions - XML writing options(XML entity type and DOCTYPE)
 # + fileWriteOption - file write option(`OVERWRITE` and `APPEND` are the possible values, and the default value is `OVERWRITE`)
 # + return - `()` value when the writing was successful or an `io:Error`
-public isolated function fileWriteXml(string path, xml content, FileWriteOption fileWriteOption = OVERWRITE, 
-                                      *XmlWriteOptions xmlOptions) returns Error? {
+public isolated function fileWriteXml(string path, xml content, FileWriteOption fileWriteOption = OVERWRITE,
+                                    *XmlWriteOptions xmlOptions) returns Error? {
     WritableByteChannel byteChannel;
-    if (xmlOptions.xmlEntityType == DOCUMENT_ENTITY) {
-        if (fileWriteOption == APPEND) {
+    if xmlOptions.xmlEntityType == DOCUMENT_ENTITY {
+        if fileWriteOption == APPEND {
             return error ConfigurationError("The file append operation is not allowed for Document Entity");
         }
-        if (xml:length(content) > 1) {
+        if xml:length(content) > 1 {
             return error ConfigurationError("The XML Document can only contains single root");
         }
         byteChannel = check openWritableFile(path);
     } else {
-        if (fileWriteOption == APPEND) {
+        if fileWriteOption == APPEND {
             byteChannel = check openWritableFile(path, APPEND);
         } else {
             byteChannel = check openWritableFile(path);
         }
     }
-    if (xmlOptions.doctype != ()) {
+    if xmlOptions.doctype != () {
         return channelWriteXml(byteChannel, content, xmlOptions.doctype);
     }
     return channelWriteXml(byteChannel, content);
