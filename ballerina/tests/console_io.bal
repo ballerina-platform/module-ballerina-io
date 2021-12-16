@@ -1113,13 +1113,12 @@ isolated function testFprintlnNilWithStderr() {
     test:assertEquals(readErrorStream(), "\n");
 }
 
-isolated function func1(int a, int b) returns (int) {
-    int c = a + b;
-    return c;
+isolated function func1(int a, int b) returns int {
+    return (a + b);
 }
 
 class Foo {
-    isolated function bar() returns (int) {
+    isolated function bar() returns int {
         return 5;
     }
 }
