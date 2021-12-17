@@ -100,7 +100,7 @@ isolated function testFileWriteBytesFromStreamUsingIntermediateFile() returns Er
 }
 
 @test:Config {dependsOn: [testFileWriteBytesFromStreamUsingIntermediateFile]}
-function testFileReadBytesAsStreamUsingIntermediateFile() returns Error? {
+function testFileReadBytesAsStreamUsingIntermediateFile() returns error? {
     string filePath = TEMP_DIR + "bytesFile3_A.txt";
     stream<Block, Error?> result = check fileReadBlocksAsStream(filePath, 2);
     string expectedString = "Sheldon Cooper";
@@ -110,12 +110,7 @@ function testFileReadBytesAsStreamUsingIntermediateFile() returns Error? {
             byteArr.push(b);
         }
     });
-    string|error returnedString = langstring:fromBytes(byteArr);
-    if returnedString is string {
-        test:assertEquals(returnedString, expectedString);
-    } else {
-        test:assertFail(msg = returnedString.message());
-    }
+    string returnedString = check langstring:fromBytes(byteArr);
     test:assertEquals(returnedString, expectedString);
 }
 
@@ -133,7 +128,7 @@ function testFileWriteBytesFromStream() returns Error? {
 }
 
 @test:Config {dependsOn: [testFileWriteBytesFromStream]}
-function testFileReadBytesAsStream() returns Error? {
+function testFileReadBytesAsStream() returns error? {
     string filePath = TEMP_DIR + "bytesFile3_B.txt";
     stream<Block, Error?> result = check fileReadBlocksAsStream(filePath, 2);
     string expectedString = "Sheldon Cooper";
@@ -144,12 +139,7 @@ function testFileReadBytesAsStream() returns Error? {
         }
     });
 
-    string|error returnedString = langstring:fromBytes(byteArr);
-    if returnedString is string {
-        test:assertEquals(returnedString, expectedString);
-    } else {
-        test:assertFail(msg = returnedString.message());
-    }
+    string returnedString = check langstring:fromBytes(byteArr);
     test:assertEquals(returnedString, expectedString);
 }
 
@@ -185,7 +175,7 @@ isolated function testFileChannelWriteBytesFromStream() returns Error? {
 }
 
 @test:Config {dependsOn: [testFileChannelWriteBytesFromStream]}
-function testFileChannelReadBytesAsStream() returns Error? {
+function testFileChannelReadBytesAsStream() returns error? {
     string filePath = TEMP_DIR + "bytesFile5.txt";
     string expectedString = "Sheldon Cooper";
     byte[] byteArr = [];
@@ -197,12 +187,8 @@ function testFileChannelReadBytesAsStream() returns Error? {
             byteArr.push(b);
         }
     });
-    string|error returnedString = langstring:fromBytes(byteArr);
-    if returnedString is string {
-        test:assertEquals(returnedString, expectedString);
-    } else {
-        test:assertFail(returnedString.message());
-    }
+    string returnedString = check langstring:fromBytes(byteArr);
+    test:assertEquals(returnedString, expectedString);
 }
 
 @test:Config {}
@@ -250,7 +236,7 @@ isolated function testFileWriteBytesWithAppend() returns Error? {
 }
 
 @test:Config {}
-function testFileWriteBytesFromStreamWithOverrideUsingIntermediateFile() returns Error? {
+function testFileWriteBytesFromStreamWithOverrideUsingIntermediateFile() returns error? {
     string filePath = TEMP_DIR + "bytesFile8.txt";
     string resourceFilePath1 = TEMP_DIR + "bytesResourceFile1.txt";
     string resourceFilePath2 = TEMP_DIR + "bytesResourceFile2.txt";
@@ -271,12 +257,8 @@ function testFileWriteBytesFromStreamWithOverrideUsingIntermediateFile() returns
             byteArr1.push(b);
         }
     });
-    string|error returnedString1 = langstring:fromBytes(byteArr1);
-    if returnedString1 is string {
-        test:assertEquals(returnedString1, content1);
-    } else {
-        test:assertFail(returnedString1.message());
-    }
+    string returnedString1 = check langstring:fromBytes(byteArr1);
+    test:assertEquals(returnedString1, content1);
 
     // Check content 02
     check fileWriteBlocksFromStream(filePath, bytesStream2);
@@ -287,16 +269,12 @@ function testFileWriteBytesFromStreamWithOverrideUsingIntermediateFile() returns
             byteArr2.push(b);
         }
     });
-    string|error returnedString2 = langstring:fromBytes(byteArr2);
-    if returnedString2 is string {
-        test:assertEquals(returnedString2, content2);
-    } else {
-        test:assertFail(returnedString2.message());
-    }
+    string returnedString2 = check langstring:fromBytes(byteArr2);
+    test:assertEquals(returnedString2, content2);
 }
 
 @test:Config {}
-function testFileWriteBytesFromStreamWithAppendUsingIntermediateFile() returns Error? {
+function testFileWriteBytesFromStreamWithAppendUsingIntermediateFile() returns error? {
     string filePath = TEMP_DIR + "bytesFile8.txt";
     string resourceFilePath1 = TEMP_DIR + "bytesResourceFile3.txt";
     string resourceFilePath2 = TEMP_DIR + "bytesResourceFile4.txt";
@@ -316,12 +294,8 @@ function testFileWriteBytesFromStreamWithAppendUsingIntermediateFile() returns E
             byteArr1.push(b);
         }
     });
-    string|error returnedString1 = langstring:fromBytes(byteArr1);
-    if returnedString1 is string {
-        test:assertEquals(returnedString1, content1);
-    } else {
-        test:assertFail(returnedString1.message());
-    }
+    string returnedString1 = check langstring:fromBytes(byteArr1);
+    test:assertEquals(returnedString1, content1);
 
     // Check content 01 + 02
     check fileWriteBlocksFromStream(filePath, bytesStream2, APPEND);
@@ -332,16 +306,12 @@ function testFileWriteBytesFromStreamWithAppendUsingIntermediateFile() returns E
             byteArr2.push(b);
         }
     });
-    string|error returnedString2 = langstring:fromBytes(byteArr2);
-    if returnedString2 is string {
-        test:assertEquals(returnedString2, (content1 + content2));
-    } else {
-        test:assertFail(returnedString2.message());
-    }
+    string returnedString2 = check langstring:fromBytes(byteArr2);
+    test:assertEquals(returnedString2, (content1 + content2));
 }
 
 @test:Config {}
-function testFileWriteBytesFromStreamWithOverride() returns Error? {
+function testFileWriteBytesFromStreamWithOverride() returns error? {
     string filePath = TEMP_DIR + "bytesFile9.txt";
     string[] content1 = ["Ballerina ", "is ", "an "];
     string[] content2 = ["open ", "source ", "programming ", "language"];
@@ -368,12 +338,8 @@ function testFileWriteBytesFromStreamWithOverride() returns Error? {
             byteArr1.push(b);
         }
     });
-    string|error returnedString1 = langstring:fromBytes(byteArr1);
-    if returnedString1 is string {
-        test:assertEquals(returnedString1, expectedContent1);
-    } else {
-        test:assertFail(returnedString1.message());
-    }
+    string returnedString1 = check langstring:fromBytes(byteArr1);
+    test:assertEquals(returnedString1, expectedContent1);
     check result1.close();
 
     // Check content 02
@@ -385,17 +351,13 @@ function testFileWriteBytesFromStreamWithOverride() returns Error? {
             byteArr2.push(b);
         }
     });
-    string|error returnedString = langstring:fromBytes(byteArr2);
-    if returnedString is string {
-        test:assertEquals(returnedString, expectedContent2);
-    } else {
-        test:assertFail(msg = returnedString.message());
-    }
+    string returnedString = check langstring:fromBytes(byteArr2);
+    test:assertEquals(returnedString, expectedContent2);
     check result2.close();
 }
 
 @test:Config {}
-function testFileWriteBytesFromStreamWithAppend() returns Error? {
+function testFileWriteBytesFromStreamWithAppend() returns error? {
     string filePath = TEMP_DIR + "bytesFile9.txt";
     string[] content1 = ["Ballerina ", "is ", "an "];
     string[] content2 = ["open ", "source ", "programming ", "language"];
@@ -422,12 +384,8 @@ function testFileWriteBytesFromStreamWithAppend() returns Error? {
             byteArr1.push(b);
         }
     });
-    string|error returnedString1 = langstring:fromBytes(byteArr1);
-    if returnedString1 is string {
-        test:assertEquals(returnedString1, expectedContent1);
-    } else {
-        test:assertFail(msg = returnedString1.message());
-    }
+    string returnedString1 = check langstring:fromBytes(byteArr1);
+    test:assertEquals(returnedString1, expectedContent1);
 
     // Check content 01 + 02
     check fileWriteBlocksFromStream(filePath, byteContent2.toStream(), APPEND);
@@ -438,12 +396,8 @@ function testFileWriteBytesFromStreamWithAppend() returns Error? {
             byteArr2.push(b);
         }
     });
-    string|error returnedString = langstring:fromBytes(byteArr2);
-    if returnedString is string {
-        test:assertEquals(returnedString, expectedContent2);
-    } else {
-        test:assertFail(msg = returnedString.message());
-    }
+    string returnedString = check langstring:fromBytes(byteArr2);
+    test:assertEquals(returnedString, expectedContent2);
 }
 
 @test:Config {}
