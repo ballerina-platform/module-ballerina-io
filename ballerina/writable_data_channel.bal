@@ -142,8 +142,8 @@ public class WritableDataChannel {
     }
 }
 
-isolated function initWritableDataChannel(WritableDataChannel dataChannel, WritableByteChannel byteChannel, 
-                                          string bOrder) = @java:Method {
+isolated function initWritableDataChannel(WritableDataChannel dataChannel, WritableByteChannel byteChannel,
+                                        string bOrder) = @java:Method {
     name: "initWritableDataChannel",
     'class: "io.ballerina.stdlib.io.nativeimpl.DataChannelUtils"
 } external;

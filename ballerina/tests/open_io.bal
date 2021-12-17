@@ -19,19 +19,13 @@ import ballerina/lang.'string as langstring;
 @test:Config {}
 isolated function testOpenReadableFileWithMissingFile() {
     ReadableByteChannel|Error err = openReadableFile("xxx.txt");
-    if (err is Error) {
-        test:assertTrue(langstring:includes(err.message(), "no such file or directory:"));
-    } else {
-        test:assertFail(msg = "Expected io:Error not found");
-    }
+    test:assertTrue(err is Error);
+    test:assertTrue(langstring:includes((<Error>err).message(), "no such file or directory:"));
 }
 
 @test:Config {}
 isolated function testOpenReadableCsvFileWithMissingFile() {
     ReadableCSVChannel|Error err = openReadableCsvFile("xxx.csv");
-    if (err is Error) {
-        test:assertTrue(langstring:includes(err.message(), "no such file or directory:"));
-    } else {
-        test:assertFail(msg = "Expected io:Error not found");
-    }
+    test:assertTrue(err is Error);
+    test:assertTrue(langstring:includes((<Error>err).message(), "no such file or directory:"));
 }

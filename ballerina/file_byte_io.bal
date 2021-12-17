@@ -45,7 +45,7 @@ Error {
 # + content - Byte content to write
 # + option - To indicate whether to overwrite or append the given content
 # + return - An `io:Error` or else `()`
-public isolated function fileWriteBytes(string path, byte[] content, FileWriteOption option = OVERWRITE) returns 
+public isolated function fileWriteBytes(string path, byte[] content, FileWriteOption option = OVERWRITE) returns
 Error? {
     return channelWriteBytes(check openWritableFile(path, option), content);
 }
@@ -60,7 +60,7 @@ Error? {
 # + byteStream - Byte stream to write
 # + option - To indicate whether to overwrite or append the given content
 # + return - An `io:Error` or else `()`
-public isolated function fileWriteBlocksFromStream(string path, stream<byte[], Error?> byteStream, 
-                                                   FileWriteOption option = OVERWRITE) returns Error? {
+public isolated function fileWriteBlocksFromStream(string path, stream<byte[], Error?> byteStream,
+                                                    FileWriteOption option = OVERWRITE) returns Error? {
     return channelWriteBlocksFromStream(check openWritableFile(path, option), byteStream);
 }

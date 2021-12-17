@@ -17,7 +17,7 @@ import ballerina/test;
 import ballerina/lang.'string as langstring;
 
 @test:Config {}
-isolated function testWriteXml() {
+isolated function testWriteXml() returns Error? {
     string filePath = TEMP_DIR + "xmlCharsFile1.xml";
     xml content = xml `<CATALOG>
                        <CD>
@@ -45,25 +45,14 @@ isolated function testWriteXml() {
                            <YEAR>1982</YEAR>
                        </CD>
                    </CATALOG>`;
-    var byteChannel = openWritableFile(filePath);
-    if (byteChannel is WritableByteChannel) {
-        WritableCharacterChannel characterChannel = new WritableCharacterChannel(byteChannel, DEFAULT_ENCODING);
-        var result = characterChannel.writeXml(content);
-        if (result is Error) {
-            test:assertFail(msg = result.message());
-        }
-
-        var closeResult = characterChannel.close();
-        if (closeResult is Error) {
-            test:assertFail(msg = closeResult.message());
-        }
-    } else {
-        test:assertFail(msg = byteChannel.message());
-    }
+    WritableByteChannel byteChannel = check openWritableFile(filePath);
+    WritableCharacterChannel characterChannel = new WritableCharacterChannel(byteChannel, DEFAULT_ENCODING);
+    check characterChannel.writeXml(content);
+    check characterChannel.close();
 }
 
 @test:Config {dependsOn: [testWriteXml]}
-isolated function testReadXml() {
+isolated function testReadXml() returns Error? {
     string filePath = TEMP_DIR + "xmlCharsFile1.xml";
     xml expectedXml = xml `<CATALOG>
                        <CD>
@@ -91,27 +80,15 @@ isolated function testReadXml() {
                            <YEAR>1982</YEAR>
                        </CD>
                    </CATALOG>`;
-    var byteChannel = openReadableFile(filePath);
-    if (byteChannel is ReadableByteChannel) {
-        ReadableCharacterChannel characterChannel = new ReadableCharacterChannel(byteChannel, DEFAULT_ENCODING);
-        var result = characterChannel.readXml();
-        if (result is xml) {
-            test:assertEquals(result, expectedXml, msg = "Found unexpected output");
-        } else {
-            test:assertFail(msg = result.message());
-        }
-
-        var closeResult = characterChannel.close();
-        if (closeResult is Error) {
-            test:assertFail(msg = closeResult.message());
-        }
-    } else {
-        test:assertFail(msg = byteChannel.message());
-    }
+    ReadableByteChannel byteChannel = check openReadableFile(filePath);
+    ReadableCharacterChannel characterChannel = new ReadableCharacterChannel(byteChannel, DEFAULT_ENCODING);
+    xml result = check characterChannel.readXml();
+    test:assertEquals(result, expectedXml);
+    check characterChannel.close();
 }
 
 @test:Config {}
-isolated function testFileWriteXml() {
+isolated function testFileWriteXml() returns Error? {
     string filePath = TEMP_DIR + "xmlCharsFile2.xml";
     xml content = xml `<CATALOG>
                        <CD>
@@ -139,14 +116,11 @@ isolated function testFileWriteXml() {
                            <YEAR>1982</YEAR>
                        </CD>
                    </CATALOG>`;
-    var result = fileWriteXml(filePath, content);
-    if (result is Error) {
-        test:assertFail(msg = result.message());
-    }
+    check fileWriteXml(filePath, content);
 }
 
 @test:Config {dependsOn: [testFileWriteXml]}
-isolated function testFileReadXml() {
+isolated function testFileReadXml() returns Error? {
     string filePath = TEMP_DIR + "xmlCharsFile2.xml";
     xml expectedXml = xml `<CATALOG>
                        <CD>
@@ -174,16 +148,12 @@ isolated function testFileReadXml() {
                            <YEAR>1982</YEAR>
                        </CD>
                    </CATALOG>`;
-    var result = fileReadXml(filePath);
-    if (result is xml) {
-        test:assertEquals(result, expectedXml, msg = "Found unexpected output");
-    } else {
-        test:assertFail(msg = result.message());
-    }
+    xml result = check fileReadXml(filePath);
+    test:assertEquals(result, expectedXml);
 }
 
 @test:Config {}
-isolated function testFileWriteXmlWithOverwrite() {
+isolated function testFileWriteXmlWithOverwrite() returns Error? {
     string filePath = TEMP_DIR + "xmlCharsFile3.xml";
     xml content1 = xml `<CATALOG>
                        <CD>
@@ -213,28 +183,16 @@ isolated function testFileWriteXmlWithOverwrite() {
                    </CATALOG>`;
     xml content2 = xml `<USER><NAME>Mary Jane</NAME><AGE>33</AGE></USER>`;
     // Check content 01
-    var result1 = fileWriteXml(filePath, content1);
-    if (result1 is Error) {
-        test:assertFail(msg = result1.message());
-    }
-    var result2 = fileReadXml(filePath);
-    if (result2 is xml) {
-        test:assertEquals(result2, content1);
-    } else {
-        test:assertFail(msg = result2.message());
-    }
+    check fileWriteXml(filePath, content1);
+
+    xml result1 = check fileReadXml(filePath);
+    test:assertEquals(result1, content1);
 
     // Check content 02
-    var result3 = fileWriteXml(filePath, content2);
-    if (result3 is Error) {
-        test:assertFail(msg = result3.message());
-    }
-    var result4 = fileReadXml(filePath);
-    if (result4 is xml) {
-        test:assertEquals(result4, content2);
-    } else {
-        test:assertFail(msg = result4.message());
-    }
+    check fileWriteXml(filePath, content2);
+
+    xml result2 = check fileReadXml(filePath);
+    test:assertEquals(result2, content2);
 }
 
 @test:Config {}
@@ -244,14 +202,10 @@ isolated function testFileWriteDocTypedXml() returns Error? {
     string originalFilePath = "tests/resources/originalXmlContent.xml";
 
     xml content = check fileReadXml(originalFilePath);
-    var writeResult = fileWriteXml(filePath, content, doctype = {system: "Note.dtd"});
-    if (writeResult is Error) {
-        test:assertFail(msg = writeResult.message());
-    }
+    check fileWriteXml(filePath, content, doctype = {system: "Note.dtd"});
     string readResult = check fileReadString(filePath);
     string expectedResult = check fileReadString(resultFilePath);
     test:assertEquals(readResult, expectedResult);
-    return;
 }
 
 @test:Config {}
@@ -262,13 +216,9 @@ isolated function testFileWriteDocTypedWithMultiRoots() returns Error? {
     xml content = check fileReadXml(originalFilePath);
     xml x1 = xml `<body>Don't forget me this weekend!</body>`;
 
-    var writeResult = fileWriteXml(filePath, xml:concat(content, x1));
-    if (writeResult is Error) {
-        test:assertEquals(writeResult.message(), "The XML Document can only contains single root");
-    } else {
-        test:assertFail("Expected ConfigurationError not found");
-    }
-    return;
+    var err = fileWriteXml(filePath, xml:concat(content, x1));
+    test:assertTrue(err is Error);
+    test:assertEquals((<Error>err).message(), "The XML Document can only contains single root");
 }
 
 @test:Config {}
@@ -277,13 +227,9 @@ isolated function testFileWriteDocTypedWithAppend() returns Error? {
     string originalFilePath = "tests/resources/originalXmlContent.xml";
 
     xml content = check fileReadXml(originalFilePath);
-    var writeResult = fileWriteXml(filePath, content, fileWriteOption = APPEND);
-    if (writeResult is Error) {
-        test:assertEquals(writeResult.message(), "The file append operation is not allowed for Document Entity");
-    } else {
-        test:assertFail("Expected ConfigurationError not found");
-    }
-    return;
+    var err = fileWriteXml(filePath, content, fileWriteOption = APPEND);
+    test:assertTrue(err is Error);
+    test:assertEquals((<Error>err).message(), "The file append operation is not allowed for Document Entity");
 }
 
 @test:Config {}
@@ -294,19 +240,12 @@ isolated function testFileAppendDocTypedXml() returns Error? {
 
     xml content1 = check fileReadXml(originalFilePath);
     xml content2 = xml `<body>Don't forget me this weekend!</body>`;
-    var writeResult = fileWriteXml(filePath, content1);
-    if (writeResult is Error) {
-        test:assertFail(msg = writeResult.message());
-    }
-    var appendResult =
-    fileWriteXml(filePath, content2, fileWriteOption = APPEND, xmlEntityType = EXTERNAL_PARSED_ENTITY);
-    if (appendResult is Error) {
-        test:assertFail(msg = appendResult.message());
-    }
+    check fileWriteXml(filePath, content1);
+    check fileWriteXml(filePath, content2, fileWriteOption = APPEND, xmlEntityType = EXTERNAL_PARSED_ENTITY);
+
     string readResult = check fileReadString(filePath);
     string expectedResult = check fileReadString(resultFilePath);
     test:assertEquals(readResult, expectedResult);
-    return;
 }
 
 @test:Config {}
@@ -323,14 +262,11 @@ isolated function testFileWriteDocTypedXmlWithInternalSubset() returns Error? {
         <!ELEMENT heading (#PCDATA)>
         <!ELEMENT body (#PCDATA)>
     ]`;
-    var writeResult = fileWriteXml(filePath, content, doctype = {internalSubset: internalSub});
-    if (writeResult is Error) {
-        test:assertFail(msg = writeResult.message());
-    }
+    check fileWriteXml(filePath, content, doctype = {internalSubset: internalSub});
+
     string readResult = check fileReadString(filePath);
     string expectedResult = check fileReadString(resultFilePath);
     test:assertEquals(readResult, expectedResult);
-    return;
 }
 
 @test:Config {}
@@ -348,17 +284,13 @@ isolated function testFileWriteDocTypedXmlWithPrioritizeInternalSubset() returns
         <!ELEMENT heading (#PCDATA)>
         <!ELEMENT body (#PCDATA)>
     ]`;
-    var writeResult = fileWriteXml(filePath, content, doctype = {
+    check fileWriteXml(filePath, content, doctype = {
         internalSubset: internalSub,
         system: systemId
     });
-    if (writeResult is Error) {
-        test:assertFail(msg = writeResult.message());
-    }
     string readResult = check fileReadString(filePath);
     string expectedResult = check fileReadString(resultFilePath);
     test:assertEquals(readResult, expectedResult);
-    return;
 }
 
 @test:Config {}
@@ -370,17 +302,13 @@ isolated function testFileWriteDocTypedXmlWithPublicAndSystemId() returns Error?
     xml content = check fileReadXml(originalFilePath);
     string publicId = "-//W3C//DTD HTML 4.01 Transitional//EN";
     string systemId = "http://www.w3.org/TR/html4/loose.dtd";
-    var writeResult = fileWriteXml(filePath, content, doctype = {
+    check fileWriteXml(filePath, content, doctype = {
         system: systemId,
         'public: publicId
     });
-    if (writeResult is Error) {
-        test:assertFail(msg = writeResult.message());
-    }
     string readResult = check fileReadString(filePath);
     string expectedResult = check fileReadString(resultFilePath);
     test:assertEquals(readResult, expectedResult);
-    return;
 }
 
 @test:Config {}
@@ -391,30 +319,21 @@ isolated function testFileWriteDocTypedXmlWithPublic() returns Error? {
 
     xml content = check fileReadXml(originalFilePath);
     string publicId = "-//W3C//DTD HTML 4.01 Transitional//EN";
-    var writeResult = fileWriteXml(filePath, content, doctype={'public: publicId});
-    if (writeResult is Error) {
-        test:assertFail(msg = writeResult.message());
-    }
+    check fileWriteXml(filePath, content, doctype = {'public: publicId});
     string readResult = check fileReadString(filePath);
     string expectedResult = check fileReadString(resultFilePath);
     test:assertEquals(readResult, expectedResult);
-    return;
 }
 
 @test:Config {}
-isolated function testReadInvalidXmlFile() {
+isolated function testReadInvalidXmlFile() returns Error? {
     string filePath = TEMP_DIR + "invalidXmlFile.json";
     string content = "{ stuff:";
 
-    var writeResult = fileWriteString(filePath, content);
-    if (writeResult is Error) {
-        test:assertFail(msg = writeResult.message());
-    }
+    check fileWriteString(filePath, content);
+
     xml|Error readResult = fileReadXml(filePath);
-    if (readResult is xml) {
-        test:assertFail("Expected io:Error not found");
-    } else {
-        test:assertTrue(langstring:includes(readResult.message(),
+    test:assertTrue(readResult is Error);
+    test:assertTrue(langstring:includes((<Error>readResult).message(),
         "failed to create xml: Unexpected character '{' (code 123) in prolog; expected '<", 0));
-    }
 }

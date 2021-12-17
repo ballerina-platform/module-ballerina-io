@@ -40,11 +40,11 @@ public class StringReader {
     #
     # + return - JSON or else an `io:Error` if any error occurred
     public isolated function readJson() returns json|Error {
-        if (self.charChannel is ReadableCharacterChannel) {
+        if self.charChannel is ReadableCharacterChannel {
             var result = <ReadableCharacterChannel>self.charChannel;
             return result.readJson();
         }
-        return ();
+        return;
     }
 
     # Reads a string as XML using the reader.
@@ -55,11 +55,11 @@ public class StringReader {
     #
     # + return - XML or else an `io:Error` if any error occurred
     public isolated function readXml() returns xml|Error? {
-        if (self.charChannel is ReadableCharacterChannel) {
+        if self.charChannel is ReadableCharacterChannel {
             var result = <ReadableCharacterChannel>self.charChannel;
             return result.readXml();
         }
-        return ();
+        return;
     }
 
     # Reads the characters from the given string.
@@ -71,11 +71,11 @@ public class StringReader {
     # + nCharacters - Number of characters to be read
     # + return - String or else an `io:Error` if any error occurred
     public isolated function readChar(int nCharacters) returns string|Error? {
-        if (self.charChannel is ReadableCharacterChannel) {
+        if self.charChannel is ReadableCharacterChannel {
             var result = <ReadableCharacterChannel>self.charChannel;
             return result.read(nCharacters);
         }
-        return ();
+        return;
     }
 
     # Closes the string reader.
@@ -85,10 +85,10 @@ public class StringReader {
     #
     # + return - An `io:Error` if could not close the channel or else `()`
     public isolated function close() returns Error? {
-        if (self.charChannel is ReadableCharacterChannel) {
+        if self.charChannel is ReadableCharacterChannel {
             var result = <ReadableCharacterChannel>self.charChannel;
             return result.close();
         }
-        return ();
+        return;
     }
 }

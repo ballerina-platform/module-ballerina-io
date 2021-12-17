@@ -16,48 +16,32 @@
 import ballerina/test;
 
 @test:Config {}
-isolated function testStrToJsonConvert() {
+isolated function testStrToJsonConvert() returns error? {
     string content = "{\n" + "  \"test\": { \"name\": \"Foo\" }\n" + "}";
     json expectedJson = {test: {name: "Foo"}};
-    var result = getJson(content, "UTF-8");
-    if (result is json) {
-        test:assertEquals(result, expectedJson, msg = "Found unexpected output");
-    } else {
-        test:assertFail(msg = result.message());
-    }
+    json result = check getJson(content, "UTF-8");
+    test:assertEquals(result, expectedJson);
 }
 
 @test:Config {}
-isolated function testXmlToJsonConvert() {
+isolated function testXmlToJsonConvert() returns error? {
     string content = "<test>" + "<name>Foo</name>" + "</test>";
     xml expectedXml = xml `<test><name>Foo</name></test>`;
-
-    var result = getXml(content, "UTF-8");
-    if (result is xml) {
-        test:assertEquals(result, expectedXml, msg = "Found unexpected output");
-    } else {
-        test:assertFail(msg = (result is error) ? result.message() : "Unexpected error");
-    }
+    xml? result = check getXml(content, "UTF-8");
+    test:assertTrue(result is xml);
+    test:assertEquals(<xml>result, expectedXml);
 }
 
 isolated function getJson(string content, string encoding) returns json|error {
     StringReader reader = new StringReader(content, encoding);
     var readResult = reader.readJson();
     check reader.close();
-    if (readResult is json) {
-        return readResult;
-    } else {
-        return readResult;
-    }
+    return readResult;
 }
 
 isolated function getXml(string content, string encoding) returns xml?|error {
     StringReader reader = new StringReader(content, encoding);
     var readResult = reader.readXml();
     check reader.close();
-    if (readResult is xml?) {
-        return readResult;
-    } else {
-        return readResult;
-    }
+    return readResult;
 }

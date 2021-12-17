@@ -17,115 +17,67 @@
 import ballerina/test;
 
 @test:Config {}
-isolated function testReadRecordLengths() {
+isolated function testReadRecordLengths() returns Error? {
     string filePath = RESOURCES_BASE_PATH + "datafiles/io/records/sample.csv";
     int expectedRecordLength = 3;
 
-    var byteChannel = openReadableFile(filePath);
-    if (byteChannel is ReadableByteChannel) {
-        ReadableCharacterChannel characterChannel = new ReadableCharacterChannel(byteChannel, DEFAULT_ENCODING);
-        ReadableTextRecordChannel recordChannel = new ReadableTextRecordChannel(characterChannel, COMMA, NEW_LINE);
+    ReadableByteChannel byteChannel = check openReadableFile(filePath);
+    ReadableCharacterChannel characterChannel = new ReadableCharacterChannel(byteChannel, DEFAULT_ENCODING);
+    ReadableTextRecordChannel recordChannel = new ReadableTextRecordChannel(characterChannel, COMMA, NEW_LINE);
 
-        test:assertTrue(recordChannel.hasNext());
-        var recordResult = recordChannel.getNext();
-        if (recordResult is string[]) {
-            test:assertEquals(recordResult.length(), expectedRecordLength);
-        } else {
-            test:assertFail(msg = recordResult.message());
-        }
+    test:assertTrue(recordChannel.hasNext());
+    string[] recordResult = check recordChannel.getNext();
+    test:assertEquals(recordResult.length(), expectedRecordLength);
 
-        test:assertTrue(recordChannel.hasNext());
-        recordResult = recordChannel.getNext();
-        if (recordResult is string[]) {
-            test:assertEquals(recordResult.length(), expectedRecordLength);
-        } else {
-            test:assertFail(msg = recordResult.message());
-        }
+    test:assertTrue(recordChannel.hasNext());
+    recordResult = check recordChannel.getNext();
+    test:assertEquals(recordResult.length(), expectedRecordLength);
 
-        test:assertTrue(recordChannel.hasNext());
-        recordResult = recordChannel.getNext();
-        if (recordResult is string[]) {
-            test:assertEquals(recordResult.length(), expectedRecordLength);
-        } else {
-            test:assertFail(msg = recordResult.message());
-        }
+    test:assertTrue(recordChannel.hasNext());
+    recordResult = check recordChannel.getNext();
+    test:assertEquals(recordResult.length(), expectedRecordLength);
 
-        test:assertFalse(recordChannel.hasNext());
-        var endResult = recordChannel.getNext();
-        if (endResult is error) {
-            test:assertEquals(endResult.message(), "EoF when reading from the channel", msg = "Found unexpected output");
-        } else {
-            test:assertFail(msg = "Unexpected result");
-        }
+    test:assertFalse(recordChannel.hasNext());
+    var endResult = recordChannel.getNext();
+    test:assertTrue(endResult is Error);
+    test:assertEquals((<Error>endResult).message(), "EoF when reading from the channel");
 
-        var closeResult = recordChannel.close();
-        if (closeResult is Error) {
-            test:assertFail(msg = closeResult.message());
-        }
-    } else {
-        test:assertFail(msg = byteChannel.message());
-    }
+    check recordChannel.close();
 }
 
 @test:Config {}
-isolated function testWriteRecords() {
+isolated function testWriteRecords() returns Error? {
     string filePath = TEMP_DIR + "recordsFile.csv";
     string[] content = ["Name", "Email", "Telephone"];
 
-    var byteChannel = openWritableFile(filePath);
-    if (byteChannel is WritableByteChannel) {
-        WritableCharacterChannel charChannel = new WritableCharacterChannel(byteChannel, DEFAULT_ENCODING);
-        WritableTextRecordChannel recordChannel = new WritableTextRecordChannel(charChannel, NEW_LINE, COMMA);
+    WritableByteChannel byteChannel = check openWritableFile(filePath);
+    WritableCharacterChannel charChannel = new WritableCharacterChannel(byteChannel, DEFAULT_ENCODING);
+    WritableTextRecordChannel recordChannel = new WritableTextRecordChannel(charChannel, NEW_LINE, COMMA);
 
-        var result = recordChannel.write(content);
-        if (result is Error) {
-            test:assertFail(msg = result.message());
-        }
-
-        var closeResult = recordChannel.close();
-        if (closeResult is Error) {
-            test:assertFail(msg = closeResult.message());
-        }
-    } else {
-        test:assertFail(msg = byteChannel.message());
-    }
+    check recordChannel.write(content);
+    check recordChannel.close();
 }
 
 @test:Config {dependsOn: [testWriteRecords]}
-isolated function testReadRecordContent() {
+isolated function testReadRecordContent() returns Error? {
     string filePath = TEMP_DIR + "recordsFile.csv";
     string[] expectedContent = ["Name", "Email", "Telephone"];
 
-    var byteChannel = openReadableFile(filePath);
-    if (byteChannel is ReadableByteChannel) {
-        ReadableCharacterChannel characterChannel = new ReadableCharacterChannel(byteChannel, DEFAULT_ENCODING);
-        ReadableTextRecordChannel recordChannel = new ReadableTextRecordChannel(characterChannel, NEW_LINE, COMMA);
+    ReadableByteChannel byteChannel = check openReadableFile(filePath);
+    ReadableCharacterChannel characterChannel = new ReadableCharacterChannel(byteChannel, DEFAULT_ENCODING);
+    ReadableTextRecordChannel recordChannel = new ReadableTextRecordChannel(characterChannel, NEW_LINE, COMMA);
 
-        test:assertTrue(recordChannel.hasNext());
-        var recordResult = recordChannel.getNext();
-        if (recordResult is string[]) {
-            test:assertEquals(recordResult[0], expectedContent[0]);
-            test:assertEquals(recordResult[1], expectedContent[1]);
-            test:assertEquals(recordResult[2], expectedContent[2]);
-        } else {
-            test:assertFail(msg = recordResult.message());
-        }
+    test:assertTrue(recordChannel.hasNext());
+    string[] recordResult = check recordChannel.getNext();
+    test:assertEquals(recordResult[0], expectedContent[0]);
+    test:assertEquals(recordResult[1], expectedContent[1]);
+    test:assertEquals(recordResult[2], expectedContent[2]);
 
-        test:assertFalse(recordChannel.hasNext());
-        var endResult = recordChannel.getNext();
-        if (endResult is error) {
-            test:assertEquals(endResult.message(), "EoF when reading from the channel", msg = "Found unexpected output");
-        } else {
-            test:assertFail(msg = "Unexpected result");
-        }
-
-        var closeResult = recordChannel.close();
-        if (closeResult is Error) {
-            test:assertFail(msg = closeResult.message());
-        }
-    } else {
-        test:assertFail(msg = byteChannel.message());
-    }
+    test:assertFalse(recordChannel.hasNext());
+    var endResult = recordChannel.getNext();
+    test:assertTrue(endResult is Error);
+    test:assertEquals((<Error>endResult).message(), "EoF when reading from the channel");
+    check recordChannel.close();
 }
 
 @test:Config {}
@@ -140,12 +92,9 @@ isolated function testReadRecordAfterClosing() returns Error? {
 
     check recordChannel.close();
 
-    string[]|Error r2 = recordChannel.getNext();
-    if r2 is Error {
-        test:assertEquals(r2.message(), "Record channel is already closed.");
-    } else {
-        test:assertFail(msg = "Expected io:Error not found");
-    }
+    string[]|Error r = recordChannel.getNext();
+    test:assertTrue(r is Error);
+    test:assertEquals((<Error>r).message(), "Record channel is already closed.");
 }
 
 @test:Config {}
@@ -161,11 +110,8 @@ isolated function testWriteRecordsAfterClosing() returns Error? {
     check recordChannel.close();
 
     Error? r = recordChannel.write(content);
-    if r is Error {
-        test:assertEquals(r.message(), "Record channel is already closed.");
-    } else {
-        test:assertFail(msg = "Expected io:Error not found");
-    }
+    test:assertTrue(r is Error);
+    test:assertEquals((<Error>r).message(), "Record channel is already closed.");
 }
 
 @test:Config {}
@@ -176,12 +122,9 @@ isolated function testReadableRecordCloseTwice() returns Error? {
     ReadableTextRecordChannel recordChannel = new ReadableTextRecordChannel(characterChannel, COMMA, NEW_LINE);
 
     check recordChannel.close();
-    Error? err = recordChannel.close();
-    if err is Error {
-        test:assertEquals(err.message(), "Record channel is already closed.");
-    } else {
-        test:assertFail(msg = "Expected io:Error not found");
-    }
+    Error? r = recordChannel.close();
+    test:assertTrue(r is Error);
+    test:assertEquals((<Error>r).message(), "Record channel is already closed.");
 }
 
 @test:Config {}
@@ -192,10 +135,7 @@ isolated function testWritableRecordChannelCloseTwice() returns Error? {
     WritableTextRecordChannel recordChannel = new WritableTextRecordChannel(charChannel, NEW_LINE, COMMA);
 
     check recordChannel.close();
-    Error? err = recordChannel.close();
-    if err is Error {
-        test:assertEquals(err.message(), "Record channel is already closed.");
-    } else {
-        test:assertFail(msg = "Expected io:Error not found");
-    }
+    Error? r = recordChannel.close();
+    test:assertTrue(r is Error);
+    test:assertEquals((<Error>r).message(), "Record channel is already closed.");
 }

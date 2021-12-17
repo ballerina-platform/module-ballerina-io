@@ -16,197 +16,146 @@
 import ballerina/test;
 
 @test:Config {}
-isolated function testWriteJson() {
+isolated function testWriteJson() returns Error? {
     string filePath = TEMP_DIR + "jsonCharsFile1.json";
-    json content = {"web-app": {"servlet-mapping": {
+    json content = {
+        "web-app": {
+            "servlet-mapping": {
                 "cofaxCDS": "/",
                 "cofaxEmail": "/cofaxutil/aemail/*",
                 "cofaxAdmin": "/admin/*",
                 "fileServlet": "/static/*",
                 "cofaxTools": ["/tools1/*", "/tools2/*", "/tools3/*"]
-            }}};
-
-    var byteChannel = openWritableFile(filePath);
-    if (byteChannel is WritableByteChannel) {
-        WritableCharacterChannel characterChannel = new WritableCharacterChannel(byteChannel, DEFAULT_ENCODING);
-        var result = characterChannel.writeJson(content);
-        if (result is Error) {
-            test:assertFail(msg = result.message());
+            }
         }
+    };
 
-        var closeResult = characterChannel.close();
-        if (closeResult is Error) {
-            test:assertFail(msg = closeResult.message());
-        }
-    } else {
-        test:assertFail(msg = byteChannel.message());
-    }
+    WritableByteChannel byteChannel = check openWritableFile(filePath);
+    WritableCharacterChannel characterChannel = new WritableCharacterChannel(byteChannel, DEFAULT_ENCODING);
+    check characterChannel.writeJson(content);
+    check characterChannel.close();
 }
 
 @test:Config {dependsOn: [testWriteJson]}
-isolated function testReadJson() {
+isolated function testReadJson() returns Error? {
     string filePath = TEMP_DIR + "jsonCharsFile1.json";
-    json expectedJson = {"web-app": {"servlet-mapping": {
+    json expectedJson = {
+        "web-app": {
+            "servlet-mapping": {
                 "cofaxCDS": "/",
                 "cofaxEmail": "/cofaxutil/aemail/*",
                 "cofaxAdmin": "/admin/*",
                 "fileServlet": "/static/*",
                 "cofaxTools": ["/tools1/*", "/tools2/*", "/tools3/*"]
-            }}};
-
-    var byteChannel = openReadableFile(filePath);
-    if (byteChannel is ReadableByteChannel) {
-        ReadableCharacterChannel characterChannel = new ReadableCharacterChannel(byteChannel, DEFAULT_ENCODING);
-        var result = characterChannel.readJson();
-        if (result is json) {
-            test:assertEquals(result, expectedJson, msg = "Found unexpected output");
-        } else {
-            test:assertFail(msg = result.message());
+            }
         }
+    };
 
-        var closeResult = characterChannel.close();
-        if (closeResult is Error) {
-            test:assertFail(msg = closeResult.message());
-        }
-    } else {
-        test:assertFail(msg = byteChannel.message());
-    }
+    ReadableByteChannel byteChannel = check openReadableFile(filePath);
+    ReadableCharacterChannel characterChannel = new ReadableCharacterChannel(byteChannel, DEFAULT_ENCODING);
+    json result = check characterChannel.readJson();
+    test:assertEquals(result, expectedJson);
+
+    check characterChannel.close();
 }
 
 @test:Config {}
-isolated function testFileWriteJson() {
+isolated function testFileWriteJson() returns Error? {
     string filePath = TEMP_DIR + "jsonCharsFile2.json";
-    json content = {"web-app": {"servlet-mapping": {
+    json content = {
+        "web-app": {
+            "servlet-mapping": {
                 "cofaxCDS": "/",
                 "cofaxEmail": "/cofaxutil/aemail/*",
                 "cofaxAdmin": "/admin/*",
                 "fileServlet": "/static/*",
                 "cofaxTools": ["/tools1/*", "/tools2/*", "/tools3/*"]
-            }}};
+            }
+        }
+    };
 
-    var result = fileWriteJson(filePath, content);
-    if (result is Error) {
-        test:assertFail(msg = result.message());
-    }
+    check fileWriteJson(filePath, content);
 }
 
 @test:Config {dependsOn: [testFileWriteJson]}
-isolated function testFileReadJson() {
+isolated function testFileReadJson() returns Error? {
     string filePath = TEMP_DIR + "jsonCharsFile2.json";
-    json expectedJson = {"web-app": {"servlet-mapping": {
+    json expectedJson = {
+        "web-app": {
+            "servlet-mapping": {
                 "cofaxCDS": "/",
                 "cofaxEmail": "/cofaxutil/aemail/*",
                 "cofaxAdmin": "/admin/*",
                 "fileServlet": "/static/*",
                 "cofaxTools": ["/tools1/*", "/tools2/*", "/tools3/*"]
-            }}};
+            }
+        }
+    };
 
-    var result = fileReadJson(filePath);
-    if (result is json) {
-        test:assertEquals(result, expectedJson, msg = "Found unexpected output");
-    } else {
-        test:assertFail(msg = result.message());
-    }
+    json result = check fileReadJson(filePath);
+    test:assertEquals(result, expectedJson);
 }
 
 @test:Config {}
-isolated function testFileWriteJsonWithTruncate() {
+isolated function testFileWriteJsonWithTruncate() returns Error? {
     string filePath = TEMP_DIR + "jsonCharsFile3.json";
-    json content1 = {"web-app": {"servlet-mapping": {
+    json content1 = {
+        "web-app": {
+            "servlet-mapping": {
                 "cofaxCDS": "/",
                 "cofaxEmail": "/cofaxutil/aemail/*",
                 "cofaxAdmin": "/admin/*",
                 "fileServlet": "/static/*",
                 "cofaxTools": ["/tools1/*", "/tools2/*", "/tools3/*"]
-            }}};
+            }
+        }
+    };
     json content2 = {
         "userName": "Harry Thompson",
         "age": 23
     };
 
     // Check content 01
-    var result1 = fileWriteJson(filePath, content1);
-    if (result1 is Error) {
-        test:assertFail(msg = result1.message());
-    }
-    var result2 = fileReadJson(filePath);
-    if (result2 is json) {
-        test:assertEquals(result2, content1);
-    } else {
-        test:assertFail(msg = result2.message());
-    }
+    check fileWriteJson(filePath, content1);
+
+    json result1 = check fileReadJson(filePath);
+    test:assertEquals(result1, content1);
 
     // Check content 02
-    var result3 = fileWriteJson(filePath, content2);
-    if (result3 is Error) {
-        test:assertFail(msg = result3.message());
-    }
-    var result4 = fileReadJson(filePath);
-    if (result4 is json) {
-        test:assertEquals(result4, content2);
-    } else {
-        test:assertFail(msg = result4.message());
-    }
+    check fileWriteJson(filePath, content2);
+    json result2 = check fileReadJson(filePath);
+    test:assertEquals(result2, content2);
 }
 
 @test:Config {}
-isolated function testWriteHigherUnicodeJson() {
+isolated function testWriteHigherUnicodeJson() returns Error? {
     string filePath = TEMP_DIR + "higherUniJsonCharsFile.json";
     json content = {"loop": "É"};
 
-    var byteChannel = openWritableFile(filePath);
-    if (byteChannel is WritableByteChannel) {
-        WritableCharacterChannel characterChannel = new WritableCharacterChannel(byteChannel, DEFAULT_ENCODING);
-        var result = characterChannel.writeJson(content);
-        if (result is Error) {
-            test:assertFail(msg = result.message());
-        }
-
-        var closeResult = characterChannel.close();
-        if (closeResult is Error) {
-            test:assertFail(msg = closeResult.message());
-        }
-    } else {
-        test:assertFail(msg = byteChannel.message());
-    }
+    WritableByteChannel byteChannel = check openWritableFile(filePath);
+    WritableCharacterChannel characterChannel = new WritableCharacterChannel(byteChannel, DEFAULT_ENCODING);
+    check characterChannel.writeJson(content);
+    check characterChannel.close();
 }
 
 @test:Config {dependsOn: [testWriteHigherUnicodeJson]}
-isolated function testReadHigherUnicodeJson() {
+isolated function testReadHigherUnicodeJson() returns Error? {
     string filePath = TEMP_DIR + "higherUniJsonCharsFile.json";
     json expectedJson = {"loop": "É"};
-    var byteChannel = openReadableFile(filePath);
-    if (byteChannel is ReadableByteChannel) {
-        ReadableCharacterChannel characterChannel = new ReadableCharacterChannel(byteChannel, DEFAULT_ENCODING);
-        var result = characterChannel.readJson();
-        if (result is json) {
-            test:assertEquals(result, expectedJson, msg = "Found unexpected output");
-        } else {
-            test:assertFail(msg = result.message());
-        }
-
-        var closeResult = characterChannel.close();
-        if (closeResult is Error) {
-            test:assertFail(msg = closeResult.message());
-        }
-    } else {
-        test:assertFail(msg = byteChannel.message());
-    }
+    ReadableByteChannel byteChannel = check openReadableFile(filePath);
+    ReadableCharacterChannel characterChannel = new ReadableCharacterChannel(byteChannel, DEFAULT_ENCODING);
+    json result = check characterChannel.readJson();
+    test:assertEquals(result, expectedJson);
+    check characterChannel.close();
 }
 
 @test:Config {}
-isolated function testReadInvalidJsonFile() {
+isolated function testReadInvalidJsonFile() returns Error? {
     string filePath = TEMP_DIR + "invalidJsonFile.json";
     string content = "{ stuff:";
 
-    var writeResult = fileWriteString(filePath, content);
-    if (writeResult is Error) {
-        test:assertFail(msg = writeResult.message());
-    }
-    json|Error readResult = fileReadJson(filePath);
-    if (readResult is json) {
-        test:assertFail("Expected io:Error not found");
-    } else {
-        test:assertEquals(readResult.message(), "expected '\"' or '}' at line: 1 column: 3");
-    }
+    check fileWriteString(filePath, content);
+    json|Error err = fileReadJson(filePath);
+    test:assertTrue(err is Error);
+    test:assertEquals((<Error>err).message(), "expected '\"' or '}' at line: 1 column: 3");
 }

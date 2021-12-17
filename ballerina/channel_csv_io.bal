@@ -21,12 +21,12 @@ Error {
     string[][] results = [];
     int i = 0;
 
-    while (csvChannel.hasNext()) {
+    while csvChannel.hasNext() {
         var records = csvChannel.getNext();
-        if (records is string[]) {
+        if records is string[] {
             results[i] = records;
             i += 1;
-        } else if (records is Error) {
+        } else if records is Error {
             check csvChannel.close();
             return records;
         }
@@ -44,7 +44,7 @@ isolated function channelWriteCsv(WritableChannel writableChannel, string[][] co
     WritableCSVChannel csvChannel = check getWritableCSVChannel(writableChannel);
     foreach string[] r in content {
         var writeResult = csvChannel.write(r);
-        if (writeResult is Error) {
+        if writeResult is Error {
             check csvChannel.close();
             return writeResult;
         }
@@ -58,7 +58,7 @@ Error? {
     WritableCSVChannel csvChannel = check getWritableCSVChannel(writableChannel);
     do {
         record {|string[] value;|}|Error? csvRecord = csvStream.next();
-        while (csvRecord is record {|string[] value;|}) {
+        while csvRecord is record {|string[] value;|} {
             check csvChannel.write(csvRecord.value);
             csvRecord = csvStream.next();
         }
@@ -75,12 +75,12 @@ isolated function getReadableCSVChannel(ReadableChannel readableChannel, int ski
 Error {
     ReadableCSVChannel readableCSVChannel;
 
-    if (readableChannel is ReadableByteChannel) {
+    if readableChannel is ReadableByteChannel {
         ReadableCharacterChannel readableCharacterChannel = new (readableChannel, DEFAULT_ENCODING);
         readableCSVChannel = new ReadableCSVChannel(readableCharacterChannel, COMMA, skipHeaders);
-    } else if (readableChannel is ReadableCharacterChannel) {
+    } else if readableChannel is ReadableCharacterChannel {
         readableCSVChannel = new ReadableCSVChannel(readableChannel, COMMA, skipHeaders);
-    } else if (readableChannel is ReadableCSVChannel) {
+    } else if readableChannel is ReadableCSVChannel {
         readableCSVChannel = readableChannel;
     } else {
         TypeMismatchError e = error TypeMismatchError("Expected ReadableByteChannel/ReadableCharacterChannel/ReadableCSVChannel but found a " +
@@ -93,12 +93,12 @@ Error {
 isolated function getWritableCSVChannel(WritableChannel writableChannel) returns WritableCSVChannel|Error {
     WritableCSVChannel writableCSVChannel;
 
-    if (writableChannel is WritableByteChannel) {
+    if writableChannel is WritableByteChannel {
         WritableCharacterChannel writableCharacterChannel = new (writableChannel, DEFAULT_ENCODING);
         writableCSVChannel = new WritableCSVChannel(writableCharacterChannel);
-    } else if (writableChannel is WritableCharacterChannel) {
+    } else if writableChannel is WritableCharacterChannel {
         writableCSVChannel = new WritableCSVChannel(writableChannel);
-    } else if (writableChannel is WritableCSVChannel) {
+    } else if writableChannel is WritableCSVChannel {
         writableCSVChannel = writableChannel;
     } else {
         TypeMismatchError e = error TypeMismatchError("Expected WritableByteChannel/WritableCharacterChannel/WritableCSVChannel but found a " +

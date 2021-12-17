@@ -19,7 +19,7 @@ import ballerina/jballerina.java;
 public class ReadableDataChannel {
 
     # Initializes the data channel.
-    # 
+    #
     # + byteChannel - The channel, which would represent the source to read/write data
     # + bOrder - network byte order
     public isolated function init(ReadableByteChannel byteChannel, ByteOrder bOrder = "BE") {
@@ -121,8 +121,8 @@ public class ReadableDataChannel {
     }
 }
 
-isolated function initReadableDataChannel(ReadableDataChannel dataChannel, ReadableByteChannel byteChannel, 
-                                          string bOrder) = @java:Method {
+isolated function initReadableDataChannel(ReadableDataChannel dataChannel, ReadableByteChannel byteChannel,
+                                        string bOrder) = @java:Method {
     name: "initReadableDataChannel",
     'class: "io.ballerina.stdlib.io.nativeimpl.DataChannelUtils"
 } external;

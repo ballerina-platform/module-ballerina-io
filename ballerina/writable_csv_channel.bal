@@ -32,11 +32,11 @@ public class WritableCSVChannel {
     # + CharacterChannel - The `CharacterChannel`, which will represent the content in the CSV file
     # + fs - Field separator, which will separate the records in the CSV
     public isolated function init(WritableCharacterChannel characterChannel, Separator fs = ",") {
-        if (fs == TAB) {
+        if fs == TAB {
             self.dc = new WritableTextRecordChannel(characterChannel, fmt = "TDF");
-        } else if (fs == COLON) {
+        } else if fs == COLON {
             self.dc = new WritableTextRecordChannel(characterChannel, FS_COLON, CSV_RECORD_SEPARATOR);
-        } else if (fs == COMMA) {
+        } else if fs == COMMA {
             self.dc = new WritableTextRecordChannel(characterChannel, fmt = "CSV");
         } else {
             self.dc = new WritableTextRecordChannel(characterChannel, fs, CSV_RECORD_SEPARATOR);
@@ -51,11 +51,11 @@ public class WritableCSVChannel {
     # + csvRecord - A record to be written to the channel
     # + return - An `io:Error` if the record could not be written properly
     public isolated function write(string[] csvRecord) returns Error? {
-        if (self.dc is WritableTextRecordChannel) {
+        if self.dc is WritableTextRecordChannel {
             var result = <WritableTextRecordChannel>self.dc;
             return result.write(csvRecord);
         }
-        return ();
+        return;
     }
 
     # Closes the `io:WritableCSVChannel`.
@@ -66,10 +66,10 @@ public class WritableCSVChannel {
     #
     # + return - `()` or else an `io:Error` if any error occurred
     public isolated function close() returns Error? {
-        if (self.dc is WritableTextRecordChannel) {
+        if self.dc is WritableTextRecordChannel {
             var result = <WritableTextRecordChannel>self.dc;
             return result.close();
         }
-        return ();
+        return;
     }
 }

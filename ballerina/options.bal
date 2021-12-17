@@ -38,9 +38,9 @@ public enum XmlEntityType {
 # + public - the public identifier
 # + internalSubset - internal DTD schema
 public type XmlDoctype record {|
-   string? system = ();
-   string? 'public = ();
-   string? internalSubset = ();
+    string? system = ();
+    string? 'public = ();
+    string? internalSubset = ();
 |};
 
 # The writing options of an XML.
