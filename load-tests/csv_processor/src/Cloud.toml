@@ -12,6 +12,6 @@ max_cpu="1000m"
 min_replicas=1
 max_replicas=1
 
-[[cloud.config.maps]]
-file="./resources/ghz_output.csv"
-mount_path="/home/ballerina/resources/ghz_output.csv"
+[[container.copy.files]]
+sourceFile="./resources/ghz_output.csv"
+target="/home/ballerina/resources/ghz_output.csv"
