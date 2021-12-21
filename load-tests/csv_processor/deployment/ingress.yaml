@@ -14,6 +14,6 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: io-csv-processor
+            name: csv-processor-s
             port:
               number: 9090
