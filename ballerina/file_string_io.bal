@@ -115,7 +115,7 @@ public isolated function fileWriteLinesFromStream(string path, stream<string, Er
 # Write a JSON to a file.
 # ```ballerina
 # json content = {"name": "Anne", "age": 30};
-# io:Error? content = io:fileWriteJson("./resources/myfile.json");
+# io:Error? result = io:fileWriteJson("./resources/myfile.json", content);
 # ```
 # + path - The path of the JSON file
 # + content - JSON content to write
