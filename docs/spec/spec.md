@@ -1,4 +1,4 @@
-# Specification: Ballerina Time Library
+# Specification: Ballerina I/O Library
 
 _Owners_: @daneshk @BuddhiWathsala  
 _Reviewers_: @daneshk  
