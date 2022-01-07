@@ -40,7 +40,7 @@ public function main() returns error? {
     });
 
     // Finding the most frequent number of words based on a given input
-    int threshold = check 'int:fromString(io:readln("Enter a word frequency boundry value: "));
+    int threshold = check 'int:fromString(io:readln("Enter the number of most frequent words to retrieve: "));
     int[] vocabEntries = bow.toArray();
     if threshold > vocabEntries.length() {
         threshold = vocabEntries.length();

@@ -26,7 +26,7 @@ $ bal run
 Then provide the input value. This input value indicates the number of most frequent words users wants to retrieve. For example:
 
 ```
-> Enter the frequency boundry value: 10
+> Enter the number of most frequent words to retrieve: 10
 ```
 
 Here, the boundary value 10 means it gives the most frequent ten words along with their frequencies as a map.
