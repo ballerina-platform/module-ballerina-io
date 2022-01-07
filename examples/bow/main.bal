@@ -30,11 +30,7 @@ public function main() returns error? {
             if token != "" {
                 string lowerCaseToken = token.toLowerAscii();
                 int? frequency = bow[lowerCaseToken];
-                if frequency is int {
-                    bow[lowerCaseToken] = frequency + 1;
-                } else {
-                    bow[lowerCaseToken] = 1;
-                }
+                bow[lowerCaseToken] = frequency is int ? frequency + 1 : 1;
             }
         }
     });
