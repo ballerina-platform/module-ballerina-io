@@ -2,4 +2,4 @@
 distribution = "slbeta5"
 
 [build-options]
-observabilityIncluded = true
+observabilityIncluded = false
