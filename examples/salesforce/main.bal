@@ -34,8 +34,7 @@ public function main() returns error? {
             token: SF_TOKEN
         }
     };
-    string csvContactsFilePath = "data.csv";
-    stream<string[], io:Error?> csvStream = check io:fileReadCsvAsStream(csvContactsFilePath);
+    stream<string[], io:Error?> csvStream = check io:fileReadCsvAsStream("resources/data.csv");
     sbulk:Client baseClient = check new (sfConfig);
     sbulk:BulkJob queryJob = check baseClient->createJob("insert", "Contact", "CSV");
 
