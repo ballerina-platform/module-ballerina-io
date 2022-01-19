@@ -27,20 +27,20 @@ public function main() returns error? {
     int successCases = 0;
     int failureCases = 0;
 
-    check performanceDataStream.forEach(function(string[] entry) {
-        if entry.length() >= 2 {
-            float|error duration = 'float:fromString(entry[0]);
-            totalRunningTime += duration is float ? duration : 0.0;
-            numberOfEntries += 1;
+    _ = check from string[] entry in performanceDataStream
+        do {
+            if entry.length() >= 2 {
+                float|error duration = 'float:fromString(entry[0]);
+                totalRunningTime += duration is float ? duration : 0.0;
+                numberOfEntries += 1;
 
-            if "OK".equalsIgnoreCaseAscii(entry[1]) {
-                successCases += 1;
-            } else {
-                failureCases += 1;
-                io:println(`Error status: ${entry}`);
+                if "OK".equalsIgnoreCaseAscii(entry[1]) {
+                    successCases += 1;
+                } else {
+                    failureCases += 1;
+                }
             }
-        }
-    });
+        };
 
     io:println(`Average running time : ${totalRunningTime / <float>numberOfEntries}`);
     io:println(`No. of success cases: ${successCases}`);
