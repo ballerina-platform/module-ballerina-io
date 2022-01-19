@@ -44,21 +44,20 @@ public function main() returns error? {
 
         // Get batch info
         sbulk:BatchInfo batchInfo = check baseClient->getBatchInfo(queryJob, batchId);
-        io:println("Batch Info");
-        io:println(batchInfo);
+        log:printInfo(string `Batch processing state: ${batchInfo.state}`);
 
         // Get batch result
         sbulk:Result[] batchResult = <sbulk:Result[]>check baseClient->getBatchResult(queryJob, batchId);
         foreach sbulk:Result res in batchResult {
             if (!res.success) {
-                log:printError("Failed result, res=" + (res.errors is string ? <string>res.errors : ""));
+                log:printError("Operation failed", result = (res.errors is string ? <string>res.errors : ""));
             }
         }
 
         // Close the job
         _ = check baseClient->closeJob(queryJob);
     } on fail error err {
-        log:printError(err.message());
+        log:printError("Salesforce batch operation failed", 'error = err);
         _ = check baseClient->closeJob(queryJob);
     }
 }
