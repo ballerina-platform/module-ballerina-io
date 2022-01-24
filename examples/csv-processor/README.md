@@ -33,6 +33,6 @@ Then, it iterates through the result stream to read each entry and return the su
 First, clone this repository, and then run the following commands to run the example on your local machine.
 
 ```sh
-$ cd examples/csv_processor
+$ cd examples/csv-processor
 $ bal run
 ```

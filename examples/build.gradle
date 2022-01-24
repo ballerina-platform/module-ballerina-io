@@ -23,7 +23,7 @@ apply plugin: 'java'
 description = 'Ballerina - I/O Examples'
 
 def ballerinaDist = "${project.rootDir}/target/ballerina-runtime"
-def examples = ["csv_processor"]
+def examples = ["csv-processor"]
 
 task testExamples {
     doLast {
