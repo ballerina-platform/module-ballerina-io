@@ -61,7 +61,7 @@ public class ReadableTextRecordChannel {
     # io:Error err = readableRecChannel.close();
     # ```
     #
-    # + return - An `io:Error` if the record channel could not be closed properly
+    # + return - `()` or else an `io:Error` if any error occurred
     public isolated function close() returns Error? {
         return closeReadableTextRecordChannelExtern(self);
     }

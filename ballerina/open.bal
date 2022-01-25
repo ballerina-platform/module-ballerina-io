@@ -81,7 +81,7 @@ ReadableCSVChannel|Error {
 # + charset - Representation of the encoding characters in the file
 # + skipHeaders - Number of headers, which should be skipped
 # + option - To indicate whether to overwrite or append the given content
-# + return - The `WritableCSVChannel`, which could be used to write the CSV records or else an `io:Error` if any error occurred
+# + return - The `io:WritableCSVChannel`, which could be used to write the CSV records or else an `io:Error` if any error occurred
 public isolated function openWritableCsvFile(string path, Separator fieldSeparator = ",",
                                             string charset = "UTF-8", int skipHeaders = 0,
                                             FileWriteOption option = OVERWRITE) returns WritableCSVChannel|Error {

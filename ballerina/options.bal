@@ -34,9 +34,9 @@ public enum XmlEntityType {
 
 # Represents the XML DOCTYPE entity.
 #
-# + system - the system identifier
-# + public - the public identifier
-# + internalSubset - internal DTD schema
+# + system - The system identifier
+# + public - The public identifier
+# + internalSubset - Internal DTD schema
 public type XmlDoctype record {|
     string? system = ();
     string? 'public = ();
@@ -45,7 +45,7 @@ public type XmlDoctype record {|
 
 # The writing options of an XML.
 #
-# + xmlEntityType - the entity type of the XML input (the default value is `DOCUMENT_ENTITY`)
+# + xmlEntityType - The entity type of the XML input (the default value is `DOCUMENT_ENTITY`)
 # + doctype - XML DOCTYPE value (the default value is `()`)
 public type XmlWriteOptions record {|
     XmlEntityType xmlEntityType = DOCUMENT_ENTITY;

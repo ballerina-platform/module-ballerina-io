@@ -131,8 +131,8 @@ public isolated function fileWriteJson(string path, json content) returns Error?
 # ```
 # + path - The path of the XML file
 # + content - XML content to write
-# + xmlOptions - XML writing options(XML entity type and DOCTYPE)
-# + fileWriteOption - file write option(`OVERWRITE` and `APPEND` are the possible values, and the default value is `OVERWRITE`)
+# + xmlOptions - XML writing options (XML entity type and DOCTYPE)
+# + fileWriteOption - File write option (`OVERWRITE` and `APPEND` are the possible values, and the default value is `OVERWRITE`)
 # + return - `()` value when the writing was successful or an `io:Error`
 public isolated function fileWriteXml(string path, xml content, FileWriteOption fileWriteOption = OVERWRITE,
                                     *XmlWriteOptions xmlOptions) returns Error? {

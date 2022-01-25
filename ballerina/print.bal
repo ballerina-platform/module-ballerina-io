@@ -29,14 +29,14 @@ public type FileOutputStream stdout|stderr;
 
 # Represents raw templates.
 # e.g: `The respective int value is ${val}`
-# + strings - string values of the template as an array
-# + insertions - parameterized values/expressions after evaluations as an array
+# + strings - String values of the template as an array
+# + insertions - Parameterized values/expressions after evaluations as an array
 public type PrintableRawTemplate object {
     public string[] & readonly strings;
     public Printable[] insertions;
 };
 
-# Prints `any`, `error`, or string templates(such as `The respective int value is ${val}`) value(s) to the STDOUT.
+# Prints `any`, `error`, or string templates (such as `The respective int value is ${val}`) value(s) to the STDOUT.
 # ```ballerina
 # io:print("Start processing the CSV file from ", srcFileName);
 # ```
