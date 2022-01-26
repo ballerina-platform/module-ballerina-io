@@ -49,7 +49,7 @@ public function main() returns error? {
         // Get batch result
         sbulk:Result[] batchResult = <sbulk:Result[]>check baseClient->getBatchResult(queryJob, batchId);
         foreach sbulk:Result res in batchResult {
-            if (!res.success) {
+            if !res.success {
                 log:printError("Operation failed", result = (res.errors is string ? <string>res.errors : ""));
             }
         }
