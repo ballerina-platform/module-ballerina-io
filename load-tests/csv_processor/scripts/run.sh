@@ -19,4 +19,4 @@
 set -e
 source base-scenario.sh
 
-jmeter -n -t "$scriptsDir/"http-get-request.jmx -l "$resultsDir/"original.jtl -Jusers=10 -Jduration=3600 -Jhost=bal.perf.test -Jport=80 -Jprotocol=http -Jpath=BalPerformance/grpc $payload_flags
+jmeter -n -t "$scriptsDir/"http-get-request.jmx -l "$resultsDir/"original.jtl -Jusers=2 -Jduration=3600 -Jhost=bal.perf.test -Jport=80 -Jprotocol=http -Jpath=BalPerformance/grpc $payload_flags
