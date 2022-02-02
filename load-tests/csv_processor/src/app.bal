@@ -20,7 +20,7 @@ import ballerina/http;
 
 service http:Service /BalPerformance on new http:Listener(9090) {
 
-    isolated resource function get grpc() returns json|error {
+    resource function get grpc() returns json|error {
         stream<string[], io:Error?> performanceDataStream = check io:fileReadCsvAsStream("resources/ghz_output.csv");
         _ = check performanceDataStream.next(); // Skip the header
 
@@ -29,20 +29,19 @@ service http:Service /BalPerformance on new http:Listener(9090) {
         int successCases = 0;
         int failureCases = 0;
 
-        _ = check from string[] entry in performanceDataStream
-            do {
-                if entry.length() >= 2 {
-                    float|error duration = 'float:fromString(entry[0]);
-                    totalRunningTime += duration is float ? duration : 0.0;
-                    numberOfEntries += 1;
+        check performanceDataStream.forEach(function(string[] entry) {
+            if entry.length() >= 2 {
+                float|error duration = 'float:fromString(entry[0]);
+                totalRunningTime += duration is float ? duration : 0.0;
+                numberOfEntries += 1;
 
-                    if "OK".equalsIgnoreCaseAscii(entry[1]) {
-                        successCases += 1;
-                    } else {
-                        failureCases += 1;
-                    }
+                if "OK".equalsIgnoreCaseAscii(entry[1]) {
+                    successCases += 1;
+                } else {
+                    failureCases += 1;
                 }
-            };
+            }
+        });
 
         return {
             "Average running time": (totalRunningTime / <float>numberOfEntries),
