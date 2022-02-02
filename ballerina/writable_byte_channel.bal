@@ -46,7 +46,7 @@ public class WritableByteChannel {
     # io:Error err = writableByteChannel.close();
     # ```
     #
-    # + return - An `io:Error` or else `()`
+    # + return - `()` or else an `io:Error` if any error occurred
     public isolated function close() returns Error? {
         return closeWritableByteChannelExtern(self);
     }

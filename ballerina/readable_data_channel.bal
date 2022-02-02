@@ -21,7 +21,7 @@ public class ReadableDataChannel {
     # Initializes the data channel.
     #
     # + byteChannel - The channel, which would represent the source to read/write data
-    # + bOrder - network byte order
+    # + bOrder - Network byte order
     public isolated function init(ReadableByteChannel byteChannel, ByteOrder bOrder = "BE") {
         // Remove temp once this got fixed #19842
         string temp = bOrder;
@@ -83,7 +83,7 @@ public class ReadableDataChannel {
     # boolean|io:Error result = dataChannel.readBool();
     # ```
     #
-    # + return - boolean value which is read or else `io:Error` if any error occurred
+    # + return - Boolean value, which is read or else `io:Error` if any error occurred
     public isolated function readBool() returns boolean|Error {
         return readBoolExtern(self);
     }
@@ -115,7 +115,7 @@ public class ReadableDataChannel {
     # ```ballerina
     # io:Error? err = dataChannel.close();
     # ```
-    # + return - `()` if the channel is closed successfully or else an `io:Error` if any error occurred
+    # + return - `()` or else an `io:Error` if any error occurred
     public isolated function close() returns Error? {
         return closeReadableDataChannelExtern(self);
     }

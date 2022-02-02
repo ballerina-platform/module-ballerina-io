@@ -120,7 +120,7 @@ public class ReadableCharacterChannel {
     # io:Error? err = readableCharChannel.close();
     # ```
     #
-    # + return - An error if something goes wrong while closing
+    # + return - `()` or else an `io:Error` if any error occurred
     public isolated function close() returns Error? {
         return closeReadableCharacterChannel(self);
     }

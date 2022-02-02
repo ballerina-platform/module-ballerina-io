@@ -88,7 +88,7 @@ public class ReadableByteChannel {
     # io:Error? err = readableByteChannel.close();
     # ```
     #
-    # + return - Will returns `()` if there is no error
+    # + return - `()` or else an `io:Error` if any error occurred
     public isolated function close() returns Error? {
         return closeReadableByteChannelExtern(self);
     }
