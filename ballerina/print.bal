@@ -36,7 +36,7 @@ public type PrintableRawTemplate object {
     public Printable[] insertions;
 };
 
-# Prints `any`, `error`, or string templates (such as `The respective int value is ${val}`) value(s) to the STDOUT.
+# Prints `any`, `error`, or string templates (such as `The respective int value is ${val}`) value(s) to the `STDOUT`.
 # ```ballerina
 # io:print("Start processing the CSV file from ", srcFileName);
 # ```
