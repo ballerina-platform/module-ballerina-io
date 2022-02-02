@@ -83,7 +83,7 @@ public class ReadableDataChannel {
     # boolean|io:Error result = dataChannel.readBool();
     # ```
     #
-    # + return - Boolean value which is read or else `io:Error` if any error occurred
+    # + return - Boolean value, which is read or else `io:Error` if any error occurred
     public isolated function readBool() returns boolean|Error {
         return readBoolExtern(self);
     }
