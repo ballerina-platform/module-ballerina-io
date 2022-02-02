@@ -33,7 +33,7 @@ public class WritableDataChannel {
 
     # Initializes data channel.
     #
-    # + byteChannel - Channel which would represent the source to read/write data
+    # + byteChannel - Channel, which would represent the source to read/write data
     # + bOrder - Network byte order
     public isolated function init(WritableByteChannel byteChannel, ByteOrder bOrder = "BE") {
         // Remove temp once this got fixed #19842
