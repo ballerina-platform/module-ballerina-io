@@ -4,11 +4,17 @@ This file contains all the notable changes done to the Ballerina I/O package thr
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [v1.0.0] - 2021-10-08
+### Added
+- [Add support for reading quoted fields in fileReadCsvAsStream API](https://github.com/ballerina-platform/ballerina-standard-library/issues/1890)
+
+### Fixed
+- [Introduce toTable API](https://github.com/ballerina-platform/ballerina-standard-library/issues/1871)
+
+
+## [v0.6.0-beta.2] - 2021-07-06
 ### Added
 - [Introduce fprint and fprintln APIs](https://github.com/ballerina-platform/ballerina-standard-library/issues/1394)
-- [Introduce toTable API](https://github.com/ballerina-platform/ballerina-standard-library/issues/1871)
-- [Add support for reading quoted fields in fileReadCsvAsStream API](https://github.com/ballerina-platform/ballerina-standard-library/issues/1890)
 
 ## [v0.6.0-beta.1] - 2021-06-02
 ### Fixed
