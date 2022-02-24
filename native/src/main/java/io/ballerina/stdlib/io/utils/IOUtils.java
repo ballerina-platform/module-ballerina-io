@@ -20,6 +20,7 @@ package io.ballerina.stdlib.io.utils;
 
 import io.ballerina.runtime.api.Module;
 import io.ballerina.runtime.api.creators.ErrorCreator;
+import io.ballerina.runtime.api.creators.ValueCreator;
 import io.ballerina.runtime.api.utils.StringUtils;
 import io.ballerina.runtime.api.values.BError;
 import io.ballerina.stdlib.io.channels.base.Channel;
@@ -81,7 +82,7 @@ public class IOUtils {
      */
     public static BError createError(IOConstants.ErrorCode errorId, String errorMsg) {
         return ErrorCreator.createError(ModuleUtils.getModule(), errorId.errorCode(), StringUtils.fromString(errorMsg),
-        null, null);
+        null, ValueCreator.createMapValue());
     }
 
     /**
