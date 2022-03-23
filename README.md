@@ -59,15 +59,15 @@ The XML I/O APIs provide the reading and writing APIs for XML content. Those API
 - `io:fileReadXml`
 - `io:fileWriteXml`
 
-## Issues and Projects 
+## Issues and projects 
 
 Issues and Projects tabs are disabled for this repository as this is part of the Ballerina Standard Library. To report bugs, request new features, start new discussions, view project boards, etc. please visit Ballerina Standard Library [parent repository](https://github.com/ballerina-platform/ballerina-standard-library). 
 
 This repository only contains the source code for the module.
 
-## Building from the Source
+## Build from the source
 
-### Setting Up the Prerequisites
+### Set up the prerequisites
 
 1. Download and install Java SE Development Kit (JDK) version 11 (from one of the following locations).
 
@@ -81,7 +81,7 @@ This repository only contains the source code for the module.
         export packageUser=<Username>
         export packagePAT=<Personal access token>
 
-### Building the Source
+### Build the source
 
 Execute the commands below to build from source.
 
@@ -121,17 +121,17 @@ Execute the commands below to build from source.
    ./gradlew clean build -PpublishToCentral=true
    ```
 
-## Contributing to Ballerina
+## Contribute to Ballerina
 
 As an open source project, Ballerina welcomes contributions from the community. 
 
 For more information, go to the [contribution guidelines](https://github.com/ballerina-platform/ballerina-lang/blob/master/CONTRIBUTING.md).
 
-## Code of Conduct
+## Code of conduct
 
 All contributors are encouraged to read the [Ballerina Code of Conduct](https://ballerina.io/code-of-conduct).
 
-## Useful Links
+## Useful links
 
 * Chat live with us via our [Slack channel](https://ballerina.io/community/slack/).
 * Post all technical questions on Stack Overflow with the [#ballerina](https://stackoverflow.com/questions/tagged/ballerina) tag.
