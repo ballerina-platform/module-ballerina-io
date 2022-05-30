@@ -10,11 +10,11 @@ license = ["Apache-2.0"]
 distribution = "2201.0.4"
 
 [[platform.java11.dependency]]
-path = "../native/build/libs/io-native-1.2.2-SNAPSHOT.jar"
-version = "1.2.2-SNAPSHOT"
+path = "../native/build/libs/io-native-1.2.2.jar"
+version = "1.2.2"
 
 
 [[platform.java11.dependency]]
-path = "../test-utils/build/libs/io-test-utils-1.2.2-SNAPSHOT.jar"
+path = "../test-utils/build/libs/io-test-utils-1.2.2.jar"
 scope = "testOnly"
-version = "1.2.2-SNAPSHOT"
+version = "1.2.2"
