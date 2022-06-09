@@ -45,6 +45,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+
 /**
  * Extern function ballerina/io#loadToTable.
  *
@@ -115,6 +116,7 @@ public class ToTable {
                         case TypeTags.INT_TAG:
                         case TypeTags.FLOAT_TAG:
                         case TypeTags.STRING_TAG:
+                        case TypeTags.DECIMAL_TAG:    
                         case TypeTags.BOOLEAN_TAG:
                             populateRecord(type, struct, fieldName, value);
                             break;
@@ -148,6 +150,10 @@ public class ToTable {
                 return;
             case TypeTags.FLOAT_TAG:
                 struct.put(fieldName, (value == null || value.isEmpty()) ? null : Double.parseDouble(value));
+                break;
+            case TypeTags.DECIMAL_TAG:
+                struct.put(fieldName, (value == null || value.isEmpty()) ? null :
+                        ValueCreator.createDecimalValue(value.replaceAll(" ", "")));
                 break;
             case TypeTags.STRING_TAG:
                 struct.put(fieldName, value);
