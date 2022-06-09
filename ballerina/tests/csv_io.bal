@@ -351,7 +351,7 @@ isolated function testTableContent2() returns error? {
 
 @test:Config {}
 isolated function testTableContent3() returns error? {
-    string filePath = RESOURCES_BASE_PATH + "datafiles/io/records/sample10.csv";
+    string filePath = RESOURCES_BASE_PATH + "datafiles/io/records/sample5.csv";
     decimal expectedValue = 60001.00d;
     decimal total = 0.0d;
 
