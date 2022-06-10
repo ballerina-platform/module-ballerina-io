@@ -46,3 +46,4 @@ velocity.log*
 *Ballerina.lock
 examples/**/Dependencies.toml
 load-tests/**/Dependencies.toml
+ballerina/Dependencies 2.toml

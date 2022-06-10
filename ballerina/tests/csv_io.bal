@@ -366,6 +366,24 @@ isolated function testTableContent3() returns error? {
 }
 
 @test:Config {}
+isolated function testTableContent4() returns error? {
+    string filePath = RESOURCES_BASE_PATH + "datafiles/io/records/sample5.csv";
+    decimal expectedValue = 60001.00d;
+    decimal total = 0.0d;
+
+    ReadableCSVChannel csvChannel = check openReadableCsvFile(filePath);
+    var tableResult = check csvChannel.toTable(Employee3, ["id"]);
+    if (tableResult is table<Employee3>) {
+        foreach var employee in tableResult {
+            total = total + employee.salary;
+    }
+    }
+    test:assertEquals(total, expectedValue);
+    check csvChannel.close();
+}
+
+
+@test:Config {}
 isolated function testTableWithNull() returns error? {
     string filePath = RESOURCES_BASE_PATH + "datafiles/io/records/sample6.csv";
     string name = "";
