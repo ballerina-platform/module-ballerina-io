@@ -115,6 +115,7 @@ public class ToTable {
                         case TypeTags.INT_TAG:
                         case TypeTags.FLOAT_TAG:
                         case TypeTags.STRING_TAG:
+                        case TypeTags.DECIMAL_TAG:    
                         case TypeTags.BOOLEAN_TAG:
                             populateRecord(type, struct, fieldName, value);
                             break;
@@ -142,22 +143,30 @@ public class ToTable {
     }
 
     private static void populateRecord(int type, Map<String, Object> struct, String fieldName, String value) {
-        switch (type) {
-            case TypeTags.INT_TAG:
-                struct.put(fieldName, (value == null || value.isEmpty()) ? null : Long.parseLong(value));
-                return;
-            case TypeTags.FLOAT_TAG:
-                struct.put(fieldName, (value == null || value.isEmpty()) ? null : Double.parseDouble(value));
-                break;
-            case TypeTags.STRING_TAG:
-                struct.put(fieldName, value);
-                break;
-            case TypeTags.BOOLEAN_TAG:
-                struct.put(fieldName, (value == null || value.isEmpty()) ? null : (Boolean.parseBoolean(value)));
-                break;
-            default:
-                throw IOUtils.createError("type casting support only for int, float, boolean and string. "
+        if (value == null || value.isEmpty()) {
+            struct.put(fieldName, null);
+        } else {
+            String trimmedValue = value.trim();
+            switch (type) {
+                case TypeTags.INT_TAG:
+                    struct.put(fieldName, Long.parseLong(trimmedValue));
+                    return;
+                case TypeTags.FLOAT_TAG:
+                    struct.put(fieldName, Double.parseDouble(trimmedValue));
+                    break;
+                case TypeTags.DECIMAL_TAG:
+                    struct.put(fieldName, ValueCreator.createDecimalValue(trimmedValue));
+                    break;
+                case TypeTags.STRING_TAG:
+                    struct.put(fieldName, trimmedValue);
+                    break;
+                case TypeTags.BOOLEAN_TAG:
+                    struct.put(fieldName, Boolean.parseBoolean(trimmedValue));
+                    break;
+                default:
+                    throw IOUtils.createError("type casting support only for int, float, boolean and string. "
                         + "Invalid value for the struct field: " + value);
+                }
+            }
         }
-    }
 }

@@ -61,6 +61,12 @@ type Employee2 record {
     float salary;
 };
 
+type Employee3 record {
+    string id;
+    string name;
+    decimal salary;
+};
+
 @test:Config {}
 isolated function testReadCsv() returns Error? {
     string filePath = RESOURCES_BASE_PATH + "datafiles/io/records/sample.csv";
@@ -342,6 +348,40 @@ isolated function testTableContent2() returns error? {
     test:assertEquals(total, expectedValue);
     check csvChannel.close();
 }
+
+@test:Config {}
+isolated function testTableContent3() returns error? {
+    string filePath = RESOURCES_BASE_PATH + "datafiles/io/records/sample5.csv";
+    decimal expectedValue = 60001.00d;
+    decimal total = 0.0d;
+
+    ReadableCSVChannel csvChannel = check openReadableCsvFile(filePath);
+    table<record {}> tableResult = check csvChannel.toTable(Employee3, ["id"]);
+    table<Employee3> tb = <table<Employee3>>tableResult;
+    foreach Employee3 x in tb {
+        total = total + x.salary;
+    }
+    test:assertEquals(total, expectedValue);
+    check csvChannel.close();
+}
+
+@test:Config {}
+isolated function testTableContent4() returns error? {
+    string filePath = RESOURCES_BASE_PATH + "datafiles/io/records/sample5.csv";
+    decimal expectedValue = 60001.00d;
+    decimal total = 0.0d;
+
+    ReadableCSVChannel csvChannel = check openReadableCsvFile(filePath);
+    var tableResult = check csvChannel.toTable(Employee3, ["id"]);
+    if (tableResult is table<Employee3>) {
+        foreach var employee in tableResult {
+            total = total + employee.salary;
+    }
+    }
+    test:assertEquals(total, expectedValue);
+    check csvChannel.close();
+}
+
 
 @test:Config {}
 isolated function testTableWithNull() returns error? {
