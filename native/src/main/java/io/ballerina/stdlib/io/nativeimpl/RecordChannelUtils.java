@@ -18,10 +18,16 @@
 
 package io.ballerina.stdlib.io.nativeimpl;
 
+import io.ballerina.runtime.api.TypeTags;
+import io.ballerina.runtime.api.creators.TypeCreator;
+import io.ballerina.runtime.api.creators.ValueCreator;
+import io.ballerina.runtime.api.types.StructureType;
+import io.ballerina.runtime.api.types.Type;
 import io.ballerina.runtime.api.utils.StringUtils;
 import io.ballerina.runtime.api.values.BArray;
 import io.ballerina.runtime.api.values.BObject;
 import io.ballerina.runtime.api.values.BString;
+import io.ballerina.runtime.api.values.BTypedesc;
 import io.ballerina.stdlib.io.channels.base.CharacterChannel;
 import io.ballerina.stdlib.io.channels.base.DelimitedRecordChannel;
 import io.ballerina.stdlib.io.csv.Format;
@@ -35,6 +41,8 @@ import org.slf4j.LoggerFactory;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.channels.ClosedChannelException;
+import java.util.ArrayList;
+import java.util.Map;
 
 import static io.ballerina.stdlib.io.utils.IOConstants.TXT_RECORD_CHANNEL_NAME;
 
@@ -115,6 +123,94 @@ public class RecordChannelUtils {
             }
         }
     }
+
+    public static Object getAll(BObject channel, BTypedesc typeDesc) {
+        Type describingType = typeDesc.getDescribingType();
+        if (isChannelClosed(channel)) {
+            return IOUtils.createError("Record channel is already closed.");
+        }
+        DelimitedRecordChannel textRecordChannel =
+                (DelimitedRecordChannel) channel.getNativeData(TXT_RECORD_CHANNEL_NAME);
+        if (textRecordChannel.hasReachedEnd()) {
+            return IOUtils.createEoFError();
+        } else {
+            try {
+                if (describingType.getTag() == TypeTags.RECORD_TYPE_TAG) {
+                    StructureType structType = (StructureType) describingType;
+                    ArrayList<Object> ou = new ArrayList<Object>();
+                    while (textRecordChannel.hasNext()) {
+                        String[] record = textRecordChannel.read();
+                        final Map<String, Object> struct = CsvChannelUtils.getStruct(record, structType);
+                        if (struct != null) {
+                            ou.add(ValueCreator.createRecordValue(describingType.getPackage(), describingType.getName(),
+                                    struct));
+                        } else {
+                            return IOUtils.createError("Record type and CSV file does not match.");
+                        }
+                    }
+                    Object[] out = new Object[ou.size()];
+                    int count = 0;
+                    for (Object i : ou) {
+                        out[count] = i;
+                    }
+                    //Object[] out = ou.toArray();
+
+                    return ValueCreator.createArrayValue(out, TypeCreator.createArrayType(describingType));
+                } else { //if (describingType.getTag() == TypeTags.ARRAY_TAG)
+                    ArrayList<BArray> ou = new ArrayList<BArray>();
+                    while (textRecordChannel.hasNext()) {
+                        String[] record = textRecordChannel.read();
+                        ou.add(StringUtils.fromStringArray(record));
+                    }
+                    Object[] out = new Object[ou.size()];
+                    int count = 0;
+                    for (Object i : ou) {
+                        out[count] = i;
+                    }
+                    //Object[] out = ou.toArray();
+                    return ValueCreator.createArrayValue(out, TypeCreator.createArrayType(describingType));
+                }
+//                    return StringUtils.fromStringArray(records);
+            } catch (BallerinaIOException e) {
+                log.error("error occurred while reading next text record from ReadableTextRecordChannel", e);
+                return IOUtils.createError(e);
+                }
+        }
+    }
+
+    public static Object streamNext(BObject channel, BTypedesc typeDesc) {
+        Type describingType = typeDesc.getDescribingType();
+        if (isChannelClosed(channel)) {
+            return IOUtils.createError("Record channel is already closed.");
+        }
+        DelimitedRecordChannel textRecordChannel =
+                (DelimitedRecordChannel) channel.getNativeData(TXT_RECORD_CHANNEL_NAME);
+        if (textRecordChannel.hasReachedEnd()) {
+            return IOUtils.createEoFError();
+        } else {
+            try {
+                if (describingType.getTag() == TypeTags.RECORD_TYPE_TAG) {
+                    StructureType structType = (StructureType) describingType;
+                    String[] record = textRecordChannel.read();
+                    final Map<String, Object> struct = CsvChannelUtils.getStruct(record, structType);
+                    if (struct != null) {
+                        return ValueCreator.createRecordValue(describingType.getPackage(), describingType.getName(),
+                                    struct);
+                    } else {
+                        return IOUtils.createError("Record type and CSV file does not match.");
+                    }
+                } else {
+                    String[] record = textRecordChannel.read();
+                    return StringUtils.fromStringArray(record);
+
+                }
+            } catch (BallerinaIOException e) {
+                log.error("error occurred while reading next text record from ReadableTextRecordChannel", e);
+                return IOUtils.createError(e);
+            }
+        }
+    }
+
 
     public static Object readRecord(BObject channel) {
         BufferedReader bufferedReader = (BufferedReader) channel.getNativeData(BUFFERED_READER_ENTRY);

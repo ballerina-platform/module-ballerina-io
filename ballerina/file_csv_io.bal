@@ -13,6 +13,7 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
+import ballerina/jballerina.java;
 
 # Read file content as a CSV.
 # ```ballerina
@@ -24,6 +25,18 @@
 public isolated function fileReadCsv(string path, int skipHeaders = 0) returns string[][]|Error {
     return channelReadCsv(check openReadableCsvFile(path, COMMA, DEFAULT_ENCODING, skipHeaders));
 }
+
+# Read file content as a CSV.
+# ```ballerina
+# string[][]|io:Error content = io:fileReadCsv("./resources/myfile.csv");
+# ```
+# + path - The CSV file path
+# + skipHeaders - Number of headers, which should be skipped prior to reading records
+# + return - The entire CSV content in the channel as an array of string arrays or an `io:Error`
+public isolated function readFileCsv(string path, int skipHeaders = 0, string charset="UTF-8", typedesc<string[]|record{}> returntype = <>) returns returntype[]|Error = @java:Method{
+    name: "fileReadCsv",
+    'class: "io.ballerina.stdlib.io.nativeimpl.CsvChannelUtils"
+} external;
 
 # Read file content as a CSV.
 # ```ballerina
@@ -41,10 +54,10 @@ public isolated function fileReadCsvAsStream(string path) returns stream<string[
 # io:Error? result = io:fileWriteCsv("./resources/myfile.csv", content);
 # ```
 # + path - The CSV file path
-# + content - CSV content as an array of string arrays
+# + content - CSV content as an array of string arrays or as an array of records
 # + option - To indicate whether to overwrite or append the given content
 # + return - `()` when the writing was successful or an `io:Error`
-public isolated function fileWriteCsv(string path, string[][] content, FileWriteOption option = OVERWRITE) returns
+public isolated function fileWriteCsv(string path, string[][]|map<anydata>[] content, FileWriteOption option = OVERWRITE) returns
 Error? {
     return channelWriteCsv(check openWritableCsvFile(path, option = option), content);
 }
@@ -59,7 +72,7 @@ Error? {
 # + content - A CSV record stream to be written
 # + option - To indicate whether to overwrite or append the given content
 # + return - `()` when the writing was successful or an `io:Error`
-public isolated function fileWriteCsvFromStream(string path, stream<string[], Error?> content,
+public isolated function fileWriteCsvFromStream(string path, stream<string[], Error?>|stream<map<anydata>, Error?> content,
                                                 FileWriteOption option = OVERWRITE) returns Error? {
     return channelWriteCsvFromStream(check openWritableCsvFile(path, option = option), content);
 }

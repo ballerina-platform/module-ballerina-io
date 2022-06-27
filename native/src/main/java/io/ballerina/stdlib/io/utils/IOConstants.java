@@ -45,6 +45,11 @@ public class IOConstants {
     public static final String TXT_RECORD_CHANNEL_NAME = "txt_record";
 
     /**
+     * The name of the csv record channel which will be represented through the native struct.
+     */
+    public static final String CSV_RECORD_CHANNEL_NAME = "csv_record";
+
+    /**
      * The size of the buffer allocated for reading bytes from the channel (15~ KB).
      */
     public static final int CHANNEL_BUFFER_SIZE = 16384;

@@ -40,34 +40,75 @@ Error {
     return (check getReadableCSVChannel(readableChannel, 0)).csvStream();
 }
 
-isolated function channelWriteCsv(WritableChannel writableChannel, string[][] content) returns Error? {
+isolated function channelWriteCsv(WritableChannel writableChannel, string[][]|map<anydata>[] content) returns Error? {
     WritableCSVChannel csvChannel = check getWritableCSVChannel(writableChannel);
+    if (content is string[][]){
     foreach string[] r in content {
         var writeResult = csvChannel.write(r);
         if writeResult is Error {
             check csvChannel.close();
             return writeResult;
+            }
+        }
+    }
+    else if(content is map<anydata>[]) {
+        map<anydata> first = content[0];
+        string[] keys=first.keys();
+        check csvChannel.write(keys);
+        foreach map<anydata> r in content{
+            string[] temp=[];
+            int count=0;
+            
+            foreach string t in keys{
+                temp[count]=r[t].toString();
+                count+=1;
+            }
+            var writeResult = csvChannel.write(temp);
+            if writeResult is Error {
+                check csvChannel.close();
+                return writeResult;
+        }
+
         }
     }
     check csvChannel.close();
     return;
 }
 
-isolated function channelWriteCsvFromStream(WritableChannel writableChannel, stream<string[], Error?> csvStream) returns
+isolated function channelWriteCsvFromStream(WritableChannel writableChannel, stream<string[], Error?>|stream<map<anydata>, Error?> csvStream) returns
 Error? {
     WritableCSVChannel csvChannel = check getWritableCSVChannel(writableChannel);
-    do {
-        record {|string[] value;|}|Error? csvRecord = csvStream.next();
-        while csvRecord is record {|string[] value;|} {
-            check csvChannel.write(csvRecord.value);
-            csvRecord = csvStream.next();
+    record {|string[]|map<anydata> value;|}|Error? csvRecord = csvStream.next();
+    if (csvStream is stream<string[], Error?>){
+        do {
+            while csvRecord is record {|string[] value;|} {
+                check csvChannel.write(csvRecord.value);
+                csvRecord = csvStream.next();
+            }
+            check csvChannel.close();
+        } on fail Error err {
+            check csvChannel.close();
+            return err;
         }
-        check csvChannel.close();
-    } on fail Error err {
-        check csvChannel.close();
-        return err;
+    } else if (csvStream is stream<map<anydata>, Error?>){
+        string[] keys=csvRecord.keys();
+        check csvChannel.write(keys); 
+        do {
+            while csvRecord is record {|string[]|map<anydata> value;|} {
+                string[] temp=[];
+                int count=0;
+                foreach string t in keys{
+                    temp[count]=csvRecord[t].toString();
+                    count+=1;
+                }
+                check csvChannel.write(temp);                
+                csvRecord = csvStream.next();
+            }
+        } on fail Error err {
+            check csvChannel.close();
+            return err;
+        }   
     }
-
     return;
 }
 

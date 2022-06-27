@@ -67,6 +67,12 @@ type Employee3 record {
     decimal salary;
 };
 
+type Employee4 record {
+    string id;
+    string name;
+    float salary;
+};
+
 @test:Config {}
 isolated function testReadCsv() returns Error? {
     string filePath = RESOURCES_BASE_PATH + "datafiles/io/records/sample.csv";
@@ -97,6 +103,19 @@ isolated function testReadCsv() returns Error? {
     test:assertEquals((<Error>endResult).message(), "EoF when reading from the channel");
 
     check csvChannel.close();
+}
+
+@test:Config {}
+isolated function testReadCsv2() returns Error? {
+    string filePath = RESOURCES_BASE_PATH + "datafiles/io/records/sample5.csv";
+    string[][] input = check readFileCsv(filePath);
+    string[][] expected = [["User1", "WSO2", "10000.50"],["User2", "WSO2", "20000.50"],["User3", "WSO2", "30000.0"]];
+    test:assertEquals(input[0][0], "User3");
+    test:assertEquals(input[0][2], " 30000.00");
+    Employee[] input2 = check readFileCsv(filePath);
+    test:assertEquals(input2[0].id, "User3");
+    test:assertEquals(input2[0].salary, 30000.00f);
+
 }
 
 @test:Config {}
@@ -269,6 +288,27 @@ isolated function testWriteDefaultCsv() returns Error? {
     test:assertEquals((<Error>endResult).message(), "EoF when reading from the channel");
 
     check readCsvChannel.close();
+}
+
+@test:Config {}
+isolated function testWriteRecordCsv() returns Error? {
+    Employee4 E ={
+    id:"1",
+    name:"Foo",
+    salary:300000.0f
+    };
+    Employee4 B ={
+    id:"1",
+    name:"Foo",
+    salary:300000.0f
+    };
+
+
+    string filePath = TEMP_DIR + "recordsDefault.csv";
+    map<anydata>[] content1 = [E,B];
+    int expectedRecordLength = 3;
+
+    test:assertEquals(check fileWriteCsv(filePath,content1),()) ;
 }
 
 @test:Config {}
