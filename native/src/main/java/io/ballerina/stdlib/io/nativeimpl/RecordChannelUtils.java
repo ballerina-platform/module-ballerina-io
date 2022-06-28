@@ -148,12 +148,12 @@ public class RecordChannelUtils {
                             return IOUtils.createError("Record type and CSV file does not match.");
                         }
                     }
-                    Object[] out = new Object[ou.size()];
-                    int count = 0;
-                    for (Object i : ou) {
-                        out[count] = i;
-                    }
-                    //Object[] out = ou.toArray();
+//                    Object[] out = new Object[ou.size()];
+//                    int count = 0;
+//                    for (Object i : ou) {
+//                        out[count] = i;
+//                    }
+                    Object[] out = ou.toArray();
 
                     return ValueCreator.createArrayValue(out, TypeCreator.createArrayType(describingType));
                 } else { //if (describingType.getTag() == TypeTags.ARRAY_TAG)
@@ -162,12 +162,12 @@ public class RecordChannelUtils {
                         String[] record = textRecordChannel.read();
                         ou.add(StringUtils.fromStringArray(record));
                     }
-                    Object[] out = new Object[ou.size()];
-                    int count = 0;
-                    for (Object i : ou) {
-                        out[count] = i;
-                    }
-                    //Object[] out = ou.toArray();
+//                    Object[] out = new Object[ou.size()];
+//                    int count = 0;
+//                    for (Object i : ou) {
+//                        out[count] = i;
+//                    }
+                    Object[] out = ou.toArray();
                     return ValueCreator.createArrayValue(out, TypeCreator.createArrayType(describingType));
                 }
 //                    return StringUtils.fromStringArray(records);

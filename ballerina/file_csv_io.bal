@@ -33,8 +33,20 @@ public isolated function fileReadCsv(string path, int skipHeaders = 0) returns s
 # + path - The CSV file path
 # + skipHeaders - Number of headers, which should be skipped prior to reading records
 # + return - The entire CSV content in the channel as an array of string arrays or an `io:Error`
-public isolated function readFileCsv(string path, int skipHeaders = 0, string charset="UTF-8", typedesc<string[]|record{}> returntype = <>) returns returntype[]|Error = @java:Method{
+public isolated function readFileCsv(string path, int skipHeaders = 0, string charset="UTF-8", typedesc<string[]|map<anydata>> returntype = <>) returns returntype[]|Error = @java:Method{
     name: "fileReadCsv",
+    'class: "io.ballerina.stdlib.io.nativeimpl.CsvChannelUtils"
+} external;
+
+# Read file content as a CSV.
+# ```ballerina
+# stream<returntype, io:Error?>|io:Error content = io:fileReadCsvAsStream("./resources/myfile.csv");
+# ```
+# + path - The CSV file path
+# + return - The entire CSV content in the channel a stream of string arrays or an `io:Error`
+# + returntype - The type of the return value (string[] or map<anydata>)
+public isolated function readFileCsvAsStream(string path, string charset="UTF-8", typedesc<string[]|map<anydata>> returntype = <>) returns stream<returntype, Error?>|Error = @java:Method{
+    name: "createCsvAsStream",
     'class: "io.ballerina.stdlib.io.nativeimpl.CsvChannelUtils"
 } external;
 
@@ -72,7 +84,7 @@ Error? {
 # + content - A CSV record stream to be written
 # + option - To indicate whether to overwrite or append the given content
 # + return - `()` when the writing was successful or an `io:Error`
-public isolated function fileWriteCsvFromStream(string path, stream<string[], Error?>|stream<map<anydata>, Error?> content,
+public isolated function fileWriteCsvFromStream(string path, stream<string[]|map<anydata>, Error?> content,
                                                 FileWriteOption option = OVERWRITE) returns Error? {
     return channelWriteCsvFromStream(check openWritableCsvFile(path, option = option), content);
 }

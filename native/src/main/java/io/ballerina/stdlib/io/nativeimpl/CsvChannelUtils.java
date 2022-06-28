@@ -42,6 +42,7 @@ import java.util.Map;
 
 import static io.ballerina.stdlib.io.nativeimpl.RecordChannelUtils.getAll;
 import static io.ballerina.stdlib.io.nativeimpl.RecordChannelUtils.hasNext;
+import static io.ballerina.stdlib.io.utils.IOConstants.CSV_RETURN_TYPE;
 import static io.ballerina.stdlib.io.utils.IOUtils.getIOPackage;
 
 
@@ -79,6 +80,8 @@ public class CsvChannelUtils {
         BObject textRecordChannel = ValueCreator.createObjectValue(getIOPackage(), TEXT_RECORD_CHANNEL_STRUCT);
         RecordChannelUtils.initRecordChannel(textRecordChannel, characterChannel, fs, rs, format);
 
+        textRecordChannel.addNativeData(CSV_RETURN_TYPE, typeDesc);
+
         while (hasNext(textRecordChannel)) {
             if (describingType.getTag() == TypeTags.RECORD_TYPE_TAG) {
                  return getAll(textRecordChannel, typeDesc);
@@ -90,7 +93,7 @@ public class CsvChannelUtils {
     }
 
 
-    public static BStream createCsvAsStream(BString path, int skipHeaders, BString charset, BTypedesc typeDesc) {
+    public static BStream createCsvAsStream(BString path, BString charset, BTypedesc typeDesc) {
         Type describingType = typeDesc.getDescribingType();
 
         BObject byteChannel = (BObject) ByteChannelUtils.openReadableFile(path);
@@ -104,11 +107,15 @@ public class CsvChannelUtils {
         BObject textRecordChannel = ValueCreator.createObjectValue(getIOPackage(), TEXT_RECORD_CHANNEL_STRUCT);
         RecordChannelUtils.initRecordChannel(textRecordChannel, characterChannel, fs, rs, format);
 
+        textRecordChannel.addNativeData(CSV_RETURN_TYPE, typeDesc);
+
         BStream out = ValueCreator.createStreamValue(
                 TypeCreator.createStreamType(describingType), textRecordChannel);
 
         return out;
     }
+
+
 
 
 //    public static Object getNext(BObject channel, BTypedesc typeDesc) {

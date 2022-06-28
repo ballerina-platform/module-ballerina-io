@@ -47,7 +47,7 @@ public class IOConstants {
     /**
      * The name of the csv record channel which will be represented through the native struct.
      */
-    public static final String CSV_RECORD_CHANNEL_NAME = "csv_record";
+    public static final String CSV_RETURN_TYPE = "csv_return_type";
 
     /**
      * The size of the buffer allocated for reading bytes from the channel (15~ KB).

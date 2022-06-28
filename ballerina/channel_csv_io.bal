@@ -75,15 +75,15 @@ isolated function channelWriteCsv(WritableChannel writableChannel, string[][]|ma
     return;
 }
 
-isolated function channelWriteCsvFromStream(WritableChannel writableChannel, stream<string[], Error?>|stream<map<anydata>, Error?> csvStream) returns
+isolated function channelWriteCsvFromStream(WritableChannel writableChannel, stream<string[]|map<anydata>, Error?> csvStream) returns
 Error? {
     WritableCSVChannel csvChannel = check getWritableCSVChannel(writableChannel);
-    record {|string[]|map<anydata> value;|}|Error? csvRecord = csvStream.next();
     if (csvStream is stream<string[], Error?>){
+        record {|string[] value;|}|Error? csvRecordString = csvStream.next();
         do {
-            while csvRecord is record {|string[] value;|} {
-                check csvChannel.write(csvRecord.value);
-                csvRecord = csvStream.next();
+            while csvRecordString is record {|string[] value;|} {
+                check csvChannel.write(csvRecordString.value);
+                csvRecordString = csvStream.next();
             }
             check csvChannel.close();
         } on fail Error err {
@@ -91,24 +91,29 @@ Error? {
             return err;
         }
     } else if (csvStream is stream<map<anydata>, Error?>){
-        string[] keys=csvRecord.keys();
+        record {|map<anydata> value;|}? csvRecordMap = check csvStream.next();
+        string[] keys=[];
+        if csvRecordMap !is () {
+            keys = csvRecordMap["value"].keys();
+        }
         check csvChannel.write(keys); 
         do {
-            while csvRecord is record {|string[]|map<anydata> value;|} {
+            while csvRecordMap is record {|map<anydata> value;|} {
                 string[] temp=[];
                 int count=0;
-                foreach string t in keys{
-                    temp[count]=csvRecord[t].toString();
+                foreach any t in keys{
+                    temp[count]=csvRecordMap.value[t].toString();
                     count+=1;
                 }
                 check csvChannel.write(temp);                
-                csvRecord = csvStream.next();
+                csvRecordMap = check csvStream.next();
             }
         } on fail Error err {
             check csvChannel.close();
             return err;
         }   
     }
+    
     return;
 }
 
