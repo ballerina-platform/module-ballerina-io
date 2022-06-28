@@ -67,12 +67,12 @@ public class CsvChannelUtils {
 
 
 
-    public static Object fileReadCsv(BString path, int skipHeaders, BString charset, BTypedesc typeDesc) {
+    public static Object fileReadCsv(BString path, int skipHeaders, BTypedesc typeDesc) {
         Type describingType = typeDesc.getDescribingType();
         BObject byteChannel = (BObject) ByteChannelUtils.openReadableFile(path);
 
         BObject characterChannel = ValueCreator.createObjectValue(getIOPackage(), READ_CHARACTER_CHANNEL_STRUCT);
-        CharacterChannelUtils.initCharacterChannel(characterChannel, byteChannel, charset);
+        CharacterChannelUtils.initCharacterChannel(characterChannel, byteChannel, StringUtils.fromString("UTF-8"));
 
         BString fs = StringUtils.fromString(",");
         BString rs = StringUtils.fromString("");
@@ -84,22 +84,22 @@ public class CsvChannelUtils {
 
         while (hasNext(textRecordChannel)) {
             if (describingType.getTag() == TypeTags.RECORD_TYPE_TAG) {
-                 return getAll(textRecordChannel, typeDesc);
+                 return getAll(textRecordChannel, skipHeaders, typeDesc);
             } else {
-                return getAll(textRecordChannel, typeDesc);
+                return getAll(textRecordChannel, skipHeaders, typeDesc);
             }
         }
         return null;
     }
 
 
-    public static BStream createCsvAsStream(BString path, BString charset, BTypedesc typeDesc) {
+    public static BStream createCsvAsStream(BString path, BTypedesc typeDesc) {
         Type describingType = typeDesc.getDescribingType();
 
         BObject byteChannel = (BObject) ByteChannelUtils.openReadableFile(path);
 
         BObject characterChannel = ValueCreator.createObjectValue(getIOPackage(), READ_CHARACTER_CHANNEL_STRUCT);
-        CharacterChannelUtils.initCharacterChannel(characterChannel, byteChannel, charset);
+        CharacterChannelUtils.initCharacterChannel(characterChannel, byteChannel, StringUtils.fromString("UTF-8"));
 
         BString fs = StringUtils.fromString(",");
         BString rs = StringUtils.fromString("");

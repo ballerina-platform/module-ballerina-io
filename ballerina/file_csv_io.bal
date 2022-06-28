@@ -15,16 +15,16 @@
 // under the License.
 import ballerina/jballerina.java;
 
-# Read file content as a CSV.
-# ```ballerina
-# string[][]|io:Error content = io:fileReadCsv("./resources/myfile.csv");
-# ```
-# + path - The CSV file path
-# + skipHeaders - Number of headers, which should be skipped prior to reading records
-# + return - The entire CSV content in the channel as an array of string arrays or an `io:Error`
-public isolated function fileReadCsv(string path, int skipHeaders = 0) returns string[][]|Error {
-    return channelReadCsv(check openReadableCsvFile(path, COMMA, DEFAULT_ENCODING, skipHeaders));
-}
+// # Read file content as a CSV.
+// # ```ballerina
+// # string[][]|io:Error content = io:fileReadCsv("./resources/myfile.csv");
+// # ```
+// # + path - The CSV file path
+// # + skipHeaders - Number of headers, which should be skipped prior to reading records
+// # + return - The entire CSV content in the channel as an array of string arrays or an `io:Error`
+// public isolated function fileReadCsv(string path, int skipHeaders = 0) returns string[][]|Error {
+//     return channelReadCsv(check openReadableCsvFile(path, COMMA, DEFAULT_ENCODING, skipHeaders));
+// }
 
 # Read file content as a CSV.
 # ```ballerina
@@ -33,7 +33,7 @@ public isolated function fileReadCsv(string path, int skipHeaders = 0) returns s
 # + path - The CSV file path
 # + skipHeaders - Number of headers, which should be skipped prior to reading records
 # + return - The entire CSV content in the channel as an array of string arrays or an `io:Error`
-public isolated function readFileCsv(string path, int skipHeaders = 0, string charset="UTF-8", typedesc<string[]|map<anydata>> returntype = <>) returns returntype[]|Error = @java:Method{
+public isolated function fileReadCsv(string path, int skipHeaders = 0, typedesc<string[]|map<anydata>> returntype = <>) returns returntype[]|Error = @java:Method{
     name: "fileReadCsv",
     'class: "io.ballerina.stdlib.io.nativeimpl.CsvChannelUtils"
 } external;
@@ -45,7 +45,7 @@ public isolated function readFileCsv(string path, int skipHeaders = 0, string ch
 # + path - The CSV file path
 # + return - The entire CSV content in the channel a stream of string arrays or an `io:Error`
 # + returntype - The type of the return value (string[] or map<anydata>)
-public isolated function readFileCsvAsStream(string path, string charset="UTF-8", typedesc<string[]|map<anydata>> returntype = <>) returns stream<returntype, Error?>|Error = @java:Method{
+public isolated function readFileCsvAsStream(string path, typedesc<string[]|map<anydata>> returntype = <>) returns stream<returntype, Error?>|Error = @java:Method{
     name: "createCsvAsStream",
     'class: "io.ballerina.stdlib.io.nativeimpl.CsvChannelUtils"
 } external;

@@ -108,11 +108,11 @@ isolated function testReadCsv() returns Error? {
 @test:Config {}
 isolated function testReadCsvRecord() returns Error? {
     string filePath = RESOURCES_BASE_PATH + "datafiles/io/records/sample5.csv";
-    string[][] input = check readFileCsv(filePath);
+    string[][] input = check fileReadCsv(filePath);
     string[][] expected = [["User1", "WSO2", "10000.50"],["User2", "WSO2", "20000.50"],["User3", "WSO2", "30000.0"]];
     test:assertEquals(input[0][0], "User1");
     test:assertEquals(input[0][2], " 10000.50");
-    Employee[] input2 = check readFileCsv(filePath);
+    Employee[] input2 = check fileReadCsv(filePath);
     test:assertEquals(input2[0].id, "User1");
     test:assertEquals(input2[0].salary, 10000.50f);
 

@@ -44,6 +44,7 @@ import java.nio.channels.ClosedChannelException;
 import java.util.ArrayList;
 import java.util.Map;
 
+
 import static io.ballerina.stdlib.io.utils.IOConstants.TXT_RECORD_CHANNEL_NAME;
 
 /**
@@ -124,7 +125,10 @@ public class RecordChannelUtils {
         }
     }
 
-    public static Object getAll(BObject channel, BTypedesc typeDesc) {
+
+
+    public static Object getAll(BObject channel, int headers, BTypedesc typeDesc) {
+        int skipHeaders = headers;
         Type describingType = typeDesc.getDescribingType();
         if (isChannelClosed(channel)) {
             return IOUtils.createError("Record channel is already closed.");
@@ -140,19 +144,19 @@ public class RecordChannelUtils {
                     ArrayList<Object> ou = new ArrayList<Object>();
                     while (textRecordChannel.hasNext()) {
                         String[] record = textRecordChannel.read();
-                        final Map<String, Object> struct = CsvChannelUtils.getStruct(record, structType);
-                        if (struct != null) {
-                            ou.add(ValueCreator.createRecordValue(describingType.getPackage(), describingType.getName(),
-                                    struct));
+                        if (skipHeaders == 1) {
+                            skipHeaders = 0;
                         } else {
-                            return IOUtils.createError("Record type and CSV file does not match.");
+                            final Map<String, Object> struct = CsvChannelUtils.getStruct(record, structType);
+                            if (struct != null) {
+                                ou.add(ValueCreator.createRecordValue(describingType.getPackage(),
+                                        describingType.getName(), struct));
+                            } else {
+                                return IOUtils.createError("Record type and CSV file does not match.");
+                            }
                         }
+
                     }
-//                    Object[] out = new Object[ou.size()];
-//                    int count = 0;
-//                    for (Object i : ou) {
-//                        out[count] = i;
-//                    }
                     Object[] out = ou.toArray();
 
                     return ValueCreator.createArrayValue(out, TypeCreator.createArrayType(describingType));
@@ -160,13 +164,12 @@ public class RecordChannelUtils {
                     ArrayList<BArray> ou = new ArrayList<BArray>();
                     while (textRecordChannel.hasNext()) {
                         String[] record = textRecordChannel.read();
-                        ou.add(StringUtils.fromStringArray(record));
+                        if (skipHeaders == 1) {
+                            skipHeaders = 0;
+                        } else {
+                            ou.add(StringUtils.fromStringArray(record));
+                        }
                     }
-//                    Object[] out = new Object[ou.size()];
-//                    int count = 0;
-//                    for (Object i : ou) {
-//                        out[count] = i;
-//                    }
                     Object[] out = ou.toArray();
                     return ValueCreator.createArrayValue(out, TypeCreator.createArrayType(describingType));
                 }
