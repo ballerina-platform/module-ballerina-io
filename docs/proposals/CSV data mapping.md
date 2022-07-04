@@ -23,8 +23,6 @@ Current CSV read/write APIs supports reading and writing as string[][] values. I
 
 Until now, user doesn't have a direct data mapping method to get an array of user defined records from CSVs.
 
-
-
 ## Description
 
 ```fileReadCsv(), fileWriteCsv(), fileReadCsvAsStream(), fileWriteCsvFromStream()```  APIs are modified to support data mapping in CSV read/write operations. Existing Currently ```fileReadCsv()``` API returns String[][] and modified API can return either String[][] or record[] depending on the return type. Similarly ```fileWriteCsv()``` currently accepts String[][] inputs and modified API can accept both String[][] and record[].
