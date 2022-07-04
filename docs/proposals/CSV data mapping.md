@@ -27,9 +27,8 @@ Until now, user doesn't have a direct data mapping method to get an array of use
 ```fileReadCsv(), fileWriteCsv(), fileReadCsvAsStream(), fileWriteCsvFromStream()```  APIs are modified to support data mapping in CSV read/write operations. 
 * The ```fileReadCsv()``` API currently returns String[][] and it will be modified to return either String[][] or record[] depending on the return type. 
 * The ```fileWriteCsv()``` API currently accepts String[][] inputs and it will be modified to accept both String[][] and record[].
-
-* The ```fileReadCsvAsStream()``` currently returns ```stream<string[], Error?>|Error``` and it will be modified to return ```stream<string[]|record{}, Error?>|Error```.  
-* The ```fileWriteCsvFromStream()``` currently accepts ```stream<string[], Error?>```  as the input and it will be modified to accept ```stream<string[]|record{}, Error?>```.
+* The ```fileReadCsvAsStream()``` API currently returns ```stream<string[], Error?>|Error``` and it will be modified to return ```stream<string[]|record{}, Error?>|Error```.  
+* The ```fileWriteCsvFromStream()``` API currently accepts ```stream<string[], Error?>```  as the input and it will be modified to accept ```stream<string[]|record{}, Error?>```.
 
 ### Modified APIs
 ```ballerina
