@@ -32,7 +32,7 @@ Until now, user doesn't have a direct data mapping method to get an array of use
 * The ```fileReadCsvAsStream()``` currently returns ```stream<string[], Error?>|Error``` and it will be modified to return ```stream<string[]|record{}, Error?>|Error```.  
 * The ```fileWriteCsvFromStream()``` currently accepts ```stream<string[], Error?>```  as the input and it will be modified to accept ```stream<string[]|record{}, Error?>```.
 
-modified APIs
+### Modified APIs
 ```ballerina
 # Read file content as a CSV.
 # + path - The CSV file path
