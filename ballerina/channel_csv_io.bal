@@ -54,7 +54,7 @@ isolated function channelWriteCsv(WritableChannel writableChannel, string[][]|ma
     else if(content is map<anydata>[]) {
         map<anydata> first = content[0];
         string[] keys=first.keys();
-        check csvChannel.write(keys);
+        //check csvChannel.write(keys);
         foreach map<anydata> r in content{
             string[] temp=[];
             int count=0;
@@ -96,7 +96,7 @@ Error? {
         if csvRecordMap !is () {
             keys = csvRecordMap["value"].keys();
         }
-        //check csvChannel.write(keys); 
+        //check csvChannel.write(keys);
         do {
             while csvRecordMap is record {|map<anydata> value;|} {
                 string[] temp=[];
