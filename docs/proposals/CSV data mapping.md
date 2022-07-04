@@ -1,11 +1,10 @@
-# Proposal: Introduce APIs to perform conversions between the Map/Ballerina record and XML
+# Proposal: Support Data Mapping in CSV read/write operations
 
 _Owners_: @daneshk @sahanhe  
 _Reviewers_: @daneshk  
 _Created_: 2022/07/04   
 _Updated_: -  
 _Issues_: [#3004](https://github.com/ballerina-platform/ballerina-standard-library/issues/3004#event-6837345074)
-
 
 ## Summary
 
@@ -23,8 +22,6 @@ Current CSV read/write APIs supports reading and writing as string[][] values. I
 
 Until now, user doesn't have a direct data mapping method to get an array of user defined records from CSVs.
 
-
-
 ## Description
 
 ```fileReadCsv(), fileWriteCsv(), fileReadCsvAsStream(), fileWriteCsvFromStream()```  APIs are modified to support data mapping in CSV read/write operations. Existing Currently ```fileReadCsv()``` API returns String[][] and modified API can return either String[][] or record[] depending on the return type. Similarly ```fileWriteCsv()``` currently accepts String[][] inputs and modified API can accept both String[][] and record[].
@@ -36,6 +33,7 @@ modified APIs
 # Read file content as a CSV.
 # + path - The CSV file path
 # + skipHeaders - Number of headers, which should be skipped prior to reading records
+# + returnType - The type of the return value (string[] or record{})
 # + return - The entire CSV content in the channel as an array of string arrays, an array of records or an `io:Error`
 
 public isolated function fileReadCsv(string path, int skipHeaders = 0, typedesc<record{}|string[]> returnType = <>) returns returnType[]|Error = @java:Method ;
@@ -54,8 +52,8 @@ public isolated function fileWriteCsv(string path, string[][]|map<anydata>[] con
 ```ballerina
 # Read file content as a CSV.
 # + path - The CSV file path
+# + returnType - The type of the return value (string[] or map<anydata>)
 # + return - The entire CSV content in the channel a stream of string arrays, an stream of records or an `io:Error`
-
 public isolated function fileReadCsvAsStream(string path, typedesc<string[]|record{}>  returnType = <>) returns  stream<returnType, Error?>|Error ;
 ```
 
