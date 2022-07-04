@@ -108,7 +108,7 @@ isolated function testCsvStreamContent() returns error? {
     float expectedValue = 60001.00;
     float total = 0;
     stream<Employee{}, io:Error?> csvStream = check io:fileReadCsvAsStream(filePath);
-    check csvStream.forEach(function(Employee{} x) {
+    check csvStream.forEach(function(Employee x) {
                               total = total + x.salary;
                           });
     test:assertEquals(total, expectedValue);
