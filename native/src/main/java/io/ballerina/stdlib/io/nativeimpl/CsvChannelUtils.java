@@ -46,11 +46,6 @@ import static io.ballerina.stdlib.io.utils.IOConstants.CSV_RETURN_TYPE;
 import static io.ballerina.stdlib.io.utils.IOUtils.getIOPackage;
 
 
-
-
-//import static io.ballerina.stdlib.io.utils.IOConstants.CSV_RECORD_CHANNEL_NAME;
-//import static io.ballerina.stdlib.io.utils.IOConstants.TXT_RECORD_CHANNEL_NAME;
-
 /**
  * This class hold Java inter-ops bridging functions for io# *CSVChannel/*RTextRecordChannel.
  *
@@ -60,34 +55,24 @@ import static io.ballerina.stdlib.io.utils.IOUtils.getIOPackage;
 
 
 public class CsvChannelUtils {
-
-    private static final String READ_CHARACTER_CHANNEL_STRUCT = "ReadableByteChannel";
-    private static final String TEXT_RECORD_CHANNEL_STRUCT = "ReadableByteChannel";
     private static final Logger log = LoggerFactory.getLogger(CsvChannelUtils.class);
-
-
-
     public static Object fileReadCsv(BString path, int skipHeaders, BTypedesc typeDesc) {
-        Type describingType = typeDesc.getDescribingType();
         BObject byteChannel = (BObject) ByteChannelUtils.openReadableFile(path);
 
-        BObject characterChannel = ValueCreator.createObjectValue(getIOPackage(), READ_CHARACTER_CHANNEL_STRUCT);
+        BObject characterChannel = ValueCreator.createObjectValue(getIOPackage(), "ReadableByteChannel");
         CharacterChannelUtils.initCharacterChannel(characterChannel, byteChannel, StringUtils.fromString("UTF-8"));
 
         BString fs = StringUtils.fromString(",");
         BString rs = StringUtils.fromString("");
         BString format = StringUtils.fromString("CSV");
-        BObject textRecordChannel = ValueCreator.createObjectValue(getIOPackage(), TEXT_RECORD_CHANNEL_STRUCT);
+        BObject textRecordChannel = ValueCreator.createObjectValue(getIOPackage(), "ReadableByteChannel");
         RecordChannelUtils.initRecordChannel(textRecordChannel, characterChannel, fs, rs, format);
 
         textRecordChannel.addNativeData(CSV_RETURN_TYPE, typeDesc);
 
         while (hasNext(textRecordChannel)) {
-            if (describingType.getTag() == TypeTags.RECORD_TYPE_TAG) {
-                 return getAll(textRecordChannel, skipHeaders, typeDesc);
-            } else {
-                return getAll(textRecordChannel, skipHeaders, typeDesc);
-            }
+
+            return getAll(textRecordChannel, skipHeaders, typeDesc);
         }
         return null;
     }
@@ -95,62 +80,26 @@ public class CsvChannelUtils {
 
     public static BStream createCsvAsStream(BString path, BTypedesc typeDesc) {
         Type describingType = typeDesc.getDescribingType();
-
         BObject byteChannel = (BObject) ByteChannelUtils.openReadableFile(path);
 
-        BObject characterChannel = ValueCreator.createObjectValue(getIOPackage(), READ_CHARACTER_CHANNEL_STRUCT);
+        BObject characterChannel = ValueCreator.createObjectValue(getIOPackage(), "ReadableByteChannel");
         CharacterChannelUtils.initCharacterChannel(characterChannel, byteChannel, StringUtils.fromString("UTF-8"));
 
         BString fs = StringUtils.fromString(",");
         BString rs = StringUtils.fromString("");
         BString format = StringUtils.fromString("CSV");
-        BObject textRecordChannel = ValueCreator.createObjectValue(getIOPackage(), TEXT_RECORD_CHANNEL_STRUCT);
+        BObject textRecordChannel = ValueCreator.createObjectValue(getIOPackage(), "ReadableByteChannel");
         RecordChannelUtils.initRecordChannel(textRecordChannel, characterChannel, fs, rs, format);
+        BObject recordIterator = ValueCreator.createObjectValue(getIOPackage(), "CsvIterator");
 
-        textRecordChannel.addNativeData(CSV_RETURN_TYPE, typeDesc);
+        recordIterator.addNativeData(CSV_RETURN_TYPE, typeDesc);
+        recordIterator.addNativeData("ITERATOR_NAME", textRecordChannel);
 
         BStream out = ValueCreator.createStreamValue(
-                TypeCreator.createStreamType(describingType), textRecordChannel);
+                TypeCreator.createStreamType(describingType), recordIterator);
 
         return out;
     }
-
-
-
-
-//    public static Object getNext(BObject channel, BTypedesc typeDesc) {
-//        Type describingType = typeDesc.getDescribingType();
-//        if (isChannelClosed(channel)) {
-//            return IOUtils.createError("Record channel is already closed.");
-//        }
-//        DelimitedRecordChannel textRecordChannel =
-//                (DelimitedRecordChannel) channel.getNativeData(CSV_RECORD_CHANNEL_NAME);
-//        if (textRecordChannel.hasReachedEnd()) {
-//            return IOUtils.createEoFError();
-//        } else {
-//            try {
-//                if (describingType.getTag() == TypeTags.RECORD_TYPE_TAG) {
-//                    String[] records = textRecordChannel.read();
-//                    StructureType structType = (StructureType) describingType;
-//                    final Map<String, Object> struct = getStruct(records, structType);
-//                    return ValueCreator.createRecordValue(describingType.getPackage(), describingType.getName(),
-//                            struct);
-//
-//                } else {
-//                    String[] records = textRecordChannel.read();
-//                    return StringUtils.fromStringArray(records);
-//
-//                }
-//
-//            } catch (BallerinaIOException e) {
-//                log.error("error occurred while reading next text record from ReadableTextRecordChannel", e);
-//                return IOUtils.createError(e);
-//            }
-//        }
-//    }
-
-
-
 
     public static Map<String, Object> getStruct(String[] fields, final StructureType structType) {
         Map<String, Field> internalStructFields = structType.getFields();

@@ -96,7 +96,7 @@ Error? {
         if csvRecordMap !is () {
             keys = csvRecordMap["value"].keys();
         }
-        check csvChannel.write(keys); 
+        //check csvChannel.write(keys); 
         do {
             while csvRecordMap is record {|map<anydata> value;|} {
                 string[] temp=[];

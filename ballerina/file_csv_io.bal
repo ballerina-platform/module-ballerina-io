@@ -33,6 +33,7 @@ import ballerina/jballerina.java;
 # + path - The CSV file path
 # + skipHeaders - Number of headers, which should be skipped prior to reading records
 # + return - The entire CSV content in the channel as an array of string arrays or an `io:Error`
+# + returntype - The type of the return value (string[] or map<anydata>)
 public isolated function fileReadCsv(string path, int skipHeaders = 0, typedesc<string[]|map<anydata>> returntype = <>) returns returntype[]|Error = @java:Method{
     name: "fileReadCsv",
     'class: "io.ballerina.stdlib.io.nativeimpl.CsvChannelUtils"
@@ -45,20 +46,20 @@ public isolated function fileReadCsv(string path, int skipHeaders = 0, typedesc<
 # + path - The CSV file path
 # + return - The entire CSV content in the channel a stream of string arrays or an `io:Error`
 # + returntype - The type of the return value (string[] or map<anydata>)
-public isolated function readFileCsvAsStream(string path, typedesc<string[]|map<anydata>> returntype = <>) returns stream<returntype, Error?>|Error = @java:Method{
+public isolated function fileReadCsvAsStream(string path, typedesc<string[]|map<anydata>> returntype = <>) returns stream<returntype, Error?>|Error = @java:Method{
     name: "createCsvAsStream",
     'class: "io.ballerina.stdlib.io.nativeimpl.CsvChannelUtils"
 } external;
 
-# Read file content as a CSV.
-# ```ballerina
-# stream<string[], io:Error?>|io:Error content = io:fileReadCsvAsStream("./resources/myfile.csv");
-# ```
-# + path - The CSV file path
-# + return - The entire CSV content in the channel a stream of string arrays or an `io:Error`
-public isolated function fileReadCsvAsStream(string path) returns stream<string[], Error?>|Error {
-    return channelReadCsvAsStream(check openReadableCsvFile(path));
-}
+// # Read file content as a CSV.
+// # ```ballerina
+// # stream<string[], io:Error?>|io:Error content = io:fileReadCsvAsStream("./resources/myfile.csv");
+// # ```
+// # + path - The CSV file path
+// # + return - The entire CSV content in the channel a stream of string arrays or an `io:Error`
+// public isolated function fileReadCsvAsStream(string path) returns stream<string[], Error?>|Error {
+//     return channelReadCsvAsStream(check openReadableCsvFile(path));
+// }
 
 # Write CSV content to a file.
 # ```ballerina

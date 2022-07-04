@@ -45,6 +45,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 
+import static io.ballerina.stdlib.io.utils.IOConstants.CSV_RETURN_TYPE;
 import static io.ballerina.stdlib.io.utils.IOConstants.TXT_RECORD_CHANNEL_NAME;
 
 /**
@@ -127,6 +128,8 @@ public class RecordChannelUtils {
 
 
 
+
+
     public static Object getAll(BObject channel, int headers, BTypedesc typeDesc) {
         int skipHeaders = headers;
         Type describingType = typeDesc.getDescribingType();
@@ -181,37 +184,39 @@ public class RecordChannelUtils {
         }
     }
 
-    public static Object streamNext(BObject channel, BTypedesc typeDesc) {
-        Type describingType = typeDesc.getDescribingType();
-        if (isChannelClosed(channel)) {
-            return IOUtils.createError("Record channel is already closed.");
-        }
-        DelimitedRecordChannel textRecordChannel =
-                (DelimitedRecordChannel) channel.getNativeData(TXT_RECORD_CHANNEL_NAME);
-        if (textRecordChannel.hasReachedEnd()) {
-            return IOUtils.createEoFError();
-        } else {
-            try {
-                if (describingType.getTag() == TypeTags.RECORD_TYPE_TAG) {
-                    StructureType structType = (StructureType) describingType;
-                    String[] record = textRecordChannel.read();
-                    final Map<String, Object> struct = CsvChannelUtils.getStruct(record, structType);
-                    if (struct != null) {
-                        return ValueCreator.createRecordValue(describingType.getPackage(), describingType.getName(),
-                                    struct);
-                    } else {
-                        return IOUtils.createError("Record type and CSV file does not match.");
-                    }
-                } else {
-                    String[] record = textRecordChannel.read();
-                    return StringUtils.fromStringArray(record);
+    public static Object streamNext(BObject iterator) {
+        BObject channel = (BObject) iterator.getNativeData("ITERATOR_NAME");
+        BufferedReader bufferedReader = (BufferedReader) channel.getNativeData(BUFFERED_READER_ENTRY);
 
-                }
-            } catch (BallerinaIOException e) {
-                log.error("error occurred while reading next text record from ReadableTextRecordChannel", e);
-                return IOUtils.createError(e);
+        BTypedesc typeDesc = (BTypedesc) iterator.getNativeData(CSV_RETURN_TYPE);
+        Type describingType = typeDesc.getDescribingType();
+
+        try {
+            String line = bufferedReader.readLine();
+            if (line == null) {
+                bufferedReader.close();
+                return IOUtils.createEoFError();
             }
+            DelimitedRecordChannel textRecordChannel =
+                    (DelimitedRecordChannel) channel.getNativeData(TXT_RECORD_CHANNEL_NAME);
+            if (describingType.getTag() == TypeTags.RECORD_TYPE_TAG) {
+                StructureType structType = (StructureType) describingType;
+                String[] record = textRecordChannel.getFields(line);
+                final Map<String, Object> struct = CsvChannelUtils.getStruct(record, structType);
+                if (struct != null) {
+                    return ValueCreator.createRecordValue(describingType.getPackage(), describingType.getName(),
+                                struct);
+                } else {
+                    return IOUtils.createError("Record type and CSV file does not match.");
+                }
+            } else {
+                String[] records = textRecordChannel.getFields(line);
+                return StringUtils.fromStringArray(records);
+            }
+        } catch (IOException e) {
+            return IOUtils.createError(e);
         }
+
     }
 
 
@@ -271,6 +276,20 @@ public class RecordChannelUtils {
     }
 
     public static Object closeBufferedReader(BObject channel) {
+        try {
+            BufferedReader bufferedReader = (BufferedReader)
+                    channel.getNativeData(BUFFERED_READER_ENTRY);
+            bufferedReader.close();
+        } catch (ClosedChannelException e) {
+            return IOUtils.createError("Record channel is already closed.");
+        } catch (IOException e) {
+            return IOUtils.createError(e);
+        }
+        return null;
+    }
+
+    public static Object closeStream(BObject iterator) {
+        BObject channel = (BObject) iterator.getNativeData("ITERATOR_NAME");
         try {
             BufferedReader bufferedReader = (BufferedReader)
                     channel.getNativeData(BUFFERED_READER_ENTRY);
