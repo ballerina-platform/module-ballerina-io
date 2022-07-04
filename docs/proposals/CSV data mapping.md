@@ -13,7 +13,7 @@ Current CSV read/write APIs supports reading and writing as string[][] values. I
 
 ## Goals
 
-* Adding data mapping feature to CSV READ/Write operations to return an array of particular record defined by the user.
+* Add data mapping feature to CSV READ/Write operations to return an array of particular record defined by the user.
 
 * Change ```fileReadCsv, fileWriteCsv, fileReadCsvAsStream, fileWriteCsvFromStream``` to support data mapping.
 
