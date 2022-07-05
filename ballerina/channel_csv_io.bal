@@ -85,17 +85,13 @@ Error? {
         }
     } else if (csvStream is stream<map<anydata>, Error?>) {
         record {|map<anydata> value;|}? csvRecordMap = check csvStream.next();
-        string[] keys = [];
-        if csvRecordMap !is () {
-            keys = csvRecordMap["value"].keys();
-        }
         do {
             while csvRecordMap is record {|map<anydata> value;|} {
-                string[] sValue = [];
-                foreach string t in keys {
-                    sValue.push(csvRecordMap.value[t].toString());//change
+                string[] sValues = [];
+                foreach [string, anydata] [_, value] in csvRecordMap["value"].entries() {
+                    sValues.push(value.toString());
                 }
-                check csvChannel.write(sValue);
+                check csvChannel.write(sValues);
                 csvRecordMap = check csvStream.next();
             }
         } on fail Error err {
@@ -103,7 +99,6 @@ Error? {
             return err;
         }
     }
-
     return;
 }
 

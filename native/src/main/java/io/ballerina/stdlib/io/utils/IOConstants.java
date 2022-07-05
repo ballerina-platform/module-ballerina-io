@@ -35,6 +35,11 @@ public class IOConstants {
     public static final String DATA_CHANNEL_NAME = "data_channel";
 
     /**
+     * Represents the name of the csv iterator.
+     */
+    public static final String ITERATOR_NAME = "iterator_name";
+
+    /**
      * The name of the character channel which will be represented through the native struct.
      */
     public static final String CHARACTER_CHANNEL_NAME = "char_channel";
