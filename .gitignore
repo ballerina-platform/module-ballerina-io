@@ -47,4 +47,3 @@ velocity.log*
 examples/**/Dependencies.toml
 load-tests/**/Dependencies.toml
 ballerina/Dependencies 2.toml
-$(pwd)
