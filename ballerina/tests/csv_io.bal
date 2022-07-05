@@ -123,6 +123,7 @@ isolated function testReadCsvRecord() returns Error? {
     Employee[] input2 = check fileReadCsv(filePath);
     test:assertEquals(input2[0].id, "User1");
     test:assertEquals(input2[0].salary, 10000.50f);
+
 }
 
 @test:Config {}
@@ -134,7 +135,7 @@ function testReadFileCsvAsStreamUsingResourceFile() returns error? {
     check result.forEach(function(string[] val) {
         int j = 0;
         foreach string s in val {
-            test:assertEquals(s.trim(), expected[i][j]);
+            test:assertEquals('string:trim(s), 'string:trim(expected[i][j]));
             j += 1;
         }
         i += 1;
@@ -155,44 +156,24 @@ function testReadFileCsvAsStreamUsingResourceFileRecord() returns error? {
     test:assertEquals(i, 3);
 }
 
+
 @test:Config {}
 isolated function testWriteRecordCsv() returns Error? {
     Employee E ={
     id:"1",
-    name:"Foo1",
-    salary:100000.0f
-    };
-    Employee B ={
-    id:"2",
-    name:"Foo2",
+    name:"Foo",
     salary:300000.0f
     };
+    Employee B ={
+    id:"1",
+    name:"Foo",
+    salary:300000.0f
+    };
+
+
     string filePath = TEMP_DIR + "recordsDefault_records.csv";
     Employee[] content1 = [E,B];
     test:assertEquals(check fileWriteCsv(filePath,content1),()) ;
-}
-
-@test:Config {dependsOn:[testWriteRecordCsv] }
-function testWriteRecordCsvRead() returns error? {
-    Employee E ={
-    id:"1",
-    name:"Foo1",
-    salary:100000.0f
-    };
-    Employee B ={
-    id:"2",
-    name:"Foo2",
-    salary:300000.0f
-    };
-    Employee[] expected = [E,B];
-    string filePath = TEMP_DIR + "recordsDefault_records.csv";
-    stream< Employee, Error?> result = check fileReadCsvAsStream(filePath);
-    int i = 0;
-    check result.forEach(function(Employee val) {
-        test:assertEquals(val.salary, expected[i].salary);
-        i=i+1;
-    });
-    test:assertEquals(i, 2);
 }
 
 @test:Config {}
@@ -211,29 +192,6 @@ isolated function testWriteRecordCsvAsStream() returns Error? {
     string filePath = TEMP_DIR + "recordsDefault_stream.csv";
     Employee[] content1 = [E,B];
     test:assertEquals(check fileWriteCsvFromStream(filePath,content1.toStream()),()) ;
-}
-
-@test:Config {dependsOn:[testWriteRecordCsvAsStream] }
-function testWriteRecordCsvAsStreamRead() returns error? {
-    Employee E ={
-    id:"1",
-    name:"Foo1",
-    salary:100000.0f
-    };
-    Employee B ={
-    id:"2",
-    name:"Foo2",
-    salary:300000.0f
-    };
-    Employee[] expected = [E,B];
-    string filePath = TEMP_DIR + "recordsDefault_stream.csv";
-    stream< Employee, Error?> result = check fileReadCsvAsStream(filePath);
-    int i = 0;
-    check result.forEach(function(Employee val) {
-        test:assertEquals(val.salary, expected[i].salary);
-        i=i+1;
-    });
-    test:assertEquals(i, 2);
 }
 
 @test:Config {}
@@ -518,6 +476,7 @@ isolated function testTableContent4() returns error? {
     test:assertEquals(total, expectedValue);
     check csvChannel.close();
 }
+
 
 @test:Config {}
 isolated function testTableWithNull() returns error? {

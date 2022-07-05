@@ -19,12 +19,16 @@ import ballerina/jballerina.java;
 # The iterator for the stream returned in `readFileCsvAsStream` function to be used to override the default behaviour of `CSVStream`.
 public class CsvIterator {
     private boolean isClosed = false;
+    //private boolean headers = false; 
+
     public isolated function next() returns record {|anydata value;|}|error? {
         if self.isClosed {
             return closedStreamInvocationError();
         } else {
             record{}|string[]|Error? result = nextResult(self);
-            if (result is record{}) || (result is string[]) {
+            if result is record{} {
+                return {value: result};
+            } else if result is string[] {
                 return {value: result};
             } else if result is EofError {
                 self.isClosed = true;
@@ -38,15 +42,16 @@ public class CsvIterator {
 
     public isolated function close() returns Error? {
         if !self.isClosed {
-            var closeResult = closeResult(self);
+            var closeResult = check closeResult(self);
             if closeResult is () {
                 self.isClosed = true;
             }
             return closeResult;
         }
         return;
-    }
+        }
 }
+
 
 isolated function nextResult(CsvIterator iterator) returns record{}|string[]|Error? = @java:Method {
     name: "streamNext",
