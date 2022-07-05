@@ -44,9 +44,6 @@ isolated function testReadRecordLengths() returns Error? {
     test:assertEquals((<Error>endResult).message(), "EoF when reading from the channel");
 
     check recordChannel.close();
-
-    
-    
 }
 
 @test:Config {}

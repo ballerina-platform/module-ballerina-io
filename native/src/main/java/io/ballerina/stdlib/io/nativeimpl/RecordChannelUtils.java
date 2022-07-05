@@ -126,11 +126,7 @@ public class RecordChannelUtils {
         }
     }
 
-
-
-
-
-    public static Object getAll(BObject channel, int headers, BTypedesc typeDesc) {
+    public static Object getAllRecords(BObject channel, int headers, BTypedesc typeDesc) {
         int skipHeaders = headers;
         Type describingType = typeDesc.getDescribingType();
         if (isChannelClosed(channel)) {
@@ -144,7 +140,7 @@ public class RecordChannelUtils {
             try {
                 if (describingType.getTag() == TypeTags.RECORD_TYPE_TAG) {
                     StructureType structType = (StructureType) describingType;
-                    ArrayList<Object> ou = new ArrayList<Object>();
+                    ArrayList<Object> outList = new ArrayList<Object>();
                     while (textRecordChannel.hasNext()) {
                         String[] record = textRecordChannel.read();
                         if (skipHeaders == 1) {
@@ -152,7 +148,7 @@ public class RecordChannelUtils {
                         } else {
                             final Map<String, Object> struct = CsvChannelUtils.getStruct(record, structType);
                             if (struct != null) {
-                                ou.add(ValueCreator.createRecordValue(describingType.getPackage(),
+                                outList.add(ValueCreator.createRecordValue(describingType.getPackage(),
                                         describingType.getName(), struct));
                             } else {
                                 return IOUtils.createError("Record type and CSV file does not match.");
@@ -160,23 +156,22 @@ public class RecordChannelUtils {
                         }
 
                     }
-                    Object[] out = ou.toArray();
+                    Object[] out = outList.toArray();
 
                     return ValueCreator.createArrayValue(out, TypeCreator.createArrayType(describingType));
                 } else { //if (describingType.getTag() == TypeTags.ARRAY_TAG)
-                    ArrayList<BArray> ou = new ArrayList<BArray>();
+                    ArrayList<BArray> outList = new ArrayList<BArray>();
                     while (textRecordChannel.hasNext()) {
                         String[] record = textRecordChannel.read();
                         if (skipHeaders == 1) {
                             skipHeaders = 0;
                         } else {
-                            ou.add(StringUtils.fromStringArray(record));
+                            outList.add(StringUtils.fromStringArray(record));
                         }
                     }
-                    Object[] out = ou.toArray();
+                    Object[] out = outList.toArray();
                     return ValueCreator.createArrayValue(out, TypeCreator.createArrayType(describingType));
                 }
-//                    return StringUtils.fromStringArray(records);
             } catch (BallerinaIOException e) {
                 log.error("error occurred while reading next text record from ReadableTextRecordChannel", e);
                 return IOUtils.createError(e);
@@ -218,7 +213,6 @@ public class RecordChannelUtils {
         }
 
     }
-
 
     public static Object readRecord(BObject channel) {
         BufferedReader bufferedReader = (BufferedReader) channel.getNativeData(BUFFERED_READER_ENTRY);
