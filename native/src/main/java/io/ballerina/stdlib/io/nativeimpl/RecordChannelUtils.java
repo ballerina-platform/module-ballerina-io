@@ -159,7 +159,7 @@ public class RecordChannelUtils {
                     Object[] out = outList.toArray();
 
                     return ValueCreator.createArrayValue(out, TypeCreator.createArrayType(describingType));
-                } else { //if (describingType.getTag() == TypeTags.ARRAY_TAG)
+                } else {
                     ArrayList<BArray> outList = new ArrayList<BArray>();
                     while (textRecordChannel.hasNext()) {
                         String[] record = textRecordChannel.read();
@@ -175,12 +175,12 @@ public class RecordChannelUtils {
             } catch (BallerinaIOException e) {
                 log.error("error occurred while reading next text record from ReadableTextRecordChannel", e);
                 return IOUtils.createError(e);
-                }
+            }
         }
     }
 
     public static Object streamNext(BObject iterator) {
-        BObject channel = (BObject) iterator.getNativeData("ITERATOR_NAME");
+        BObject channel = (BObject) iterator.getNativeData("ITERATOR_NAME"); // include in constants
         BufferedReader bufferedReader = (BufferedReader) channel.getNativeData(BUFFERED_READER_ENTRY);
 
         BTypedesc typeDesc = (BTypedesc) iterator.getNativeData(CSV_RETURN_TYPE);
@@ -202,7 +202,7 @@ public class RecordChannelUtils {
                     return ValueCreator.createRecordValue(describingType.getPackage(), describingType.getName(),
                                 struct);
                 } else {
-                    return IOUtils.createError("Record type and CSV file does not match.");
+                    return IOUtils.createError("Record type and CSV file does not match."); /// change to nill
                 }
             } else {
                 String[] records = textRecordChannel.getFields(line);

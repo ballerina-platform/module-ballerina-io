@@ -55,9 +55,9 @@ public class CsvChannelUtils {
     
     public static Object fileReadCsv(BString path, int skipHeaders, BTypedesc typeDesc) {
         BObject byteChannel = (BObject) ByteChannelUtils.openReadableFile(path);
-
-        BObject characterChannel = ValueCreator.createObjectValue(getIOPackage(), "ReadableByteChannel");
-        CharacterChannelUtils.initCharacterChannel(characterChannel, byteChannel, StringUtils.fromString("UTF-8"));
+        BObject characterChannel = ValueCreator.createObjectValue(getIOPackage(), 
+            "ReadableCharacterChannel", byteChannel, StringUtils.fromString("UTF-8"));
+        //CharacterChannelUtils.initCharacterChannel(characterChannel);
 
         BString fs = StringUtils.fromString(",");
         BString rs = StringUtils.fromString("");
@@ -75,7 +75,7 @@ public class CsvChannelUtils {
     }
 
     public static BStream createCsvAsStream(BString path, BTypedesc typeDesc) {
-        Type describingType = typeDesc.getDescribingType();
+        Type describingType = typeDesc.getDescribingType(); /// check for json, int,
         BObject byteChannel = (BObject) ByteChannelUtils.openReadableFile(path);
 
         BObject characterChannel = ValueCreator.createObjectValue(getIOPackage(), "ReadableByteChannel");
@@ -91,13 +91,13 @@ public class CsvChannelUtils {
         recordIterator.addNativeData(CSV_RETURN_TYPE, typeDesc);
         recordIterator.addNativeData("ITERATOR_NAME", textRecordChannel);
 
-        BStream out = ValueCreator.createStreamValue(
+        return ValueCreator.createStreamValue(
                 TypeCreator.createStreamType(describingType), recordIterator);
 
-        return out;
+
     }
 
-    public static Map<String, Object> getStruct(String[] fields, final StructureType structType) {
+    public static Map<String, Object> getStruct(String[] fields, final StructureType structType) { //handle null values in the top level
         Map<String, Field> internalStructFields = structType.getFields();
         int fieldLength = internalStructFields.size();
         Map<String, Object> struct = null;

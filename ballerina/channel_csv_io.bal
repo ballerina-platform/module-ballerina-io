@@ -42,19 +42,19 @@ Error {
 
 isolated function channelWriteCsv(WritableChannel writableChannel, string[][]|map<anydata>[] content) returns Error? {
     WritableCSVChannel csvChannel = check getWritableCSVChannel(writableChannel);
-    if (content is string[][]){
-    foreach string[] r in content {
-        var writeResult = csvChannel.write(r);
-        if writeResult is Error {
-            check csvChannel.close();
-            return writeResult;
+    if (content is string[][]) {
+        foreach string[] r in content {
+            var writeResult = csvChannel.write(r);
+            if writeResult is Error {
+                check csvChannel.close();
+                return writeResult;
             }
         }
     }
-    else if(content is map<anydata>[]) {
+    else if (content is map<anydata>[]) {
         foreach map<anydata> row in content {
             string[] sValues = [];
-            foreach [string, anydata] [subject, value] in row.entries() {
+            foreach [string, anydata] [_, value] in row.entries() {
                 sValues.push(value.toString());
             }
             var writeResult = csvChannel.write(sValues);
@@ -71,7 +71,7 @@ isolated function channelWriteCsv(WritableChannel writableChannel, string[][]|ma
 isolated function channelWriteCsvFromStream(WritableChannel writableChannel, stream<string[]|map<anydata>, Error?> csvStream) returns
 Error? {
     WritableCSVChannel csvChannel = check getWritableCSVChannel(writableChannel);
-    if (csvStream is stream<string[], Error?>){
+    if (csvStream is stream<string[], Error?>) {
         record {|string[] value;|}|Error? csvRecordString = csvStream.next();
         do {
             while csvRecordString is record {|string[] value;|} {
@@ -83,28 +83,27 @@ Error? {
             check csvChannel.close();
             return err;
         }
-    } else if (csvStream is stream<map<anydata>, Error?>){
+    } else if (csvStream is stream<map<anydata>, Error?>) {
         record {|map<anydata> value;|}? csvRecordMap = check csvStream.next();
-        string[] keys=[];
+        string[] keys = [];
         if csvRecordMap !is () {
             keys = csvRecordMap["value"].keys();
         }
         do {
             while csvRecordMap is record {|map<anydata> value;|} {
-                string[] sValue=[];
-                int count=0;
-                foreach string t in keys{
-                    sValue.push(csvRecordMap.value[t].toString());
+                string[] sValue = [];
+                foreach string t in keys {
+                    sValue.push(csvRecordMap.value[t].toString());//change
                 }
-                check csvChannel.write(sValue);                
+                check csvChannel.write(sValue);
                 csvRecordMap = check csvStream.next();
             }
         } on fail Error err {
             check csvChannel.close();
             return err;
-        }   
+        }
     }
-    
+
     return;
 }
 
