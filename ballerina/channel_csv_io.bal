@@ -52,23 +52,16 @@ isolated function channelWriteCsv(WritableChannel writableChannel, string[][]|ma
         }
     }
     else if(content is map<anydata>[]) {
-        map<anydata> first = content[0];
-        string[] keys=first.keys();
-        //check csvChannel.write(keys);
-        foreach map<anydata> r in content{
-            string[] temp=[];
-            int count=0;
-            
-            foreach string t in keys{
-                temp[count]=r[t].toString();
-                count+=1;
+        foreach map<anydata> row in content {
+            string[] sValues = [];
+            foreach [string, anydata] [subject, value] in row.entries() {
+                sValues.push(value.toString());
             }
-            var writeResult = csvChannel.write(temp);
+            var writeResult = csvChannel.write(sValues);
             if writeResult is Error {
                 check csvChannel.close();
                 return writeResult;
-        }
-
+            }
         }
     }
     check csvChannel.close();
@@ -96,16 +89,14 @@ Error? {
         if csvRecordMap !is () {
             keys = csvRecordMap["value"].keys();
         }
-        //check csvChannel.write(keys);
         do {
             while csvRecordMap is record {|map<anydata> value;|} {
-                string[] temp=[];
+                string[] sValue=[];
                 int count=0;
-                foreach any t in keys{
-                    temp[count]=csvRecordMap.value[t].toString();
-                    count+=1;
+                foreach string t in keys{
+                    sValue.push(csvRecordMap.value[t].toString());
                 }
-                check csvChannel.write(temp);                
+                check csvChannel.write(sValue);                
                 csvRecordMap = check csvStream.next();
             }
         } on fail Error err {

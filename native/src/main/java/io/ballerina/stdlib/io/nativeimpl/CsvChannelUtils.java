@@ -18,7 +18,6 @@
 
 package io.ballerina.stdlib.io.nativeimpl;
 
-
 import io.ballerina.runtime.api.TypeTags;
 import io.ballerina.runtime.api.creators.TypeCreator;
 import io.ballerina.runtime.api.creators.ValueCreator;
@@ -40,7 +39,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import static io.ballerina.stdlib.io.nativeimpl.RecordChannelUtils.getAll;
+import static io.ballerina.stdlib.io.nativeimpl.RecordChannelUtils.getAllRecords;
 import static io.ballerina.stdlib.io.nativeimpl.RecordChannelUtils.hasNext;
 import static io.ballerina.stdlib.io.utils.IOConstants.CSV_RETURN_TYPE;
 import static io.ballerina.stdlib.io.utils.IOUtils.getIOPackage;
@@ -49,13 +48,11 @@ import static io.ballerina.stdlib.io.utils.IOUtils.getIOPackage;
 /**
  * This class hold Java inter-ops bridging functions for io# *CSVChannel/*RTextRecordChannel.
  *
- * @since 1.1.0
  */
-
-
 
 public class CsvChannelUtils {
     private static final Logger log = LoggerFactory.getLogger(CsvChannelUtils.class);
+    
     public static Object fileReadCsv(BString path, int skipHeaders, BTypedesc typeDesc) {
         BObject byteChannel = (BObject) ByteChannelUtils.openReadableFile(path);
 
@@ -72,11 +69,10 @@ public class CsvChannelUtils {
 
         while (hasNext(textRecordChannel)) {
 
-            return getAll(textRecordChannel, skipHeaders, typeDesc);
+            return getAllRecords(textRecordChannel, skipHeaders, typeDesc);
         }
         return null;
     }
-
 
     public static BStream createCsvAsStream(BString path, BTypedesc typeDesc) {
         Type describingType = typeDesc.getDescribingType();
@@ -172,5 +168,4 @@ public class CsvChannelUtils {
             }
         }
     }
-
 }
