@@ -59,5 +59,5 @@ isolated function closeResult(CsvIterator iterator) returns Error? = @java:Metho
 } external;
 
 isolated function closedStreamInvocationError() returns Error {
-    return error ApplicationError("Stream closed");
+    return error GenericError("Stream closed");
 }

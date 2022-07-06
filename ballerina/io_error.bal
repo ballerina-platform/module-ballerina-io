@@ -37,7 +37,3 @@ public type EofError distinct Error;
 
 # This will get returned if there is an invalid configuration.
 public type ConfigurationError distinct Error;
-
-# Represents an error originating from application-level configurations.
-public type ApplicationError distinct Error;
-
