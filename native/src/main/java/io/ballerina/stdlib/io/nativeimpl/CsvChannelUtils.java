@@ -84,7 +84,6 @@ public class CsvChannelUtils {
     }
 
     public static Map<String, Object> getStruct(String[] fields, final StructureType structType) {
-        //handle null values in the top level
         Map<String, Field> internalStructFields = structType.getFields();
         int fieldLength = internalStructFields.size();
         if (fields.length != fieldLength) {
@@ -133,7 +132,7 @@ public class CsvChannelUtils {
                             default:
                                 throw IOUtils.createError(
                                     "data mapping support only for int, float, Decimal, boolean and string. "
-                                            + "Invalid value for the struct field: " + value);
+                                            + "Unsupported value for the struct field: " + value);
                         }
                     }   
                 } else {

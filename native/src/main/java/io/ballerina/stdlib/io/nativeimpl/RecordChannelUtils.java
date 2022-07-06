@@ -138,45 +138,45 @@ public class RecordChannelUtils {
                 (DelimitedRecordChannel) channel.getNativeData(TXT_RECORD_CHANNEL_NAME);
         if (textRecordChannel.hasReachedEnd()) {
             return IOUtils.createEoFError();
-        } else {
-            try {
-                if (describingType.getTag() == TypeTags.RECORD_TYPE_TAG) {
-                    StructureType structType = (StructureType) describingType;
-                    ArrayList<Object> outList = new ArrayList<Object>();
-                    while (textRecordChannel.hasNext()) {
-                        String[] record = textRecordChannel.read();
-                        if (headersSkipped == 0) {
-                            headersSkipped = 1;
-                            continue;
-                        }
-                        final Map<String, Object> struct = CsvChannelUtils.getStruct(record, structType);
-                        if (struct != null) {
-                            outList.add(ValueCreator.createRecordValue(describingType.getPackage(),
-                                    describingType.getName(), struct));
-                        } else {
-                            return IOUtils.createError("Record type and CSV file does not match.");
-                        }
-                    }
-                    Object[] out = outList.toArray();
-                    return ValueCreator.createArrayValue(out, TypeCreator.createArrayType(describingType));
-                } else {
-                    ArrayList<BArray> outList = new ArrayList<BArray>();
-                    while (textRecordChannel.hasNext()) {
-                        String[] record = textRecordChannel.read();
-                        if (skipHeaders == 1) {
-                            skipHeaders = 0;
-                        } else {
-                            outList.add(StringUtils.fromStringArray(record));
-                        }
-                    }
-                    Object[] out = outList.toArray();
-                    return ValueCreator.createArrayValue(out, TypeCreator.createArrayType(describingType));
-                }
-            } catch (BallerinaIOException e) {
-                log.error("error occurred while reading next text record from ReadableTextRecordChannel", e);
-                return IOUtils.createError(e);
-            }
         }
+        try {
+            if (describingType.getTag() == TypeTags.RECORD_TYPE_TAG) {
+                StructureType structType = (StructureType) describingType;
+                ArrayList<Object> outList = new ArrayList<Object>();
+                while (textRecordChannel.hasNext()) {
+                    String[] record = textRecordChannel.read();
+                    if (headersSkipped == 0) {  //skip the first line of the csv file if skipHeader is set to 0
+                        headersSkipped = 1;
+                        continue;
+                    }
+                    final Map<String, Object> struct = CsvChannelUtils.getStruct(record, structType);
+                    if (struct != null) {
+                        outList.add(ValueCreator.createRecordValue(describingType.getPackage(),
+                                describingType.getName(), struct));
+                    } else {
+                        return IOUtils.createError("Record type and CSV file does not match.");
+                    }
+                }
+                Object[] out = outList.toArray();
+                return ValueCreator.createArrayValue(out, TypeCreator.createArrayType(describingType));
+            } else {
+                ArrayList<BArray> outList = new ArrayList<BArray>();
+                while (textRecordChannel.hasNext()) {
+                    String[] record = textRecordChannel.read();
+                    if (skipHeaders == 1) {
+                        skipHeaders = 0;
+                        continue;
+                    } 
+                    outList.add(StringUtils.fromStringArray(record));
+                        
+                }
+                Object[] out = outList.toArray();
+                return ValueCreator.createArrayValue(out, TypeCreator.createArrayType(describingType));
+            }
+        } catch (BallerinaIOException e) {
+            return IOUtils.createError(e);
+        }
+        
     }
 
     public static Object streamNext(BObject iterator) {
