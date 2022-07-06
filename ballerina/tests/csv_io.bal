@@ -70,7 +70,7 @@ type Employee3 record {
 type Employee4 record {
     string id;
     string name;
-    string salary;
+    int salary;
 };
 
 type Employee5 record {
@@ -79,6 +79,13 @@ type Employee5 record {
     string company;
     string age;
     string residence;
+};
+
+type Employee6 record {
+    string name;
+    string designation;
+    string company;
+    string age;
 };
 
 @test:Config {}
@@ -143,9 +150,22 @@ function testReadFileCsvAsStreamUsingResourceFile() returns error? {
 
 @test:Config {}
 function testReadFileCsvAsStreamUsingResourceFileRecord() returns error? {
-    string filePath = RESOURCES_BASE_PATH + "datafiles/io/records/sample5.csv";
-    string[] expected = ["10000.50", "20000.50", "30000.00"];
+    string filePath = RESOURCES_BASE_PATH + "datafiles/io/records/sample5b.csv";
+    int[] expected = [10000,20000,30000];
     stream<Employee4, Error?> result = check fileReadCsvAsStream(filePath); // check for 
+    int i = 0;
+    check result.forEach(function(Employee4 val) {
+        test:assertEquals(val.salary, expected[i]);
+        i = i + 1;
+    });
+    test:assertEquals(i, 3);
+}
+
+@test:Config {}
+function testReadFileCsvAsStreamUsingResourceFileOpenRecord() returns error? {
+    string filePath = RESOURCES_BASE_PATH + "datafiles/io/records/sample5b.csv";
+    int[] expected = [10000,20000,30000];
+    stream<record {string id;string name;int salary;}, Error?> result = check fileReadCsvAsStream(filePath); // check for 
     int i = 0;
     check result.forEach(function(Employee4 val) {
         test:assertEquals(val.salary, expected[i]);

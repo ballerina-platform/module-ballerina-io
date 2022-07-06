@@ -132,3 +132,12 @@ function testchannelReadCsvAsStreamAfterClosing() returns Error? {
     test:assertTrue(result is Error);
     test:assertEquals((<Error>result).message(), "Stream closed");
 }
+
+@test:Config {dependsOn: [testFileCsvWriteWithSkipHeaders]}
+isolated function testFileCsvReadWithDefectiveRecords() returns Error? {
+
+    string filePath = TEMP_DIR + "workers2.csv";
+    Employee6[]|Error result = fileReadCsv(filePath, 1);
+    test:assertTrue(result is Error);
+    test:assertEquals((<Error>result).message(), "Record type and CSV file does not match.");
+}

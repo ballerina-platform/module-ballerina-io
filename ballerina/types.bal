@@ -16,7 +16,7 @@
 
 import ballerina/jballerina.java;
 
-# The iterator for the stream returned in `readFileCsvAsStream` function to be used to override the default behaviour of `CSVStream`.
+# The iterator for the stream returned in `readFileCsvAsStream` function`.
 public class CsvIterator {
     private boolean isClosed = false;
     public isolated function next() returns record {|anydata value;|}|error? {

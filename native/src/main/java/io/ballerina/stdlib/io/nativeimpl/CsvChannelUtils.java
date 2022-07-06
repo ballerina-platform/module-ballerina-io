@@ -89,8 +89,8 @@ public class CsvChannelUtils {
         //handle null values in the top level
         Map<String, Field> internalStructFields = structType.getFields();
         int fieldLength = internalStructFields.size();
-        if (fields.length > fieldLength) {
-            throw IOUtils.createError("Record fields and CSV readings have a mismatch");
+        if (fields.length != fieldLength) {
+            return null;
         }
         Map<String, Object> struct = null;
         if (fields.length > 0) {
