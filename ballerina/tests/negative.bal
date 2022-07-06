@@ -103,3 +103,32 @@ function testFileReadCsvAsStreamAfterClosing() returns Error? {
     test:assertTrue(result is Error);
     test:assertEquals((<Error>result).message(), "Stream closed");
 }
+
+@test:Config {}
+function testchannelReadCsvAsStreamAfterClosing() returns Error? {
+    string filePath = TEMP_DIR + "stringContentAsLines3.txt";
+    string[][] content = [
+        ["Anne Hamiltom", "Software Engineer", "Microsoft", "26 years", "New York"],
+        [
+            "John Thomson",
+            "Software Architect",
+            "WSO2",
+            "38 years",
+            "Colombo"
+        ],
+        [
+            "Mary Thompson",
+            "Banker",
+            "Sampath Bank",
+            "30 years",
+            "Colombo"
+        ]
+    ];
+
+    check fileWriteCsvFromStream(filePath, content.toStream());
+    stream<string[], Error?> resultStream = check channelReadCsvAsStream(check openReadableCsvFile(filePath));
+    check resultStream.close();
+    var result = resultStream.next();
+    test:assertTrue(result is Error);
+    test:assertEquals((<Error>result).message(), "Stream closed");
+}

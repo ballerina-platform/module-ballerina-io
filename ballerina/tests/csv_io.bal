@@ -745,6 +745,74 @@ isolated function testFileCsvReadWithSkipHeadersRecords() returns Error? {
 }
 
 @test:Config {}
+isolated function testWriteChannelReadCsvWithSkipHeaders() returns Error? {
+    string[][] content = [
+        ["Name", "Occupation", "Company", "Age", "Hometown"],
+        [
+            "Ross Meton",
+            "Civil Engineer",
+            "ABC Construction",
+            "26 years",
+            "Sydney"
+        ],
+        ["Matt Jason", "Architect", "Typer", "38 years", "Colombo"]
+    ];
+    string filePath = TEMP_DIR + "workers2_record.csv";
+    check fileWriteCsv(filePath, content);
+}
+@test:Config {dependsOn: [testWriteChannelReadCsvWithSkipHeaders]}
+isolated function testchannelReadCsvAsStream() returns Error? {
+    string[][] expectedContent = [
+        ["Name", "Occupation", "Company", "Age", "Hometown"],
+        [
+            "Ross Meton",
+            "Civil Engineer",
+            "ABC Construction",
+            "26 years",
+            "Sydney"
+        ],
+        ["Matt Jason", "Architect", "Typer", "38 years", "Colombo"]
+    ];
+    string filePath = TEMP_DIR + "workers2_record.csv";
+    stream<string[], Error?> resultStream = check channelReadCsvAsStream(check openReadableCsvFile(filePath));
+    record {|string[] value;|}|Error? csvRecordString = resultStream.next();
+    int i = 0;
+    do {
+            while csvRecordString is record {|string[] value;|} {
+                test:assertEquals(csvRecordString.value[0], expectedContent[i][0]);
+                csvRecordString = resultStream.next();
+                i+=1;
+            }
+    }
+    test:assertEquals(i, 3);
+}
+
+@test:Config {dependsOn: [testWriteChannelReadCsvWithSkipHeaders]}
+isolated function testchannelReadCsvWithSkipHeaders() returns Error? {
+    string[][] expectedContent = [
+        [
+            "Ross Meton",
+            "Civil Engineer",
+            "ABC Construction",
+            "26 years",
+            "Sydney"
+        ],
+        ["Matt Jason", "Architect", "Typer", "38 years", "Colombo"]
+    ];
+    string filePath = TEMP_DIR + "workers2_record.csv";
+    string[][] result = check channelReadCsv(check openReadableCsvFile(filePath, COMMA, DEFAULT_ENCODING, 1));
+    int i = 0;
+    foreach string[] r in result {
+        int j = 0;
+        foreach string s in r {
+            test:assertEquals(s, expectedContent[i][j]);
+            j += 1;
+        }
+        i += 1;
+    }
+}
+
+@test:Config {}
 isolated function testFileWriteCsvFromStreamUsingResourceFile() returns Error? {
     string filePath = TEMP_DIR + "workers4_A.csv";
     string resourceFilePath = TEST_RESOURCE_PATH + "csvResourceFile1.csv";
