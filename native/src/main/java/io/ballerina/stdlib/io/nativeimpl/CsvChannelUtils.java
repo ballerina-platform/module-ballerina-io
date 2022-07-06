@@ -43,7 +43,6 @@ import static io.ballerina.stdlib.io.utils.IOConstants.CSV_RETURN_TYPE;
 import static io.ballerina.stdlib.io.utils.IOConstants.ITERATOR_NAME;
 import static io.ballerina.stdlib.io.utils.IOUtils.getIOPackage;
 
-
 /**
  * This class hold Java external functions for csv reading APIs.
  *
@@ -63,7 +62,6 @@ public class CsvChannelUtils {
         BObject textRecordChannel = ValueCreator.createObjectValue(getIOPackage(),
              "ReadableTextRecordChannel", characterChannel, FIELD_SEPERATOR, ROW_SEPERATOR, FORMAT);
         textRecordChannel.addNativeData(CSV_RETURN_TYPE, typeDesc);
-
         while (hasNext(textRecordChannel)) {
 
             return getAllRecords(textRecordChannel, skipHeaders, typeDesc);
@@ -80,10 +78,8 @@ public class CsvChannelUtils {
         BObject textRecordChannel = ValueCreator.createObjectValue(getIOPackage(),
              "ReadableTextRecordChannel", characterChannel, FIELD_SEPERATOR, ROW_SEPERATOR, FORMAT);
         BObject recordIterator = ValueCreator.createObjectValue(getIOPackage(), "CsvIterator");
-
         recordIterator.addNativeData(CSV_RETURN_TYPE, typeDesc);
         recordIterator.addNativeData(ITERATOR_NAME, textRecordChannel);
-
         return ValueCreator.createStreamValue(
                 TypeCreator.createStreamType(describingType), recordIterator);
     }

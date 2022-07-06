@@ -4,10 +4,9 @@ _Owners_: @daneshk @BuddhiWathsala
 _Reviewers_: @daneshk  
 _Created_: 2021/12/04   
 _Updated_: 2022/02/17  
-_Edition_: Swan Lake  
-_Issue_: [#2263](https://github.com/ballerina-platform/ballerina-standard-library/issues/2263)
+_Edition_: Swan Lake 
 
-# Introduction
+## Introduction
 This is the specification for the I/O standard library of [Ballerina language](https://ballerina.io/), which provides file related I/O operations.  
 
 The I/O library specification has evolved and may continue to evolve in the future. The released versions of the specification can be found under the relevant GitHub tag. 
@@ -16,7 +15,7 @@ If you have any feedback or suggestions about the library, start a discussion vi
 
 The conforming implementation of the specification is released and included in the distribution. Any deviation from the specification is considered a bug.
 
-# Contents
+## Contents
 1. [Overview](#1-overview)
 2. [Console I/O](#2-console-io)
 3. [Bytes I/O](#3-bytes-io)
@@ -26,7 +25,7 @@ The conforming implementation of the specification is released and included in t
 7. [XML I/O](#7-xml-io)
 
 
-# 1. Overview
+## 1. Overview
 Ballerina I/O standard library has six aspects of I/O operations.
 1. Console I/O
 2. Bytes I/O
@@ -35,7 +34,7 @@ Ballerina I/O standard library has six aspects of I/O operations.
 5. JSON I/O
 6. XML I/O
 
-# 2. Console I/O
+## 2. Console I/O
 Console I/O contains APIs to read from the console, write to the console, and write to given output streams.
 
 The following API reads content from standard input and return it as a string to the user.
@@ -110,7 +109,7 @@ public isolated function fprintln(FileOutputStream fileOutputStream, Printable..
 
 As the `print` APIs, the `fprint` APIs also support string templates.
 
-# 3. Bytes I/O
+## 3. Bytes I/O
 
 The bytes I/O APIs can be further categorized based on their streaming capabilities as streaming and non-streaming APIs.
 
@@ -179,7 +178,7 @@ public isolated function fileWriteBlocksFromStream(string path, stream<byte[], E
                                                     FileWriteOption option = OVERWRITE) returns Error?;
 ```
 
-# 4. Strings I/O
+## 4. Strings I/O
 
 **Non-Streaming APIs**
 
@@ -276,7 +275,7 @@ public isolated function fileWriteLinesFromStream(string path, stream<string, Er
 ```
 
 
-# 5. CSV I/O
+## 5. CSV I/O
 
 **Non-Streaming APIs**
 
@@ -286,6 +285,7 @@ The following API reads the content of a given CSV file as a string array of arr
 # Read file content as a CSV.
 # ```ballerina
 # string[][]|io:Error content = io:fileReadCsv("./resources/myfile.csv");
+# map<anydata>[]|io:Error content = io:fileReadCsv("./resources/myfile.csv");
 # ```
 # + path - The CSV file path
 # + skipHeaders - Number of headers, which should be skipped prior to reading records
@@ -298,8 +298,11 @@ The following API writes given CSV content to a given file.
 ```ballerina
 # Write CSV content to a file.
 # ```ballerina
+# type Coord record {int x;int y;};
+# Coord[] contentRecord = [{x: 1,y: 2},{x: 1,y: 2}]
 # string[][] content = [["Anne", "Johnson", "SE"], ["John", "Cameron", "QA"]];
 # io:Error? result = io:fileWriteCsv("./resources/myfile.csv", content);
+# io:Error? resultRecord = io:fileWriteCsv("./resources/myfileRecord.csv", contentRecord);
 # ```
 # + path - The CSV file path
 # + content - CSV content as an array of string arrays
@@ -315,6 +318,7 @@ The following API reads the content of a given CSV file as a stream of string ar
 # Read file content as a CSV.
 # ```ballerina
 # stream<string[], io:Error?>|io:Error content = io:fileReadCsvAsStream("./resources/myfile.csv");
+# stream<map<anydata>, io:Error?>|io:Error content = io:fileReadCsvAsStream("./resources/myfile.csv");
 # ```
 # + path - The CSV file path
 # + return - The entire CSV content in the channel a stream of string arrays or an `io:Error`
@@ -326,9 +330,13 @@ The following API writes a given CSV stream to a given file.
 ```ballerina
 # Write CSV record stream to a file.
 # ```ballerina
+# type Coord record {int x;int y;};
+# Coord[] contentRecord = [{x: 1,y: 2},{x: 1,y: 2}]
 # string[][] content = [["Anne", "Johnson", "SE"], ["John", "Cameron", "QA"]];
-# stream<string[], io:Error?> recordStream = content.toStream();
-# io:Error? result = io:fileWriteCsvFromStream("./resources/myfile.csv", recordStream);
+# stream<string[], io:Error?> stringStream = content.toStream();
+# stream<Coord, io:Error?> recordStream = contentRecord.toStream();
+# io:Error? result = io:fileWriteCsvFromStream("./resources/myfile.csv", stringStream);
+# io:Error? resultRecord = io:fileWriteCsvFromStream("./resources/myfileRecord.csv", recordStream);
 # ```
 # + path - The CSV file path
 # + content - A CSV record stream to be written
@@ -338,7 +346,7 @@ public isolated function fileWriteCsvFromStream(string path, stream<string[], Er
                                                 FileWriteOption option = OVERWRITE) returns Error?;
 ```
 
-# 6. JSON I/O
+## 6. JSON I/O
 
 The following API reads the content of a given JSON file and returns a Ballerina JSON object.
 
@@ -365,7 +373,7 @@ The following API writes given JSON to a given file.
 # + return - `()` when the writing was successful or an `io:Error`
 public isolated function fileWriteJson(string path, json content) returns Error?;
 ```
-# 7. XML I/O
+## 7. XML I/O
 
 The following API reads the content of a given XML file and returns a Ballerina XML object.
 
