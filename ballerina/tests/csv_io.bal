@@ -167,7 +167,7 @@ function testReadFileCsvAsStreamUsingResourceFileOpenRecord() returns error? {
     int[] expected = [10000,20000,30000];
     stream<record {string id;string name;int salary;}, Error?> result = check fileReadCsvAsStream(filePath); // check for 
     int i = 0;
-    check result.forEach(function(Employee4 val) {
+    check result.forEach(function(record {string id; string name; int salary;} val) {
         test:assertEquals(val.salary, expected[i]);
         i = i + 1;
     });
@@ -1428,4 +1428,17 @@ function testReadCsvAsStreamWithQuotedField() returns error? {
     }
     check content.close();
     test:assertEquals(i, 3);
+}
+
+@test:Config {}
+function testReadFileCsvBooleanOpenRecord() returns error? {
+    string filePath = RESOURCES_BASE_PATH + "datafiles/io/records/sample5c.csv";
+    boolean[] expected = [true, false, true];
+    stream<record {string id; string name; int salary; boolean married;} , Error?> result = check fileReadCsvAsStream(filePath);
+    int i = 0;
+    check result.forEach(function(record {string id; string name; int salary; boolean married;} val) {
+        test:assertEquals(val.married, expected[i]);
+        i = i + 1;
+    });
+    test:assertEquals(i, 3); 
 }
