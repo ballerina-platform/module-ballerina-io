@@ -43,12 +43,10 @@ import static io.ballerina.stdlib.io.nativeimpl.RecordChannelUtils.hasNext;
 import static io.ballerina.stdlib.io.utils.IOConstants.CSV_RETURN_TYPE;
 import static io.ballerina.stdlib.io.utils.IOConstants.ITERATOR_NAME;
 import static io.ballerina.stdlib.io.utils.IOUtils.getIOPackage;
-
 /**
  * This class hold Java external functions for csv reading APIs.
  *
  */
-
 public class CsvChannelUtils {
 
     private static final BString FIELD_SEPERATOR = StringUtils.fromString(",");
@@ -71,7 +69,7 @@ public class CsvChannelUtils {
     }
 
     public static BStream createCsvAsStream(BString path, BTypedesc typeDesc) {
-        Type describingType = TypeUtils.getReferredType(typeDesc.getDescribingType()); /// check for json, int,
+        Type describingType = TypeUtils.getReferredType(typeDesc.getDescribingType());
         BObject byteChannel = (BObject) ByteChannelUtils.openReadableFile(path);
 
         BObject characterChannel = ValueCreator.createObjectValue(getIOPackage(),
@@ -98,66 +96,51 @@ public class CsvChannelUtils {
             struct = new HashMap<>();
             for (int i = 0; i < fieldLength; i++) {
                 final Field internalStructField = itr.next().getValue();
-                final int type = internalStructField.getFieldType().getTag();
+                int type = internalStructField.getFieldType().getTag();
                 String fieldName = internalStructField.getFieldName();
                 if (fields.length > i) {
                     String value = fields[i];
-                    switch (type) {
-                        case TypeTags.INT_TAG:
-                        case TypeTags.FLOAT_TAG:
-                        case TypeTags.STRING_TAG:
-                        case TypeTags.DECIMAL_TAG:
-                        case TypeTags.BOOLEAN_TAG:
-                            populateRecord(type, struct, fieldName, value);
-                            break;
-                        case TypeTags.UNION_TAG:
+                    if (value == null || value.isEmpty()) {
+                        struct.put(fieldName, null);
+                    } else {
+                        if (type == TypeTags.UNION_TAG) {
                             List<Type> members = ((UnionType) internalStructField.getFieldType()).getMemberTypes();
                             if (members.get(0).getTag() == TypeTags.NULL_TAG) {
-                                populateRecord(members.get(1).getTag(), struct, fieldName, value);
+                                type = members.get(1).getTag();
                             } else if (members.get(1).getTag() == TypeTags.NULL_TAG) {
-                                populateRecord(members.get(0).getTag(), struct, fieldName, value);
+                                type = members.get(0).getTag();
                             } else {
                                 throw IOUtils.createError("unsupported nillable field for value: " + value);
                             }
-                            break;
-                        default:
-                            throw IOUtils.createError(
+                        }
+                        String trimmedValue = value.trim();       
+                        switch (type) {
+                            case TypeTags.INT_TAG:
+                                struct.put(fieldName, Long.parseLong(trimmedValue));
+                                break;
+                            case TypeTags.FLOAT_TAG:
+                                struct.put(fieldName, Double.parseDouble(trimmedValue));
+                                break;
+                            case TypeTags.STRING_TAG:
+                                struct.put(fieldName, trimmedValue);
+                                break;
+                            case TypeTags.DECIMAL_TAG:
+                                struct.put(fieldName, ValueCreator.createDecimalValue(trimmedValue));
+                                break;
+                            case TypeTags.BOOLEAN_TAG:
+                                struct.put(fieldName, Boolean.parseBoolean(trimmedValue));
+                                break;
+                            default:
+                                throw IOUtils.createError(
                                     "type casting support only for int, float, Decimal, boolean and string. "
                                             + "Invalid value for the struct field: " + value);
-                    }
+                        }
+                    }   
                 } else {
                     struct.put(fieldName, null);
                 }
             }
         }
         return struct;
-    }
-
-    private static void populateRecord(int type, Map<String, Object> struct, String fieldName, String value) {
-        if (value == null || value.isEmpty()) {
-            struct.put(fieldName, null);
-        } else {
-            String trimmedValue = value.trim();
-            switch (type) {
-                case TypeTags.INT_TAG:
-                    struct.put(fieldName, Long.parseLong(trimmedValue));
-                    return;
-                case TypeTags.FLOAT_TAG:
-                    struct.put(fieldName, Double.parseDouble(trimmedValue));
-                    break;
-                case TypeTags.DECIMAL_TAG:
-                    struct.put(fieldName, ValueCreator.createDecimalValue(trimmedValue));
-                    break;
-                case TypeTags.STRING_TAG:
-                    struct.put(fieldName, trimmedValue);
-                    break;
-                case TypeTags.BOOLEAN_TAG:
-                    struct.put(fieldName, Boolean.parseBoolean(trimmedValue));
-                    break;
-                default:
-                    throw IOUtils.createError("type casting support only for int, float, Decimal, boolean and string. "
-                            + "Invalid value for the struct field: " + value);
-            }
-        }
     }
 }

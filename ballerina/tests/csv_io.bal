@@ -1433,11 +1433,14 @@ function testReadCsvAsStreamWithQuotedField() returns error? {
 @test:Config {}
 function testReadFileCsvBooleanOpenRecord() returns error? {
     string filePath = RESOURCES_BASE_PATH + "datafiles/io/records/sample5c.csv";
-    boolean[] expected = [true, false, true];
-    stream<record {string id; string name; int salary; boolean married;} , Error?> result = check fileReadCsvAsStream(filePath);
+    boolean[] expectedStatus = [true, false, true];
+    int?[] expectedSalary = [10000, 20000, ()];
+    stream<record {string id; string name; int? salary; boolean married;} , 
+        Error?> result = check fileReadCsvAsStream(filePath);
     int i = 0;
-    check result.forEach(function(record {string id; string name; int salary; boolean married;} val) {
-        test:assertEquals(val.married, expected[i]);
+    check result.forEach(function(record {string id; string name; int? salary; boolean married;} val) {
+        test:assertEquals(val.married, expectedStatus[i]);
+        test:assertEquals(val.salary, expectedSalary[i]);
         i = i + 1;
     });
     test:assertEquals(i, 3); 
