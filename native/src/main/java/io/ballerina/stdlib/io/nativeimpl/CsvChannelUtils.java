@@ -132,7 +132,7 @@ public class CsvChannelUtils {
                                 break;
                             default:
                                 throw IOUtils.createError(
-                                    "type casting support only for int, float, Decimal, boolean and string. "
+                                    "data mapping support only for int, float, Decimal, boolean and string. "
                                             + "Invalid value for the struct field: " + value);
                         }
                     }   
