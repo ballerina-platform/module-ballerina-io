@@ -26,6 +26,7 @@ import io.ballerina.runtime.api.types.StructureType;
 import io.ballerina.runtime.api.types.Type;
 import io.ballerina.runtime.api.types.UnionType;
 import io.ballerina.runtime.api.utils.StringUtils;
+import io.ballerina.runtime.api.utils.TypeUtils;
 import io.ballerina.runtime.api.values.BObject;
 import io.ballerina.runtime.api.values.BStream;
 import io.ballerina.runtime.api.values.BString;
@@ -57,10 +58,10 @@ public class CsvChannelUtils {
 
     public static Object fileReadCsv(BString path, int skipHeaders, BTypedesc typeDesc) {
         BObject byteChannel = (BObject) ByteChannelUtils.openReadableFile(path);
-        BObject characterChannel = ValueCreator.createObjectValue(getIOPackage(), 
-            "ReadableCharacterChannel", byteChannel, ENCODING);
+        BObject characterChannel = ValueCreator.createObjectValue(getIOPackage(),
+                "ReadableCharacterChannel", byteChannel, ENCODING);
         BObject textRecordChannel = ValueCreator.createObjectValue(getIOPackage(),
-             "ReadableTextRecordChannel", characterChannel, FIELD_SEPERATOR, ROW_SEPERATOR, FORMAT);
+                "ReadableTextRecordChannel", characterChannel, FIELD_SEPERATOR, ROW_SEPERATOR, FORMAT);
         textRecordChannel.addNativeData(CSV_RETURN_TYPE, typeDesc);
         while (hasNext(textRecordChannel)) {
 
@@ -70,13 +71,13 @@ public class CsvChannelUtils {
     }
 
     public static BStream createCsvAsStream(BString path, BTypedesc typeDesc) {
-        Type describingType = typeDesc.getDescribingType(); /// check for json, int,
+        Type describingType = TypeUtils.getReferredType(typeDesc.getDescribingType()); /// check for json, int,
         BObject byteChannel = (BObject) ByteChannelUtils.openReadableFile(path);
 
-        BObject characterChannel = ValueCreator.createObjectValue(getIOPackage(), 
-            "ReadableCharacterChannel", byteChannel, ENCODING);
+        BObject characterChannel = ValueCreator.createObjectValue(getIOPackage(),
+                "ReadableCharacterChannel", byteChannel, ENCODING);
         BObject textRecordChannel = ValueCreator.createObjectValue(getIOPackage(),
-             "ReadableTextRecordChannel", characterChannel, FIELD_SEPERATOR, ROW_SEPERATOR, FORMAT);
+                "ReadableTextRecordChannel", characterChannel, FIELD_SEPERATOR, ROW_SEPERATOR, FORMAT);
         BObject recordIterator = ValueCreator.createObjectValue(getIOPackage(), "CsvIterator");
         recordIterator.addNativeData(CSV_RETURN_TYPE, typeDesc);
         recordIterator.addNativeData(ITERATOR_NAME, textRecordChannel);
@@ -84,7 +85,7 @@ public class CsvChannelUtils {
                 TypeCreator.createStreamType(describingType), recordIterator);
     }
 
-    public static Map<String, Object> getStruct(String[] fields, final StructureType structType) { 
+    public static Map<String, Object> getStruct(String[] fields, final StructureType structType) {
         //handle null values in the top level
         Map<String, Field> internalStructFields = structType.getFields();
         int fieldLength = internalStructFields.size();

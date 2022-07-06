@@ -24,6 +24,7 @@ import io.ballerina.runtime.api.creators.ValueCreator;
 import io.ballerina.runtime.api.types.StructureType;
 import io.ballerina.runtime.api.types.Type;
 import io.ballerina.runtime.api.utils.StringUtils;
+import io.ballerina.runtime.api.utils.TypeUtils;
 import io.ballerina.runtime.api.values.BArray;
 import io.ballerina.runtime.api.values.BObject;
 import io.ballerina.runtime.api.values.BString;
@@ -129,7 +130,7 @@ public class RecordChannelUtils {
 
     public static Object getAllRecords(BObject channel, int skipHeaders, BTypedesc typeDesc) {
         int headersSkipped = 1 - skipHeaders;
-        Type describingType = typeDesc.getDescribingType();
+        Type describingType = TypeUtils.getReferredType(typeDesc.getDescribingType());
         if (isChannelClosed(channel)) {
             return IOUtils.createError("Record channel is already closed.");
         }
@@ -181,10 +182,8 @@ public class RecordChannelUtils {
     public static Object streamNext(BObject iterator) {
         BObject channel = (BObject) iterator.getNativeData(ITERATOR_NAME);
         BufferedReader bufferedReader = (BufferedReader) channel.getNativeData(BUFFERED_READER_ENTRY);
-
         BTypedesc typeDesc = (BTypedesc) iterator.getNativeData(CSV_RETURN_TYPE);
-        Type describingType = typeDesc.getDescribingType();
-
+        Type describingType = TypeUtils.getReferredType(typeDesc.getDescribingType());
         try {
             String line = bufferedReader.readLine();
             if (line == null) {
