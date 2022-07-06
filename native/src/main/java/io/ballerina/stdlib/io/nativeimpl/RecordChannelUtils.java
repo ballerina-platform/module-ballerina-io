@@ -167,8 +167,7 @@ public class RecordChannelUtils {
                         skipHeaders = 0;
                         continue;
                     } 
-                    outList.add(StringUtils.fromStringArray(record));
-                        
+                    outList.add(StringUtils.fromStringArray(record));   
                 }
                 Object[] out = outList.toArray();
                 return ValueCreator.createArrayValue(out, TypeCreator.createArrayType(describingType));
@@ -176,7 +175,6 @@ public class RecordChannelUtils {
         } catch (BallerinaIOException e) {
             return IOUtils.createError(e);
         }
-        
     }
 
     public static Object streamNext(BObject iterator) {
@@ -209,7 +207,6 @@ public class RecordChannelUtils {
         } catch (IOException e) {
             return IOUtils.createError(e);
         }
-
     }
 
     public static Object readRecord(BObject channel) {
