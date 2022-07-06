@@ -73,13 +73,13 @@ type Employee4 record {
     int salary;
 };
 
-type Employee5 record {
+type Employee5 record {|
     string name;
     string designation;
     string company;
     string age;
     string residence;
-};
+|};
 
 type Employee6 record {
     string name;
@@ -906,7 +906,7 @@ function testFileReadCsvAsStreamUsingResourceFileRecords() returns error? {
     check result.forEach(function(Employee5 val) {
         int j = 0;
         foreach string s in val.keys() {
-            test:assertEquals('string:trim(<string>val.get(s)), expectedContent[i][j]);
+            test:assertEquals('string:trim(val.get(s)), expectedContent[i][j]);
             j += 1;
         }
         i += 1;
