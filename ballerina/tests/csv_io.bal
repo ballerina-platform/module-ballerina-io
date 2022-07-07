@@ -123,12 +123,12 @@ isolated function testReadCsv() returns Error? {
 @test:Config {}
 isolated function testReadCsvRecord() returns Error? {
     string filePath = RESOURCES_BASE_PATH + "datafiles/io/records/sample5.csv";
-    string[][] input = check fileReadCsv(filePath);
-    test:assertEquals(input[0][0], "User1");
-    test:assertEquals(input[0][2], " 10000.50");
-    Employee[] input2 = check fileReadCsv(filePath);
-    test:assertEquals(input2[0].id, "User1");
-    test:assertEquals(input2[0].salary, 10000.50f);
+    string[][] csvContent = check fileReadCsv(filePath);
+    test:assertEquals(csvContent[0][0], "User1");
+    test:assertEquals(csvContent[0][2], " 10000.50");
+    Employee[] employee = check fileReadCsv(filePath);
+    test:assertEquals(employee[0].id, "User1");
+    test:assertEquals(employee[0].salary, 10000.50f);
 }
 
 @test:Config {}
@@ -138,10 +138,8 @@ function testReadFileCsvAsStreamUsingResourceFile() returns error? {
     stream<string[], Error?> result = check fileReadCsvAsStream(filePath);
     int i = 0;
     check result.forEach(function(string[] val) {
-        int j = 0;
-        foreach string s in val {
-            test:assertEquals(s.trim(), expected[i][j]);
-            j += 1;
+        foreach int j in 0 ... val.length()-1 {
+            test:assertEquals(val[j].trim(), expected[i][j]);
         }
         i += 1;
     });
@@ -752,12 +750,12 @@ isolated function testFileCsvReadWithSkipHeadersRecords() returns Error? {
         ["Matt Jason", "Architect", "Typer", "38 years", "Colombo"]
     ];
     string filePath = TEMP_DIR + "workers2.csv";
-    Employee5[] result2 = check fileReadCsv(filePath, 1);
+    Employee5[] csvContent = check fileReadCsv(filePath, 1);
     int i = 0;
-    foreach Employee5 r in result2 {
+    foreach Employee5 val in csvContent {
         int j = 0;
-        foreach string s in r.keys() {
-            test:assertEquals(r.get(s), expectedContent[i][j]);
+        foreach string s in val.keys() {
+            test:assertEquals(val.get(s), expectedContent[i][j]);
             j += 1;
         }
         i += 1;

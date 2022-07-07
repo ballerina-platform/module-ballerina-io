@@ -1,4 +1,4 @@
-// Copyright (c) 2021 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+// Copyright (c) 2022 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 //
 // WSO2 Inc. licenses this file to you under the Apache License,
 // Version 2.0 (the "License"); you may not use this file except
@@ -16,7 +16,8 @@
 
 import ballerina/jballerina.java;
 
-# The iterator for the stream returned in `readFileCsvAsStream` function`.
+# The iterator for the stream returned in `readFileCsvAsStream` function.
+
 public class CsvIterator {
     private boolean isClosed = false;
     public isolated function next() returns record {|anydata value;|}|error? {

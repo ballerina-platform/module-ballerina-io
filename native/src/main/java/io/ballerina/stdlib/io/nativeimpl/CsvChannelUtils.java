@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2022 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  * WSO2 Inc. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -46,9 +46,11 @@ import static io.ballerina.stdlib.io.utils.IOConstants.ITERATOR_NAME;
 import static io.ballerina.stdlib.io.utils.IOConstants.READABLE_CHARACTER_CHANNEL;
 import static io.ballerina.stdlib.io.utils.IOConstants.READABLE_TEXT_RECORD_CHANNEL;
 import static io.ballerina.stdlib.io.utils.IOUtils.getIOPackage;
+
 /**
  * This class hold Java external functions for csv reading APIs.
  *
+ * * @since 1.3.0
  */
 public class CsvChannelUtils {
 
@@ -89,9 +91,6 @@ public class CsvChannelUtils {
     public static Map<String, Object> getStruct(String[] fields, final StructureType structType) {
         Map<String, Field> internalStructFields = structType.getFields();
         int fieldLength = internalStructFields.size();
-        if (fields.length != fieldLength) {
-            return null;
-        }
         Map<String, Object> struct = null;
         if (fields.length > 0) {
             Iterator<Map.Entry<String, Field>> itr = internalStructFields.entrySet().iterator();
@@ -118,7 +117,7 @@ public class CsvChannelUtils {
                         if (TypeUtils.getReferredType(members.get(1)).getTag() == TypeTags.NULL_TAG) {
                             type = TypeUtils.getReferredType(members.get(0)).getTag();
                         } else {
-                            throw IOUtils.createError("unsupported nillable field : " 
+                            throw IOUtils.createError("Unsupported nillable field : " 
                                 + fieldName + " for value: " + value);
                         }
                     }
@@ -141,7 +140,7 @@ public class CsvChannelUtils {
                             break;
                         default:
                             throw IOUtils.createError(
-                                "data mapping support only for int, float, Decimal, boolean and string. "
+                                "Data mapping support only for int, float, Decimal, boolean and string. "
                                         + "Unsupported value for the struct field: " + value);
                     }   
                 }

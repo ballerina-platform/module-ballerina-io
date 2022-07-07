@@ -149,13 +149,15 @@ public class RecordChannelUtils {
                         headersSkipped = 1;
                         continue;
                     }
-                    final Map<String, Object> struct = CsvChannelUtils.getStruct(record, structType);
-                    if (struct != null) {
-                        outList.add(ValueCreator.createRecordValue(describingType.getPackage(),
-                                describingType.getName(), struct));
-                    } else {
+                    int fieldLength = structType.getFields().size();
+                    if (record.length != fieldLength) {
                         return IOUtils.createError("Record type and CSV file does not match.");
                     }
+                    final Map<String, Object> struct = CsvChannelUtils.getStruct(record, structType);
+                    
+                    outList.add(ValueCreator.createRecordValue(describingType.getPackage(),
+                                describingType.getName(), struct));
+                    
                 }
                 Object[] out = outList.toArray();
                 return ValueCreator.createArrayValue(out, TypeCreator.createArrayType(describingType));
@@ -194,12 +196,13 @@ public class RecordChannelUtils {
                 StructureType structType = (StructureType) describingType;
                 String[] record = textRecordChannel.getFields(line);
                 final Map<String, Object> struct = CsvChannelUtils.getStruct(record, structType);
-                if (struct != null) {
-                    return ValueCreator.createRecordValue(describingType.getPackage(), describingType.getName(),
-                                struct);
-                } else {
-                    return IOUtils.createError("Record type and CSV file does not match."); /// change to nill
+                int fieldLength = structType.getFields().size();
+                if (record.length != fieldLength) {
+                    return IOUtils.createError("Record type and CSV file does not match.");
                 }
+                
+                return ValueCreator.createRecordValue(describingType.getPackage(), describingType.getName(),
+                                struct);
             } else {
                 String[] records = textRecordChannel.getFields(line);
                 return StringUtils.fromStringArray(records);

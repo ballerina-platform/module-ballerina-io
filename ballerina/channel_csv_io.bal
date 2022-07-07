@@ -71,21 +71,16 @@ isolated function channelWriteCsv(WritableChannel writableChannel, string[][]|ma
 isolated function channelWriteCsvFromStream(WritableChannel writableChannel, stream<string[]|map<anydata>, Error?> csvStream) returns
 Error? {
     WritableCSVChannel csvChannel = check getWritableCSVChannel(writableChannel);
-    if csvStream is stream<string[], Error?> {
-        record {|string[] value;|}|Error? csvRecordString = csvStream.next();
-        do {
+    do {
+        if csvStream is stream<string[], Error?> {
+            record {|string[] value;|}|Error? csvRecordString = csvStream.next();
             while csvRecordString is record {|string[] value;|} {
                 check csvChannel.write(csvRecordString.value);
                 csvRecordString = csvStream.next();
             }
             check csvChannel.close();
-        } on fail Error err {
-            check csvChannel.close();
-            return err;
-        }
-    } else if csvStream is stream<map<anydata>, Error?> {
-        record {|map<anydata> value;|}? csvRecordMap = check csvStream.next();
-        do {
+        } else if csvStream is stream<map<anydata>, Error?> {
+            record {|map<anydata> value;|}? csvRecordMap = check csvStream.next();
             while csvRecordMap is record {|map<anydata> value;|} {
                 string[] sValues = [];
                 foreach [string, anydata] [_, value] in csvRecordMap["value"].entries() {
@@ -94,10 +89,10 @@ Error? {
                 check csvChannel.write(sValues);
                 csvRecordMap = check csvStream.next();
             }
-        } on fail Error err {
-            check csvChannel.close();
-            return err;
         }
+    } on fail Error err {
+        check csvChannel.close();
+        return err;
     }
     return;
 }
