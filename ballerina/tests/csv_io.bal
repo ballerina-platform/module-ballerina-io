@@ -163,7 +163,7 @@ function testReadFileCsvAsStreamUsingResourceFileRecord() returns error? {
 function testReadFileCsvAsStreamUsingResourceFileOpenRecord() returns error? {
     string filePath = RESOURCES_BASE_PATH + "datafiles/io/records/sample5b.csv";
     int[] expected = [10000,20000,30000];
-    stream<record {string id;string name;int salary;}, Error?> result = check fileReadCsvAsStream(filePath); // check for 
+    stream<record {string id;string name;int salary;}, Error?> result = check fileReadCsvAsStream(filePath);
     int i = 0;
     check result.forEach(function(record {string id; string name; int salary;} val) {
         test:assertEquals(val.salary, expected[i]);
