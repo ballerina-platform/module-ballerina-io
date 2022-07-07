@@ -98,7 +98,7 @@ public class CsvChannelUtils {
             struct = new HashMap<>();
             for (int i = 0; i < fieldLength; i++) {
                 final Field internalStructField = itr.next().getValue();
-                int type = internalStructField.getFieldType().getTag();
+                int type = TypeUtils.getReferredType(internalStructField.getFieldType()).getTag();
                 String fieldName = internalStructField.getFieldName();
                 if (fields.length > i) {
                     String value = fields[i];
@@ -116,7 +116,7 @@ public class CsvChannelUtils {
                     if (type == TypeTags.UNION_TAG) {
                         List<Type> members = ((UnionType) internalStructField.getFieldType()).getMemberTypes();
                         if (TypeUtils.getReferredType(members.get(1)).getTag() == TypeTags.NULL_TAG) {
-                            type = members.get(0).getTag();
+                            type = TypeUtils.getReferredType(members.get(0)).getTag();
                         } else {
                             throw IOUtils.createError("unsupported nillable field : " 
                                 + fieldName + " for value: " + value);
