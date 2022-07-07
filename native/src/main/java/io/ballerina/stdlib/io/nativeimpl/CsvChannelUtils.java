@@ -103,46 +103,51 @@ public class CsvChannelUtils {
                 if (fields.length > i) {
                     String value = fields[i];
                     if (value == null || value.isEmpty()) {
-                        struct.put(fieldName, null);
-                    } else {
                         if (type == TypeTags.UNION_TAG) {
                             List<Type> members = ((UnionType) internalStructField.getFieldType()).getMemberTypes();
-                            if (members.get(0).getTag() == TypeTags.NULL_TAG) {
-                                type = members.get(1).getTag();
-                            } else if (members.get(1).getTag() == TypeTags.NULL_TAG) {
-                                type = members.get(0).getTag();
-                            } else {
-                                throw IOUtils.createError("unsupported nillable field for value: " + value);
-                            }
+                            if (TypeUtils.getReferredType(members.get(1)).getTag() == TypeTags.NULL_TAG) {
+                                struct.put(fieldName, null);
+                                continue;
+                            } 
+                            throw IOUtils.createError("Unsupported nillable field : " + fieldName);
                         }
-                        String trimmedValue = value.trim();       
-                        switch (type) {
-                            case TypeTags.INT_TAG:
-                                struct.put(fieldName, Long.parseLong(trimmedValue));
-                                break;
-                            case TypeTags.FLOAT_TAG:
-                                struct.put(fieldName, Double.parseDouble(trimmedValue));
-                                break;
-                            case TypeTags.STRING_TAG:
-                                struct.put(fieldName, trimmedValue);
-                                break;
-                            case TypeTags.DECIMAL_TAG:
-                                struct.put(fieldName, ValueCreator.createDecimalValue(trimmedValue));
-                                break;
-                            case TypeTags.BOOLEAN_TAG:
-                                struct.put(fieldName, Boolean.parseBoolean(trimmedValue));
-                                break;
-                            default:
-                                throw IOUtils.createError(
-                                    "data mapping support only for int, float, Decimal, boolean and string. "
-                                            + "Unsupported value for the struct field: " + value);
+                        throw IOUtils.createError("Following field does not support nill values: " + fieldName);
+                    } 
+                    if (type == TypeTags.UNION_TAG) {
+                        List<Type> members = ((UnionType) internalStructField.getFieldType()).getMemberTypes();
+                        if (TypeUtils.getReferredType(members.get(1)).getTag() == TypeTags.NULL_TAG) {
+                            type = members.get(0).getTag();
+                        } else {
+                            throw IOUtils.createError("unsupported nillable field : " 
+                                + fieldName + " for value: " + value);
                         }
+                    }
+                    String trimmedValue = value.trim();       
+                    switch (type) {
+                        case TypeTags.INT_TAG:
+                            struct.put(fieldName, Long.parseLong(trimmedValue));
+                            break;
+                        case TypeTags.FLOAT_TAG:
+                            struct.put(fieldName, Double.parseDouble(trimmedValue));
+                            break;
+                        case TypeTags.STRING_TAG:
+                            struct.put(fieldName, trimmedValue);
+                            break;
+                        case TypeTags.DECIMAL_TAG:
+                            struct.put(fieldName, ValueCreator.createDecimalValue(trimmedValue));
+                            break;
+                        case TypeTags.BOOLEAN_TAG:
+                            struct.put(fieldName, Boolean.parseBoolean(trimmedValue));
+                            break;
+                        default:
+                            throw IOUtils.createError(
+                                "data mapping support only for int, float, Decimal, boolean and string. "
+                                        + "Unsupported value for the struct field: " + value);
                     }   
-                } else {
-                    struct.put(fieldName, null);
                 }
             }
+            return struct;
         }
-        return struct;
+        throw IOUtils.createError("Empty line detected");
     }
 }
