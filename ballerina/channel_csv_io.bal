@@ -42,22 +42,22 @@ Error {
 
 isolated function channelWriteCsv(WritableChannel writableChannel, string[][]|map<anydata>[] content) returns Error? {
     WritableCSVChannel csvChannel = check getWritableCSVChannel(writableChannel);
-    if (content is string[][]) {
+    if content is string[][] {
         foreach string[] r in content {
-            var writeResult = csvChannel.write(r);
+            Error? writeResult = csvChannel.write(r);
             if writeResult is Error {
                 check csvChannel.close();
                 return writeResult;
             }
         }
     }
-    else if (content is map<anydata>[]) {
+    else if content is map<anydata>[] {
         foreach map<anydata> row in content {
             string[] sValues = [];
             foreach [string, anydata] [_, value] in row.entries() {
                 sValues.push(value.toString());
             }
-            var writeResult = csvChannel.write(sValues);
+            Error? writeResult = csvChannel.write(sValues);
             if writeResult is Error {
                 check csvChannel.close();
                 return writeResult;
@@ -71,7 +71,7 @@ isolated function channelWriteCsv(WritableChannel writableChannel, string[][]|ma
 isolated function channelWriteCsvFromStream(WritableChannel writableChannel, stream<string[]|map<anydata>, Error?> csvStream) returns
 Error? {
     WritableCSVChannel csvChannel = check getWritableCSVChannel(writableChannel);
-    if (csvStream is stream<string[], Error?>) {
+    if csvStream is stream<string[], Error?> {
         record {|string[] value;|}|Error? csvRecordString = csvStream.next();
         do {
             while csvRecordString is record {|string[] value;|} {
@@ -83,7 +83,7 @@ Error? {
             check csvChannel.close();
             return err;
         }
-    } else if (csvStream is stream<map<anydata>, Error?>) {
+    } else if csvStream is stream<map<anydata>, Error?> {
         record {|map<anydata> value;|}? csvRecordMap = check csvStream.next();
         do {
             while csvRecordMap is record {|map<anydata> value;|} {

@@ -24,7 +24,7 @@ public class CsvIterator {
             return closedStreamInvocationError();
         } else {
             record{}|string[]|Error? result = nextResult(self);
-            if (result is record{}) || (result is string[]) {
+            if result is record{} || result is string[] {
                 return {value: result};
             } else if result is EofError {
                 self.isClosed = true;
