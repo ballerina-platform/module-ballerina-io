@@ -150,7 +150,7 @@ function testReadFileCsvAsStreamUsingResourceFile() returns error? {
 function testReadFileCsvAsStreamUsingResourceFileRecord() returns error? {
     string filePath = RESOURCES_BASE_PATH + "datafiles/io/records/sample5b.csv";
     int[] expected = [10000,20000,30000];
-    stream<Employee4, Error?> result = check fileReadCsvAsStream(filePath); // check for 
+    stream<Employee4, Error?> result = check fileReadCsvAsStream(filePath); 
     int i = 0;
     check result.forEach(function(Employee4 val) {
         test:assertEquals(val.salary, expected[i]);
@@ -819,15 +819,7 @@ isolated function testchannelReadCsvWithSkipHeaders() returns Error? {
     ];
     string filePath = TEMP_DIR + "workers2_record.csv";
     string[][] result = check channelReadCsv(check openReadableCsvFile(filePath, COMMA, DEFAULT_ENCODING, 1));
-    int i = 0;
-    foreach string[] r in result {
-        int j = 0;
-        foreach string s in r {
-            test:assertEquals(s, expectedContent[i][j]);
-            j += 1;
-        }
-        i += 1;
-    }
+    test:assertEquals(result,expectedContent);
 }
 
 @test:Config {}

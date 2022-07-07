@@ -89,6 +89,7 @@ Error? {
                 check csvChannel.write(sValues);
                 csvRecordMap = check csvStream.next();
             }
+            check csvChannel.close();
         }
     } on fail Error err {
         check csvChannel.close();

@@ -48,7 +48,7 @@ public isolated function fileReadCsvAsStream(string path, typedesc<string[]|map<
 # io:Error? result = io:fileWriteCsv("./resources/myfile.csv", content);
 # ```
 # + path - The CSV file path
-# + content - CSV content as an array of string arrays or as an array of records
+# + content - CSV content as an array of string arrays, or as an array of map<anydata>
 # + option - To indicate whether to overwrite or append the given content
 # + return - `()` when the writing was successful or an `io:Error`
 public isolated function fileWriteCsv(string path, string[][]|map<anydata>[] content, FileWriteOption option = OVERWRITE) returns
