@@ -85,6 +85,21 @@ public class IOConstants {
     public static final String BUFFERED_INPUT_STREAM_ENTRY = "bufferedInputStreamEntry";
 
     /**
+     * Object name for readable character channel.
+     */
+    public static final String READABLE_CHARACTER_CHANNEL = "ReadableCharacterChannel";
+
+    /**
+     * Object name for readable text record channel.
+     */
+    public static final String READABLE_TEXT_RECORD_CHANNEL = "ReadableTextRecordChannel";
+
+    /**
+     * Object name for CSV iteratoe.
+     */
+    public static final String CSV_ITERATOR = "CsvIterator";
+
+    /**
      * Specifies the error code for i/o.
      */
     public enum ErrorCode {

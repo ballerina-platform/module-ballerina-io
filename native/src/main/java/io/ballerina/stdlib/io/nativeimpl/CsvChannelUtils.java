@@ -40,8 +40,11 @@ import java.util.Map;
 
 import static io.ballerina.stdlib.io.nativeimpl.RecordChannelUtils.getAllRecords;
 import static io.ballerina.stdlib.io.nativeimpl.RecordChannelUtils.hasNext;
+import static io.ballerina.stdlib.io.utils.IOConstants.CSV_ITERATOR;
 import static io.ballerina.stdlib.io.utils.IOConstants.CSV_RETURN_TYPE;
 import static io.ballerina.stdlib.io.utils.IOConstants.ITERATOR_NAME;
+import static io.ballerina.stdlib.io.utils.IOConstants.READABLE_CHARACTER_CHANNEL;
+import static io.ballerina.stdlib.io.utils.IOConstants.READABLE_TEXT_RECORD_CHANNEL;
 import static io.ballerina.stdlib.io.utils.IOUtils.getIOPackage;
 /**
  * This class hold Java external functions for csv reading APIs.
@@ -57,9 +60,9 @@ public class CsvChannelUtils {
     public static Object fileReadCsv(BString path, int skipHeaders, BTypedesc typeDesc) {
         BObject byteChannel = (BObject) ByteChannelUtils.openReadableFile(path);
         BObject characterChannel = ValueCreator.createObjectValue(getIOPackage(),
-                "ReadableCharacterChannel", byteChannel, ENCODING);
+            READABLE_CHARACTER_CHANNEL, byteChannel, ENCODING);
         BObject textRecordChannel = ValueCreator.createObjectValue(getIOPackage(),
-                "ReadableTextRecordChannel", characterChannel, FIELD_SEPERATOR, ROW_SEPERATOR, FORMAT);
+            READABLE_TEXT_RECORD_CHANNEL, characterChannel, FIELD_SEPERATOR, ROW_SEPERATOR, FORMAT);
         textRecordChannel.addNativeData(CSV_RETURN_TYPE, typeDesc);
         while (hasNext(textRecordChannel)) {
 
@@ -73,10 +76,10 @@ public class CsvChannelUtils {
         BObject byteChannel = (BObject) ByteChannelUtils.openReadableFile(path);
 
         BObject characterChannel = ValueCreator.createObjectValue(getIOPackage(),
-                "ReadableCharacterChannel", byteChannel, ENCODING);
+            READABLE_CHARACTER_CHANNEL, byteChannel, ENCODING);
         BObject textRecordChannel = ValueCreator.createObjectValue(getIOPackage(),
-                "ReadableTextRecordChannel", characterChannel, FIELD_SEPERATOR, ROW_SEPERATOR, FORMAT);
-        BObject recordIterator = ValueCreator.createObjectValue(getIOPackage(), "CsvIterator");
+            READABLE_TEXT_RECORD_CHANNEL, characterChannel, FIELD_SEPERATOR, ROW_SEPERATOR, FORMAT);
+        BObject recordIterator = ValueCreator.createObjectValue(getIOPackage(), CSV_ITERATOR);
         recordIterator.addNativeData(CSV_RETURN_TYPE, typeDesc);
         recordIterator.addNativeData(ITERATOR_NAME, textRecordChannel);
         return ValueCreator.createStreamValue(
