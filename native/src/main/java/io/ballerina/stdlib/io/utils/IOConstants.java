@@ -95,7 +95,7 @@ public class IOConstants {
     public static final String READABLE_TEXT_RECORD_CHANNEL = "ReadableTextRecordChannel";
 
     /**
-     * Object name for CSV iteratoe.
+     * Object name for CSV iterator.
      */
     public static final String CSV_ITERATOR = "CsvIterator";
 

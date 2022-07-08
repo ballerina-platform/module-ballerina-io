@@ -77,8 +77,6 @@ Error? {
                 check csvChannel.write(csvRecordString.value);
                 csvRecordString = csvStream.next();
             }
-            check csvStream.close();
-            check csvChannel.close();
         } else if csvStream is stream<map<anydata>, Error?> {
             record {|map<anydata> value;|}? csvRecordMap = check csvStream.next();
             while csvRecordMap is record {|map<anydata> value;|} {
@@ -89,14 +87,15 @@ Error? {
                 check csvChannel.write(sValues);
                 csvRecordMap = check csvStream.next();
             }
-            check csvStream.close();
-            check csvChannel.close();
         }
     } on fail Error err {
         check csvStream.close();
         check csvChannel.close();
         return err;
     }
+    check csvStream.close();
+    check csvChannel.close();
+
     return;
 }
 

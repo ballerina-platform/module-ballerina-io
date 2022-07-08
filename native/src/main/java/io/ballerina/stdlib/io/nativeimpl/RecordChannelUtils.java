@@ -149,8 +149,7 @@ public class RecordChannelUtils {
                         headersSkipped = 1;
                         continue;
                     }
-                    int fieldLength = structType.getFields().size();
-                    if (record.length != fieldLength) {
+                    if (record.length != structType.getFields().size()) {
                         return IOUtils.createError("Record type and CSV file does not match.");
                     }
                     final Map<String, Object> struct = CsvChannelUtils.getStruct(record, structType);
@@ -200,6 +199,7 @@ public class RecordChannelUtils {
                 final Map<String, Object> struct = CsvChannelUtils.getStruct(record, structType);
                 int fieldLength = structType.getFields().size();
                 if (record.length != fieldLength) {
+                    bufferedReader.close();
                     return IOUtils.createError("Record type and CSV file does not match.");
                 }
                 
