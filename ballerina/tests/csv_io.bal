@@ -190,7 +190,7 @@ isolated function testWriteRecordCsv() returns Error? {
 }
 
 @test:Config {dependsOn: [testWriteRecordCsv]}
-function testWriteRecordCsvRead() returns error? {
+function testWritenRecordCsv() returns error? {
     Employee E = {
         id: "1",
         name: "Foo1",
@@ -215,7 +215,7 @@ function testWriteRecordCsvRead() returns error? {
 }
 
 @test:Config {}
-isolated function testWriteRecordCsvAsStream() returns Error? {
+isolated function testWriteCsvAsRecordStream() returns Error? {
     Employee E = {
         id: "1",
         name: "Foo1",
@@ -233,7 +233,7 @@ isolated function testWriteRecordCsvAsStream() returns Error? {
 }
 
 @test:Config {dependsOn: [testWriteRecordCsvAsStream]}
-function testWriteRecordCsvAsStreamRead() returns error? {
+function testWritenCsvAsRecordStreamRead() returns error? {
     Employee E = {
         id: "1",
         name: "Foo1",
