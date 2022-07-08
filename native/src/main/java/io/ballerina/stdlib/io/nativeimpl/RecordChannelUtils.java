@@ -176,6 +176,8 @@ public class RecordChannelUtils {
             }
         } catch (BallerinaIOException e) {
             return IOUtils.createError(e);
+        } finally {
+            close(channel);
         }
     }
 
@@ -209,7 +211,7 @@ public class RecordChannelUtils {
             }
         } catch (IOException e) {
             return IOUtils.createError(e);
-        }
+        } 
     }
 
     public static Object readRecord(BObject channel) {

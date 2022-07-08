@@ -207,6 +207,8 @@ function testWriteRecordCsvRead() returns error? {
     int i = 0;
     check result.forEach(function(Employee val) {
         test:assertEquals(val.salary, expected[i].salary);
+        test:assertEquals(val.id, expected[i].id);
+        test:assertEquals(val.name, expected[i].name);
         i = i + 1;
     });
     test:assertEquals(i, 2);
@@ -248,6 +250,8 @@ function testWriteRecordCsvAsStreamRead() returns error? {
     int i = 0;
     check result.forEach(function(Employee val) {
         test:assertEquals(val.salary, expected[i].salary);
+        test:assertEquals(val.id, expected[i].id);
+        test:assertEquals(val.name, expected[i].name);
         i = i + 1;
     });
     test:assertEquals(i, 2);

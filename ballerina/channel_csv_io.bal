@@ -50,8 +50,7 @@ isolated function channelWriteCsv(WritableChannel writableChannel, string[][]|ma
                 return writeResult;
             }
         }
-    }
-    else if content is map<anydata>[] {
+    } else if content is map<anydata>[] {
         foreach map<anydata> row in content {
             string[] sValues = [];
             foreach [string, anydata] [_, value] in row.entries() {
@@ -78,6 +77,7 @@ Error? {
                 check csvChannel.write(csvRecordString.value);
                 csvRecordString = csvStream.next();
             }
+            check csvStream.close();
             check csvChannel.close();
         } else if csvStream is stream<map<anydata>, Error?> {
             record {|map<anydata> value;|}? csvRecordMap = check csvStream.next();
@@ -89,9 +89,11 @@ Error? {
                 check csvChannel.write(sValues);
                 csvRecordMap = check csvStream.next();
             }
+            check csvStream.close();
             check csvChannel.close();
         }
     } on fail Error err {
+        check csvStream.close();
         check csvChannel.close();
         return err;
     }
