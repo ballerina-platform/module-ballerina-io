@@ -26,6 +26,7 @@ import io.ballerina.runtime.api.types.Type;
 import io.ballerina.runtime.api.utils.StringUtils;
 import io.ballerina.runtime.api.utils.TypeUtils;
 import io.ballerina.runtime.api.values.BArray;
+import io.ballerina.runtime.api.values.BError;
 import io.ballerina.runtime.api.values.BObject;
 import io.ballerina.runtime.api.values.BString;
 import io.ballerina.runtime.api.values.BTypedesc;
@@ -173,7 +174,7 @@ public class RecordChannelUtils {
                 Object[] out = outList.toArray();
                 return ValueCreator.createArrayValue(out, TypeCreator.createArrayType(describingType));
             }
-        } catch (BallerinaIOException e) {
+        } catch (BallerinaIOException | BError e) {
             return IOUtils.createError(e);
         } finally {
             close(channel);
@@ -197,19 +198,17 @@ public class RecordChannelUtils {
                 StructureType structType = (StructureType) describingType;
                 String[] record = textRecordChannel.getFields(line);
                 final Map<String, Object> struct = CsvChannelUtils.getStruct(record, structType);
-                int fieldLength = structType.getFields().size();
-                if (record.length != fieldLength) {
+                if (record.length != structType.getFields().size()) {
                     bufferedReader.close();
                     return IOUtils.createError("Record type and CSV file does not match.");
                 }
                 
                 return ValueCreator.createRecordValue(describingType.getPackage(), describingType.getName(),
                                 struct);
-            } else {
-                String[] records = textRecordChannel.getFields(line);
-                return StringUtils.fromStringArray(records);
             }
-        } catch (IOException e) {
+            String[] records = textRecordChannel.getFields(line);
+            return StringUtils.fromStringArray(records);
+        } catch (IOException | BError e) {
             return IOUtils.createError(e);
         } 
     }
