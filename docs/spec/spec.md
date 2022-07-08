@@ -4,7 +4,7 @@ _Owners_: @daneshk @BuddhiWathsala
 _Reviewers_: @daneshk  
 _Created_: 2021/12/04   
 _Updated_: 2022/02/17  
-_Edition_: Swan Lake  
+_Edition_: Swan Lake 
 
 ## Introduction
 This is the specification for the I/O standard library of [Ballerina language](https://ballerina.io/), which provides file related I/O operations.  
@@ -285,6 +285,7 @@ The following API reads the content of a given CSV file as a string array of arr
 # Read file content as a CSV.
 # ```ballerina
 # string[][]|io:Error content = io:fileReadCsv("./resources/myfile.csv");
+# map<anydata>[]|io:Error content = io:fileReadCsv("./resources/myfile.csv");
 # ```
 # + path - The CSV file path
 # + skipHeaders - Number of headers, which should be skipped prior to reading records
@@ -297,8 +298,11 @@ The following API writes given CSV content to a given file.
 ```ballerina
 # Write CSV content to a file.
 # ```ballerina
+# type Coord record {int x;int y;};
+# Coord[] contentRecord = [{x: 1,y: 2},{x: 1,y: 2}]
 # string[][] content = [["Anne", "Johnson", "SE"], ["John", "Cameron", "QA"]];
 # io:Error? result = io:fileWriteCsv("./resources/myfile.csv", content);
+# io:Error? resultRecord = io:fileWriteCsv("./resources/myfileRecord.csv", contentRecord);
 # ```
 # + path - The CSV file path
 # + content - CSV content as an array of string arrays
@@ -314,6 +318,7 @@ The following API reads the content of a given CSV file as a stream of string ar
 # Read file content as a CSV.
 # ```ballerina
 # stream<string[], io:Error?>|io:Error content = io:fileReadCsvAsStream("./resources/myfile.csv");
+# stream<map<anydata>, io:Error?>|io:Error content = io:fileReadCsvAsStream("./resources/myfile.csv");
 # ```
 # + path - The CSV file path
 # + return - The entire CSV content in the channel a stream of string arrays or an `io:Error`
@@ -325,9 +330,13 @@ The following API writes a given CSV stream to a given file.
 ```ballerina
 # Write CSV record stream to a file.
 # ```ballerina
+# type Coord record {int x;int y;};
+# Coord[] contentRecord = [{x: 1,y: 2},{x: 1,y: 2}]
 # string[][] content = [["Anne", "Johnson", "SE"], ["John", "Cameron", "QA"]];
-# stream<string[], io:Error?> recordStream = content.toStream();
-# io:Error? result = io:fileWriteCsvFromStream("./resources/myfile.csv", recordStream);
+# stream<string[], io:Error?> stringStream = content.toStream();
+# stream<Coord, io:Error?> recordStream = contentRecord.toStream();
+# io:Error? result = io:fileWriteCsvFromStream("./resources/myfile.csv", stringStream);
+# io:Error? resultRecord = io:fileWriteCsvFromStream("./resources/myfileRecord.csv", recordStream);
 # ```
 # + path - The CSV file path
 # + content - A CSV record stream to be written

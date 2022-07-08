@@ -27,6 +27,7 @@ isolated function testReadRecordLengths() returns Error? {
 
     test:assertTrue(recordChannel.hasNext());
     string[] recordResult = check recordChannel.getNext();
+    
     test:assertEquals(recordResult.length(), expectedRecordLength);
 
     test:assertTrue(recordChannel.hasNext());

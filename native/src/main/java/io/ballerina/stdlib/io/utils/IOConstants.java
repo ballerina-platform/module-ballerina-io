@@ -35,6 +35,11 @@ public class IOConstants {
     public static final String DATA_CHANNEL_NAME = "data_channel";
 
     /**
+     * Represents the name of the csv iterator.
+     */
+    public static final String ITERATOR_NAME = "iterator_name";
+
+    /**
      * The name of the character channel which will be represented through the native struct.
      */
     public static final String CHARACTER_CHANNEL_NAME = "char_channel";
@@ -43,6 +48,11 @@ public class IOConstants {
      * The name of the text record channel which will be represented through the native struct.
      */
     public static final String TXT_RECORD_CHANNEL_NAME = "txt_record";
+
+    /**
+     * The name of the csv record channel which will be represented through the native struct.
+     */
+    public static final String CSV_RETURN_TYPE = "csv_return_type";
 
     /**
      * The size of the buffer allocated for reading bytes from the channel (15~ KB).
@@ -73,6 +83,21 @@ public class IOConstants {
      * Stream related constants for native data.
      */
     public static final String BUFFERED_INPUT_STREAM_ENTRY = "bufferedInputStreamEntry";
+
+    /**
+     * Object name for readable character channel.
+     */
+    public static final String READABLE_CHARACTER_CHANNEL = "ReadableCharacterChannel";
+
+    /**
+     * Object name for readable text record channel.
+     */
+    public static final String READABLE_TEXT_RECORD_CHANNEL = "ReadableTextRecordChannel";
+
+    /**
+     * Object name for CSV iterator.
+     */
+    public static final String CSV_ITERATOR = "CsvIterator";
 
     /**
      * Specifies the error code for i/o.

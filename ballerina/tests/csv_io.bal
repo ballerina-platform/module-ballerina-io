@@ -67,6 +67,27 @@ type Employee3 record {
     decimal salary;
 };
 
+type Employee4 record {
+    string id;
+    string name;
+    int salary;
+};
+
+type Employee5 record {|
+    string name;
+    string designation;
+    string company;
+    string age;
+    string residence;
+|};
+
+type Employee6 record {
+    string name;
+    string designation;
+    string company;
+    string age;
+};
+
 @test:Config {}
 isolated function testReadCsv() returns Error? {
     string filePath = RESOURCES_BASE_PATH + "datafiles/io/records/sample.csv";
@@ -97,6 +118,143 @@ isolated function testReadCsv() returns Error? {
     test:assertEquals((<Error>endResult).message(), "EoF when reading from the channel");
 
     check csvChannel.close();
+}
+
+@test:Config {}
+isolated function testReadCsvRecord() returns Error? {
+    string filePath = RESOURCES_BASE_PATH + "datafiles/io/records/sample5.csv";
+    string[][] csvContent = check fileReadCsv(filePath);
+    test:assertEquals(csvContent[0][0], "User1");
+    test:assertEquals(csvContent[0][2], " 10000.50");
+    Employee[] employee = check fileReadCsv(filePath);
+    test:assertEquals(employee[0].id, "User1");
+    test:assertEquals(employee[0].salary, 10000.50f);
+}
+
+@test:Config {}
+function testReadFileCsvAsStreamUsingResourceFile() returns error? {
+    string filePath = RESOURCES_BASE_PATH + "datafiles/io/records/sample5.csv";
+    string[][] expected = [["User1", "WSO2", "10000.50"], ["User2", "WSO2", "20000.50"], ["User3", "WSO2", "30000.00"]];
+    stream<string[], Error?> result = check fileReadCsvAsStream(filePath);
+    int i = 0;
+    check result.forEach(function(string[] val) {
+        foreach int j in 0 ... val.length()-1 {
+            test:assertEquals(val[j].trim(), expected[i][j]);
+        }
+        i += 1;
+    });
+    test:assertEquals(i, 3);
+}
+
+@test:Config {}
+function testReadFileCsvAsStreamUsingResourceFileRecord() returns error? {
+    string filePath = RESOURCES_BASE_PATH + "datafiles/io/records/sample5b.csv";
+    int[] expected = [10000,20000,30000];
+    stream<Employee4, Error?> result = check fileReadCsvAsStream(filePath); 
+    int i = 0;
+    check result.forEach(function(Employee4 val) {
+        test:assertEquals(val.salary, expected[i]);
+        i = i + 1;
+    });
+    test:assertEquals(i, 3);
+}
+
+@test:Config {}
+function testReadFileCsvAsStreamUsingResourceFileOpenRecord() returns error? {
+    string filePath = RESOURCES_BASE_PATH + "datafiles/io/records/sample5b.csv";
+    int[] expected = [10000,20000,30000];
+    stream<record {string id;string name;int salary;}, Error?> result = check fileReadCsvAsStream(filePath);
+    int i = 0;
+    check result.forEach(function(record {string id; string name; int salary;} val) {
+        test:assertEquals(val.salary, expected[i]);
+        i = i + 1;
+    });
+    test:assertEquals(i, 3);
+}
+
+@test:Config {}
+isolated function testWriteRecordCsv() returns Error? {
+    Employee E = {
+        id: "1",
+        name: "Foo1",
+        salary: 100000.0f
+    };
+    Employee B = {
+        id: "2",
+        name: "Foo2",
+        salary: 300000.0f
+    };
+    string filePath = TEMP_DIR + "recordsDefault_records.csv";
+    Employee[] content1 = [E, B];
+    test:assertEquals(check fileWriteCsv(filePath, content1), ());
+}
+
+@test:Config {dependsOn: [testWriteRecordCsv]}
+function testWritenRecordCsv() returns error? {
+    Employee E = {
+        id: "1",
+        name: "Foo1",
+        salary: 100000.0f
+    };
+    Employee B = {
+        id: "2",
+        name: "Foo2",
+        salary: 300000.0f
+    };
+    Employee[] expected = [E, B];
+    string filePath = TEMP_DIR + "recordsDefault_records.csv";
+    stream<Employee, Error?> result = check fileReadCsvAsStream(filePath);
+    int i = 0;
+    check result.forEach(function(Employee val) {
+        test:assertEquals(val.salary, expected[i].salary);
+        test:assertEquals(val.id, expected[i].id);
+        test:assertEquals(val.name, expected[i].name);
+        i = i + 1;
+    });
+    test:assertEquals(i, 2);
+}
+
+@test:Config {}
+isolated function testWriteCsvAsRecordStream() returns Error? {
+    Employee E = {
+        id: "1",
+        name: "Foo1",
+        salary: 100000.0f
+    };
+    Employee B = {
+        id: "2",
+        name: "Foo2",
+        salary: 300000.0f
+    };
+
+    string filePath = TEMP_DIR + "recordsDefault_stream.csv";
+    Employee[] content1 = [E, B];
+    test:assertEquals(check fileWriteCsvFromStream(filePath, content1.toStream()), ());
+}
+
+@test:Config {dependsOn: [testWriteCsvAsRecordStream]}
+function testWritenCsvAsRecordStreamRead() returns error? {
+    Employee E = {
+        id: "1",
+        name: "Foo1",
+        salary: 100000.0f
+    };
+    Employee B = {
+        id: "2",
+        name: "Foo2",
+        salary: 300000.0f
+    };
+    Employee[] expected = [E, B];
+    string filePath = TEMP_DIR + "recordsDefault_stream.csv";
+    stream<Employee, Error?> result = check fileReadCsvAsStream(filePath);
+    int i = 0;
+    check result.forEach(function(Employee val) {
+        test:assertEquals(val.salary, expected[i].salary);
+        test:assertEquals(val.id, expected[i].id);
+        test:assertEquals(val.name, expected[i].name);
+        i = i + 1;
+    });
+    test:assertEquals(i, 2);
 }
 
 @test:Config {}
@@ -376,12 +534,11 @@ isolated function testTableContent4() returns error? {
     if (tableResult is table<Employee3>) {
         foreach var employee in tableResult {
             total = total + employee.salary;
-    }
+        }
     }
     test:assertEquals(total, expectedValue);
     check csvChannel.close();
 }
-
 
 @test:Config {}
 isolated function testTableWithNull() returns error? {
@@ -584,11 +741,104 @@ isolated function testFileCsvReadWithSkipHeaders() returns Error? {
     }
 }
 
+@test:Config {dependsOn: [testFileCsvWriteWithSkipHeaders]}
+isolated function testFileCsvReadWithSkipHeadersRecords() returns Error? {
+    string[][] expectedContent = [
+        [
+            "Ross Meton",
+            "Civil Engineer",
+            "ABC Construction",
+            "26 years",
+            "Sydney"
+        ],
+        ["Matt Jason", "Architect", "Typer", "38 years", "Colombo"]
+    ];
+    string filePath = TEMP_DIR + "workers2.csv";
+    Employee5[] csvContent = check fileReadCsv(filePath, 1);
+    int i = 0;
+    foreach Employee5 val in csvContent {
+        int j = 0;
+        foreach string s in val.keys() {
+            test:assertEquals(val.get(s), expectedContent[i][j]);
+            j += 1;
+        }
+        i += 1;
+    }
+}
+
+@test:Config {}
+isolated function testWriteChannelReadCsvWithSkipHeaders() returns Error? {
+    string[][] content = [
+        ["Name", "Occupation", "Company", "Age", "Hometown"],
+        [
+            "Ross Meton",
+            "Civil Engineer",
+            "ABC Construction",
+            "26 years",
+            "Sydney"
+        ],
+        ["Matt Jason", "Architect", "Typer", "38 years", "Colombo"]
+    ];
+    string filePath = TEMP_DIR + "workers2_record.csv";
+    check fileWriteCsv(filePath, content);
+}
+@test:Config {dependsOn: [testWriteChannelReadCsvWithSkipHeaders]}
+isolated function testchannelReadCsvAsStream() returns Error? {
+    string[][] expectedContent = [
+        ["Name", "Occupation", "Company", "Age", "Hometown"],
+        [
+            "Ross Meton",
+            "Civil Engineer",
+            "ABC Construction",
+            "26 years",
+            "Sydney"
+        ],
+        ["Matt Jason", "Architect", "Typer", "38 years", "Colombo"]
+    ];
+    string filePath = TEMP_DIR + "workers2_record.csv";
+    stream<string[], Error?> resultStream = check channelReadCsvAsStream(check openReadableCsvFile(filePath));
+    record {|string[] value;|}|Error? csvRecordString = resultStream.next();
+    int i = 0;
+    do {
+            while csvRecordString is record {|string[] value;|} {
+                test:assertEquals(csvRecordString.value[0], expectedContent[i][0]);
+                csvRecordString = resultStream.next();
+                i+=1;
+            }
+    }
+    test:assertEquals(i, 3);
+}
+
+@test:Config {dependsOn: [testWriteChannelReadCsvWithSkipHeaders]}
+isolated function testchannelReadCsvWithSkipHeaders() returns Error? {
+    string[][] expectedContent = [
+        [
+            "Ross Meton",
+            "Civil Engineer",
+            "ABC Construction",
+            "26 years",
+            "Sydney"
+        ],
+        ["Matt Jason", "Architect", "Typer", "38 years", "Colombo"]
+    ];
+    string filePath = TEMP_DIR + "workers2_record.csv";
+    string[][] result = check channelReadCsv(check openReadableCsvFile(filePath, COMMA, DEFAULT_ENCODING, 1));
+    test:assertEquals(result,expectedContent);
+}
+
 @test:Config {}
 isolated function testFileWriteCsvFromStreamUsingResourceFile() returns Error? {
     string filePath = TEMP_DIR + "workers4_A.csv";
     string resourceFilePath = TEST_RESOURCE_PATH + "csvResourceFile1.csv";
     stream<string[], Error?> csvStream = check fileReadCsvAsStream(resourceFilePath);
+    check fileWriteCsvFromStream(filePath, csvStream);
+}
+
+@test:Config {}
+isolated function testFileWriteCsvFromStreamUsingResourceFileRecords() returns Error? {
+    string filePath = TEMP_DIR + "workers4_A.csv";
+    string resourceFilePath = TEST_RESOURCE_PATH + "csvResourceFile1.csv";
+    stream<Employee5, Error?> csvStream = check fileReadCsvAsStream(resourceFilePath);
     check fileWriteCsvFromStream(filePath, csvStream);
 }
 
@@ -618,6 +868,39 @@ function testFileReadCsvAsStreamUsingResourceFile() returns error? {
         int j = 0;
         foreach string s in val {
             test:assertEquals('string:trim(s), expectedContent[i][j]);
+            j += 1;
+        }
+        i += 1;
+    });
+    test:assertEquals(i, 3);
+}
+
+@test:Config {dependsOn: [testFileWriteCsvFromStreamUsingResourceFileRecords]}
+function testFileReadCsvAsStreamUsingResourceFileRecords() returns error? {
+    string filePath = TEMP_DIR + "workers4_A.csv";
+    string[][] expectedContent = [
+        ["Anne Hamiltom", "Software Engineer", "Microsoft", "26 years", "New York"],
+        [
+            "John Thomson",
+            "Software Architect",
+            "WSO2",
+            "38 years",
+            "Colombo"
+        ],
+        [
+            "Mary Thompson",
+            "Banker",
+            "Sampath Bank",
+            "30 years",
+            "Colombo"
+        ]
+    ];
+    stream<Employee5, Error?> result = check fileReadCsvAsStream(filePath);
+    int i = 0;
+    check result.forEach(function(Employee5 val) {
+        int j = 0;
+        foreach string s in val.keys() {
+            test:assertEquals('string:trim(val.get(s)), expectedContent[i][j]);
             j += 1;
         }
         i += 1;
@@ -1139,4 +1422,20 @@ function testReadCsvAsStreamWithQuotedField() returns error? {
     }
     check content.close();
     test:assertEquals(i, 3);
+}
+
+@test:Config {}
+function testReadFileCsvBooleanOpenRecord() returns error? {
+    string filePath = RESOURCES_BASE_PATH + "datafiles/io/records/sample5c.csv";
+    boolean[] expectedStatus = [true, false, true];
+    int?[] expectedSalary = [10000, 20000, ()];
+    stream<record {string id; string name; int? salary; boolean married;} , 
+        Error?> result = check fileReadCsvAsStream(filePath);
+    int i = 0;
+    check result.forEach(function(record {string id; string name; int? salary; boolean married;} val) {
+        test:assertEquals(val.married, expectedStatus[i]);
+        test:assertEquals(val.salary, expectedSalary[i]);
+        i = i + 1;
+    });
+    test:assertEquals(i, 3); 
 }
