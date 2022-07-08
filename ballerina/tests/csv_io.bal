@@ -232,7 +232,7 @@ isolated function testWriteCsvAsRecordStream() returns Error? {
     test:assertEquals(check fileWriteCsvFromStream(filePath, content1.toStream()), ());
 }
 
-@test:Config {dependsOn: [testWriteRecordCsvAsStream]}
+@test:Config {dependsOn: [testWriteCsvAsRecordStream]}
 function testWritenCsvAsRecordStreamRead() returns error? {
     Employee E = {
         id: "1",
