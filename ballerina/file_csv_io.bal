@@ -22,8 +22,8 @@ import ballerina/jballerina.java;
 # ```
 # + path - The CSV file path
 # + skipHeaders - Number of headers, which should be skipped prior to reading records
-# + return - The entire CSV content in the channel as an array of string arrays or an `io:Error`
 # + returnType - The type of the return value (string[] or map<anydata>)
+# + return - The entire CSV content in the channel as an array of string arrays or an `io:Error`
 public isolated function fileReadCsv(string path, int skipHeaders = 0, typedesc<string[]|map<anydata>> returnType = <>) returns returnType[]|Error = @java:Method{
     name: "fileReadCsv",
     'class: "io.ballerina.stdlib.io.nativeimpl.CsvChannelUtils"
@@ -35,8 +35,8 @@ public isolated function fileReadCsv(string path, int skipHeaders = 0, typedesc<
 # stream<map<anydata>, io:Error?>|io:Error content = io:fileReadCsvAsStream("./resources/myfile.csv");
 # ```
 # + path - The CSV file path
-# + return - The entire CSV content in the channel a stream of string arrays or an `io:Error`
 # + returnType - The type of the return value (string[] or map<anydata>)
+# + return - The entire CSV content in the channel a stream of string arrays or an `io:Error`
 public isolated function fileReadCsvAsStream(string path, typedesc<string[]|map<anydata>> returnType = <>) returns stream<returnType, Error?>|Error = @java:Method{
     name: "createCsvAsStream",
     'class: "io.ballerina.stdlib.io.nativeimpl.CsvChannelUtils"
