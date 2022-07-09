@@ -88,6 +88,20 @@ type Employee6 record {
     string age;
 };
 
+type RefInt int;
+type RefStr string;
+type RefDec decimal;
+type RefBool boolean;
+type RefFloat float;
+
+type EmployeeRef record {
+    string id;
+    RefInt hours_worked;
+    RefStr name;
+    RefDec salary;
+    RefBool martial_status;
+};
+
 @test:Config {}
 isolated function testReadCsv() returns Error? {
     string filePath = RESOURCES_BASE_PATH + "datafiles/io/records/sample.csv";
@@ -1405,10 +1419,10 @@ function testReadCsvAsStreamWithQuotedField() returns error? {
         ["permanent", "seven,eight,nine", "WSO2", "30000.00"]
     ];
 
-    stream<string[], Error?> content = check fileReadCsvAsStream(filePath);
+    stream<string[], Error?> csvContent = check fileReadCsvAsStream(filePath);
 
     int i = 0;
-    error? e = content.forEach(function(string[] row) {
+    error? e = csvContent.forEach(function(string[] row) {
         int j = 0;
         foreach string element in row {
             test:assertEquals(element, expectedContent[i][j]);
@@ -1420,7 +1434,7 @@ function testReadCsvAsStreamWithQuotedField() returns error? {
     if e is error {
         test:assertFail(msg = e.message());
     }
-    check content.close();
+    check csvContent.close();
     test:assertEquals(i, 3);
 }
 
@@ -1430,11 +1444,27 @@ function testReadFileCsvBooleanOpenRecord() returns error? {
     boolean[] expectedStatus = [true, false, true];
     int?[] expectedSalary = [10000, 20000, ()];
     stream<record {string id; string name; int? salary; boolean married;} , 
-        Error?> result = check fileReadCsvAsStream(filePath);
+        Error?> csvContent = check fileReadCsvAsStream(filePath);
     int i = 0;
-    check result.forEach(function(record {string id; string name; int? salary; boolean married;} val) {
-        test:assertEquals(val.married, expectedStatus[i]);
-        test:assertEquals(val.salary, expectedSalary[i]);
+    check csvContent.forEach(function(record {string id; string name; int? salary; boolean married;} value) {
+        test:assertEquals(value.married, expectedStatus[i]);
+        test:assertEquals(value.salary, expectedSalary[i]);
+        i = i + 1;
+    });
+    test:assertEquals(i, 3); 
+}
+
+@test:Config {}
+function testReadFileCsvWithReferenceType() returns error? {
+    string filePath = RESOURCES_BASE_PATH + "datafiles/io/records/sampleRef.csv";
+    EmployeeRef A = {id : "User1", hours_worked : 10, name: "Jane", salary: 10000d, martial_status:true};
+    EmployeeRef B = {id : "User2", hours_worked : 20, name: "John", salary: 20000d, martial_status:false};
+    EmployeeRef C = {id : "User3", hours_worked : 30, name: "Jack", salary: 30000d, martial_status:true};
+    EmployeeRef[] expected = [A,B,C];
+    stream<EmployeeRef, Error?> csvContent = check fileReadCsvAsStream(filePath);
+    int i = 0;
+    check csvContent.forEach(function(EmployeeRef value) {
+        test:assertEquals(value, expected[i]);
         i = i + 1;
     });
     test:assertEquals(i, 3); 
