@@ -1457,9 +1457,9 @@ function testReadFileCsvBooleanOpenRecord() returns error? {
 @test:Config {}
 function testReadFileCsvWithReferenceType() returns error? {
     string filePath = RESOURCES_BASE_PATH + "datafiles/io/records/sampleRef.csv";
-    EmployeeRef A = {id : "User1", hours_worked : 10, name: "Jane", salary: 10000d, martial_status:true};
-    EmployeeRef B = {id : "User2", hours_worked : 20, name: "John", salary: 20000d, martial_status:false};
-    EmployeeRef C = {id : "User3", hours_worked : 30, name: "Jack", salary: 30000d, martial_status:true};
+    EmployeeRef A = { id : "User1", hours_worked : 10, name: "Jane", salary: 10000d, martial_status:true };
+    EmployeeRef B = { id : "User2", hours_worked : 20, name: "John", salary: 20000d, martial_status:false };
+    EmployeeRef C = { id : "User3", hours_worked : 30, name: "Jack", salary: 30000d, martial_status:true };
     EmployeeRef[] expected = [A,B,C];
     stream<EmployeeRef, Error?> csvContent = check fileReadCsvAsStream(filePath);
     int i = 0;
