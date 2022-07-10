@@ -146,7 +146,7 @@ public class CsvChannelUtils {
                         }
                     } catch (NumberFormatException e) {
                         throw IOUtils.createError(
-                                    " Invalid value: " + trimmedValue + " for the field: '" + fieldName + "'");
+                                    "Invalid value: " + trimmedValue + " for the field: '" + fieldName + "'");
                     }
                 }
             }

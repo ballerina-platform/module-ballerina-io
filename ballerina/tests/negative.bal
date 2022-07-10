@@ -146,7 +146,7 @@ isolated function testFileCsvReadWithDefectiveRecords() returns Error? {
 function testReadFileCsvUsingResourceFileWithError() returns error? {
     string filePath = RESOURCES_BASE_PATH + "datafiles/io/records/sample5d.csv";
     Employee4[]|Error csvContent = fileReadCsv(filePath);
-    test:assertEquals((<Error>csvContent).message(), " Invalid value: 10000s for the field: 'salary'");
+    test:assertEquals((<Error>csvContent).message(), "Invalid value: 10000s for the field: 'salary'");
 }
 
 @test:Config {}
@@ -154,7 +154,7 @@ function testReadFileCsvAsStreamUsingResourceFileWithError() returns error? {
     string filePath = RESOURCES_BASE_PATH + "datafiles/io/records/sample5d.csv";
     stream<Employee4, Error?> csvContent = check fileReadCsvAsStream(filePath); 
     Error? out = csvContent.forEach(function(Employee4|Error value) {});
-    test:assertEquals((<Error>out).message(), " Invalid value: 10000s for the field: 'salary'");
+    test:assertEquals((<Error>out).message(), "Invalid value: 10000s for the field: 'salary'");
 }
 
 @test:Config {}
@@ -162,5 +162,5 @@ function testReadFileCsvWithReferenceTypeAndError() returns error? {
     string filePath = RESOURCES_BASE_PATH + "datafiles/io/records/sampleRefE.csv";
     stream<EmployeeRef, Error?> csvContent = check fileReadCsvAsStream(filePath);
     Error? out = csvContent.forEach(function(EmployeeRef value) { });
-    test:assertEquals((<Error>out).message(), " Invalid value: 10000s for the field: 'salary'");
+    test:assertEquals((<Error>out).message(), "Invalid value: 10000s for the field: 'salary'");
 }
