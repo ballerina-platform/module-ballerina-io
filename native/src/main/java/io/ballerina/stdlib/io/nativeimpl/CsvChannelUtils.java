@@ -88,7 +88,7 @@ public class CsvChannelUtils {
                 TypeCreator.createStreamType(describingType), recordIterator);
     }
 
-    public static Map<String, Object> getStruct(String[] fields, final StructureType structType) {
+    public static Object getStruct(String[] fields, final StructureType structType) {
         Map<String, Field> internalStructFields = structType.getFields();
         int fieldLength = internalStructFields.size();
         Map<String, Object> struct = null;
@@ -108,16 +108,16 @@ public class CsvChannelUtils {
                                 struct.put(fieldName, null);
                                 continue;
                             } 
-                            throw IOUtils.createError("Unsupported nillable field : " + fieldName);
+                            return IOUtils.createError("Unsupported nillable field : " + fieldName);
                         }
-                        throw IOUtils.createError("Field '" + fieldName + "' does not support nil value.");
+                        return IOUtils.createError("Field '" + fieldName + "' does not support nil value.");
                     } 
                     if (type == TypeTags.UNION_TAG) {
                         List<Type> members = ((UnionType) internalStructField.getFieldType()).getMemberTypes();
                         if (TypeUtils.getReferredType(members.get(1)).getTag() == TypeTags.NULL_TAG) {
                             type = TypeUtils.getReferredType(members.get(0)).getTag();
                         } else {
-                            throw IOUtils.createError("Unsupported nillable field : " 
+                            return IOUtils.createError("Unsupported nillable field : " 
                                 + fieldName + " for value: " + value);
                         }
                     }
@@ -140,18 +140,18 @@ public class CsvChannelUtils {
                                 struct.put(fieldName, Boolean.parseBoolean(trimmedValue));
                                 break;
                             default:
-                                throw IOUtils.createError(
+                                return IOUtils.createError(
                                     "Data mapping support only for int, float, Decimal, boolean and string. "
                                             + "Unsupported value for the struct field: " + fieldName);
                         }
                     } catch (NumberFormatException e) {
-                        throw IOUtils.createError(
+                        return IOUtils.createError(
                                     "Invalid value: " + trimmedValue + " for the field: '" + fieldName + "'");
                     }
                 }
             }
             return struct;
         }
-        throw IOUtils.createError("Empty line detected");
+        return IOUtils.createError("Empty line detected");
     }
 }
