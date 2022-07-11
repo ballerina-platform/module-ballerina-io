@@ -26,6 +26,7 @@ import io.ballerina.runtime.api.types.Type;
 import io.ballerina.runtime.api.utils.StringUtils;
 import io.ballerina.runtime.api.utils.TypeUtils;
 import io.ballerina.runtime.api.values.BArray;
+import io.ballerina.runtime.api.values.BError;
 import io.ballerina.runtime.api.values.BObject;
 import io.ballerina.runtime.api.values.BString;
 import io.ballerina.runtime.api.values.BTypedesc;
@@ -152,8 +153,11 @@ public class RecordChannelUtils {
                     if (record.length != structType.getFields().size()) {
                         return IOUtils.createError("Record type and CSV file does not match.");
                     }
-                    final Map<String, Object> struct = CsvChannelUtils.getStruct(record, structType);
-                    
+                    Object returnStruct = CsvChannelUtils.getStruct(record, structType);
+                    if (returnStruct instanceof BError) {
+                        return returnStruct;
+                    }
+                    final Map<String, Object> struct = (Map<String, Object>) returnStruct;
                     outList.add(ValueCreator.createRecordValue(describingType.getPackage(),
                                 describingType.getName(), struct));
                     
@@ -196,19 +200,20 @@ public class RecordChannelUtils {
             if (describingType.getTag() == TypeTags.RECORD_TYPE_TAG) {
                 StructureType structType = (StructureType) describingType;
                 String[] record = textRecordChannel.getFields(line);
-                final Map<String, Object> struct = CsvChannelUtils.getStruct(record, structType);
-                int fieldLength = structType.getFields().size();
-                if (record.length != fieldLength) {
+                Object returnStruct = CsvChannelUtils.getStruct(record, structType);
+                if (returnStruct instanceof BError) {
+                    return returnStruct;
+                }
+                final Map<String, Object> struct = (Map<String, Object>) returnStruct;
+                if (record.length != structType.getFields().size()) {
                     bufferedReader.close();
                     return IOUtils.createError("Record type and CSV file does not match.");
                 }
-                
                 return ValueCreator.createRecordValue(describingType.getPackage(), describingType.getName(),
                                 struct);
-            } else {
-                String[] records = textRecordChannel.getFields(line);
-                return StringUtils.fromStringArray(records);
             }
+            String[] records = textRecordChannel.getFields(line);
+            return StringUtils.fromStringArray(records);
         } catch (IOException e) {
             return IOUtils.createError(e);
         } 

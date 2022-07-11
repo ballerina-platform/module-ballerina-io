@@ -128,16 +128,39 @@ function testchannelReadCsvAsStreamAfterClosing() returns Error? {
     check fileWriteCsvFromStream(filePath, content.toStream());
     stream<string[], Error?> resultStream = check channelReadCsvAsStream(check openReadableCsvFile(filePath));
     check resultStream.close();
-    var result = resultStream.next();
-    test:assertTrue(result is Error);
-    test:assertEquals((<Error>result).message(), "Stream closed");
+    var csvContent = resultStream.next();
+    test:assertTrue(csvContent is Error);
+    test:assertEquals((<Error>csvContent).message(), "Stream closed");
 }
 
 @test:Config {dependsOn: [testFileCsvWriteWithSkipHeaders]}
 isolated function testFileCsvReadWithDefectiveRecords() returns Error? {
 
     string filePath = TEMP_DIR + "workers2.csv";
-    Employee6[]|Error result = fileReadCsv(filePath, 1);
-    test:assertTrue(result is Error);
-    test:assertEquals((<Error>result).message(), "Record type and CSV file does not match.");
+    Employee6[]|Error csvContent = fileReadCsv(filePath, 1);
+    test:assertTrue(csvContent is Error);
+    test:assertEquals((<Error>csvContent).message(), "Record type and CSV file does not match.");
+}
+
+@test:Config {}
+function testReadFileCsvUsingResourceFileWithError() returns error? {
+    string filePath = RESOURCES_BASE_PATH + "datafiles/io/records/sample5d.csv";
+    Employee4[]|Error csvContent = fileReadCsv(filePath);
+    test:assertEquals((<Error>csvContent).message(), "Invalid value: 10000s for the field: 'salary'");
+}
+
+@test:Config {}
+function testReadFileCsvAsStreamUsingResourceFileWithError() returns error? {
+    string filePath = RESOURCES_BASE_PATH + "datafiles/io/records/sample5d.csv";
+    stream<Employee4, Error?> csvContent = check fileReadCsvAsStream(filePath); 
+    Error? out = csvContent.forEach(function(Employee4|Error value) {});
+    test:assertEquals((<Error>out).message(), "Invalid value: 10000s for the field: 'salary'");
+}
+
+@test:Config {}
+function testReadFileCsvWithReferenceTypeAndError() returns error? {
+    string filePath = RESOURCES_BASE_PATH + "datafiles/io/records/sampleRefE.csv";
+    stream<EmployeeRef, Error?> csvContent = check fileReadCsvAsStream(filePath);
+    Error? out = csvContent.forEach(function(EmployeeRef value) { });
+    test:assertEquals((<Error>out).message(), "Invalid value: 10000s for the field: 'salary'");
 }
