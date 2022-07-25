@@ -13,7 +13,7 @@ distribution = "2201.2.0"
 groupId = "io.ballerina.stdlib"
 artifactId = "io-native"
 path = "../native/build/libs/io-native-@project.version@.jar"
-version = "@project.version@"
+version = "@toml.version@"
 
 
 [[platform.java11.dependency]]
