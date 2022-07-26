@@ -8,7 +8,6 @@ on:
   push:
     branches:
       - master
-      - 2201.1.x
     paths:
       - ${{ env.SPEC_FOLDER_PATH }}
 
