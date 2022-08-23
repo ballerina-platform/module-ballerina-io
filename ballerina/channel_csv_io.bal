@@ -50,7 +50,7 @@ isolated function channelWriteCsv(WritableChannel writableChannel, string[][]|ma
                 return writeResult;
             }
         }
-    } else {
+    } else if content is map<anydata>[] {
         foreach map<anydata> row in content {
             string[] sValues = [];
             foreach [string, anydata] [_, value] in row.entries() {
