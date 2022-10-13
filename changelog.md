@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - [API docs updated](https://github.com/ballerina-platform/ballerina-standard-library/issues/3463)
 
-## [1.3.0]
+## [1.3.0] - 2022-09-08
 ### Added
 -[Add support for Data Mapping in CSV read/write operations](https://github.com/ballerina-platform/ballerina-standard-library/issues/2871)
 
