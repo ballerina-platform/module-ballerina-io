@@ -19,5 +19,6 @@
 module io.ballerina.stdlib.io.testutils {
     requires io.ballerina.runtime;
     requires org.slf4j;
+    requires io.ballerina.stdlib.io;
     exports io.ballerina.stdlib.io.testutils;
 }

@@ -20,6 +20,7 @@ package io.ballerina.stdlib.io.testutils;
 
 import io.ballerina.runtime.api.utils.StringUtils;
 import io.ballerina.runtime.api.values.BString;
+import io.ballerina.stdlib.io.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -89,5 +90,9 @@ public class PrintTestUtils {
         if (errContent != null) {
             errContent.reset();
         }
+    }
+
+    public static Object base64Encode(Object input, BString charset, boolean mimeSpecific) {
+        return Utils.encode(input, charset.getValue(), mimeSpecific);
     }
 }
