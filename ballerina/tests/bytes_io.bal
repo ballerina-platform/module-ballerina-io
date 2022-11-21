@@ -525,13 +525,13 @@ isolated function testEncode64Value() returns error? {
         test:assertFail(msg = "Found unexpected output type");
     }
 
-    string filePath = TEST_RESOURCE_PATH + "stringResourceFile1.txt";
+    string filePath = TEST_RESOURCE_PATH + "empty.txt";
     ReadableByteChannel byteChannel = checkpanic openReadableFile(filePath);
     res = base64Encode(byteChannel);
     if (res is ReadableByteChannel) {
         byte[] result = check res.readAll();
         string name = checkpanic string:fromBytes(result);
-        test:assertEquals(name, "VGhlIEJpZyBCYW5nIFRoZW9yeQpGLlIuSS5FLk4uRC5TCkdhbWUgb2YgVGhyb25lcwpMT1NUCg==");
+        test:assertEquals(name, "");
         check res.close();
     } else {
         test:assertFail(msg = "Found unexpected output type");
