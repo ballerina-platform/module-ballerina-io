@@ -23,6 +23,12 @@ type Employee record {
     float salary;
 };
 
+type EmployeeStringSalary record {
+    string id;
+    string name;
+    string salary;
+};
+
 type PerDiem record {
     int id;
     string name;
@@ -101,6 +107,24 @@ type EmployeeRef record {
     RefDec salary;
     RefBool martial_status;
 };
+
+type A record {|
+    int A1;
+    int A2;
+|};
+
+type B record {|
+    int B1;
+    int B2;
+    int A1;
+    int A2;
+|};
+
+type C record {|
+    *A;
+    int B1;
+    int B2;
+|};
 
 @test:Config {}
 isolated function testReadCsv() returns Error? {
@@ -186,25 +210,17 @@ function testReadFileCsvAsStreamUsingResourceFileOpenRecord() returns error? {
     test:assertEquals(i, 3);
 }
 
+
 @test:Config {}
-isolated function testWriteRecordCsv() returns Error? {
-    Employee E = {
-        id: "1",
-        name: "Foo1",
-        salary: 100000.0f
-    };
-    Employee B = {
-        id: "2",
-        name: "Foo2",
-        salary: 300000.0f
-    };
-    string filePath = TEMP_DIR + "recordsDefault_records.csv";
-    Employee[] content1 = [E, B];
+isolated function testWriteCsvEmployeeArray() returns Error? {
+    string filePath = TEMP_DIR + "recordsDefault_records_employee.csv";
+    string[][] content1 = [["1", "Foo1", "100000.0"], ["2", "Foo2", "300000.0"]];
     test:assertEquals(check fileWriteCsv(filePath, content1), ());
 }
 
-@test:Config {dependsOn: [testWriteRecordCsv]}
-function testWritenRecordCsv() returns error? {
+
+@test:Config {dependsOn: [testWriteCsvEmployeeArray]}
+function testWritenRecordCsvEmployee() returns error? {
     Employee E = {
         id: "1",
         name: "Foo1",
@@ -216,7 +232,7 @@ function testWritenRecordCsv() returns error? {
         salary: 300000.0f
     };
     Employee[] expected = [E, B];
-    string filePath = TEMP_DIR + "recordsDefault_records.csv";
+    string filePath = TEMP_DIR + "recordsDefault_records_employee.csv";
     stream<Employee, Error?> result = check fileReadCsvAsStream(filePath);
     int i = 0;
     check result.forEach(function(Employee val) {
@@ -226,6 +242,90 @@ function testWritenRecordCsv() returns error? {
         i = i + 1;
     });
     test:assertEquals(i, 2);
+}
+
+@test:Config {}
+isolated function testWriteRecordCsv() returns Error? {
+    EmployeeStringSalary E = {
+        id: "1",
+        name: "Foo1",
+        salary: "100000.0"
+    };
+    EmployeeStringSalary B = {
+        id: "2",
+        name: "Foo2",
+        salary: "300000.0"
+    };
+    string filePath = TEMP_DIR + "recordsDefault_records.csv";
+    EmployeeStringSalary[] content1 = [E, B];
+    test:assertEquals(check fileWriteCsv(filePath, content1), ());
+}
+
+
+@test:Config {dependsOn: [testWriteRecordCsv]}
+function testWritenRecordCsv() returns error? {
+    EmployeeStringSalary H = {
+            id: "id",
+            name: "name",
+            salary: "salary"
+        };
+    EmployeeStringSalary E = {
+        id: "1",
+        name: "Foo1",
+        salary: "100000.0"
+    };
+    EmployeeStringSalary B = {
+        id: "2",
+        name: "Foo2",
+        salary: "300000.0"
+    };
+    EmployeeStringSalary[] expected = [H, E, B];
+    string filePath = TEMP_DIR + "recordsDefault_records.csv";
+    stream<EmployeeStringSalary, Error?> result = check fileReadCsvAsStream(filePath);
+    int i = 0;
+    check result.forEach(function(EmployeeStringSalary val) {
+        test:assertEquals(val.salary, expected[i].salary);
+        test:assertEquals(val.id, expected[i].id);
+        test:assertEquals(val.name, expected[i].name);
+        i = i + 1;
+    });
+    test:assertEquals(i, 3);
+}
+
+@test:Config {}
+function testCsvWriteWithUnorderedRecords() returns error? {
+    B d1 = {A1: 1, A2: 2, B1: 3, B2: 4};
+    C d2 = {B1: 3, B2: 4, A1: 1, A2: 2};
+    C d3 = {A1: 1,  B1: 3, B2: 4, A2: 2};
+    record {|
+        int A1;
+        int B1;
+        int B2;
+        int A2;
+    |} d4 = {A1: 1, B1: 3, B2: 4, A2: 2};
+    B[] content = [d1, d2, d3, d4];
+    string filePath = TEMP_DIR + "records_unordered_records.csv";
+    test:assertEquals(check fileWriteCsv(filePath, content), ());
+}
+
+@test:Config {dependsOn: [testCsvWriteWithUnorderedRecords]}
+function testWritenUnorderedRecordCsv() returns error? {
+    string filePath = TEMP_DIR + "records_unordered_records.csv";
+    B d1 = {A1: 1, A2: 2, B1: 3, B2: 4};
+    B d2 = {B1: 3, B2: 4, A1: 1, A2: 2};
+    B d3 = {A1: 1,  B1: 3, B2: 4, A2: 2};
+    B d4 = {A1: 1, B1: 3, B2: 4, A2: 2};
+    B[] content = [d1, d2, d3, d4];
+    string[][] result = check fileReadCsv(filePath, 0);
+
+    string[] headers = result[0];
+
+    foreach int index in 2...result.length()-1 {
+        test:assertEquals(result[index], result[index-1]);
+        foreach int subIndex in 0...3 {
+            test:assertEquals(result[index][subIndex], content[index-2].get(headers[subIndex]).toString());
+        }
+    }
 }
 
 @test:Config {}
