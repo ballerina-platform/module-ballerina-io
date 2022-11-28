@@ -51,10 +51,20 @@ isolated function channelWriteCsv(WritableChannel writableChannel, string[][]|ma
             }
         }
     } else if content is map<anydata>[] {
+        string[] headers = [];
+        map<anydata> firstRow = content[0];
+        foreach string header in firstRow.keys() {
+            headers.push(header);
+        }
+        Error? headerWriteResult = csvChannel.write(headers);
+        if headerWriteResult is Error {
+            check csvChannel.close();
+            return headerWriteResult;
+        }
         foreach map<anydata> row in content {
             string[] sValues = [];
-            foreach [string, anydata] [_, value] in row.entries() {
-                sValues.push(value.toString());
+            foreach string header in headers {
+                sValues.push(row.get(header).toString());
             }
             Error? writeResult = csvChannel.write(sValues);
             if writeResult is Error {
