@@ -293,7 +293,7 @@ The following API reads the content of a given CSV file as a string array of arr
 public isolated function fileReadCsv(string path, int skipHeaders = 0) returns string[][]|Error;
 ```
 
-The following API writes given CSV content to a given file.
+The following API writes given CSV content to a given file. When writing the record content to a CSV file, by default headers will be written to the csv file as unlike `string[][]`, order of record fields are not guaranteed.
 
 ```ballerina
 # Write CSV content to a file.
