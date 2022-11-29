@@ -43,6 +43,7 @@ public isolated function fileReadCsvAsStream(string path, typedesc<string[]|map<
 } external;
 
 # Write CSV content to a file.
+# If the input is a `Record[]` the headers are automatically written to the file.
 # ```ballerina
 # string[][] content = [["Anne", "Johnson", "SE"], ["John", "Cameron", "QA"]];
 # io:Error? result = io:fileWriteCsv("./resources/myfile.csv", content);
