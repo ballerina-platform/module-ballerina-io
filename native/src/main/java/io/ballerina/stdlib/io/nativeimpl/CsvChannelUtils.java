@@ -27,10 +27,11 @@ import io.ballerina.runtime.api.types.Type;
 import io.ballerina.runtime.api.types.UnionType;
 import io.ballerina.runtime.api.utils.StringUtils;
 import io.ballerina.runtime.api.utils.TypeUtils;
+import io.ballerina.runtime.api.values.BError;
 import io.ballerina.runtime.api.values.BObject;
-import io.ballerina.runtime.api.values.BStream;
 import io.ballerina.runtime.api.values.BString;
 import io.ballerina.runtime.api.values.BTypedesc;
+import io.ballerina.stdlib.io.utils.IOConstants;
 import io.ballerina.stdlib.io.utils.IOUtils;
 
 import java.util.HashMap;
@@ -60,23 +61,31 @@ public class CsvChannelUtils {
     private static final BString ENCODING = StringUtils.fromString("UTF-8");
 
     public static Object fileReadCsv(BString path, int skipHeaders, BTypedesc typeDesc) {
-        BObject byteChannel = (BObject) ByteChannelUtils.openReadableFile(path);
+        Object byteChannelObject = ByteChannelUtils.openReadableFile(path);
+        if (byteChannelObject instanceof BError) {
+            return IOUtils.createError(IOConstants.ErrorCode.FileNotFoundError,
+                    ((BError) byteChannelObject).getMessage());
+        }
+        BObject byteChannel = (BObject) byteChannelObject;
         BObject characterChannel = ValueCreator.createObjectValue(getIOPackage(),
             READABLE_CHARACTER_CHANNEL, byteChannel, ENCODING);
         BObject textRecordChannel = ValueCreator.createObjectValue(getIOPackage(),
             READABLE_TEXT_RECORD_CHANNEL, characterChannel, FIELD_SEPERATOR, ROW_SEPERATOR, FORMAT);
         textRecordChannel.addNativeData(CSV_RETURN_TYPE, typeDesc);
         while (hasNext(textRecordChannel)) {
-
             return getAllRecords(textRecordChannel, skipHeaders, typeDesc);
         }
         return null;
     }
 
-    public static BStream createCsvAsStream(BString path, BTypedesc typeDesc) {
+    public static Object createCsvAsStream(BString path, BTypedesc typeDesc) {
         Type describingType = TypeUtils.getReferredType(typeDesc.getDescribingType());
-        BObject byteChannel = (BObject) ByteChannelUtils.openReadableFile(path);
-
+        Object byteChannelObject = ByteChannelUtils.openReadableFile(path);
+        if (byteChannelObject instanceof BError) {
+            return IOUtils.createError(IOConstants.ErrorCode.FileNotFoundError,
+                    ((BError) byteChannelObject).getMessage());
+        }
+        BObject byteChannel = (BObject) byteChannelObject;
         BObject characterChannel = ValueCreator.createObjectValue(getIOPackage(),
             READABLE_CHARACTER_CHANNEL, byteChannel, ENCODING);
         BObject textRecordChannel = ValueCreator.createObjectValue(getIOPackage(),
