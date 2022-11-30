@@ -54,7 +54,7 @@ public isolated function fileReadCsvAsStream(string path, typedesc<string[]|map<
 # + return - `()` when the writing was successful or an `io:Error`
 public isolated function fileWriteCsv(string path, string[][]|map<anydata>[] content, FileWriteOption option = OVERWRITE) returns
 Error? {
-    return channelWriteCsv(check openWritableCsvFile(path, option = option), content);
+    return channelWriteCsv(path, option, content);
 }
 
 # Write CSV record stream to a file.

@@ -40,9 +40,11 @@ Error {
     return (check getReadableCSVChannel(readableChannel, 0)).csvStream();
 }
 
-isolated function channelWriteCsv(WritableChannel writableChannel, string[][]|map<anydata>[] content) returns Error? {
-    WritableCSVChannel csvChannel = check getWritableCSVChannel(writableChannel);
+isolated function channelWriteCsv(string path, FileWriteOption option, string[][]|map<anydata>[] content) returns Error? {
+    
+    WritableCSVChannel csvChannel;
     if content is string[][] {
+        csvChannel = check getWritableCSVChannel(check openWritableCsvFile(path, option = option));
         foreach string[] r in content {
             Error? writeResult = csvChannel.write(r);
             if writeResult is Error {
@@ -50,16 +52,51 @@ isolated function channelWriteCsv(WritableChannel writableChannel, string[][]|ma
                 return writeResult;
             }
         }
+        check csvChannel.close();
     } else if content is map<anydata>[] {
         string[] headers = [];
-        map<anydata> firstRow = content[0];
-        foreach string header in firstRow.keys() {
-            headers.push(header);
-        }
-        Error? headerWriteResult = csvChannel.write(headers);
-        if headerWriteResult is Error {
-            check csvChannel.close();
-            return headerWriteResult;
+        if (option == OVERWRITE) {
+            headers = content[0].keys();
+            csvChannel = check getWritableCSVChannel(check openWritableCsvFile(path, option = option));
+            Error? headerWriteResult = csvChannel.write(headers);
+            if headerWriteResult is Error {
+                check csvChannel.close();
+                return headerWriteResult;
+            }
+        } else {
+            headers = [];
+            stream<string[], Error?>|Error csvContent = fileReadCsvAsStream(path);
+            if (csvContent !is Error) {
+                var temp = csvContent.next();
+                check csvContent.close();
+                if temp !is error {
+                    if temp !is () {
+                        headers = temp["value"];
+                    }
+                }
+            }
+            csvChannel = check getWritableCSVChannel(check openWritableCsvFile(path, option = option));
+            if (headers.length() > 0) {
+                if (content[0].keys().length() != headers.length()) {
+                    check csvChannel.close();
+                    GenericError e = error GenericError("CSV file and Record doesn't match.");
+                    return e;
+                }
+                foreach string header in headers {
+                    int|Error? key = content[0].keys().lastIndexOf(header.trim());
+                    if (key is Error) {
+                        check csvChannel.close();
+                        GenericError e = error GenericError("CSV file and Record doesn't match.");
+                        return e;
+                    } else if key is () {
+                        check csvChannel.close();
+                        GenericError e = error GenericError("CSV file and Record doesn't match.");
+                        return e;
+                    }
+                }
+            } else {
+                headers = content[0].keys();
+            }
         }
         foreach map<anydata> row in content {
             string[] sValues = [];
@@ -72,8 +109,8 @@ isolated function channelWriteCsv(WritableChannel writableChannel, string[][]|ma
                 return writeResult;
             }
         }
+        check csvChannel.close();
     }
-    check csvChannel.close();
     return;
 }
 
