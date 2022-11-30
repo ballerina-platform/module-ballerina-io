@@ -164,3 +164,49 @@ function testReadFileCsvWithReferenceTypeAndError() returns error? {
     Error? out = csvContent.forEach(function(EmployeeRef value) { });
     test:assertEquals((<Error>out).message(), "Invalid value: 10000s for the field: 'salary'");
 }
+
+@test:Config {dependsOn: [testWriteDefaultCsv]}
+function testAppendDifferentCsvFile() {
+    string filePath = TEMP_DIR + "recordsDefault.csv";
+    B d1 = {A1: 1, A2: 2, B1: 3, B2: 4};
+    B d2 = {B1: 3, B2: 4, A1: 1, A2: 2};
+    B[] content = [d1, d2];
+    Error? out = fileWriteCsv(filePath, content, APPEND);
+    test:assertEquals((<Error>out).message(), "CSV file and Record doesn't match.");
+}
+
+@test:Config {dependsOn: [testCsvWriteWithUnorderedRecords]}
+function testAppendDifferentCsvFile2() {
+    string filePath = TEMP_DIR + "records_unordered_records.csv";
+    D d1 = {A1: 1, A2: 2, D1: 3, D2: 4};
+    D d2 = {D1: 3, D2: 4, A1: 1, A2: 2};
+    D[] content = [d1, d2];
+    Error? out = fileWriteCsv(filePath, content, APPEND);
+    test:assertEquals((<Error>out).message(), "CSV file and Record doesn't match.");
+}
+
+@test:Config{}
+function testAppendFalseCsv() {
+    string filePath = TEMP_DIR + "records_false_records.csv";
+    string[][] false_content = [["B1", "B1", "D1", "D2"],["1", "2", "3", "4"]];
+    Error? out = fileWriteCsv(filePath, false_content);
+    D d1 = {A1: 1, A2: 2, D1: 3, D2: 4};
+    D d2 = {D1: 3, D2: 4, A1: 1, A2: 2};
+    D[] content = [d1, d2];
+    out = fileWriteCsv(filePath, content, APPEND);
+    test:assertEquals((<Error>out).message(), "CSV file and Record doesn't match.");
+}
+
+@test:Config{}
+function readNonExistantCsvFile() {
+    string filePath = TEMP_DIR + "non_existant_csv.csv";
+    string[][]|Error out = fileReadCsv(filePath);
+    test:assertTrue((<Error>out).message().includes("no such file or directory", 0));
+}
+
+@test:Config{}
+function readNonExistantCsvFileAsStream() {
+    string filePath = TEMP_DIR + "non_existant_csv.csv";
+    stream<string[], Error?>|Error out = fileReadCsvAsStream(filePath);
+    test:assertTrue((<Error>out).message().includes("no such file or directory", 0));
+}
