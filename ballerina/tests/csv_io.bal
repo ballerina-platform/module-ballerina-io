@@ -126,6 +126,13 @@ type C record {|
     int B2;
 |};
 
+type D record {|
+    int D1;
+    int D2;
+    int A1;
+    int A2;
+|};
+
 @test:Config {}
 isolated function testReadCsv() returns Error? {
     string filePath = RESOURCES_BASE_PATH + "datafiles/io/records/sample.csv";
@@ -320,6 +327,71 @@ function testWritenUnorderedRecordCsv() returns error? {
 
     string[] headers = result[0];
 
+    foreach int index in 2...result.length()-1 {
+        test:assertEquals(result[index], result[index-1]);
+        foreach int subIndex in 0...3 {
+            test:assertEquals(result[index][subIndex], content[index-2].get(headers[subIndex]).toString());
+        }
+    }
+}
+
+@test:Config {dependsOn: [testWritenUnorderedRecordCsv]}
+function testCsvAppendWithUnorderedRecords() returns error? {
+    record {|
+        int A1;
+        int B1;
+        int B2;
+        int A2;
+    |} d = {A1: 1, B1: 3, B2: 4, A2: 2};
+    B[] content = [d];
+    string filePath = TEMP_DIR + "records_unordered_records.csv";
+    string filePath2 = TEMP_DIR + "records_unordered_records2.csv";
+    test:assertEquals(check fileWriteCsv(filePath, content, APPEND), ());
+    test:assertEquals(check fileWriteCsv(filePath2, content, OVERWRITE), ());
+}
+
+@test:Config {dependsOn: [testCsvAppendWithUnorderedRecords]}
+function testAppededUnorderedRecordCsv() returns error? {
+    string filePath = TEMP_DIR + "records_unordered_records.csv";
+    string filePath2 = TEMP_DIR + "records_unordered_records2.csv";
+    B d1 = {A1: 1, A2: 2, B1: 3, B2: 4};
+    B d2 = {B1: 3, B2: 4, A1: 1, A2: 2};
+    B d3 = {A1: 1,  B1: 3, B2: 4, A2: 2};
+    B d4 = {A1: 1, B1: 3, B2: 4, A2: 2};
+    B d5 = {A1: 1, B1: 3, B2: 4, A2: 2};
+    B[] content = [d1, d2, d3, d4, d5];
+    string[][] result = check fileReadCsv(filePath, 0);
+    string[][] result2 = check fileReadCsv(filePath2, 0);
+
+    test:assertNotEquals(result[0], result2[0]);
+    string[] headers = result[0];
+
+    foreach int index in 2...result.length()-1 {
+        test:assertEquals(result[index], result[index-1]);
+        foreach int subIndex in 0...3 {
+            test:assertEquals(result[index][subIndex], content[index-2].get(headers[subIndex]).toString());
+        }
+    }
+}
+
+@test:Config{}
+function testAppendNonExistantCsv() returns error? {
+    string filePath = TEMP_DIR + "non_existant_csv2.csv";
+    D d1 = {A1: 1, A2: 2, D1: 3, D2: 4};
+    D d2 = {D1: 3, D2: 4, A1: 1, A2: 2};
+    D[] content = [d1, d2];
+    test:assertEquals(check fileWriteCsv(filePath, content, APPEND), ());
+}
+
+@test:Config{dependsOn:[testAppendNonExistantCsv]}
+function testAppendedNonExistantCsv() returns error? {
+    string filePath = TEMP_DIR + "non_existant_csv2.csv";
+    D d1 = {A1: 1, A2: 2, D1: 3, D2: 4};
+    D d2 = {D1: 3, D2: 4, A1: 1, A2: 2};
+    D d3 = {D1: 3, D2: 4, A1: 1, A2: 2};
+    D[] content = [d1, d2, d3];
+    string[][] result = check fileReadCsv(filePath, 0);
+    string[] headers = result[0];
     foreach int index in 2...result.length()-1 {
         test:assertEquals(result[index], result[index-1]);
         foreach int subIndex in 0...3 {
