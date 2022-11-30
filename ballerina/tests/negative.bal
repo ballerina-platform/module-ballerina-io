@@ -210,3 +210,10 @@ function readNonExistantCsvFileAsStream() {
     stream<string[], Error?>|Error out = fileReadCsvAsStream(filePath);
     test:assertTrue((<Error>out).message().includes("no such file or directory", 0));
 }
+
+@test:Config{}
+function writeEmptyArraytoCsv() returns error?{
+    string filePath = TEMP_DIR + "empty.csv";
+    string[][] content = [];
+    test:assertEquals(check fileWriteCsvFromStream(filePath, content = new ()), ());
+}
