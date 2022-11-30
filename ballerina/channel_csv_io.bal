@@ -41,7 +41,7 @@ Error {
 }
 
 isolated function channelWriteCsv(string path, FileWriteOption option, string[][]|map<anydata>[] content) returns Error? {
-    
+
     WritableCSVChannel csvChannel;
     if content is string[][] {
         csvChannel = check getWritableCSVChannel(check openWritableCsvFile(path, option = option));
@@ -77,18 +77,14 @@ isolated function channelWriteCsv(string path, FileWriteOption option, string[][
             }
             csvChannel = check getWritableCSVChannel(check openWritableCsvFile(path, option = option));
             if (headers.length() > 0) {
-                if (content[0].keys().length() != headers.length()) {
+                if content[0].keys().length() != headers.length() {
                     check csvChannel.close();
                     GenericError e = error GenericError("CSV file and Record doesn't match.");
                     return e;
                 }
                 foreach string header in headers {
                     int|Error? key = content[0].keys().lastIndexOf(header.trim());
-                    if (key is Error) {
-                        check csvChannel.close();
-                        GenericError e = error GenericError("CSV file and Record doesn't match.");
-                        return e;
-                    } else if key is () {
+                    if key is Error || key is () {
                         check csvChannel.close();
                         GenericError e = error GenericError("CSV file and Record doesn't match.");
                         return e;
@@ -96,6 +92,11 @@ isolated function channelWriteCsv(string path, FileWriteOption option, string[][
                 }
             } else {
                 headers = content[0].keys();
+                Error? headerWriteResult = csvChannel.write(headers);
+                if headerWriteResult is Error {
+                    check csvChannel.close();
+                    return headerWriteResult;
+                }
             }
         }
         foreach map<anydata> row in content {
