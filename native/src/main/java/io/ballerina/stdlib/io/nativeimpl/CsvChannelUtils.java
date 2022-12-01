@@ -31,7 +31,6 @@ import io.ballerina.runtime.api.values.BError;
 import io.ballerina.runtime.api.values.BObject;
 import io.ballerina.runtime.api.values.BString;
 import io.ballerina.runtime.api.values.BTypedesc;
-import io.ballerina.stdlib.io.utils.IOConstants;
 import io.ballerina.stdlib.io.utils.IOUtils;
 
 import java.util.HashMap;
@@ -63,8 +62,7 @@ public class CsvChannelUtils {
     public static Object fileReadCsv(BString path, int skipHeaders, BTypedesc typeDesc) {
         Object byteChannelObject = ByteChannelUtils.openReadableFile(path);
         if (byteChannelObject instanceof BError) {
-            return IOUtils.createError(IOConstants.ErrorCode.FileNotFoundError,
-                    ((BError) byteChannelObject).getMessage());
+            return byteChannelObject;
         }
         BObject byteChannel = (BObject) byteChannelObject;
         BObject characterChannel = ValueCreator.createObjectValue(getIOPackage(),
@@ -82,8 +80,7 @@ public class CsvChannelUtils {
         Type describingType = TypeUtils.getReferredType(typeDesc.getDescribingType());
         Object byteChannelObject = ByteChannelUtils.openReadableFile(path);
         if (byteChannelObject instanceof BError) {
-            return IOUtils.createError(IOConstants.ErrorCode.FileNotFoundError,
-                    ((BError) byteChannelObject).getMessage());
+            return byteChannelObject;
         }
         BObject byteChannel = (BObject) byteChannelObject;
         BObject characterChannel = ValueCreator.createObjectValue(getIOPackage(),

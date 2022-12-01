@@ -79,7 +79,11 @@ isolated function channelWriteCsv(string path, FileWriteOption option, string[][
                             headers = temp["value"];
                         }
                     }
+                } else { 
+                    return temp;
                 }
+            } else if csvContent !is FileNotFoundError {
+                return csvContent;
             }
             if headers.length() > 0 {
                 csvChannel = check getWritableCSVChannel(check openWritableCsvFile(path, option = option));
