@@ -82,7 +82,9 @@ isolated function channelWriteCsv(string path, FileWriteOption option, string[][
                 } else { 
                     return temp;
                 }
-            } else if csvContent !is FileNotFoundError {
+            } else if csvContent is FileNotFoundError {
+                headers = [];
+            } else {
                 return csvContent;
             }
             if headers.length() > 0 {
