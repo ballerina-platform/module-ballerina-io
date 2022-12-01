@@ -92,7 +92,7 @@ isolated function channelWriteCsv(string path, FileWriteOption option, string[][
                     int|Error? key = content[0].keys().lastIndexOf(header.trim());
                     if key is Error || key is () {
                         check csvChannel.close();
-                        GenericError e = error GenericError("CSV file and Record doesn't match.");
+                        GenericError e = error GenericError("CSV file and the Record structure do not  match.");
                         return e;
                     }
                 }
