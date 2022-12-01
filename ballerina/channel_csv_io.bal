@@ -55,7 +55,11 @@ isolated function channelWriteCsv(string path, FileWriteOption option, string[][
         check csvChannel.close();
     } else if content is map<anydata>[] {
         string[] headers = [];
-        if (option == OVERWRITE) {
+        if content.length() == 0 {
+            GenericError e = error GenericError("Input contains an empty array.");
+            return e;
+        }
+        if option == OVERWRITE {
             headers = content[0].keys();
             csvChannel = check getWritableCSVChannel(check openWritableCsvFile(path, option = option));
             Error? headerWriteResult = csvChannel.write(headers);
@@ -71,12 +75,14 @@ isolated function channelWriteCsv(string path, FileWriteOption option, string[][
                 check csvContent.close();
                 if temp !is error {
                     if temp !is () {
-                        headers = temp["value"];
+                        if temp["value"] != [""] {
+                            headers = temp["value"];
+                        }
                     }
                 }
             }
-            csvChannel = check getWritableCSVChannel(check openWritableCsvFile(path, option = option));
-            if (headers.length() > 0) {
+            if headers.length() > 0 {
+                csvChannel = check getWritableCSVChannel(check openWritableCsvFile(path, option = option));
                 if content[0].keys().length() != headers.length() {
                     check csvChannel.close();
                     GenericError e = error GenericError("CSV file and Record doesn't match.");
@@ -91,6 +97,7 @@ isolated function channelWriteCsv(string path, FileWriteOption option, string[][
                     }
                 }
             } else {
+                csvChannel = check getWritableCSVChannel(check openWritableCsvFile(path, option = OVERWRITE));
                 headers = content[0].keys();
                 Error? headerWriteResult = csvChannel.write(headers);
                 if headerWriteResult is Error {
