@@ -212,8 +212,22 @@ function readNonExistantCsvFileAsStream() {
 }
 
 @test:Config{}
-function writeEmptyArraytoCsv() returns error?{
+function writeEmptyStreamtoCsv() returns error?{
     string filePath = TEMP_DIR + "empty.csv";
-    string[][] content = [];
     test:assertEquals(check fileWriteCsvFromStream(filePath, content = new ()), ());
+}
+
+@test:Config{}
+function writeEmptyArraytoCsv() returns error?{
+    string filePath = TEMP_DIR + "empty2.csv";
+    D[] content = [];
+    Error? out = fileWriteCsv(filePath, content);
+    test:assertEquals((<Error>out).message(), "Input contains an empty array.");
+}
+
+@test:Config{}
+function writeEmptyStringArraytoCsv() returns error?{
+    string filePath = TEMP_DIR + "empty3.csv";
+    string[][] content = [[],[]];
+    test:assertEquals(check fileWriteCsv(filePath, content), ());
 }

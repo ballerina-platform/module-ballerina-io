@@ -299,10 +299,7 @@ function testWritenRecordCsv() returns error? {
     test:assertEquals(i, 3);
 }
 
-
-
-
-@test:Config {dependsOn: [writeEmptyArraytoCsv]}
+@test:Config {dependsOn: [writeEmptyStringArraytoCsv]}
 isolated function testAppendRecordCsvToEmptyFile() returns Error? {
     EmployeeStringSalary E = {
         id: "1",
@@ -314,7 +311,7 @@ isolated function testAppendRecordCsvToEmptyFile() returns Error? {
         name: "Foo2",
         salary: "300000.0"
     };
-    string filePath = TEMP_DIR + "empty.csv";
+    string filePath = TEMP_DIR + "empty3.csv";
     EmployeeStringSalary[] content1 = [E, B];
     test:assertEquals(check fileWriteCsv(filePath, content1, APPEND), ());
 }
@@ -338,7 +335,7 @@ function testAppendedRecordCsvToEmptyFile() returns error? {
         salary: "300000.0"
     };
     EmployeeStringSalary[] expected = [H, E, B];
-    string filePath = TEMP_DIR + "empty.csv";
+    string filePath = TEMP_DIR + "empty3.csv";
     stream<EmployeeStringSalary, Error?> result = check fileReadCsvAsStream(filePath);
     int i = 0;
     check result.forEach(function(EmployeeStringSalary val) {
