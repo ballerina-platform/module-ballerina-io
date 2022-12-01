@@ -85,7 +85,7 @@ isolated function channelWriteCsv(string path, FileWriteOption option, string[][
                 csvChannel = check getWritableCSVChannel(check openWritableCsvFile(path, option = option));
                 if content[0].keys().length() != headers.length() {
                     check csvChannel.close();
-                    GenericError e = error GenericError("CSV file and Record doesn't match.");
+                    GenericError e = error GenericError("CSV file and the Record structure do not  match.");
                     return e;
                 }
                 foreach string header in headers {
