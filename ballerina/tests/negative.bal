@@ -221,8 +221,7 @@ function writeEmptyStreamtoCsv() returns error?{
 function writeEmptyArraytoCsv() returns error?{
     string filePath = TEMP_DIR + "empty2.csv";
     D[] content = [];
-    Error? out = fileWriteCsv(filePath, content);
-    test:assertEquals((<Error>out).message(), "Input contains an empty array.");
+    test:assertEquals(check fileWriteCsv(filePath, content), ());
 }
 
 @test:Config{}

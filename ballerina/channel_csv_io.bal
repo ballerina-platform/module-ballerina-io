@@ -40,12 +40,12 @@ Error {
     return (check getReadableCSVChannel(readableChannel, 0)).csvStream();
 }
 
-isolated function channelWriteCsv(string path, FileWriteOption option, string[][]|map<anydata>[] content) returns Error? {
+isolated function channelWriteCsv(string path, FileWriteOption option, string[][]|map<anydata>[] contentToWrite) returns Error? {
 
     WritableCSVChannel csvChannel;
-    if content is string[][] {
+    if contentToWrite is string[][] {
         csvChannel = check getWritableCSVChannel(check openWritableCsvFile(path, option = option));
-        foreach string[] r in content {
+        foreach string[] r in contentToWrite {
             Error? writeResult = csvChannel.write(r);
             if writeResult is Error {
                 check csvChannel.close();
@@ -53,14 +53,13 @@ isolated function channelWriteCsv(string path, FileWriteOption option, string[][
             }
         }
         check csvChannel.close();
-    } else if content is map<anydata>[] {
+    } else if contentToWrite is map<anydata>[] {
         string[] headers = [];
-        if content.length() == 0 {
-            GenericError e = error GenericError("Input contains an empty array.");
-            return e;
+        if contentToWrite.length() == 0 {
+            return;
         }
         if option == OVERWRITE {
-            headers = content[0].keys();
+            headers = contentToWrite[0].keys();
             csvChannel = check getWritableCSVChannel(check openWritableCsvFile(path, option = option));
             Error? headerWriteResult = csvChannel.write(headers);
             if headerWriteResult is Error {
@@ -89,13 +88,13 @@ isolated function channelWriteCsv(string path, FileWriteOption option, string[][
             }
             if headers.length() > 0 {
                 csvChannel = check getWritableCSVChannel(check openWritableCsvFile(path, option = option));
-                if content[0].keys().length() != headers.length() {
+                if contentToWrite[0].keys().length() != headers.length() {
                     check csvChannel.close();
                     GenericError e = error GenericError("CSV file and the Record structure do not  match.");
                     return e;
                 }
                 foreach string header in headers {
-                    int|Error? key = content[0].keys().lastIndexOf(header.trim());
+                    int|Error? key = contentToWrite[0].keys().lastIndexOf(header.trim());
                     if key is Error || key is () {
                         check csvChannel.close();
                         GenericError e = error GenericError("CSV file and the Record structure do not  match.");
@@ -104,7 +103,7 @@ isolated function channelWriteCsv(string path, FileWriteOption option, string[][
                 }
             } else {
                 csvChannel = check getWritableCSVChannel(check openWritableCsvFile(path, option = OVERWRITE));
-                headers = content[0].keys();
+                headers = contentToWrite[0].keys();
                 Error? headerWriteResult = csvChannel.write(headers);
                 if headerWriteResult is Error {
                     check csvChannel.close();
@@ -112,7 +111,7 @@ isolated function channelWriteCsv(string path, FileWriteOption option, string[][
                 }
             }
         }
-        foreach map<anydata> row in content {
+        foreach map<anydata> row in contentToWrite {
             string[] sValues = [];
             foreach string header in headers {
                 sValues.push(row.get(header).toString());
