@@ -188,12 +188,12 @@ isolated function readHeadersFromCsvFile(string path) returns string[]|Error {
 
 isolated function validateCsvHeaders(string[] headersFromCSV, string[] headers) returns string[]|Error {
     if headers.length() != headersFromCSV.length() {
-        return error GenericError(string `The CSV file content header count(${headersFromCSV.length()}) doesn't match with ballerina record field count(${headers.length().toString()})`);
+        return error GenericError(string `The CSV file content header count(${headersFromCSV.length()}) doesn't match with ballerina record field count(${headers.length().toString()}). `);
     }
     foreach string header in headers {
         int|Error? key = headersFromCSV.indexOf(header.trim());
         if key is Error || key is () {
-            return error GenericError(string `The CSV file does not contain the header - ${header.trim()}.`);
+            return error GenericError(string `The CSV file does not contain the header - ${header.trim()}. `);
         }
     }
     return headersFromCSV;
