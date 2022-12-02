@@ -70,16 +70,16 @@ isolated function channelWriteCsv(string path, FileWriteOption option, string[][
             headers = [];
             stream<string[], Error?>|Error csvContent = fileReadCsvAsStream(path);
             if (csvContent !is Error) {
-                var temp = csvContent.next();
+                var csvLine = csvContent.next();
                 check csvContent.close();
-                if temp !is error {
-                    if temp !is () {
-                        if temp["value"] != [""] {
-                            headers = temp["value"];
+                if csvLine !is error {
+                    if csvLine !is () {
+                        if csvLine["value"] != [""] {
+                            headers = csvLine["value"];
                         }
                     }
                 } else { 
-                    return temp;
+                    return csvLine;
                 }
             } else if csvContent is FileNotFoundError {
                 headers = [];
