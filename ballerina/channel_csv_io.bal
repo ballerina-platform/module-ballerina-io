@@ -196,7 +196,7 @@ isolated function validateCsvHeaders(string[] headersFromCSV, string[] headers) 
     foreach string header in headers {
         int|Error? key = headersFromCSV.indexOf(header.trim());
         if key is Error || key is () {
-            return error GenericError("CSV file does not contain header `" +  header.trim()  + "`. ");
+            return error GenericError(string `The CSV file does not contain the header - ${header.trim()}.`);
         }
     }
     return headersFromCSV;
