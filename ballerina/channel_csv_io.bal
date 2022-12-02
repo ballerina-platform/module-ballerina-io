@@ -190,8 +190,7 @@ isolated function readHeadersFromCsvFile(string path) returns string[]|Error {
 
 isolated function validateCsvHeaders(string[] headersFromCSV, string[] headers) returns string[]|Error {
     if headers.length() != headersFromCSV.length() {
-        return error GenericError("The csv file content headers (no of headers :" + headersFromCSV.length().toString() 
-                    + ") and the map keys (no of keys :" + headers.length().toString() + ") does not match.");
+        return error GenericError(string `The CSV file content header count(${headersFromCSV.length()}) doesn't match with ballerina record field count(${headers.length().toString()})`);
     }
     foreach string header in headers {
         int|Error? key = headersFromCSV.indexOf(header.trim());
