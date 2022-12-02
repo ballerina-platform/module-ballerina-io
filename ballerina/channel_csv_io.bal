@@ -62,7 +62,7 @@ isolated function channelWriteCsv(string path, FileWriteOption inputOption, stri
         if inputOption == APPEND {
             string[] headersFromCSV = check readHeadersFromCsvFile(path);
             if headersFromCSV.length() > 0 {
-                headers = check validateCsvContent(headersFromCSV, headers);
+                headers = check validateCsvHeaders(headersFromCSV, headers);
                 headers = headersFromCSV;
                 option = APPEND;
             } else {
@@ -168,7 +168,7 @@ isolated function readHeadersFromCsvFile(string path) returns string[]|Error {
             if csvContent is FileNotFoundError {
                 return [];
             } else {
-                return error GenericError((<Error> csvContent).message());
+                return error GenericError("Error while reading the headers from the CSV file. " + csvContent.message());
             }
         } else {
             do {
@@ -188,7 +188,7 @@ isolated function readHeadersFromCsvFile(string path) returns string[]|Error {
         }   
 }
 
-isolated function validateCsvContent(string[] headersFromCSV, string[] headers) returns string[]|Error {
+isolated function validateCsvHeaders(string[] headersFromCSV, string[] headers) returns string[]|Error {
     if headers.length() != headersFromCSV.length() {
         return error GenericError("The csv file content headers (no of headers :" + headersFromCSV.length().toString() 
                     + ") and the map keys (no of keys :" + headers.length().toString() + ") does not match.");
