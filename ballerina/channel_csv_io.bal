@@ -62,9 +62,13 @@ isolated function channelWriteCsv(string path, FileWriteOption userProvidedOptio
         if userProvidedOption == APPEND {
             string[] headersFromCSV = check readHeadersFromCsvFile(path);
             if headersFromCSV.length() > 0 {
-                headers = check validateCsvHeaders(headersFromCSV, headers);
-                headers = headersFromCSV;
-                option = APPEND;
+                headersFromCSV = check validateCsvHeaders(headersFromCSV, headers);
+                if (headersFromCSV.length() > 0) {
+                    headers = headersFromCSV;
+                    option = APPEND;
+                } else {
+                    option = OVERWRITE;
+                }
             } else {
                 option = OVERWRITE;
             }
@@ -174,9 +178,7 @@ isolated function readHeadersFromCsvFile(string path) returns string[]|Error {
             do {
                 var csvLine = check  csvContent.next();
                 if csvLine !is () {
-                    if csvLine["value"] != [""] {
-                        return csvLine["value"];
-                    }
+                    return csvLine["value"];
                 }
                 return [];
             } on fail Error err {
@@ -187,6 +189,9 @@ isolated function readHeadersFromCsvFile(string path) returns string[]|Error {
 }
 
 isolated function validateCsvHeaders(string[] headersFromCSV, string[] headers) returns string[]|Error {
+    if headersFromCSV == [""] {
+        return [];
+    }
     if headers.length() != headersFromCSV.length() {
         return error GenericError(string `The CSV file content header count(${headersFromCSV.length()}) doesn't match with ballerina record field count(${headers.length().toString()}). `);
     }
