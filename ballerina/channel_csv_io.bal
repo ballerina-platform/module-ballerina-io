@@ -41,17 +41,8 @@ Error {
 }
 
 isolated function channelWriteCsv(string path, FileWriteOption option, string[][]|map<anydata>[] contentToWrite) returns Error? {
-    WritableCSVChannel csvChannel;
     if contentToWrite is string[][] {
-        csvChannel = check getWritableCSVChannel(check openWritableCsvFile(path, option = option));
-        foreach string[] r in contentToWrite {
-            Error? writeResult = csvChannel.write(r);
-            if writeResult is Error {
-                check csvChannel.close();
-                return writeResult;
-            }
-        }
-        check csvChannel.close();
+        check writeStringArrayToCsvFile(path, contentToWrite, option);
     } else if contentToWrite is map<anydata>[] {
         string[] headers = [];
         if contentToWrite.length() == 0 {
@@ -203,6 +194,18 @@ isolated function writeRecordsToCsvFile(string path, map<anydata>[] contentToWri
             sValues.push(row.get(header).toString());
         }
         Error? writeResult = csvChannel.write(sValues);
+        if writeResult is Error {
+            check csvChannel.close();
+            return writeResult;
+        }
+    }
+    check csvChannel.close();
+}
+
+isolated function writeStringArrayToCsvFile(string path, string[][] contentToWrite, FileWriteOption option) returns Error? {
+    WritableCSVChannel csvChannel = check getWritableCSVChannel(check openWritableCsvFile(path, option = option));
+    foreach string[] r in contentToWrite {
+        Error? writeResult = csvChannel.write(r);
         if writeResult is Error {
             check csvChannel.close();
             return writeResult;
