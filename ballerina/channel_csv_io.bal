@@ -40,11 +40,11 @@ Error {
     return (check getReadableCSVChannel(readableChannel, 0)).csvStream();
 }
 
-isolated function channelWriteCsv(string path, FileWriteOption option, string[][]|map<anydata>[] contentToWrite) returns Error? {
-
+isolated function channelWriteCsv(string path, FileWriteOption inputOption, string[][]|map<anydata>[] contentToWrite) returns Error? {
     WritableCSVChannel csvChannel;
+    FileWriteOption option = OVERWRITE;
     if contentToWrite is string[][] {
-        csvChannel = check getWritableCSVChannel(check openWritableCsvFile(path, option = option));
+        csvChannel = check getWritableCSVChannel(check openWritableCsvFile(path, option = inputOption));
         foreach string[] r in contentToWrite {
             Error? writeResult = csvChannel.write(r);
             if writeResult is Error {
@@ -58,57 +58,23 @@ isolated function channelWriteCsv(string path, FileWriteOption option, string[][
         if contentToWrite.length() == 0 {
             return;
         }
+        headers = contentToWrite[0].keys();
+        if inputOption == APPEND {
+            string[] headersFromCSV = check readHeadersFromCsvFile(path);
+            if headersFromCSV.length() > 0 {
+                headers = check validateCsvContent(headersFromCSV, headers);
+                headers = headersFromCSV;
+                option = APPEND;
+            } else {
+                option = OVERWRITE;
+            }
+        }
+        csvChannel = check getWritableCSVChannel(check openWritableCsvFile(path, option = option));
         if option == OVERWRITE {
-            headers = contentToWrite[0].keys();
-            csvChannel = check getWritableCSVChannel(check openWritableCsvFile(path, option = option));
             Error? headerWriteResult = csvChannel.write(headers);
             if headerWriteResult is Error {
                 check csvChannel.close();
                 return headerWriteResult;
-            }
-        } else {
-            headers = [];
-            stream<string[], Error?>|Error csvContent = fileReadCsvAsStream(path);
-            if (csvContent !is Error) {
-                var csvLine = csvContent.next();
-                check csvContent.close();
-                if csvLine !is error {
-                    if csvLine !is () {
-                        if csvLine["value"] != [""] {
-                            headers = csvLine["value"];
-                        }
-                    }
-                } else { 
-                    return csvLine;
-                }
-            } else if csvContent is FileNotFoundError {
-                headers = [];
-            } else {
-                return csvContent;
-            }
-            if headers.length() > 0 {
-                csvChannel = check getWritableCSVChannel(check openWritableCsvFile(path, option = option));
-                if contentToWrite[0].keys().length() != headers.length() {
-                    check csvChannel.close();
-                    GenericError e = error GenericError("CSV file and the Record structure do not  match.");
-                    return e;
-                }
-                foreach string header in headers {
-                    int|Error? key = contentToWrite[0].keys().lastIndexOf(header.trim());
-                    if key is Error || key is () {
-                        check csvChannel.close();
-                        GenericError e = error GenericError("CSV file and the Record structure do not  match.");
-                        return e;
-                    }
-                }
-            } else {
-                csvChannel = check getWritableCSVChannel(check openWritableCsvFile(path, option = OVERWRITE));
-                headers = contentToWrite[0].keys();
-                Error? headerWriteResult = csvChannel.write(headers);
-                if headerWriteResult is Error {
-                    check csvChannel.close();
-                    return headerWriteResult;
-                }
             }
         }
         foreach map<anydata> row in contentToWrite {
@@ -194,4 +160,44 @@ isolated function getWritableCSVChannel(WritableChannel writableChannel) returns
         return e;
     }
     return writableCSVChannel;
+}
+
+isolated function readHeadersFromCsvFile(string path) returns string[]|Error {
+    stream<string[], Error?>|Error csvContent = fileReadCsvAsStream(path);
+        if csvContent is Error {
+            if csvContent is FileNotFoundError {
+                return [];
+            } else {
+                return error GenericError((<Error> csvContent).message());
+            }
+        } else {
+            do {
+                var csvLine = csvContent.next();
+                if (csvLine is Error) {
+                    check error GenericError((<Error> csvLine).message());
+                } else if csvLine !is () {
+                    if csvLine["value"] != [""] {
+                        return csvLine["value"];
+                    }
+                }
+                return [];
+            } on fail Error err {
+                check csvContent.close();
+                return error GenericError("Error while reading the headers from the CSV file. " + err.message());
+            }
+        }   
+}
+
+isolated function validateCsvContent(string[] headersFromCSV, string[] headers) returns string[]|Error {
+    if headers.length() != headersFromCSV.length() {
+        return error GenericError("The csv file content headers (no of headers :" + headersFromCSV.length().toString() 
+                    + ") and the map keys (no of keys :" + headers.length().toString() + ") does not match.");
+    }
+    foreach string header in headers {
+        int|Error? key = headersFromCSV.indexOf(header.trim());
+        if key is Error || key is () {
+            return error GenericError("CSV file doesn't contain header `" +  header.trim()  + "`. ");
+        }
+    }
+    return headersFromCSV;
 }

@@ -172,7 +172,7 @@ function testAppendDifferentCsvFile() {
     B d2 = {B1: 3, B2: 4, A1: 1, A2: 2};
     B[] content = [d1, d2];
     Error? out = fileWriteCsv(filePath, content, APPEND);
-    test:assertEquals((<Error>out).message(), "CSV file and the Record structure do not  match.");
+    test:assertEquals((<Error>out).message(), "The csv file content headers (no of headers :3) and the map keys (no of keys :4) does not match.");
 }
 
 @test:Config {dependsOn: [testCsvWriteWithUnorderedRecords]}
@@ -182,7 +182,7 @@ function testAppendDifferentCsvFile2() {
     D d2 = {D1: 3, D2: 4, A1: 1, A2: 2};
     D[] content = [d1, d2];
     Error? out = fileWriteCsv(filePath, content, APPEND);
-    test:assertEquals((<Error>out).message(), "CSV file and the Record structure do not  match.");
+    test:assertEquals((<Error>out).message(), "CSV file doesn't contain header `D1`. ");
 }
 
 @test:Config{}
@@ -194,7 +194,7 @@ function testAppendFalseCsv() {
     D d2 = {D1: 3, D2: 4, A1: 1, A2: 2};
     D[] content = [d1, d2];
     out = fileWriteCsv(filePath, content, APPEND);
-    test:assertEquals((<Error>out).message(), "CSV file and the Record structure do not  match.");
+    test:assertEquals((<Error>out).message(), "CSV file doesn't contain header `A1`. ");
 }
 
 @test:Config{}
