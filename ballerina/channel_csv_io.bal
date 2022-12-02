@@ -168,24 +168,24 @@ isolated function getWritableCSVChannel(WritableChannel writableChannel) returns
 
 isolated function readHeadersFromCsvFile(string path) returns string[]|Error {
     stream<string[], Error?>|Error csvContent = fileReadCsvAsStream(path);
-        if csvContent is Error {
-            if csvContent is FileNotFoundError {
-                return [];
-            } else {
-                return error GenericError("Error while reading the headers from the CSV file. " + csvContent.message());
-            }
+    if csvContent is Error {
+        if csvContent is FileNotFoundError {
+            return [];
         } else {
-            do {
-                var csvLine = check  csvContent.next();
-                if csvLine !is () {
-                    return csvLine["value"];
-                }
-                return [];
-            } on fail Error err {
-                check csvContent.close();
-                return error GenericError("Error while reading the headers from the CSV file. " + err.message());
+            return error GenericError("Error while reading the headers from the CSV file. " + csvContent.message());
+        }
+    } else {
+        do {
+            var csvLine = check csvContent.next();
+            if csvLine !is () {
+                return csvLine["value"];
             }
-        }   
+            return [];
+        } on fail Error err {
+            check csvContent.close();
+            return error GenericError("Error while reading the headers from the CSV file. " + err.message());
+        }
+    }
 }
 
 isolated function validateCsvHeaders(string[] headersFromCSV, string[] headers) returns string[]|Error {
