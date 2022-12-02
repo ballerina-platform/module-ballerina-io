@@ -40,11 +40,11 @@ Error {
     return (check getReadableCSVChannel(readableChannel, 0)).csvStream();
 }
 
-isolated function channelWriteCsv(string path, FileWriteOption inputOption, string[][]|map<anydata>[] contentToWrite) returns Error? {
+isolated function channelWriteCsv(string path, FileWriteOption userProvidedOption, string[][]|map<anydata>[] contentToWrite) returns Error? {
     WritableCSVChannel csvChannel;
-    FileWriteOption option = OVERWRITE;
+    FileWriteOption option = userProvidedOption;
     if contentToWrite is string[][] {
-        csvChannel = check getWritableCSVChannel(check openWritableCsvFile(path, option = inputOption));
+        csvChannel = check getWritableCSVChannel(check openWritableCsvFile(path, option = option));
         foreach string[] r in contentToWrite {
             Error? writeResult = csvChannel.write(r);
             if writeResult is Error {
@@ -59,7 +59,7 @@ isolated function channelWriteCsv(string path, FileWriteOption inputOption, stri
             return;
         }
         headers = contentToWrite[0].keys();
-        if inputOption == APPEND {
+        if userProvidedOption == APPEND {
             string[] headersFromCSV = check readHeadersFromCsvFile(path);
             if headersFromCSV.length() > 0 {
                 headers = check validateCsvHeaders(headersFromCSV, headers);
@@ -172,10 +172,8 @@ isolated function readHeadersFromCsvFile(string path) returns string[]|Error {
             }
         } else {
             do {
-                var csvLine = csvContent.next();
-                if (csvLine is Error) {
-                    check error GenericError((<Error> csvLine).message());
-                } else if csvLine !is () {
+                var csvLine = check  csvContent.next();
+                if csvLine !is () {
                     if csvLine["value"] != [""] {
                         return csvLine["value"];
                     }
