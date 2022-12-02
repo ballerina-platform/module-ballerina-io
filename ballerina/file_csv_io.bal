@@ -69,5 +69,5 @@ Error? {
 # + return - `()` when the writing was successful or an `io:Error`
 public isolated function fileWriteCsvFromStream(string path, stream<string[]|map<anydata>, Error?> content,
                                                 FileWriteOption option = OVERWRITE) returns Error? {
-    return channelWriteCsvFromStream(check openWritableCsvFile(path, option = option), content);
+    return channelWriteCsvFromStream(path, option, content);
 }

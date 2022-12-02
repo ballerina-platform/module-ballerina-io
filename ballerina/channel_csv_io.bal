@@ -60,35 +60,82 @@ isolated function channelWriteCsv(string path, FileWriteOption option, string[][
     return;
 }
 
-isolated function channelWriteCsvFromStream(WritableChannel writableChannel, stream<string[]|map<anydata>, Error?> csvStream) returns
+isolated function channelWriteCsvFromStream(string path, FileWriteOption option, stream<string[]|map<anydata>, Error?> csvStreamToWrite) returns
 Error? {
-    WritableCSVChannel csvChannel = check getWritableCSVChannel(writableChannel);
-    do {
-        if csvStream is stream<string[], Error?> {
-            record {|string[] value;|}|Error? csvRecordString = csvStream.next();
+    string[] headersFromCSV = [];
+    string[] headersFromStream = [];
+    boolean skipHeaders = false;
+    if csvStreamToWrite is stream<string[], Error?> {
+        WritableCSVChannel csvChannel = check getWritableCSVChannel(check openWritableCsvFile(path, option = option));
+        do {
+            record {|string[] value;|}|Error? csvRecordString = csvStreamToWrite.next();
             while csvRecordString is record {|string[] value;|} {
                 check csvChannel.write(csvRecordString.value);
-                csvRecordString = csvStream.next();
+                csvRecordString = csvStreamToWrite.next();
             }
-        } else if csvStream is stream<map<anydata>, Error?> {
-            record {|map<anydata> value;|}? csvRecordMap = check csvStream.next();
-            while csvRecordMap is record {|map<anydata> value;|} {
-                string[] sValues = [];
-                foreach [string, anydata] [_, value] in csvRecordMap["value"].entries() {
-                    sValues.push(value.toString());
+        } on fail Error err {
+            check csvStreamToWrite.close();
+            check csvChannel.close();
+            return err;
+        }
+        check csvChannel.close();
+    } else if csvStreamToWrite is stream<map<anydata>, Error?> {
+        record {|map<anydata> value;|}? csvRecordMap;
+        if option == OVERWRITE {
+            do {
+                csvRecordMap = check csvStreamToWrite.next();
+                if csvRecordMap !is () {
+                    headersFromStream = csvRecordMap["value"].keys();
+                } else {
+                    check csvStreamToWrite.close();
+                    return;
                 }
-                check csvChannel.write(sValues);
-                csvRecordMap = check csvStream.next();
+            } on fail Error err {
+                check csvStreamToWrite.close();
+                return err;
+            }
+        } else {
+            headersFromCSV = check readHeadersFromCsvFile(path);
+            do {
+                csvRecordMap = check csvStreamToWrite.next();
+                if csvRecordMap !is () {
+                    headersFromStream = csvRecordMap["value"].keys();
+                } else {
+                    check csvStreamToWrite.close();
+                    return;
+                }
+                headersFromCSV = check validateCsvHeaders(headersFromCSV, headersFromStream);
+                if headersFromCSV.length() == 0 {
+                } else {
+                    skipHeaders = true;
+                    headersFromStream = headersFromCSV;
+                }
+            } on fail Error err {
+                check csvStreamToWrite.close();
+                return err;
             }
         }
-    } on fail Error err {
-        check csvStream.close();
+        WritableCSVChannel csvChannel = check getWritableCSVChannel(check openWritableCsvFile(path, option = option));
+        do {
+            if !skipHeaders {
+                check csvChannel.write(headersFromStream);
+            }
+            while csvRecordMap is record {|map<anydata> value;|} {
+                string[] sValues = [];
+                foreach string key in headersFromStream {
+                    sValues.push(csvRecordMap["value"].get(key).toString());
+                }
+                csvRecordMap = check csvStreamToWrite.next();
+                check csvChannel.write(sValues);
+            }
+        } on fail Error err {
+            check csvStreamToWrite.close();
+            check csvChannel.close();
+            return err;
+        }
         check csvChannel.close();
-        return err;
     }
-    check csvStream.close();
-    check csvChannel.close();
-
+    check csvStreamToWrite.close();
     return;
 }
 
