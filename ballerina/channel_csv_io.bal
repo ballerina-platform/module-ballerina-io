@@ -52,9 +52,10 @@ isolated function channelWriteCsv(string path, FileWriteOption option, string[][
         if option == APPEND {
             string[] headersFromCSV = check readHeadersFromCsvFile(path);
             headersFromCSV = check validateCsvHeaders(headersFromCSV, headers);
-            return headersFromCSV.length() > 0 ? appendRecordsToCsvFile(path, contentToWrite, headersFromCSV) : writeRecordsToCsvFile(path, contentToWrite, headers);
+            return headersFromCSV.length() > 0 ? writeRecordsToCsvFile(path, contentToWrite, headersFromCSV, option, true) 
+            : writeRecordsToCsvFile(path, contentToWrite, headers, option, false);
         }
-        check writeRecordsToCsvFile(path, contentToWrite, headers);
+        check writeRecordsToCsvFile(path, contentToWrite, headers, option, false);
     }
     return;
 }
@@ -148,7 +149,7 @@ isolated function readHeadersFromCsvFile(string path) returns string[]|Error {
 }
 
 isolated function validateCsvHeaders(string[] headersFromCSV, string[] headers) returns string[]|Error {
-    if headersFromCSV == [""] || headersFromCSV.length() == 0 { //this is a valid scenario and we need to override the content.
+    if headersFromCSV.length() == 0 { //this is a valid scenario and we need to override the content
         return [];
     } else if headers.length() != headersFromCSV.length() {
         return error GenericError(string `The CSV file content header count(${headersFromCSV.length()}) doesn't match with ballerina record field count(${headers.length().toString()}). `);
@@ -162,29 +163,14 @@ isolated function validateCsvHeaders(string[] headersFromCSV, string[] headers) 
     return headersFromCSV;
 }
 
-isolated function appendRecordsToCsvFile(string path, map<anydata>[] contentToWrite, string[] headers) returns Error? {
-
-    WritableCSVChannel csvChannel = check getWritableCSVChannel(check openWritableCsvFile(path, option = APPEND));
-    foreach map<anydata> row in contentToWrite {
-        string[] sValues = [];
-        foreach string header in headers {
-            sValues.push(row.get(header).toString());
-        }
-        Error? writeResult = csvChannel.write(sValues);
-        if writeResult is Error {
+isolated function writeRecordsToCsvFile(string path, map<anydata>[] contentToWrite, string[] headers, FileWriteOption option, boolean skipHeaders) returns Error? {
+    WritableCSVChannel csvChannel = check getWritableCSVChannel(check openWritableCsvFile(path, option = option));
+    if !skipHeaders {
+        Error? headerWriteResult = csvChannel.write(headers);
+        if headerWriteResult is Error {
             check csvChannel.close();
-            return writeResult;
+            return headerWriteResult;
         }
-    }
-    check csvChannel.close();
-}
-
-isolated function writeRecordsToCsvFile(string path, map<anydata>[] contentToWrite, string[] headers) returns Error? {
-    WritableCSVChannel csvChannel = check getWritableCSVChannel(check openWritableCsvFile(path, option = OVERWRITE));
-    Error? headerWriteResult = csvChannel.write(headers);
-    if headerWriteResult is Error {
-        check csvChannel.close();
-        return headerWriteResult;
     }
     foreach map<anydata> row in contentToWrite {
         string[] sValues = [];
