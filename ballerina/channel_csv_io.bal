@@ -40,9 +40,8 @@ Error {
     return (check getReadableCSVChannel(readableChannel, 0)).csvStream();
 }
 
-isolated function channelWriteCsv(string path, FileWriteOption userProvidedOption, string[][]|map<anydata>[] contentToWrite) returns Error? {
+isolated function channelWriteCsv(string path, FileWriteOption option, string[][]|map<anydata>[] contentToWrite) returns Error? {
     WritableCSVChannel csvChannel;
-    FileWriteOption option = userProvidedOption;
     if contentToWrite is string[][] {
         csvChannel = check getWritableCSVChannel(check openWritableCsvFile(path, option = option));
         foreach string[] r in contentToWrite {
@@ -59,40 +58,20 @@ isolated function channelWriteCsv(string path, FileWriteOption userProvidedOptio
             return;
         }
         headers = contentToWrite[0].keys();
-        if userProvidedOption == APPEND {
+        if option == APPEND {
             string[] headersFromCSV = check readHeadersFromCsvFile(path);
             if headersFromCSV.length() > 0 {
                 headersFromCSV = check validateCsvHeaders(headersFromCSV, headers);
                 if (headersFromCSV.length() > 0) {
-                    headers = headersFromCSV;
-                    option = APPEND;
+                    return appendRecordsToCsvFile(path, contentToWrite, headersFromCSV);
                 } else {
-                    option = OVERWRITE;
+                    return writeRecordsToCsvFile(path, contentToWrite, headers);
                 }
             } else {
-                option = OVERWRITE;
+                return writeRecordsToCsvFile(path, contentToWrite, headers);
             }
         }
-        csvChannel = check getWritableCSVChannel(check openWritableCsvFile(path, option = option));
-        if option == OVERWRITE {
-            Error? headerWriteResult = csvChannel.write(headers);
-            if headerWriteResult is Error {
-                check csvChannel.close();
-                return headerWriteResult;
-            }
-        }
-        foreach map<anydata> row in contentToWrite {
-            string[] sValues = [];
-            foreach string header in headers {
-                sValues.push(row.get(header).toString());
-            }
-            Error? writeResult = csvChannel.write(sValues);
-            if writeResult is Error {
-                check csvChannel.close();
-                return writeResult;
-            }
-        }
-        check csvChannel.close();
+        check writeRecordsToCsvFile(path, contentToWrite, headers);
     }
     return;
 }
@@ -202,4 +181,42 @@ isolated function validateCsvHeaders(string[] headersFromCSV, string[] headers) 
         }
     }
     return headersFromCSV;
+}
+
+isolated function appendRecordsToCsvFile(string path, map<anydata>[] contentToWrite, string[] headers) returns Error? {
+
+    WritableCSVChannel csvChannel = check getWritableCSVChannel(check openWritableCsvFile(path, option = APPEND));
+    foreach map<anydata> row in contentToWrite {
+        string[] sValues = [];
+        foreach string header in headers {
+            sValues.push(row.get(header).toString());
+        }
+        Error? writeResult = csvChannel.write(sValues);
+        if writeResult is Error {
+            check csvChannel.close();
+            return writeResult;
+        }
+    }
+    check csvChannel.close();
+}
+
+isolated function writeRecordsToCsvFile(string path, map<anydata>[] contentToWrite, string[] headers) returns Error? {
+    WritableCSVChannel csvChannel = check getWritableCSVChannel(check openWritableCsvFile(path, option = OVERWRITE));
+    Error? headerWriteResult = csvChannel.write(headers);
+    if headerWriteResult is Error {
+        check csvChannel.close();
+        return headerWriteResult;
+    }
+    foreach map<anydata> row in contentToWrite {
+        string[] sValues = [];
+        foreach string header in headers {
+            sValues.push(row.get(header).toString());
+        }
+        Error? writeResult = csvChannel.write(sValues);
+        if writeResult is Error {
+            check csvChannel.close();
+            return writeResult;
+        }
+    }
+    check csvChannel.close();
 }
