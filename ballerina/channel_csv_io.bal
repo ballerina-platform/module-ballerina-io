@@ -40,30 +40,23 @@ Error {
     return (check getReadableCSVChannel(readableChannel, 0)).csvStream();
 }
 
-isolated function channelWriteCsv(WritableChannel writableChannel, string[][]|map<anydata>[] content) returns Error? {
-    WritableCSVChannel csvChannel = check getWritableCSVChannel(writableChannel);
-    if content is string[][] {
-        foreach string[] r in content {
-            Error? writeResult = csvChannel.write(r);
-            if writeResult is Error {
-                check csvChannel.close();
-                return writeResult;
-            }
+isolated function channelWriteCsv(string path, FileWriteOption option, string[][]|map<anydata>[] contentToWrite) returns Error? {
+    if contentToWrite is string[][] {
+        check writeStringArrayToCsvFile(path, contentToWrite, option);
+    } else if contentToWrite is map<anydata>[] {
+        string[] headers = [];
+        if contentToWrite.length() == 0 {
+            return;
         }
-    } else if content is map<anydata>[] {
-        foreach map<anydata> row in content {
-            string[] sValues = [];
-            foreach [string, anydata] [_, value] in row.entries() {
-                sValues.push(value.toString());
-            }
-            Error? writeResult = csvChannel.write(sValues);
-            if writeResult is Error {
-                check csvChannel.close();
-                return writeResult;
-            }
+        headers = contentToWrite[0].keys();
+        if option == APPEND {
+            string[] headersFromCSV = check readHeadersFromCsvFile(path);
+            headersFromCSV = check validateCsvHeaders(headersFromCSV, headers);
+            return headersFromCSV.length() > 0 ? writeRecordsToCsvFile(path, contentToWrite, headersFromCSV, option, true) 
+            : writeRecordsToCsvFile(path, contentToWrite, headers, option, false);
         }
+        check writeRecordsToCsvFile(path, contentToWrite, headers, option, false);
     }
-    check csvChannel.close();
     return;
 }
 
@@ -134,4 +127,73 @@ isolated function getWritableCSVChannel(WritableChannel writableChannel) returns
         return e;
     }
     return writableCSVChannel;
+}
+
+isolated function readHeadersFromCsvFile(string path) returns string[]|Error {
+    stream<string[], Error?>|Error csvContent = fileReadCsvAsStream(path);
+    if csvContent is Error {
+        if csvContent is FileNotFoundError {
+            return [];
+        } else {
+            return error GenericError("Error while reading the headers from the CSV file. " + csvContent.message());
+        }
+    } else {
+        do {
+            var csvLine = check csvContent.next();
+            return csvLine == () ? [] : csvLine["value"];
+        } on fail Error err {
+            check csvContent.close();
+            return error GenericError("Error while reading the headers from the CSV file. " + err.message());
+        }
+    }
+}
+
+isolated function validateCsvHeaders(string[] headersFromCSV, string[] headers) returns string[]|Error {
+    if headersFromCSV.length() == 0 { //this is a valid scenario and we need to override the content
+        return [];
+    } else if headers.length() != headersFromCSV.length() {
+        return error GenericError(string `The CSV file content header count(${headersFromCSV.length()}) doesn't match with ballerina record field count(${headers.length().toString()}). `);
+    }
+    foreach string header in headers {
+        int|Error? key = headersFromCSV.indexOf(header.trim());
+        if key is Error || key is () {
+            return error GenericError(string `The CSV file does not contain the header - ${header.trim()}. `);
+        }
+    }
+    return headersFromCSV;
+}
+
+isolated function writeRecordsToCsvFile(string path, map<anydata>[] contentToWrite, string[] headers, FileWriteOption option, boolean skipHeaders) returns Error? {
+    WritableCSVChannel csvChannel = check getWritableCSVChannel(check openWritableCsvFile(path, option = option));
+    if !skipHeaders {
+        Error? headerWriteResult = csvChannel.write(headers);
+        if headerWriteResult is Error {
+            check csvChannel.close();
+            return headerWriteResult;
+        }
+    }
+    foreach map<anydata> row in contentToWrite {
+        string[] sValues = [];
+        foreach string header in headers {
+            sValues.push(row.get(header).toString());
+        }
+        Error? writeResult = csvChannel.write(sValues);
+        if writeResult is Error {
+            check csvChannel.close();
+            return writeResult;
+        }
+    }
+    check csvChannel.close();
+}
+
+isolated function writeStringArrayToCsvFile(string path, string[][] contentToWrite, FileWriteOption option) returns Error? {
+    WritableCSVChannel csvChannel = check getWritableCSVChannel(check openWritableCsvFile(path, option = option));
+    foreach string[] r in contentToWrite {
+        Error? writeResult = csvChannel.write(r);
+        if writeResult is Error {
+            check csvChannel.close();
+            return writeResult;
+        }
+    }
+    check csvChannel.close();
 }

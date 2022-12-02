@@ -152,8 +152,9 @@ function testReadFileCsvUsingResourceFileWithError() returns error? {
 @test:Config {}
 function testReadFileCsvAsStreamUsingResourceFileWithError() returns error? {
     string filePath = RESOURCES_BASE_PATH + "datafiles/io/records/sample5d.csv";
-    stream<Employee4, Error?> csvContent = check fileReadCsvAsStream(filePath); 
-    Error? out = csvContent.forEach(function(Employee4|Error value) {});
+    stream<Employee4, Error?> csvContent = check fileReadCsvAsStream(filePath);
+    Error? out = csvContent.forEach(function(Employee4|Error value) {
+    });
     test:assertEquals((<Error>out).message(), "Invalid value: 10000s for the field: 'salary'");
 }
 
@@ -161,6 +162,73 @@ function testReadFileCsvAsStreamUsingResourceFileWithError() returns error? {
 function testReadFileCsvWithReferenceTypeAndError() returns error? {
     string filePath = RESOURCES_BASE_PATH + "datafiles/io/records/sampleRefE.csv";
     stream<EmployeeRef, Error?> csvContent = check fileReadCsvAsStream(filePath);
-    Error? out = csvContent.forEach(function(EmployeeRef value) { });
+    Error? out = csvContent.forEach(function(EmployeeRef value) {
+    });
     test:assertEquals((<Error>out).message(), "Invalid value: 10000s for the field: 'salary'");
+}
+
+@test:Config {dependsOn: [testWriteDefaultCsv]}
+function testAppendDifferentCsvFile() {
+    string filePath = TEMP_DIR + "recordsDefault.csv";
+    B d1 = {A1: 1, A2: 2, B1: 3, B2: 4};
+    B d2 = {B1: 3, B2: 4, A1: 1, A2: 2};
+    B[] content = [d1, d2];
+    Error? out = fileWriteCsv(filePath, content, APPEND);
+    test:assertEquals((<Error>out).message(), "The CSV file content header count(3) doesn't match with ballerina record field count(4). ");
+}
+
+@test:Config {dependsOn: [testCsvWriteWithUnorderedRecords]}
+function testAppendDifferentCsvFile2() {
+    string filePath = TEMP_DIR + "records_unordered_records.csv";
+    D d1 = {A1: 1, A2: 2, D1: 3, D2: 4};
+    D d2 = {D1: 3, D2: 4, A1: 1, A2: 2};
+    D[] content = [d1, d2];
+    Error? out = fileWriteCsv(filePath, content, APPEND);
+    test:assertEquals((<Error>out).message(), "The CSV file does not contain the header - D1. ");
+}
+
+@test:Config {}
+function testAppendFalseCsv() {
+    string filePath = TEMP_DIR + "records_false_records.csv";
+    string[][] false_content = [["B1", "B1", "D1", "D2"], ["1", "2", "3", "4"]];
+    Error? out = fileWriteCsv(filePath, false_content);
+    D d1 = {A1: 1, A2: 2, D1: 3, D2: 4};
+    D d2 = {D1: 3, D2: 4, A1: 1, A2: 2};
+    D[] content = [d1, d2];
+    out = fileWriteCsv(filePath, content, APPEND);
+    test:assertEquals((<Error>out).message(), "The CSV file does not contain the header - A1. ");
+}
+
+@test:Config {}
+function readNonExistantCsvFile() {
+    string filePath = TEMP_DIR + "non_existant_csv.csv";
+    string[][]|Error out = fileReadCsv(filePath);
+    test:assertTrue((<Error>out).message().includes("no such file or directory", 0));
+}
+
+@test:Config {}
+function readNonExistantCsvFileAsStream() {
+    string filePath = TEMP_DIR + "non_existant_csv.csv";
+    stream<string[], Error?>|Error out = fileReadCsvAsStream(filePath);
+    test:assertTrue((<Error>out).message().includes("no such file or directory", 0));
+}
+
+@test:Config {}
+function writeEmptyStreamtoCsv() returns error? {
+    string filePath = TEMP_DIR + "empty.csv";
+    test:assertEquals(check fileWriteCsvFromStream(filePath, content = new ()), ());
+}
+
+@test:Config {}
+function writeEmptyArraytoCsv() returns error? {
+    string filePath = TEMP_DIR + "empty2.csv";
+    D[] content = [];
+    test:assertEquals(check fileWriteCsv(filePath, content), ());
+}
+
+@test:Config {}
+function writeEmptyStringArraytoCsv() returns error? {
+    string filePath = TEMP_DIR + "empty3.csv";
+    string[][] content = [[], []];
+    test:assertEquals(check fileWriteCsv(filePath, content), ());
 }
