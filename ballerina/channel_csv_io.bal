@@ -177,10 +177,7 @@ isolated function readHeadersFromCsvFile(string path) returns string[]|Error {
     } else {
         do {
             var csvLine = check csvContent.next();
-            if csvLine !is () {
-                return csvLine["value"];
-            }
-            return [];
+            return csvLine == () ? [] : csvLine["value"];
         } on fail Error err {
             check csvContent.close();
             return error GenericError("Error while reading the headers from the CSV file. " + err.message());
