@@ -33,8 +33,8 @@ import io.ballerina.runtime.api.values.BString;
 import io.ballerina.runtime.api.values.BTypedesc;
 import io.ballerina.stdlib.io.utils.IOUtils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -94,15 +94,14 @@ public class CsvChannelUtils {
                 TypeCreator.createStreamType(describingType), recordIterator);
     }
 
-    public static Object getStruct(String[] fields, final StructureType structType) {
+    public static Object getStruct(String[] fields, final StructureType structType, ArrayList<String> headerNames) {
         Map<String, Field> internalStructFields = structType.getFields();
-        int fieldLength = internalStructFields.size();
+        int fieldLength = headerNames.size();
         Map<String, Object> struct = null;
         if (fields.length > 0) {
-            Iterator<Map.Entry<String, Field>> itr = internalStructFields.entrySet().iterator();
             struct = new HashMap<>();
             for (int i = 0; i < fieldLength; i++) {
-                final Field internalStructField = itr.next().getValue();
+                final Field internalStructField = internalStructFields.get(headerNames.get(i));
                 int type = TypeUtils.getReferredType(internalStructField.getFieldType()).getTag();
                 String fieldName = internalStructField.getFieldName();
                 if (fields.length > i) {

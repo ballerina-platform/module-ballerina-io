@@ -55,6 +55,12 @@ public class IOConstants {
     public static final String CSV_RETURN_TYPE = "csv_return_type";
 
     /**
+     * The order of the csv file which will be represented through native struct.
+     */
+
+    public static final String HEADER_NAMES = "header_names";
+
+    /**
      * The size of the buffer allocated for reading bytes from the channel (15~ KB).
      */
     public static final int CHANNEL_BUFFER_SIZE = 16384;
