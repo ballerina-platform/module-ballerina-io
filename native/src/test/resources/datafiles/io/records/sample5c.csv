@@ -1,3 +1,4 @@
+id, name, salary, married
 User1, WSO2, 10000, true
 User2, WSO2, 20000, false
 User3, WSO2,, true

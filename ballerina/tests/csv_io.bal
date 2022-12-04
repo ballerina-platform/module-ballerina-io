@@ -171,10 +171,10 @@ isolated function testReadCsv() returns Error? {
 
 @test:Config {}
 isolated function testReadCsvRecord() returns Error? {
-    string filePath = RESOURCES_BASE_PATH + "datafiles/io/records/sample5.csv";
+    string filePath = RESOURCES_BASE_PATH + "datafiles/io/records/sample5R.csv";
     string[][] csvContent = check fileReadCsv(filePath);
-    test:assertEquals(csvContent[0][0], "User1");
-    test:assertEquals(csvContent[0][2], " 10000.50");
+    test:assertEquals(csvContent[1][0], "User1");
+    test:assertEquals(csvContent[1][2], " 10000.50");
     Employee[] employee = check fileReadCsv(filePath);
     test:assertEquals(employee[0].id, "User1");
     test:assertEquals(employee[0].salary, 10000.50f);
@@ -224,7 +224,7 @@ function testReadFileCsvAsStreamUsingResourceFileOpenRecord() returns error? {
 @test:Config {}
 isolated function testWriteCsvEmployeeArray() returns Error? {
     string filePath = TEMP_DIR + "recordsDefault_records_employee.csv";
-    string[][] content1 = [["1", "Foo1", "100000.0"], ["2", "Foo2", "300000.0"]];
+    string[][] content1 = [["id", "name", "salary"], ["1", "Foo1", "100000.0"], ["2", "Foo2", "300000.0"]];
     test:assertEquals(check fileWriteCsv(filePath, content1), ());
 }
 
@@ -272,11 +272,6 @@ isolated function testWriteRecordCsv() returns Error? {
 
 @test:Config {dependsOn: [testWriteRecordCsv]}
 function testWritenRecordCsv() returns error? {
-    EmployeeStringSalary H = {
-        id: "id",
-        name: "name",
-        salary: "salary"
-    };
     EmployeeStringSalary E = {
         id: "1",
         name: "Foo1",
@@ -287,7 +282,7 @@ function testWritenRecordCsv() returns error? {
         name: "Foo2",
         salary: "300000.0"
     };
-    EmployeeStringSalary[] expected = [H, E, B];
+    EmployeeStringSalary[] expected = [E, B];
     string filePath = TEMP_DIR + "recordsDefault_records.csv";
     stream<EmployeeStringSalary, Error?> result = check fileReadCsvAsStream(filePath);
     int i = 0;
@@ -297,7 +292,7 @@ function testWritenRecordCsv() returns error? {
         test:assertEquals(val.name, expected[i].name);
         i = i + 1;
     });
-    test:assertEquals(i, 3);
+    test:assertEquals(i, 2);
 }
 
 @test:Config {dependsOn: [writeEmptyStreamtoCsv]}
@@ -319,11 +314,6 @@ isolated function testAppendRecordCsvToEmptyFile() returns Error? {
 
 @test:Config {dependsOn: [testAppendRecordCsvToEmptyFile]}
 function testAppendedRecordCsvToEmptyFile() returns error? {
-    EmployeeStringSalary H = {
-        id: "id",
-        name: "name",
-        salary: "salary"
-    };
     EmployeeStringSalary E = {
         id: "1",
         name: "Foo1",
@@ -334,7 +324,7 @@ function testAppendedRecordCsvToEmptyFile() returns error? {
         name: "Foo2",
         salary: "300000.0"
     };
-    EmployeeStringSalary[] expected = [H, E, B];
+    EmployeeStringSalary[] expected = [E, B];
     string filePath = TEMP_DIR + "empty.csv";
     stream<EmployeeStringSalary, Error?> result = check fileReadCsvAsStream(filePath);
     int i = 0;
@@ -344,7 +334,7 @@ function testAppendedRecordCsvToEmptyFile() returns error? {
         test:assertEquals(val.name, expected[i].name);
         i = i + 1;
     });
-    test:assertEquals(i, 3);
+    test:assertEquals(i, 2);
 }
 
 @test:Config {}
@@ -542,11 +532,6 @@ isolated function testWriteCsvAsRecordStream() returns Error? {
 
 @test:Config {dependsOn: [testWriteCsvAsRecordStream]}
 function testWritenCsvAsRecordStreamRead() returns error? {
-    EmployeeStringSalary A = {
-        id: "id",
-        name: "name",
-        salary: "salary"
-    };
     EmployeeStringSalary E = {
         id: "1",
         name: "Foo1",
@@ -557,7 +542,7 @@ function testWritenCsvAsRecordStreamRead() returns error? {
         name: "Foo2",
         salary: "300000.0"
     };
-    EmployeeStringSalary[] expected = [A, E, B];
+    EmployeeStringSalary[] expected = [E, B];
     string filePath = TEMP_DIR + "recordsDefault_stream.csv";
     stream<EmployeeStringSalary, Error?> result = check fileReadCsvAsStream(filePath);
     int i = 0;
@@ -567,7 +552,7 @@ function testWritenCsvAsRecordStreamRead() returns error? {
         test:assertEquals(val.name, expected[i].name);
         i = i + 1;
     });
-    test:assertEquals(i, 3);
+    test:assertEquals(i, 2);
 }
 
 
@@ -629,13 +614,13 @@ function testAppendedCsvAsRecordStreamRead() returns error? {
         if i == 0 {
             i +=1;
         } else {
-            test:assertEquals(val.salary, expected[i-1].salary);
-            test:assertEquals(val.id, expected[i-1].id);
-            test:assertEquals(val.name, expected[i-1].name);
+            test:assertEquals(val.salary, expected[i].salary);
+            test:assertEquals(val.id, expected[i].id);
+            test:assertEquals(val.name, expected[i].name);
         i = i + 1;
         }
     });
-    test:assertEquals(i, 6);
+    test:assertEquals(i, 5);
 }
 
 
@@ -1085,7 +1070,7 @@ isolated function testFileCsvRead() returns Error? {
 @test:Config {}
 isolated function testFileCsvWriteWithSkipHeaders() returns Error? {
     string[][] content = [
-        ["Name", "Occupation", "Company", "Age", "Hometown"],
+        ["name", "designation", "company", "age", "residence"],
         [
             "Ross Meton",
             "Civil Engineer",
@@ -1220,7 +1205,7 @@ isolated function testFileWriteCsvFromStreamUsingResourceFile() returns Error? {
 
 @test:Config {}
 isolated function testFileWriteCsvFromStreamUsingResourceFileRecords() returns Error? {
-    string filePath = TEMP_DIR + "workers4_A.csv";
+    string filePath = TEMP_DIR + "workers4_AA.csv";
     string resourceFilePath = TEST_RESOURCE_PATH + "csvResourceFile1.csv";
     stream<Employee5, Error?> csvStream = check fileReadCsvAsStream(resourceFilePath);
     check fileWriteCsvFromStream(filePath, csvStream);
@@ -1230,6 +1215,7 @@ isolated function testFileWriteCsvFromStreamUsingResourceFileRecords() returns E
 function testFileReadCsvAsStreamUsingResourceFile() returns error? {
     string filePath = TEMP_DIR + "workers4_A.csv";
     string[][] expectedContent = [
+        ["name", "designation", "company","age", "residence"],
         ["Anne Hamiltom", "Software Engineer", "Microsoft", "26 years", "New York"],
         [
             "John Thomson",
@@ -1256,14 +1242,13 @@ function testFileReadCsvAsStreamUsingResourceFile() returns error? {
         }
         i += 1;
     });
-    test:assertEquals(i, 3);
+    test:assertEquals(i, 4);
 }
 
 @test:Config {dependsOn: [testFileWriteCsvFromStreamUsingResourceFileRecords]}
 function testFileReadCsvAsStreamUsingResourceFileRecords() returns error? {
-    string filePath = TEMP_DIR + "workers4_A.csv";
+    string filePath = TEMP_DIR + "workers4_AA.csv";
     string[][] expectedContent = [
-        ["name", "designation", "company","age", "residence"],
         ["Anne Hamiltom", "Software Engineer", "Microsoft", "26 years", "New York"],
         [
             "John Thomson",
@@ -1290,7 +1275,7 @@ function testFileReadCsvAsStreamUsingResourceFileRecords() returns error? {
         }
         i += 1;
     });
-    test:assertEquals(i, 4);
+    test:assertEquals(i, 3);
 }
 
 @test:Config {}
@@ -1473,6 +1458,7 @@ function testFileCsvWriteFromStreamWithOverwriteUsingResourceFile() returns Erro
     stream<string[], Error?> csvStream1 = check fileReadCsvAsStream(resourceFilePath1);
     stream<string[], Error?> csvStream2 = check fileReadCsvAsStream(resourceFilePath2);
     string[][] content1 = [
+        ["name", "designation", "company","age", "residence"],
         ["Anne Hamiltom", "Software Engineer", "Microsoft", "26 years", "New York"],
         [
             "John Thomson",
@@ -1507,7 +1493,7 @@ function testFileCsvWriteFromStreamWithOverwriteUsingResourceFile() returns Erro
         }
         i += 1;
     });
-    test:assertEquals(i, 3);
+    test:assertEquals(i, 4);
 
     // Check content 02
     check fileWriteCsvFromStream(filePath, csvStream2);
@@ -1532,6 +1518,7 @@ function testFileCsvWriteFromStreamWithAppendUsingResourceFile() returns Error? 
     stream<string[], Error?> csvStream1 = check fileReadCsvAsStream(resourceFilePath1);
     stream<string[], Error?> csvStream2 = check fileReadCsvAsStream(resourceFilePath2);
     string[][] initialContent = [
+        ["name", "designation", "company", "age", "residence"],
         ["Anne Hamiltom", "Software Engineer", "Microsoft", "26 years", "New York"],
         [
             "John Thomson",
@@ -1549,6 +1536,7 @@ function testFileCsvWriteFromStreamWithAppendUsingResourceFile() returns Error? 
         ]
     ];
     string[][] expectedCsv = [
+        ["name", "designation", "company", "age", "residence"],
         ["Anne Hamiltom", "Software Engineer", "Microsoft", "26 years", "New York"],
         ["John Thomson", "Software Architect", "WSO2", "38 years", "Colombo"],
         ["Mary Thompson", "Banker", "Sampath Bank", "30 years", "Colombo"],
@@ -1569,7 +1557,7 @@ function testFileCsvWriteFromStreamWithAppendUsingResourceFile() returns Error? 
         }
         i += 1;
     });
-    test:assertEquals(i, 3);
+    test:assertEquals(i, 4);
 
     // Check content 02
     check fileWriteCsvFromStream(filePath, csvStream2, APPEND);
@@ -1583,7 +1571,7 @@ function testFileCsvWriteFromStreamWithAppendUsingResourceFile() returns Error? 
         }
         i += 1;
     });
-    test:assertEquals(i, 6);
+    test:assertEquals(i, 7);
 }
 
 @test:Config {}

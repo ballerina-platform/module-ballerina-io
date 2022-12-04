@@ -139,19 +139,19 @@ isolated function testFileCsvReadWithDefectiveRecords() returns Error? {
     string filePath = TEMP_DIR + "workers2.csv";
     Employee6[]|Error csvContent = fileReadCsv(filePath, 1);
     test:assertTrue(csvContent is Error);
-    test:assertEquals((<Error>csvContent).message(), "Record type and CSV file does not match.");
+    test:assertEquals((<Error>csvContent).message(), "The CSV file content header count(5) doesn't match with ballerina record field count(4). ");
 }
 
 @test:Config {}
 function testReadFileCsvUsingResourceFileWithError() returns error? {
-    string filePath = RESOURCES_BASE_PATH + "datafiles/io/records/sample5d.csv";
+    string filePath = RESOURCES_BASE_PATH + "datafiles/io/records/sample5d2.csv";
     Employee4[]|Error csvContent = fileReadCsv(filePath);
     test:assertEquals((<Error>csvContent).message(), "Invalid value: 10000s for the field: 'salary'");
 }
 
 @test:Config {}
 function testReadFileCsvAsStreamUsingResourceFileWithError() returns error? {
-    string filePath = RESOURCES_BASE_PATH + "datafiles/io/records/sample5d.csv";
+    string filePath = RESOURCES_BASE_PATH + "datafiles/io/records/sample5d2.csv";
     stream<Employee4, Error?> csvContent = check fileReadCsvAsStream(filePath);
     Error? out = csvContent.forEach(function(Employee4|Error value) {
     });
