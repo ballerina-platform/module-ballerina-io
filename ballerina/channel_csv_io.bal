@@ -90,6 +90,7 @@ Error? {
                     check csvStreamToWrite.close();
                     return;
                 }
+                check writeRecordsStreamToCsvFile(path, csvStreamToWrite, headersFromStream, option, skipHeaders, csvRecordMap);
             } on fail Error err {
                 check csvStreamToWrite.close();
                 return err;
@@ -105,35 +106,16 @@ Error? {
                     return;
                 }
                 headersFromCSV = check validateCsvHeaders(headersFromCSV, headersFromStream);
-                if headersFromCSV.length() == 0 {
-                } else {
+                if headersFromCSV.length() != 0 {
                     skipHeaders = true;
                     headersFromStream = headersFromCSV;
                 }
+                check writeRecordsStreamToCsvFile(path, csvStreamToWrite, headersFromStream, option, skipHeaders, csvRecordMap);
             } on fail Error err {
                 check csvStreamToWrite.close();
                 return err;
             }
         }
-        WritableCSVChannel csvChannel = check getWritableCSVChannel(check openWritableCsvFile(path, option = option));
-        do {
-            if !skipHeaders {
-                check csvChannel.write(headersFromStream);
-            }
-            while csvRecordMap is record {|map<anydata> value;|} {
-                string[] sValues = [];
-                foreach string key in headersFromStream {
-                    sValues.push(csvRecordMap["value"].get(key).toString());
-                }
-                csvRecordMap = check csvStreamToWrite.next();
-                check csvChannel.write(sValues);
-            }
-        } on fail Error err {
-            check csvStreamToWrite.close();
-            check csvChannel.close();
-            return err;
-        }
-        check csvChannel.close();
     }
     check csvStreamToWrite.close();
     return;
@@ -231,6 +213,31 @@ isolated function writeRecordsToCsvFile(string path, map<anydata>[] contentToWri
         }
     }
     check csvChannel.close();
+}
+
+
+isolated function writeRecordsStreamToCsvFile(string path, stream<map<anydata>, Error?> csvStreamToWrite, string[] headers, FileWriteOption option, boolean skipHeaders, 
+    record {|map<anydata> value;|}? csvRecord) returns Error? {
+    WritableCSVChannel csvChannel = check getWritableCSVChannel(check openWritableCsvFile(path, option = option));
+    do {
+        if !skipHeaders {
+            check csvChannel.write(headers);
+        }
+        record {|map<anydata> value;|}? csvRecordMap = csvRecord;
+        while csvRecordMap is record {|map<anydata> value;|} {
+            string[] sValues = [];
+            foreach string key in headers {
+                sValues.push(csvRecordMap["value"].get(key).toString());
+            }
+            csvRecordMap = check csvStreamToWrite.next();
+            check csvChannel.write(sValues);
+        }
+        } on fail Error err {
+            check csvStreamToWrite.close();
+            check csvChannel.close();
+            return err;
+        }
+        check csvChannel.close();
 }
 
 isolated function writeStringArrayToCsvFile(string path, string[][] contentToWrite, FileWriteOption option) returns Error? {
