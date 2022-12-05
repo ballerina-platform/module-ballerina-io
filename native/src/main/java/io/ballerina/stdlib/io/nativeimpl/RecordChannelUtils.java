@@ -42,7 +42,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.nio.channels.ClosedChannelException;
 import java.util.ArrayList;
 import java.util.Map;
@@ -61,7 +60,6 @@ import static io.ballerina.stdlib.io.utils.IOConstants.TXT_RECORD_CHANNEL_NAME;
 public class RecordChannelUtils {
 
     private static final Logger log = LoggerFactory.getLogger(RecordChannelUtils.class);
-    private static final PrintStream errStream = System.err;
     private static final String DEFAULT = "default";
     private static final String BUFFERED_READER_ENTRY = "bufferedReader";
     private static final String IS_CLOSED = "isClosed";
@@ -79,10 +77,10 @@ public class RecordChannelUtils {
             DelimitedRecordChannel delimitedRecordChannel;
             if (DEFAULT.equals(format.getValue())) {
                 delimitedRecordChannel = new DelimitedRecordChannel(characterChannel, recordSeparator.getValue(),
-                                                                    fieldSeparator.getValue());
+                        fieldSeparator.getValue());
             } else {
                 delimitedRecordChannel = new DelimitedRecordChannel(characterChannel,
-                                                                    Format.valueOf(format.getValue()));
+                        Format.valueOf(format.getValue()));
             }
             textRecordChannel.addNativeData(TXT_RECORD_CHANNEL_NAME, delimitedRecordChannel);
             textRecordChannel.addNativeData(BUFFERED_READER_ENTRY, bufferedReader);
@@ -113,6 +111,25 @@ public class RecordChannelUtils {
         return false;
     }
 
+    public static Object getNext(BObject channel) {
+        if (isChannelClosed(channel)) {
+            return IOUtils.createError("Record channel is already closed.");
+        }
+        DelimitedRecordChannel textRecordChannel =
+                (DelimitedRecordChannel) channel.getNativeData(TXT_RECORD_CHANNEL_NAME);
+        if (textRecordChannel.hasReachedEnd()) {
+            return IOUtils.createEoFError();
+        } else {
+            try {
+                String[] records = textRecordChannel.read();
+                return StringUtils.fromStringArray(records);
+            } catch (BallerinaIOException e) {
+                log.error("error occurred while reading next text record from ReadableTextRecordChannel", e);
+                return IOUtils.createError(e);
+            }
+        }
+    }
+
     public static Object getAllRecords(BObject channel, int skipHeaders, BTypedesc typeDesc) {
         Type describingType = TypeUtils.getReferredType(typeDesc.getDescribingType());
         if (isChannelClosed(channel)) {
@@ -129,59 +146,53 @@ public class RecordChannelUtils {
                     return IOUtils.createError("Parameter `skipHeaders` cannot be used with record data mapping. ");
                 }
                 StructureType structType = (StructureType) describingType;
-                ArrayList<Object> outList = new ArrayList<Object>();
+                ArrayList<Object> outList = new ArrayList<>();
                 ArrayList<String> headerNames = new ArrayList<>();
                 String[] record;
+                Map<String, Object> struct = null;
                 while (textRecordChannel.hasNext()) {
                     if (headerNames.size() == 0) {
                         record = textRecordChannel.read();
                         for (String header : record) {
                             headerNames.add(header.trim());
                         }
-                        if (headerNames.size() != structType.getFields().size()) {
-                            return IOUtils.createError(String.format("The CSV file content header count" +
-                                            "(%s) doesn't match with ballerina record field count(%s). ",
-                                    headerNames.size(), structType.getFields().size()));
-                        }
-                        for (String key : structType.getFields().keySet()) {
-                            if (!headerNames.contains(key.trim())) {
-                                errStream.println(structType.getFields().keySet());
-                                return IOUtils.createError(String.format("The Record does not contain the " +
-                                        "field - %s. ", key.trim()));
-                            }
-                        }
+                        validateHeaders(headerNames, structType);
                         continue;
                     }
                     record = textRecordChannel.read();
+                    if (struct == null) {
+                        Object returnStruct = CsvChannelUtils.getStruct(record, structType, headerNames);
+                        if (returnStruct instanceof BError) {
+                            return returnStruct;
+                        }
+                        struct = (Map<String, Object>) returnStruct;
+                    }
                     if (record.length != structType.getFields().size()) {
                         return IOUtils.createError("Record type and CSV file does not match.");
                     }
-                    Object returnStruct = CsvChannelUtils.getStruct(record, structType, headerNames);
-                    if (returnStruct instanceof BError) {
-                        return returnStruct;
-                    }
-                    final Map<String, Object> struct = (Map<String, Object>) returnStruct;
                     outList.add(ValueCreator.createRecordValue(describingType.getPackage(),
-                                describingType.getName(), struct));
-                    
+                            describingType.getName(), struct));
+
                 }
                 Object[] out = outList.toArray();
                 return ValueCreator.createArrayValue(out, TypeCreator.createArrayType(describingType));
             } else {
-                ArrayList<BArray> outList = new ArrayList<BArray>();
+                ArrayList<BArray> outList = new ArrayList<>();
                 while (textRecordChannel.hasNext()) {
                     String[] record = textRecordChannel.read();
                     if (skipHeaders == 1) {
                         skipHeaders = 0;
                         continue;
-                    } 
-                    outList.add(StringUtils.fromStringArray(record));   
+                    }
+                    outList.add(StringUtils.fromStringArray(record));
                 }
                 Object[] out = outList.toArray();
                 return ValueCreator.createArrayValue(out, TypeCreator.createArrayType(describingType));
             }
         } catch (BallerinaIOException e) {
             return IOUtils.createError(e);
+        } catch (BError e) {
+            return e;
         } finally {
             close(channel);
         }
@@ -208,18 +219,7 @@ public class RecordChannelUtils {
                     for (String header : record) {
                         headers.add(header.trim());
                     }
-                    if (headers.size() != structType.getFields().size()) {
-                        return IOUtils.createError(String.format("The CSV file content header count" +
-                                        "(%s) doesn't match with ballerina record field count(%s). ",
-                                headers.size(), structType.getFields().size()));
-                    }
-                    for (String key : structType.getFields().keySet()) {
-                        if (!headers.contains(key.trim())) {
-                            errStream.println(structType.getFields().keySet());
-                            return IOUtils.createError(String.format("The Record does not contain the " +
-                                    "field - %s. ", key.trim()));
-                        }
-                    }
+                    validateHeaders(headers, structType);
                     iterator.addNativeData(HEADER_NAMES, headers);
                     line = bufferedReader.readLine();
                     record = textRecordChannel.getFields(line);
@@ -235,13 +235,13 @@ public class RecordChannelUtils {
                     return IOUtils.createError("Record type and CSV file does not match.");
                 }
                 return ValueCreator.createRecordValue(describingType.getPackage(), describingType.getName(),
-                                struct);
+                        struct);
             }
             String[] records = textRecordChannel.getFields(line);
             return StringUtils.fromStringArray(records);
         } catch (IOException e) {
             return IOUtils.createError(e);
-        } 
+        }
     }
 
     public static Object readRecord(BObject channel) {
@@ -324,5 +324,19 @@ public class RecordChannelUtils {
             return IOUtils.createError(e);
         }
         return null;
+    }
+
+    private static void validateHeaders(ArrayList<String> headers, StructureType structType) {
+        if (headers.size() != structType.getFields().size()) {
+            throw IOUtils.createError(String.format("The CSV file content header count" +
+                            "(%s) doesn't match with ballerina record field count(%s). ",
+                    headers.size(), structType.getFields().size()));
+        }
+        for (String key : structType.getFields().keySet()) {
+            if (!headers.contains(key.trim())) {
+                throw IOUtils.createError(String.format("The Record does not contain the " +
+                        "field - %s. ", key.trim()));
+            }
+        }
     }
 }
