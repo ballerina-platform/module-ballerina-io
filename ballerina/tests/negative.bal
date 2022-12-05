@@ -137,7 +137,7 @@ function testchannelReadCsvAsStreamAfterClosing() returns Error? {
 isolated function testFileCsvReadWithDefectiveRecords() returns Error? {
 
     string filePath = TEMP_DIR + "workers2.csv";
-    Employee6[]|Error csvContent = fileReadCsv(filePath, 1);
+    Employee6[]|Error csvContent = fileReadCsv(filePath);
     test:assertTrue(csvContent is Error);
     test:assertEquals((<Error>csvContent).message(), "The CSV file content header count(5) doesn't match with ballerina record field count(4). ");
 }
@@ -231,4 +231,11 @@ function writeEmptyStringArraytoCsv() returns error? {
     string filePath = TEMP_DIR + "empty3.csv";
     string[][] content = [[], []];
     test:assertEquals(check fileWriteCsv(filePath, content), ());
+}
+
+@test:Config {dependsOn: [testFileCsvWriteWithSkipHeaders]}
+isolated function testFileCsvReadWithSkipHeadersRecords() returns Error? {
+    string filePath = TEMP_DIR + "workers2.csv";
+    Employee5[]|Error out = fileReadCsv(filePath, 1);
+    test:assertEquals((<Error>out).message(), "Parameter `skipHeaders` cannot be used with record data mapping. ");
 }

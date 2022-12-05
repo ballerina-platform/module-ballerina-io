@@ -112,6 +112,14 @@ type EmployeeRef record {
     RefBool martial_status;
 };
 
+type EmployeeRefShuffled record {
+    RefInt hours_worked;
+    RefBool martial_status;
+    RefStr name;
+    string id;
+    RefDec salary;
+};
+
 type A record {|
     int A1;
     int A2;
@@ -1109,30 +1117,6 @@ isolated function testFileCsvReadWithSkipHeaders() returns Error? {
     }
 }
 
-@test:Config {dependsOn: [testFileCsvWriteWithSkipHeaders]}
-isolated function testFileCsvReadWithSkipHeadersRecords() returns Error? {
-    string[][] expectedContent = [
-        [
-            "Ross Meton",
-            "Civil Engineer",
-            "ABC Construction",
-            "26 years",
-            "Sydney"
-        ],
-        ["Matt Jason", "Architect", "Typer", "38 years", "Colombo"]
-    ];
-    string filePath = TEMP_DIR + "workers2.csv";
-    Employee5[] csvContent = check fileReadCsv(filePath, 1);
-    int i = 0;
-    foreach Employee5 val in csvContent {
-        int j = 0;
-        foreach string s in val.keys() {
-            test:assertEquals(val.get(s), expectedContent[i][j]);
-            j += 1;
-        }
-        i += 1;
-    }
-}
 
 @test:Config {}
 isolated function testWriteChannelReadCsvWithSkipHeaders() returns Error? {
@@ -1823,6 +1807,22 @@ function testReadFileCsvWithReferenceType() returns error? {
     stream<EmployeeRef, Error?> csvContent = check fileReadCsvAsStream(filePath);
     int i = 0;
     check csvContent.forEach(function(EmployeeRef value) {
+        test:assertEquals(value, expected[i]);
+        i = i + 1;
+    });
+    test:assertEquals(i, 3);
+}
+
+@test:Config {}
+function testReadFileCsvWithReferenceTypeShuffled() returns error? {
+    string filePath = RESOURCES_BASE_PATH + "datafiles/io/records/sampleRef.csv";
+    EmployeeRef A = {id: "User1", hours_worked: 10, name: "Jane", salary: 10000d, martial_status: true};
+    EmployeeRef B = {id: "User2", hours_worked: 20, name: "John", salary: 20000d, martial_status: false};
+    EmployeeRef C = {id: "User3", hours_worked: 30, name: "Jack", salary: 30000d, martial_status: true};
+    EmployeeRef[] expected = [A, B, C];
+    stream<EmployeeRefShuffled, Error?> csvContent = check fileReadCsvAsStream(filePath);
+    int i = 0;
+    check csvContent.forEach(function(EmployeeRefShuffled value) {
         test:assertEquals(value, expected[i]);
         i = i + 1;
     });
