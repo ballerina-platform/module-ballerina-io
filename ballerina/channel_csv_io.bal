@@ -77,9 +77,10 @@ Error? {
         }
         check csvChannel.close();
     } else if csvStreamToWrite is stream<map<anydata>, Error?> {
-        string[] headersFromStream = [];
-        boolean skipHeaders = false;
+        WritableCSVChannel csvChannel = check getWritableCSVChannel(check openWritableCsvFile(path, option = option));
         do {
+            boolean skipHeaders = false;
+            string[] headersFromStream;
             record {|map<anydata> value;|}? csvRecordMap = check csvStreamToWrite.next();
             if csvRecordMap !is () {
                 headersFromStream = csvRecordMap["value"].keys();
@@ -95,7 +96,17 @@ Error? {
                     headersFromStream = headersFromCSV;
                 }
             }
-            check writeRecordsStreamToCsvFile(path, csvStreamToWrite, headersFromStream, option, skipHeaders, csvRecordMap);
+            if !skipHeaders {
+                check csvChannel.write(headersFromStream);
+            }
+            while csvRecordMap is record {|map<anydata> value;|} {
+                string[] sValues = [];
+                foreach string header in headersFromStream {
+                    sValues.push(csvRecordMap["value"].get(header).toString());
+                }
+                csvRecordMap = check csvStreamToWrite.next();
+                check csvChannel.write(sValues);
+            }
         } on fail Error err {
             check csvStreamToWrite.close();
             return err;
@@ -195,30 +206,6 @@ isolated function writeRecordsToCsvFile(string path, map<anydata>[] contentToWri
             check csvChannel.close();
             return writeResult;
         }
-    }
-    check csvChannel.close();
-}
-
-isolated function writeRecordsStreamToCsvFile(string path, stream<map<anydata>, Error?> csvStreamToWrite, string[] headers, FileWriteOption option, boolean skipHeaders,
-        record {|map<anydata> value;|}? csvRecord) returns Error? {
-    WritableCSVChannel csvChannel = check getWritableCSVChannel(check openWritableCsvFile(path, option = option));
-    do {
-        if !skipHeaders {
-            check csvChannel.write(headers);
-        }
-        record {|map<anydata> value;|}? csvRecordMap = csvRecord;
-        while csvRecordMap is record {|map<anydata> value;|} {
-            string[] sValues = [];
-            foreach string key in headers {
-                sValues.push(csvRecordMap["value"].get(key).toString());
-            }
-            csvRecordMap = check csvStreamToWrite.next();
-            check csvChannel.write(sValues);
-        }
-    } on fail Error err {
-        check csvStreamToWrite.close();
-        check csvChannel.close();
-        return err;
     }
     check csvChannel.close();
 }
