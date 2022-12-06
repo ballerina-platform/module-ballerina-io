@@ -24,7 +24,7 @@ import ballerina/jballerina.java;
 # + skipHeaders - Number of headers, which should be skipped prior to reading records
 # + returnType - The type of the return value (string[] or map<anydata>)
 # + return - The entire CSV content in the channel as an array of string arrays or an `io:Error`
-public isolated function fileReadCsv(string path, int skipHeaders = 0, typedesc<string[]|map<anydata>> returnType = <>) returns returnType[]|Error = @java:Method{
+public isolated function fileReadCsv(string path, int skipHeaders = 0, typedesc<string[]|map<anydata>> returnType = <>) returns returnType[]|Error = @java:Method {
     name: "fileReadCsv",
     'class: "io.ballerina.stdlib.io.nativeimpl.CsvChannelUtils"
 } external;
@@ -37,7 +37,7 @@ public isolated function fileReadCsv(string path, int skipHeaders = 0, typedesc<
 # + path - The CSV file path
 # + returnType - The type of the return value (string[] or map<anydata>)
 # + return - The entire CSV content in the channel a stream of string arrays or an `io:Error`
-public isolated function fileReadCsvAsStream(string path, typedesc<string[]|map<anydata>> returnType = <>) returns stream<returnType, Error?>|Error = @java:Method{
+public isolated function fileReadCsvAsStream(string path, typedesc<string[]|map<anydata>> returnType = <>) returns stream<returnType, Error?>|Error = @java:Method {
     name: "createCsvAsStream",
     'class: "io.ballerina.stdlib.io.nativeimpl.CsvChannelUtils"
 } external;
@@ -68,6 +68,6 @@ Error? {
 # + option - To indicate whether to overwrite or append the given content
 # + return - `()` when the writing was successful or an `io:Error`
 public isolated function fileWriteCsvFromStream(string path, stream<string[]|map<anydata>, Error?> content,
-                                                FileWriteOption option = OVERWRITE) returns Error? {
+        FileWriteOption option = OVERWRITE) returns Error? {
     return channelWriteCsvFromStream(path, option, content);
 }
