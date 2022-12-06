@@ -108,6 +108,7 @@ Error? {
                 check csvChannel.write(sValues);
             }
         } on fail Error err {
+            check csvChannel.close();
             check csvStreamToWrite.close();
             return err;
         }
