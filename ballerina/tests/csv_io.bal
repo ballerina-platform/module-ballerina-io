@@ -435,7 +435,7 @@ function testAppendCsvStreamWithUnorderedRecords() returns error? {
 }
 
 
-@test:Config {dependsOn: [testAppendCsvStreamWithUnorderedRecords]}
+@test:Config {dependsOn: [testAppendCsvStreamWithUnorderedRecords, testWritenUnorderedRecordCsv]}
 function testStreamAppededUnorderedRecordCsv() returns error? {
     string filePath = TEMP_DIR + "records_unordered_records.csv";
     string filePath2 = TEMP_DIR + "records_unordered_records2.csv";
