@@ -77,25 +77,30 @@ Error? {
         }
         check csvChannel.close();
     } else if csvStreamToWrite is stream<map<anydata>, Error?> {
-        WritableCSVChannel csvChannel = check getWritableCSVChannel(check openWritableCsvFile(path, option = option));
+        boolean skipHeaders = false;
+        string[] headersFromStream;
+        record {|map<anydata> value;|}? csvRecordMap = check csvStreamToWrite.next();
         do {
-            boolean skipHeaders = false;
-            string[] headersFromStream;
-            record {|map<anydata> value;|}? csvRecordMap = check csvStreamToWrite.next();
             if csvRecordMap !is () {
                 headersFromStream = csvRecordMap["value"].keys();
             } else {
                 check csvStreamToWrite.close();
                 return;
             }
-            if option == APPEND {
-                string[] headersFromCSV = check readHeadersFromCsvFile(path);
-                headersFromCSV = check validateCsvHeaders(headersFromCSV, headersFromStream);
-                if headersFromCSV.length() != 0 {
-                    skipHeaders = true;
-                    headersFromStream = headersFromCSV;
-                }
+        } on fail Error err {
+            check csvStreamToWrite.close();
+            return err;
+        }
+        if option == APPEND {
+            string[] headersFromCSV = check readHeadersFromCsvFile(path);
+            headersFromCSV = check validateCsvHeaders(headersFromCSV, headersFromStream);
+            if headersFromCSV.length() != 0 {
+                skipHeaders = true;
+                headersFromStream = headersFromCSV;
             }
+        }
+        WritableCSVChannel csvChannel = check getWritableCSVChannel(check openWritableCsvFile(path, option = option));
+        do {
             if !skipHeaders {
                 check csvChannel.write(headersFromStream);
             }
@@ -112,6 +117,7 @@ Error? {
             check csvStreamToWrite.close();
             return err;
         }
+        check csvChannel.close();
     }
     check csvStreamToWrite.close();
     return;
