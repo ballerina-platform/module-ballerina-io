@@ -4,7 +4,8 @@ This file contains all the notable changes done to the Ballerina I/O package thr
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [Unreleased] 
-### Fixed
+
+### Changed
 - [Fixed the issue related to maintaining order in writing CSV records](https://github.com/ballerina-platform/ballerina-standard-library/issues/3399)
 
 ## [1.3.1] - 2022-11-29
