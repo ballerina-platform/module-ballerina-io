@@ -65,7 +65,7 @@ Error? {
     if csvStreamToWrite is stream<string[], Error?> {
         WritableCSVChannel csvChannel = check getWritableCSVChannel(check openWritableCsvFile(path, option = option));
         do {
-            record {|string[] value;|}|Error? csvRecordString = csvStreamToWrite.next();
+            record {|string[] value;|}|Error? csvRecordString = check csvStreamToWrite.next();
             while csvRecordString is record {|string[] value;|} {
                 check csvChannel.write(csvRecordString.value);
                 csvRecordString = csvStreamToWrite.next();
@@ -109,8 +109,8 @@ Error? {
                 foreach string header in headersFromStream {
                     sValues.push(csvRecordMap["value"].get(header).toString());
                 }
-                csvRecordMap = check csvStreamToWrite.next();
                 check csvChannel.write(sValues);
+                csvRecordMap = check csvStreamToWrite.next();
             }
         } on fail Error err {
             check csvChannel.close();

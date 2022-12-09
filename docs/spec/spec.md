@@ -289,7 +289,7 @@ The following API reads the content of a given CSV file as a string array of arr
 # ```
 # + path - The CSV file path
 # + skipHeaders - Number of headers, which should be skipped prior to reading records
-# + return - The entire CSV content in the channel as an array of string arrays, array of ballerina records or an `io:Error`
+# + return - The entire CSV content in the channel as an array of string arrays, array of Ballerina records or an `io:Error`
 public isolated function fileReadCsv(string path, int skipHeaders = 0) returns string[][]|Error;
 ```
 
@@ -306,7 +306,7 @@ The following API writes given CSV content to a given file. When writing a `Reco
 # io:Error? resultRecord = io:fileWriteCsv("./resources/myfileRecord.csv", contentRecord);
 # ```
 # + path - The CSV file path
-# + content - CSV content as an array of string arrays or a array of ballerina records.
+# + content - CSV content as an array of string arrays or a array of Ballerina records.
 # + option - To indicate whether to overwrite or append the given content
 # + return - An `io:Error` or `()` when the writing was successful
 public isolated function fileWriteCsv(string path, string[][] content, FileWriteOption option = OVERWRITE) returns
@@ -322,7 +322,7 @@ The following API reads the content of a given CSV file as a stream of string ar
 # stream<record{}, io:Error?>|io:Error content = io:fileReadCsvAsStream("./resources/myfile.csv");
 # ```
 # + path - The CSV file path
-# + return - The entire CSV content in the channel a stream of string arrays, ballerina records or an `io:Error`
+# + return - The entire CSV content in the channel a stream of string arrays, Ballerina records or an `io:Error`
 public isolated function fileReadCsvAsStream(string path) returns stream<string[], Error?>|Error;
 ```
 
