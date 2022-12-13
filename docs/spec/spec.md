@@ -297,7 +297,8 @@ The following API writes given CSV content to a given file. When writing a `Reco
 
 ```ballerina
 # Write CSV content to a file. 
-# If the input is a `Record[]` the headers are automatically written to the file.
+# When the input is a record[] type in `OVERWRITE`,  headers will be written to the CSV file by default.
+# For `APPEND`, order of the existing csv file is inferred using the headers and used as the order.
 # ```ballerina
 # type Coord record {int x;int y;};
 # Coord[] contentRecord = [{x: 1,y: 2},{x: 1,y: 2}]
@@ -329,7 +330,9 @@ public isolated function fileReadCsvAsStream(string path) returns stream<string[
 The following API writes a given CSV stream to a given file. When writing a `Record[]` content to a CSV file in `OVERWRITE`, by default, headers will be written to the CSV file as unlike `string[]` the order of record fields is not guaranteed. For `APPEND`, order of the existing csv file is inferred using the headers and used as the order
 
 ```ballerina
-# Write CSV record stream to a file.
+# Write CSV record stream to a file. 
+# When the input is a record[] type stream in `OVERWRITE`,  headers will be written to the CSV file by default.
+# For `APPEND`, order of the existing csv file is inferred using the headers and used as the order.
 # ```ballerina
 # type Coord record {int x;int y;};
 # Coord[] contentRecord = [{x: 1,y: 2},{x: 1,y: 2}]
