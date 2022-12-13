@@ -331,7 +331,7 @@ The following API writes a given CSV stream to a given file. When writing a `Rec
 
 ```ballerina
 # Write CSV record stream to a file. 
-# When the input is a record[] type stream in `OVERWRITE`,  headers will be written to the CSV file by default.
+# When the input is a `stream<record, io:Error?>` in `OVERWRITE`,  headers will be written to the CSV file by default.
 # For `APPEND`, order of the existing csv file is inferred using the headers and used as the order.
 # ```ballerina
 # type Coord record {int x;int y;};

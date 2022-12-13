@@ -43,7 +43,8 @@ public isolated function fileReadCsvAsStream(string path, typedesc<string[]|map<
 } external;
 
 # Write CSV content to a file.
-# If the input is of `record{}[]` type, the field names of the record{} are written as headers to the file. Additionally if the CSV contains data records, the header is used to identify the order of the values.
+# When the input is a record[] type in `OVERWRITE`,  headers will be written to the CSV file by default.
+# For `APPEND`, order of the existing csv file is inferred using the headers and used as the order.
 # ```ballerina
 # type Coord record {int x;int y;};
 # Coord[] contentRecord = [{x: 1,y: 2},{x: 1,y: 2}]
@@ -61,7 +62,8 @@ Error? {
 }
 
 # Write CSV record stream to a file.
-# If the input is of `stream<record{}, io:Error?>` type, the field names of the record{} are written as headers to the file. Additionally if the CSV contains data records, the header is used to identify the order of the values.
+# When the input is a `stream<record, io:Error?>` in `OVERWRITE`,  headers will be written to the CSV file by default.
+# For `APPEND`, order of the existing csv file is inferred using the headers and used as the order.
 # ```ballerina
 # type Coord record {int x;int y;};
 # Coord[] contentRecord = [{x: 1,y: 2},{x: 1,y: 2}]
