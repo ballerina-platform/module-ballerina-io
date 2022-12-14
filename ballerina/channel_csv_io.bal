@@ -80,16 +80,10 @@ Error? {
         boolean skipHeaders = false;
         string[] headersFromStream;
         record {|map<anydata> value;|}? csvRecordMap = check csvStreamToWrite.next();
-        do {
-            if csvRecordMap !is () {
-                headersFromStream = csvRecordMap["value"].keys();
-            } else {
-                check csvStreamToWrite.close();
-                return;
-            }
-        } on fail Error err {
-            check csvStreamToWrite.close();
-            return err;
+        if csvRecordMap !is () {
+            headersFromStream = csvRecordMap["value"].keys();
+        } else {
+            return;
         }
         if option == APPEND {
             string[] headersFromCSV = check readHeadersFromCsvFile(path);
