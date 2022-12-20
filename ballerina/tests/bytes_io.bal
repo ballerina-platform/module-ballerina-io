@@ -486,3 +486,60 @@ isolated function createDirectoryExtern(string path) = @java:Method {
     name: "createDirectory",
     'class: "io.ballerina.stdlib.io.testutils.FileTestUtils"
 } external;
+
+type ByteArray byte[];
+
+@test:Config {}
+isolated function testEncode64Value() returns error? {
+    string content = "ballerina123";
+    var res = base64Encode(content);
+    if (res is string) {
+        test:assertEquals(res, "YmFsbGVyaW5hMTIz");
+    } else {
+        test:assertFail(msg = "Found unexpected output type");
+    }
+
+    byte[] bytes = content.toBytes();
+    res = base64Encode(bytes);
+    if res is byte[] {
+        string|error value = check string:fromBytes(res);
+        if (value is error) {
+            test:assertFail(msg = "Found unexpected output type");
+        } else {
+            test:assertEquals(value, "YmFsbGVyaW5hMTIz", msg = "Found unexpected output");
+        }
+    } else {
+        test:assertFail(msg = "Found unexpected output type");
+    }
+
+    ByteArray arr = [98, 97, 108, 108, 101, 114, 105, 110, 97, 49, 50, 51];
+    res = base64Encode(arr);
+    if res is byte[] {
+        string|error value = check string:fromBytes(res);
+        if (value is error) {
+            test:assertFail(msg = "Found unexpected output type");
+        } else {
+            test:assertEquals(value, "YmFsbGVyaW5hMTIz", msg = "Found unexpected output");
+        }
+    } else {
+        test:assertFail(msg = "Found unexpected output type");
+    }
+
+    string filePath = TEST_RESOURCE_PATH + "empty.txt";
+    ReadableByteChannel byteChannel = checkpanic openReadableFile(filePath);
+    res = base64Encode(byteChannel);
+    if (res is ReadableByteChannel) {
+        byte[] result = check res.readAll();
+        string name = checkpanic string:fromBytes(result);
+        test:assertEquals(name, "");
+        check res.close();
+    } else {
+        test:assertFail(msg = "Found unexpected output type");
+    }
+}
+
+public isolated function base64Encode(string|byte[]|ReadableByteChannel content, string charset = "utf-8", boolean mimeSpecific = true)
+                returns string|byte[]|ReadableByteChannel|error = @java:Method {
+    'class: "io.ballerina.stdlib.io.testutils.PrintTestUtils",
+    name: "base64Encode"
+} external;
