@@ -79,10 +79,13 @@ Error? {
     } else if csvStreamToWrite is stream<map<anydata>, Error?> {
         boolean skipHeaders = false;
         string[] headersFromStream;
-        record {|map<anydata> value;|}? csvRecordMap = check csvStreamToWrite.next();
-        if csvRecordMap !is () {
+        WritableCSVChannel csvChannel = check getWritableCSVChannel(check openWritableCsvFile(path, option = option));
+        record {|map<anydata> value;|}|Error? csvRecordMap = csvStreamToWrite.next();
+        if (csvRecordMap is record {|map<anydata> value;|}) {
             headersFromStream = csvRecordMap["value"].keys();
         } else {
+            check csvChannel.close();
+            check csvStreamToWrite.close();
             return;
         }
         if option == APPEND {
@@ -93,7 +96,6 @@ Error? {
                 headersFromStream = headersFromCSV;
             }
         }
-        WritableCSVChannel csvChannel = check getWritableCSVChannel(check openWritableCsvFile(path, option = option));
         do {
             if !skipHeaders {
                 check csvChannel.write(headersFromStream);
