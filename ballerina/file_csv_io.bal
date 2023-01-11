@@ -18,13 +18,13 @@ import ballerina/jballerina.java;
 # Read file content as a CSV.
 # ```ballerina
 # string[][]|io:Error content = io:fileReadCsv("./resources/myfile.csv");
-# map<anydata>[]|io:Error content = io:fileReadCsv("./resources/myfile.csv");
+# record[]|io:Error content = io:fileReadCsv("./resources/myfile.csv");
 # ```
 # + path - The CSV file path
 # + skipHeaders - Number of headers, which should be skipped prior to reading records
-# + returnType - The type of the return value (string[] or map<anydata>)
-# + return - The entire CSV content in the channel as an array of string arrays or an `io:Error`
-public isolated function fileReadCsv(string path, int skipHeaders = 0, typedesc<string[]|map<anydata>> returnType = <>) returns returnType[]|Error = @java:Method{
+# + returnType - The type of the return value (string[] or a Ballerina record)
+# + return - The entire CSV content in the channel as an array of string arrays, array of Ballerina records or an `io:Error`
+public isolated function fileReadCsv(string path, int skipHeaders = 0, typedesc<string[]|map<anydata>> returnType = <>) returns returnType[]|Error = @java:Method {
     name: "fileReadCsv",
     'class: "io.ballerina.stdlib.io.nativeimpl.CsvChannelUtils"
 } external;
@@ -32,24 +32,28 @@ public isolated function fileReadCsv(string path, int skipHeaders = 0, typedesc<
 # Read file content as a CSV.
 # ```ballerina
 # stream<string[]|io:Error content = io:fileReadCsvAsStream("./resources/myfile.csv");
-# stream<map<anydata>, io:Error?>|io:Error content = io:fileReadCsvAsStream("./resources/myfile.csv");
+# stream<record, io:Error?>|io:Error content = io:fileReadCsvAsStream("./resources/myfile.csv");
 # ```
 # + path - The CSV file path
-# + returnType - The type of the return value (string[] or map<anydata>)
-# + return - The entire CSV content in the channel a stream of string arrays or an `io:Error`
-public isolated function fileReadCsvAsStream(string path, typedesc<string[]|map<anydata>> returnType = <>) returns stream<returnType, Error?>|Error = @java:Method{
+# + returnType - The type of the return value (string[] or a Ballerina record)
+# + return - The entire CSV content in the channel a stream of string arrays, Ballerina records or an `io:Error`
+public isolated function fileReadCsvAsStream(string path, typedesc<string[]|map<anydata>> returnType = <>) returns stream<returnType, Error?>|Error = @java:Method {
     name: "createCsvAsStream",
     'class: "io.ballerina.stdlib.io.nativeimpl.CsvChannelUtils"
 } external;
 
 # Write CSV content to a file.
-# If the input is of `record{}[]` type, the field names of the record{} are written as headers to the file. Additionally if the CSV contains data records, the header is used to identify the order of the values.
+# When the input is a record[] type in `OVERWRITE`,  headers will be written to the CSV file by default.
+# For `APPEND`, order of the existing csv file is inferred using the headers and used as the order.
 # ```ballerina
+# type Coord record {int x;int y;};
+# Coord[] contentRecord = [{x: 1,y: 2},{x: 1,y: 2}]
 # string[][] content = [["Anne", "Johnson", "SE"], ["John", "Cameron", "QA"]];
 # io:Error? result = io:fileWriteCsv("./resources/myfile.csv", content);
+# io:Error? resultRecord = io:fileWriteCsv("./resources/myfileRecord.csv", contentRecord);
 # ```
 # + path - The CSV file path
-# + content - CSV content as an array of string arrays, or as an array of map<anydata>
+# + content - CSV content as an array of string arrays or a array of Ballerina records
 # + option - To indicate whether to overwrite or append the given content
 # + return - `()` when the writing was successful or an `io:Error`
 public isolated function fileWriteCsv(string path, string[][]|map<anydata>[] content, FileWriteOption option = OVERWRITE) returns
@@ -58,16 +62,22 @@ Error? {
 }
 
 # Write CSV record stream to a file.
+# When the input is a `stream<record, io:Error?>` in `OVERWRITE`,  headers will be written to the CSV file by default.
+# For `APPEND`, order of the existing csv file is inferred using the headers and used as the order.
 # ```ballerina
+# type Coord record {int x;int y;};
+# Coord[] contentRecord = [{x: 1,y: 2},{x: 1,y: 2}]
 # string[][] content = [["Anne", "Johnson", "SE"], ["John", "Cameron", "QA"]];
-# stream<string[], io:Error?> recordStream = content.toStream();
-# io:Error? result = io:fileWriteCsvFromStream("./resources/myfile.csv", recordStream);
+# stream<string[], io:Error?> stringStream = content.toStream();
+# stream<Coord, io:Error?> recordStream = contentRecord.toStream();
+# io:Error? result = io:fileWriteCsvFromStream("./resources/myfile.csv", stringStream);
+# io:Error? resultRecord = io:fileWriteCsvFromStream("./resources/myfileRecord.csv", recordStream);
 # ```
 # + path - The CSV file path
 # + content - A CSV record stream to be written
 # + option - To indicate whether to overwrite or append the given content
 # + return - `()` when the writing was successful or an `io:Error`
 public isolated function fileWriteCsvFromStream(string path, stream<string[]|map<anydata>, Error?> content,
-                                                FileWriteOption option = OVERWRITE) returns Error? {
-    return channelWriteCsvFromStream(check openWritableCsvFile(path, option = option), content);
+        FileWriteOption option = OVERWRITE) returns Error? {
+    return channelWriteCsvFromStream(path, option, content);
 }
