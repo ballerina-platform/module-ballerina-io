@@ -30,7 +30,7 @@ public isolated function fileReadBytes(string path) returns readonly & byte[]|Er
 # ```
 # + path - The path of the file
 # + blockSize - An optional size of the byte block. The default size is 4KB
-# + return - A byte block stream or  an`io:Error`
+# + return - A byte block stream or an `io:Error`
 public isolated function fileReadBlocksAsStream(string path, int blockSize = 4096) returns stream<Block, Error?>|
 Error {
     return channelReadBlocksAsStream(check openReadableFile(path), blockSize);
