@@ -89,7 +89,7 @@ public class Utils {
      */
     @SuppressWarnings("unchecked")
     public static Object encode(Object input, String charset, boolean isMimeSpecific) {
-        switch (TypeUtils.getType(input).getTag()) {
+        switch (TypeUtils.getReferredType(TypeUtils.getType(input)).getTag()) {
             case io.ballerina.runtime.api.TypeTags.ARRAY_TAG:
                 return encodeBlob(((BArray) input).getBytes(), isMimeSpecific);
             case io.ballerina.runtime.api.TypeTags.OBJECT_TYPE_TAG:
