@@ -232,10 +232,3 @@ function writeEmptyStringArraytoCsv() returns error? {
     string[][] content = [[], []];
     test:assertEquals(check fileWriteCsv(filePath, content), ());
 }
-
-@test:Config {dependsOn: [testFileCsvWriteWithSkipHeaders]}
-isolated function testFileCsvReadWithSkipHeadersRecords() returns Error? {
-    string filePath = TEMP_DIR + "workers2.csv";
-    Employee5[]|Error out = fileReadCsv(filePath, 1);
-    test:assertEquals((<Error>out).message(), "Parameter `skipHeaders` cannot be used with record data mapping. ");
-}

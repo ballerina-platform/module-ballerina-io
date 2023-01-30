@@ -142,9 +142,6 @@ public class RecordChannelUtils {
         }
         try {
             if (describingType.getTag() == TypeTags.RECORD_TYPE_TAG) {
-                if (skipHeaders == 1) {
-                    return IOUtils.createError("Parameter `skipHeaders` cannot be used with record data mapping. ");
-                }
                 StructureType structType = (StructureType) describingType;
                 ArrayList<Object> outList = new ArrayList<>();
                 ArrayList<String> headerNames = new ArrayList<>();
