@@ -1828,3 +1828,37 @@ function testReadFileCsvWithReferenceTypeShuffled() returns error? {
     });
     test:assertEquals(i, 3);
 }
+
+@test:Config {}
+function testFileReadFromShuffledResources() returns error? {
+    string filePath = TEST_RESOURCE_PATH + "csvResourceFile1Shuffled.csv";
+    string[][] expectedContent = [
+        ["Anne Hamiltom", "Software Engineer", "Microsoft", "26 years", "New York"],
+        [
+            "John Thomson",
+            "Software Architect",
+            "WSO2",
+            "38 years",
+            "Colombo"
+        ],
+        [
+            "Mary Thompson",
+            "Banker",
+            "Sampath Bank",
+            "30 years",
+            "Colombo"
+        ]
+    ];
+    stream<Employee5, Error?> result = check fileReadCsvAsStream(filePath);
+    int i = 0;
+    check result.forEach(function(Employee5 val) {
+        int j = 0;
+        test:assertEquals(val.keys(), ["name", "designation", "company", "age", "residence"]);
+        foreach string s in val.keys() {
+            test:assertEquals('string:trim(val.get(s)), expectedContent[i][j]);
+            j += 1;
+        }
+        i += 1;
+    });
+    test:assertEquals(i, 3);
+}
