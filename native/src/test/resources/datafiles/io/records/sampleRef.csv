@@ -1,3 +1,4 @@
+id, hours_worked, name, salary, martial_status
 User1, 10, Jane, 10000, true
 User2, 20, John, 20000, false
 User3, 30, Jack, 30000, true
