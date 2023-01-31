@@ -146,7 +146,6 @@ public class RecordChannelUtils {
                 ArrayList<Object> outList = new ArrayList<>();
                 ArrayList<String> headerNames = new ArrayList<>();
                 String[] record;
-                Map<String, Object> struct = null;
                 while (textRecordChannel.hasNext()) {
                     if (headerNames.size() == 0) {
                         record = textRecordChannel.read();
@@ -157,13 +156,11 @@ public class RecordChannelUtils {
                         continue;
                     }
                     record = textRecordChannel.read();
-                    if (struct == null) {
-                        Object returnStruct = CsvChannelUtils.getStruct(record, structType, headerNames);
-                        if (returnStruct instanceof BError) {
-                            return returnStruct;
-                        }
-                        struct = (Map<String, Object>) returnStruct;
+                    Object returnStruct = CsvChannelUtils.getStruct(record, structType, headerNames);
+                    if (returnStruct instanceof BError) {
+                        return returnStruct;
                     }
+                    Map<String, Object> struct = (Map<String, Object>) returnStruct;
                     if (record.length != structType.getFields().size()) {
                         return IOUtils.createError("Record type and CSV file does not match.");
                     }
