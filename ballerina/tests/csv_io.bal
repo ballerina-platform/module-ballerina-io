@@ -1830,7 +1830,7 @@ function testReadFileCsvWithReferenceTypeShuffled() returns error? {
 }
 
 @test:Config {}
-function testFileReadFromShuffledResources() returns error? {
+function testFileReadFromShuffledResourcesAsStream() returns error? {
     string filePath = TEST_RESOURCE_PATH + "csvResourceFile1Shuffled.csv";
     string[][] expectedContent = [
         ["Anne Hamiltom", "Software Engineer", "Microsoft", "26 years", "New York"],
@@ -1860,5 +1860,40 @@ function testFileReadFromShuffledResources() returns error? {
         }
         i += 1;
     });
+    test:assertEquals(i, 3);
+}
+
+@test:Config {}
+function testFileReadFromShuffledResources() returns error? {
+    string filePath = TEST_RESOURCE_PATH + "csvResourceFile1Shuffled.csv";
+    string[][] expectedContent = [
+        ["Anne Hamiltom", "Software Engineer", "Microsoft", "26 years", "New York"],
+        [
+            "John Thomson",
+            "Software Architect",
+            "WSO2",
+            "38 years",
+            "Colombo"
+        ],
+        [
+            "Mary Thompson",
+            "Banker",
+            "Sampath Bank",
+            "30 years",
+            "Colombo"
+        ]
+    ];
+    Employee5[] result = check fileReadCsv(filePath);
+    int i = 0;
+    while i < result.length() {
+        Employee5 employee = result[i];
+        test:assertEquals(employee.keys(), ["name", "designation", "company", "age", "residence"]);
+        int j = 0;
+        foreach string s in employee.keys() {
+            test:assertEquals('string:trim(employee.get(s)), expectedContent[i][j]);
+            j += 1;
+        }
+        i += 1;
+    }
     test:assertEquals(i, 3);
 }
