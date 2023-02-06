@@ -1897,3 +1897,106 @@ function testFileReadFromShuffledResources() returns error? {
     }
     test:assertEquals(i, 3);
 }
+
+@test:Config {}
+function testFileReadCsvWithMultipleHeaderLines() returns Error? {
+    string resourceFilePath1 = TEST_RESOURCE_PATH + "csvResourceFile1WithMulltipleHeaders.csv";
+    string[][] readContent = check fileReadCsv(resourceFilePath1, 2);
+    string[][] content1 = [
+        ["name", "designation", "company","age", "residence"],
+        ["Anne Hamiltom", "Software Engineer", "Microsoft", "26 years", "New York"],
+        [
+            "John Thomson",
+            "Software Architect",
+            "WSO2",
+            "38 years",
+            "Colombo"
+        ],
+        [
+            "Mary Thompson",
+            "Banker",
+            "Sampath Bank",
+            "30 years",
+            "Colombo"
+        ]
+    ];
+    int i = 0;
+    foreach string[] recordVal in readContent {
+        int j = 0;
+        foreach string s in recordVal {
+            test:assertEquals('string:trim(s), content1[i][j]);
+            j += 1;
+        }
+        i += 1;
+    }
+    test:assertEquals(i, 4);
+}
+
+@test:Config {}
+function testFileReadCsvRecordWithMultipleHeaderLines() returns Error? {
+    string resourceFilePath1 = TEST_RESOURCE_PATH + "csvResourceFile1WithMulltipleHeaders.csv";
+    Employee5[] readContent = check fileReadCsv(resourceFilePath1, 3);
+    string[] headers = ["name", "designation", "company","age", "residence"];
+    string[][] content1 = [
+        ["Anne Hamiltom", "Software Engineer", "Microsoft", "26 years", "New York"],
+        [
+            "John Thomson",
+            "Software Architect",
+            "WSO2",
+            "38 years",
+            "Colombo"
+        ],
+        [
+            "Mary Thompson",
+            "Banker",
+            "Sampath Bank",
+            "30 years",
+            "Colombo"
+        ]
+    ];
+    int i = 0;
+    foreach Employee5 recordVal in readContent {
+        int j = 0;
+        foreach string s in headers {
+            test:assertEquals('string:trim(recordVal.get(s)), content1[i][j]);
+            j += 1;
+        }
+        i += 1;
+    }
+    test:assertEquals(i, 3);
+}
+
+
+@test:Config {}
+function testFileReadCsvRecordWithsingleHeaderLine() returns Error? {
+    string resourceFilePath1 = TEST_RESOURCE_PATH + "csvResourceFile1.csv";
+    Employee5[] readContent = check fileReadCsv(resourceFilePath1, 0);
+    string[] headers = ["name", "designation", "company","age", "residence"];
+    string[][] content1 = [
+        ["Anne Hamiltom", "Software Engineer", "Microsoft", "26 years", "New York"],
+        [
+            "John Thomson",
+            "Software Architect",
+            "WSO2",
+            "38 years",
+            "Colombo"
+        ],
+        [
+            "Mary Thompson",
+            "Banker",
+            "Sampath Bank",
+            "30 years",
+            "Colombo"
+        ]
+    ];
+    int i = 0;
+    foreach Employee5 recordVal in readContent {
+        int j = 0;
+        foreach string s in headers {
+            test:assertEquals('string:trim(recordVal.get(s)), content1[i][j]);
+            j += 1;
+        }
+        i += 1;
+    }
+    test:assertEquals(i, 3);
+}
