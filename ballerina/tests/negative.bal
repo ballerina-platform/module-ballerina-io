@@ -232,3 +232,10 @@ function writeEmptyStringArraytoCsv() returns error? {
     string[][] content = [[], []];
     test:assertEquals(check fileWriteCsv(filePath, content), ());
 }
+
+@test:Config {}
+function readCsvFileWithUnsupportedMappingType() {
+    string filePath = TEST_RESOURCE_PATH + "csvResourceFile1.csv";
+    map<anydata>[]|Error out = fileReadCsv(filePath);
+    test:assertEquals((<Error>out).message(), "Unsupported mapping type detected. ");
+}
