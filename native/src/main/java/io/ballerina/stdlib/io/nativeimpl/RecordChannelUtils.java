@@ -156,6 +156,10 @@ public class RecordChannelUtils {
                         continue;
                     }
                     record = textRecordChannel.read();
+                    if (skipHeaders > 1) {
+                        skipHeaders -= 1;
+                        continue;
+                    }
                     Object returnStruct = CsvChannelUtils.getStruct(record, structType, headerNames);
                     if (returnStruct instanceof BError) {
                         return returnStruct;
@@ -174,8 +178,8 @@ public class RecordChannelUtils {
                 ArrayList<BArray> outList = new ArrayList<>();
                 while (textRecordChannel.hasNext()) {
                     String[] record = textRecordChannel.read();
-                    if (skipHeaders == 1) {
-                        skipHeaders = 0;
+                    if (skipHeaders != 0) {
+                        skipHeaders -= 1;
                         continue;
                     }
                     outList.add(StringUtils.fromStringArray(record));

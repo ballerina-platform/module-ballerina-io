@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Changed
 - [Fixed the issue related to maintaining order in writing CSV records](https://github.com/ballerina-platform/ballerina-standard-library/issues/3399)
+- [Fixed the fileReadCsv and fileReadCsvAsStream APIs to maintain the order while reading CSV records](https://github.com/ballerina-platform/ballerina-standard-library/issues/3780)
 
 ## [1.3.1] - 2022-11-29
 ### Changed

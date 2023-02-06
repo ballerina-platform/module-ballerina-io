@@ -16,6 +16,7 @@
 import ballerina/jballerina.java;
 
 # Read file content as a CSV.
+# When the expected data type is record[], the first entry of the csv file should contain matching headers.
 # ```ballerina
 # string[][]|io:Error content = io:fileReadCsv("./resources/myfile.csv");
 # record[]|io:Error content = io:fileReadCsv("./resources/myfile.csv");
@@ -30,6 +31,8 @@ public isolated function fileReadCsv(string path, int skipHeaders = 0, typedesc<
 } external;
 
 # Read file content as a CSV.
+# When the expected data type is stream<record, io:Error?>,
+# the first entry of the csv file should contain matching headers.
 # ```ballerina
 # stream<string[]|io:Error content = io:fileReadCsvAsStream("./resources/myfile.csv");
 # stream<record, io:Error?>|io:Error content = io:fileReadCsvAsStream("./resources/myfile.csv");
