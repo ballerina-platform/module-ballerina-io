@@ -174,7 +174,7 @@ public class RecordChannelUtils {
                 }
                 Object[] out = outList.toArray();
                 return ValueCreator.createArrayValue(out, TypeCreator.createArrayType(describingType));
-            } else {
+            } else if (describingType.getTag() == TypeTags.ARRAY_TAG) {
                 ArrayList<BArray> outList = new ArrayList<>();
                 while (textRecordChannel.hasNext()) {
                     String[] record = textRecordChannel.read();
@@ -186,6 +186,8 @@ public class RecordChannelUtils {
                 }
                 Object[] out = outList.toArray();
                 return ValueCreator.createArrayValue(out, TypeCreator.createArrayType(describingType));
+            } else {
+                return IOUtils.createError("Unsupported mapping type detected. ");
             }
         } catch (BallerinaIOException e) {
             return IOUtils.createError(e);
