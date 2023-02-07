@@ -187,7 +187,8 @@ public class RecordChannelUtils {
                 Object[] out = outList.toArray();
                 return ValueCreator.createArrayValue(out, TypeCreator.createArrayType(describingType));
             } else {
-                return IOUtils.createError("Unsupported mapping type detected. ");
+                return IOUtils.createError(String.format("Only 'string[]' and record{} are supported, " +
+                        "but found '%s' ", describingType.getName()));
             }
         } catch (BallerinaIOException e) {
             return IOUtils.createError(e);
