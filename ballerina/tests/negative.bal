@@ -237,5 +237,5 @@ function writeEmptyStringArraytoCsv() returns error? {
 function readCsvFileWithUnsupportedMappingType() {
     string filePath = TEST_RESOURCE_PATH + "csvResourceFile1.csv";
     map<anydata>[]|Error out = fileReadCsv(filePath);
-    test:assertEquals((<Error>out).message(), "Only 'string[]' and record{} are supported, but found 'map' ");
+    test:assertEquals((<Error>out).message(), "Only 'string[]' and 'record{}' types are supported, but found 'map' ");
 }
