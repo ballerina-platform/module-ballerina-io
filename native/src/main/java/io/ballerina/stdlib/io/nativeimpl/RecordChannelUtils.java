@@ -187,7 +187,7 @@ public class RecordChannelUtils {
                 Object[] out = outList.toArray();
                 return ValueCreator.createArrayValue(out, TypeCreator.createArrayType(describingType));
             } else {
-                return IOUtils.createError(String.format("Only 'string[]' and record{} are supported, " +
+                return IOUtils.createError(String.format("Only 'string[]' and 'record{}' types are supported, " +
                         "but found '%s' ", describingType.getName()));
             }
         } catch (BallerinaIOException e) {
