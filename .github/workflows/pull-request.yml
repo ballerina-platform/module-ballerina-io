@@ -55,6 +55,8 @@ jobs:
       - name: Generate CodeCov Report Try 4
         if: steps.uploadReport3.outcome == 'failure'
         uses: codecov/codecov-action@v2
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
 
   windows-build:
     name: Build on Windows
