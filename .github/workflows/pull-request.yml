@@ -19,7 +19,7 @@ jobs:
           packageUser: ${{ github.actor }}
           packagePAT: ${{ secrets.GITHUB_TOKEN }}
         run: ./gradlew build --scan --no-daemon
-      - name: Generate CodeCov Report Try 1
+      - name: Generate CodeCov Report
         if: github.event_name == 'pull_request'
         uses: codecov/codecov-action@v2
         with:
