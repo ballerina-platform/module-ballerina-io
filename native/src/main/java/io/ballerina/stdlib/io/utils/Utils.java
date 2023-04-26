@@ -96,7 +96,7 @@ public class Utils {
             case io.ballerina.runtime.api.TypeTags.RECORD_TYPE_TAG:
                 //TODO : recheck following casing
                 BObject byteChannel = (BObject) input;
-                if (STRUCT_TYPE.equals(byteChannel.getType().getName())) {
+                if (STRUCT_TYPE.equals(TypeUtils.getType(byteChannel).getName())) {
                     return encodeByteChannel(byteChannel, isMimeSpecific);
                 }
                 return Utils.createBase64Error(ENCODING_ERROR, "incompatible object", isMimeSpecific);
