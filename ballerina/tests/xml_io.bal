@@ -334,6 +334,9 @@ isolated function testReadInvalidXmlFile() returns Error? {
 
     xml|Error readResult = fileReadXml(filePath);
     test:assertTrue(readResult is Error);
-    test:assertTrue(langstring:includes((<Error>readResult).message(),
-        "failed to create xml: Unexpected character '{' (code 123) in prolog; expected '<", 0));
+    string readResultMessage = (<Error>readResult).message();
+    test:assertTrue(langstring:includes(readResultMessage,
+    "failed to create xml: Unexpected character '{' (code 123) in prolog; expected '<", 0)
+    || langstring:includes(readResultMessage,
+    "failed to parse xml: Unexpected character '{' (code 123) in prolog; expected '<", 0));
 }
