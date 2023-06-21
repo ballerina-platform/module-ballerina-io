@@ -28,7 +28,7 @@ dependencies {
     implementation group: 'org.ballerinalang', name: 'ballerina-rt', version: "${ballerinaLangVersion}"
     implementation group: 'org.slf4j', name: 'slf4j-jdk14', version: "${slf4jVersion}"
     implementation group: 'commons-codec', name: 'commons-codec', version: '1.9'
-    implementation 'org.testng:testng:6.14.3'
+    implementation 'org.testng:testng:7.6.1'
     checkstyle project(":checkstyle")
     checkstyle "com.puppycrawl.tools:checkstyle:${puppycrawlCheckstyleVersion}"
 }
@@ -45,7 +45,7 @@ jacoco {
 jacocoTestReport {
     dependsOn test
     reports {
-        xml.enabled true
+        xml.required = true
     }
 }
 
