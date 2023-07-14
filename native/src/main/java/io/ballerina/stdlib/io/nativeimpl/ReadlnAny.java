@@ -17,9 +17,11 @@
  */
 package io.ballerina.stdlib.io.nativeimpl;
 
+import io.ballerina.runtime.api.Environment;
+import io.ballerina.runtime.api.Future;
 import io.ballerina.runtime.api.utils.StringUtils;
-import io.ballerina.runtime.api.values.BString;
 
+import java.io.PrintStream;
 import java.nio.charset.Charset;
 import java.util.Scanner;
 
@@ -30,12 +32,16 @@ import java.util.Scanner;
  */
 public class ReadlnAny {
 
-    private static Scanner sc = new Scanner(System.in, Charset.defaultCharset().displayName());
+    private static final Scanner sc = new Scanner(System.in, Charset.defaultCharset().displayName());
+    private static final PrintStream printStream = System.out;
 
-    public static BString readln(Object result) {
+    private ReadlnAny() {}
+
+    public static void readln(Environment env, Object result) {
         if (result != null) {
-            System.out.print(result.toString());
+            printStream.print(result);
         }
-        return StringUtils.fromString(sc.nextLine());
+        Future balFuture = env.markAsync();
+        new Thread(() -> balFuture.complete(StringUtils.fromString(sc.nextLine()))).start();
     }
 }
