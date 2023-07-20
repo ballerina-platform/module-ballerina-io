@@ -9,17 +9,17 @@ icon = "icon.png"
 license = ["Apache-2.0"]
 distribution = "2201.7.0"
 
-[platform.java11]
+[platform.java17]
 graalvmCompatible = true
 
-[[platform.java11.dependency]]
+[[platform.java17.dependency]]
 groupId = "io.ballerina.stdlib"
 artifactId = "io-native"
 path = "../native/build/libs/io-native-1.5.0.jar"
 version = "1.5.0"
 
 
-[[platform.java11.dependency]]
+[[platform.java17.dependency]]
 path = "../test-utils/build/libs/io-test-utils-1.5.0.jar"
 scope = "testOnly"
 version = "1.5.0"

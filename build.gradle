@@ -76,3 +76,7 @@ task build {
     dependsOn('io-ballerina:build')
 }
 
+compileOptions {
+    sourceCompatibility 17
+    targetCompatibility 17
+}
