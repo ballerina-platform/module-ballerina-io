@@ -24,6 +24,8 @@ import io.ballerina.runtime.api.utils.StringUtils;
 import java.io.PrintStream;
 import java.nio.charset.Charset;
 import java.util.Scanner;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Extern function ballerina/io:readln.
@@ -34,6 +36,7 @@ public class ReadlnAny {
 
     private static final Scanner sc = new Scanner(System.in, Charset.defaultCharset().displayName());
     private static final PrintStream printStream = System.out;
+    private static final ExecutorService executor = Executors.newSingleThreadExecutor();
 
     private ReadlnAny() {}
 
@@ -42,6 +45,6 @@ public class ReadlnAny {
             printStream.print(result);
         }
         Future balFuture = env.markAsync();
-        new Thread(() -> balFuture.complete(StringUtils.fromString(sc.nextLine()))).start();
+        executor.execute(() -> balFuture.complete(StringUtils.fromString(sc.nextLine())));
     }
 }
