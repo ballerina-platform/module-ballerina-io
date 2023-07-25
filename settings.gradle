@@ -13,17 +13,13 @@ plugins {
 
 rootProject.name = 'io'
 
-include ':checkstyle'
 include ':io-native'
 include ':io-test-utils'
 include ':io-ballerina'
-include ':io-examples'
 
-project(':checkstyle').projectDir = file("build-config${File.separator}checkstyle")
 project(':io-native').projectDir = file('native')
 project(':io-test-utils').projectDir = file('test-utils')
 project(':io-ballerina').projectDir = file('ballerina')
-project(':io-examples').projectDir = file('examples')
 
 gradleEnterprise {
     buildScan {

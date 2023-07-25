@@ -1,5 +1,0 @@
-[package]
-distribution = "slbeta5"
-
-[build-options]
-observabilityIncluded = false
