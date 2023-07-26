@@ -11,3 +11,5 @@ jobs:
       - uses: fossas/fossa-action@main
         with:
           api-key: ${{secrets.FOSSA_APIKEY}}
+          packageUser: ${{ secrets.BALLERINA_BOT_USERNAME }}
+          packagePAT: ${{ secrets.BALLERINA_BOT_TOKEN }}
