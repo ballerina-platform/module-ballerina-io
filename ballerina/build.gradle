@@ -107,6 +107,7 @@ updateTomlFiles.dependsOn unpackJballerinaTools
 test.dependsOn ":${packageName}-native:build"
 test.dependsOn ":${packageName}-native:test"
 test.dependsOn ":${packageName}-test-utils:build"
+build.doNotTrackState("build needs to re-run every time")
 build.dependsOn "generatePomFileForMavenPublication"
 build.dependsOn ":${packageName}-native:build"
 build.dependsOn ":${packageName}-native:test"
