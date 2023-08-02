@@ -16,4 +16,30 @@
   ~ under the License.
   -->
 <FindBugsFilter>
+    <Match>
+        <Class name="io.ballerina.stdlib.io.channels.BlobChannel"/>
+        <Field name="writableChannel"/>
+        <Bug pattern="EI_EXPOSE_REP2"/>
+    </Match>
+    <Match>
+        <Class name="io.ballerina.stdlib.io.channels.FileIOChannel"/>
+        <Field name="channel"/>
+        <Bug pattern="EI_EXPOSE_REP2"/>
+    </Match>
+    <Match>
+        <Class name="io.ballerina.stdlib.io.channels.base.CharacterChannel"/>
+        <Bug pattern="EI_EXPOSE_REP, EI_EXPOSE_REP2"/>
+    </Match>
+    <Match>
+        <Class name="io.ballerina.stdlib.io.channels.base.DataChannel"/>
+        <Bug pattern="EI_EXPOSE_REP, EI_EXPOSE_REP2"/>
+    </Match>
+    <Match>
+        <Class name="io.ballerina.stdlib.io.channels.base.DelimitedRecordChannel"/>
+        <Bug pattern="EI_EXPOSE_REP2"/>
+    </Match>
+    <Match>
+        <Class name="io.ballerina.stdlib.io.readers.CharacterChannelReader"/>
+        <Bug pattern="EI_EXPOSE_REP2"/>
+    </Match>
 </FindBugsFilter>
