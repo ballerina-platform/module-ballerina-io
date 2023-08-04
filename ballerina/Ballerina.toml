@@ -18,6 +18,7 @@ artifactId = "io-native"
 path = "../native/build/libs/io-native-1.5.1-SNAPSHOT.jar"
 version = "1.5.1"
 
+
 [[platform.java17.dependency]]
 path = "../test-utils/build/libs/io-test-utils-1.5.1-SNAPSHOT.jar"
 scope = "testOnly"
