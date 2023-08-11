@@ -13,8 +13,10 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-import ballerina/test;
+
 import ballerina/jballerina.java;
+import ballerina/lang.runtime;
+import ballerina/test;
 
 @test:BeforeEach
 isolated function beforePrint() {
@@ -22,6 +24,33 @@ isolated function beforePrint() {
     resetErrorStream();
     initOutputStream();
     initErrorStream();
+}
+
+// io:readln tests
+
+@test:Config {}
+function testNonBlockingReadLine() {
+    callReadln();
+    test:assertEquals(readOutputStream(), "Type a word, then hit enter:\nTimed out.\n");
+}
+
+function callReadln() {
+
+    worker StdInReader returns string {
+        string word = readln("Type a word, then hit enter:\n");
+        return word;
+    }
+
+    worker Timer {
+        runtime:sleep(1);
+    }
+
+    string? result = wait StdInReader | Timer;
+    if result is string {
+        println("Received: ", result);
+    } else {
+        println("Timed out.");
+    }
 }
 
 // io:println tests
