@@ -2,7 +2,7 @@
 
 ## Overview
 
-CSV processor is an example that demonstrates the usage of CSV stream in the Ballerina I/O standard library.
+CSV processor is an example that demonstrates the usage of CSV stream in the Ballerina I/O package.
 
 ## Implementation
 
