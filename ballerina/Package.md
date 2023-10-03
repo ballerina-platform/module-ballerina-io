@@ -54,7 +54,7 @@ The XML I/O APIs provide the reading and writing APIs for XML content. Those API
 
 ## Report issues
 
-To report bugs, request new features, start new discussions, view project boards, etc., go to the <a target="_blank" href="https://github.com/ballerina-platform/ballerina-standard-library">Ballerina standard library parent repository</a>.
+To report bugs, request new features, start new discussions, view project boards, etc., go to the <a target="_blank" href="https://github.com/ballerina-platform/ballerina-standard-library">Ballerina library parent repository</a>.
 
 ## Useful links
 
