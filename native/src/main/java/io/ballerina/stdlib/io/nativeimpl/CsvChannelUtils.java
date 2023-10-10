@@ -52,7 +52,9 @@ import static io.ballerina.stdlib.io.utils.IOUtils.getIOPackage;
  *
  * * @since 1.3.0
  */
-public class CsvChannelUtils {
+public final class CsvChannelUtils {
+
+    private CsvChannelUtils() {}
 
     private static final BString FIELD_SEPERATOR = StringUtils.fromString(",");
     private static final BString ROW_SEPERATOR = StringUtils.fromString("");

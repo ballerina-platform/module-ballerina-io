@@ -21,7 +21,10 @@ package io.ballerina.stdlib.io.utils;
 /**
  * I/O related constants.
  */
-public class IOConstants {
+public final class IOConstants {
+
+    private IOConstants() {}
+
     /**
      * Name of the ByteChannel which will be represented through the native struct.
      *
