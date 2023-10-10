@@ -86,11 +86,11 @@ public class RecordChannelUtils {
             textRecordChannel.addNativeData(BUFFERED_READER_ENTRY, bufferedReader);
             textRecordChannel.addNativeData(IS_CLOSED, false);
         } catch (Exception e) {
-            String message =
-                    "error occurred while converting character channel to textRecord channel: " + e.getMessage();
-            log.error(message, e);
-            throw IOUtils.createError(message);
-        }
+    String errorMessage = "An error occurred while converting character channel to textRecord channel: " + e.getMessage();
+    // Assuming IOUtils.createError creates an error object or exception
+    Error error = IOUtils.createError(errorMessage);
+    throw error;
+}
     }
 
     public static boolean hasNext(BObject channel) {
@@ -103,10 +103,12 @@ public class RecordChannelUtils {
             try {
                 return textRecordChannel.hasNext();
             } catch (BallerinaIOException e) {
-                String msg = "error occurred while checking hasNext on ReadableTextRecordChannel: " + e.getMessage();
-                log.error(msg, e);
-                throw IOUtils.createError(msg);
-            }
+    String errorMessage = "An error occurred while checking hasNext on ReadableTextRecordChannel: " + e.getMessage();
+    // Assuming IOUtils.createError creates an error object or exception
+    Error error = IOUtils.createError(errorMessage);
+    throw error;
+}
+
         }
         return false;
     }
@@ -124,9 +126,12 @@ public class RecordChannelUtils {
                 String[] records = textRecordChannel.read();
                 return StringUtils.fromStringArray(records);
             } catch (BallerinaIOException e) {
-                log.error("error occurred while reading next text record from ReadableTextRecordChannel", e);
-                return IOUtils.createError(e);
-            }
+    String errorMessage = "An error occurred while reading next text record from ReadableTextRecordChannel: " + e.getMessage();
+    // Assuming IOUtils.createError creates an error object or exception
+    Error error = IOUtils.createError(errorMessage);
+    return error;
+}
+
         }
     }
 
