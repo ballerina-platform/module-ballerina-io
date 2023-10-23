@@ -34,7 +34,9 @@ import java.util.Set;
 /**
  * Contains the util functions related to I/O test cases.
  */
-public class TestUtil {
+public final class TestUtil {
+
+    private TestUtil() {}
 
     /**
      * Opens a channel from a specified file.

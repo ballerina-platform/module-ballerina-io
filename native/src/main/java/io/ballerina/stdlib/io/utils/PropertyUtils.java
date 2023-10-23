@@ -42,7 +42,10 @@ import java.util.Set;
 /**
  * The utility class used to execute read/write operations to a property file.
  */
-public class PropertyUtils {
+public final class PropertyUtils {
+
+    private PropertyUtils() {}
+
     private static final Logger log = LoggerFactory.getLogger(PropertyUtils.class);
     private static final MapType mapType = TypeCreator.createMapType(PredefinedTypes.TYPE_STRING);
     private static Map<String, Properties> propertiesMap = new HashMap<>();
