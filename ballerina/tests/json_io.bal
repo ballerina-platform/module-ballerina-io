@@ -157,5 +157,5 @@ isolated function testReadInvalidJsonFile() returns Error? {
     check fileWriteString(filePath, content);
     json|Error err = fileReadJson(filePath);
     test:assertTrue(err is Error);
-    test:assertEquals((<Error>err).message(), "expected '\"' or '}' at line: 1 column: 3");
+    test:assertEquals((<Error>err).message(), "unable to read json from character channel:expected '\"' or '}' at line: 1 column: 3");
 }
