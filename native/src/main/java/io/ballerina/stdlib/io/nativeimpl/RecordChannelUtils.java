@@ -122,7 +122,8 @@ public class RecordChannelUtils {
                 String[] records = textRecordChannel.read();
                 return StringUtils.fromStringArray(records);
             } catch (BallerinaIOException e) {
-                String message = "error occurred while reading next text record from ReadableTextRecordChannel: " + e.getMessage();
+                String message = "error occurred while reading next text record from ReadableTextRecordChannel: "
+                    + e.getMessage();
                 return IOUtils.createError(message);
             }
         }
