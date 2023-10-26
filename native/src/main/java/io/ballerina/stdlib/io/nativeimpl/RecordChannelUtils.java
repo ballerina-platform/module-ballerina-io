@@ -88,7 +88,6 @@ public class RecordChannelUtils {
         } catch (Exception e) {
             String message =
                     "error occurred while converting character channel to textRecord channel: " + e.getMessage();
-            log.error(message, e);
             throw IOUtils.createError(message);
         }
     }
@@ -104,7 +103,6 @@ public class RecordChannelUtils {
                 return textRecordChannel.hasNext();
             } catch (BallerinaIOException e) {
                 String msg = "error occurred while checking hasNext on ReadableTextRecordChannel: " + e.getMessage();
-                log.error(msg, e);
                 throw IOUtils.createError(msg);
             }
         }
@@ -124,8 +122,8 @@ public class RecordChannelUtils {
                 String[] records = textRecordChannel.read();
                 return StringUtils.fromStringArray(records);
             } catch (BallerinaIOException e) {
-                log.error("error occurred while reading next text record from ReadableTextRecordChannel", e);
-                return IOUtils.createError(e);
+                String message = "error occurred while reading next text record from ReadableTextRecordChannel: " + e.getMessage();
+                return IOUtils.createError(message);
             }
         }
     }
