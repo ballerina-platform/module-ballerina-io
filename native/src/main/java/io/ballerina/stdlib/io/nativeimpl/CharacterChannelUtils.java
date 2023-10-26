@@ -75,7 +75,6 @@ public class CharacterChannelUtils {
             throw IOUtils.createError("Unsupported encoding type " + encoding.getValue());
         } catch (Exception e) {
             String message = "error occurred while converting byte channel to character channel: " + e.getMessage();
-            log.error(message, e);
             throw IOUtils.createError(message);
         }
     }
@@ -92,8 +91,8 @@ public class CharacterChannelUtils {
             try {
                 return StringUtils.fromString(characterChannel.read((int) numberOfCharacters));
             } catch (BallerinaIOException e) {
-                log.error("error occurred while reading characters.", e);
-                return IOUtils.createError(e);
+                String message = "error occurred while reading characters: " + e.getMessage();
+                return IOUtils.createError(message);
             }
         }
     }
@@ -169,8 +168,8 @@ public class CharacterChannelUtils {
             }
             return returnValue;
         } catch (BError e) {
-            log.error("unable to read json from character channel", e);
-            return IOUtils.createError(e);
+            String message = "unable to read json from character channel:" + e.getMessage();
+            return IOUtils.createError(message);
         }
     }
 
