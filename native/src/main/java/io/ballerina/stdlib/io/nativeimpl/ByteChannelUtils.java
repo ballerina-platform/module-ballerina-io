@@ -32,8 +32,6 @@ import io.ballerina.stdlib.io.utils.BallerinaIOException;
 import io.ballerina.stdlib.io.utils.IOConstants;
 import io.ballerina.stdlib.io.utils.IOUtils;
 import io.ballerina.stdlib.io.utils.Utils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
@@ -57,7 +55,6 @@ import static io.ballerina.stdlib.io.utils.IOConstants.BYTE_CHANNEL_NAME;
  */
 public class ByteChannelUtils extends AbstractNativeChannel {
 
-    private static final Logger log = LoggerFactory.getLogger(ByteChannelUtils.class);
     private static final String STREAM_BLOCK_ENTRY = "value";
     private static final String IS_CLOSED = "isClosed";
 
