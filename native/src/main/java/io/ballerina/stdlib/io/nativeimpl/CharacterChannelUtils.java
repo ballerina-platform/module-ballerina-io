@@ -91,8 +91,7 @@ public class CharacterChannelUtils {
             try {
                 return StringUtils.fromString(characterChannel.read((int) numberOfCharacters));
             } catch (BallerinaIOException e) {
-                String message = "error occurred while reading characters: " + e.getMessage();
-                return IOUtils.createError(message);
+                return IOUtils.createError(e);
             }
         }
     }
@@ -168,8 +167,7 @@ public class CharacterChannelUtils {
             }
             return returnValue;
         } catch (BError e) {
-            String message = "unable to read json from character channel:" + e.getMessage();
-            return IOUtils.createError(message);
+            return IOUtils.createError(e);
         }
     }
 
