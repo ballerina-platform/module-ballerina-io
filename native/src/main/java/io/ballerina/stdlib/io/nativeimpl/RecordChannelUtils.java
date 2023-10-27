@@ -37,8 +37,6 @@ import io.ballerina.stdlib.io.readers.CharacterChannelReader;
 import io.ballerina.stdlib.io.utils.BallerinaIOException;
 import io.ballerina.stdlib.io.utils.IOConstants;
 import io.ballerina.stdlib.io.utils.IOUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -59,7 +57,6 @@ import static io.ballerina.stdlib.io.utils.IOConstants.TXT_RECORD_CHANNEL_NAME;
  */
 public class RecordChannelUtils {
 
-    private static final Logger log = LoggerFactory.getLogger(RecordChannelUtils.class);
     private static final String DEFAULT = "default";
     private static final String BUFFERED_READER_ENTRY = "bufferedReader";
     private static final String IS_CLOSED = "isClosed";
