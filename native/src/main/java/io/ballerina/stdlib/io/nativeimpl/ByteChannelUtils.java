@@ -193,8 +193,7 @@ public class ByteChannelUtils extends AbstractNativeChannel {
             return IOUtils.createError(IOConstants.ErrorCode.GenericError,
             "Byte channel is already closed.");
         } catch (IOException e) {
-            String message = "Error occurred while writing to the channel: " + e.getMessage();
-            return IOUtils.createError(message);
+            return IOUtils.createError(e);
         }
     }
 
