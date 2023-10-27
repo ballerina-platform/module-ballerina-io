@@ -26,6 +26,8 @@ import io.ballerina.stdlib.io.channels.base.DataChannel;
 import io.ballerina.stdlib.io.channels.base.Representation;
 import io.ballerina.stdlib.io.utils.IOConstants;
 import io.ballerina.stdlib.io.utils.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.ByteOrder;
@@ -39,6 +41,7 @@ import static io.ballerina.stdlib.io.utils.IOConstants.DATA_CHANNEL_NAME;
  */
 public class DataChannelUtils {
 
+    private static final Logger log = LoggerFactory.getLogger(DataChannelUtils.class);
     private static final String IS_CLOSED = "isClosed";
 
     private DataChannelUtils() {
