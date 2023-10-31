@@ -19,11 +19,8 @@ package io.ballerina.stdlib.io.channels.base;
 
 import io.ballerina.stdlib.io.csv.Format;
 import io.ballerina.stdlib.io.utils.BallerinaIOException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.regex.Pattern;
 
 /**
@@ -93,8 +90,6 @@ public class DelimitedRecordChannel implements IOChannel {
     private Format format;
 
     private static final String DOUBLE_QUOTE_REGEX = "\"([^\"]*)\"";
-
-    private static final Logger log = LoggerFactory.getLogger(DelimitedRecordChannel.class);
 
     public DelimitedRecordChannel(CharacterChannel channel, Format format) {
         this.channel = channel;
@@ -179,9 +174,6 @@ public class DelimitedRecordChannel implements IOChannel {
         final int minimumRecordCount = 1;
         final int numberOfSplits = 2;
         do {
-            if (log.isTraceEnabled()) {
-                log.trace(String.format("char[] remaining in memory %s", persistentCharSequence));
-            }
             //We need to split the string into 2
             String[] delimitedRecord = persistentCharSequence.toString().
                     split(getRecordSeparatorForReading(), numberOfSplits);
@@ -220,10 +212,6 @@ public class DelimitedRecordChannel implements IOChannel {
     private String readFinalRecord() {
         final int minimumRemainingLength = 0;
         String record = "";
-        //This means there's no more to be get as records
-        if (log.isDebugEnabled()) {
-            log.debug(String.format("The content returned from the channel %d is <void>", channel.hashCode()));
-        }
         //This means this will be the last record which could be get
         this.remaining = false;
         //If there're any remaining characters left we provide it as the last record
@@ -231,13 +219,6 @@ public class DelimitedRecordChannel implements IOChannel {
             record = persistentCharSequence.toString();
             //Once the final record is processed there will be no chars left
             persistentCharSequence.setLength(minimumRemainingLength);
-            if (log.isTraceEnabled()) {
-                log.trace(String.format("char [] remaining in memory, will be marked as the last record %s", record));
-            }
-        }
-        if (log.isDebugEnabled()) {
-            log.debug("Final record is get from channel " + channel.hashCode() + " number of records get " +
-                    "from channel " + (numberOfRecordsReadThroughChannel + 1));
         }
         return record;
     }
@@ -252,13 +233,7 @@ public class DelimitedRecordChannel implements IOChannel {
     private String readRecordFromChannel() throws BallerinaIOException {
         String readCharacters;
         readCharacters = channel.read(recordCharacterCount);
-        if (log.isTraceEnabled()) {
-            log.trace(String.format("char [] get from channel,%d=%s", channel.hashCode(), readCharacters));
-        }
         persistentCharSequence.append(readCharacters);
-        if (log.isTraceEnabled()) {
-            log.trace(String.format("char [] appended to the memory %s", persistentCharSequence));
-        }
         return readCharacters;
     }
 
@@ -282,10 +257,6 @@ public class DelimitedRecordChannel implements IOChannel {
         record = delimitedRecords[delimitedRecordIndex];
         persistentCharSequence.setLength(minimumRemainingLength);
         persistentCharSequence.append(recordContent);
-        if (log.isTraceEnabled()) {
-            log.trace(String.format("Record identified from remaining char[] in memory %s", record));
-            log.trace(String.format("The char[] left after split %s", persistentCharSequence));
-        }
         return record;
     }
 
@@ -348,32 +319,12 @@ public class DelimitedRecordChannel implements IOChannel {
         final int emptyArrayIndex = 0;
         String[] fields = new String[emptyArrayIndex];
         if (remaining) {
-            if (log.isDebugEnabled()) {
-                log.debug(String.format("Reading record %d from %d", numberOfRecordsReadThroughChannel,
-                        channel.hashCode()));
-            }
             String record = readRecord();
             if (!record.isEmpty() || remaining) {
                 fields = getFields(record);
                 numberOfRecordsReadThroughChannel++;
-                if (log.isDebugEnabled()) {
-                    log.debug("Record " + numberOfRecordsReadThroughChannel + " returned " + fields.length + " from " +
-                            "channel " + channel.hashCode());
-                }
-                if (log.isTraceEnabled()) {
-                    log.trace("The list of fields identified in record " + numberOfRecordsReadThroughChannel + "from " +
-                            "channel " + channel.hashCode() + "," + Arrays.toString(fields));
-                }
             }
-        } else {
-            //The channel could be null if it's being closed by a different source
-            if (null != channel) {
-                log.warn(String.format("The final record has already being processed through the channel %d",
-                        channel.hashCode()));
-            } else {
-                log.warn("The requested channel has already being closed");
-            }
-        }
+        } 
         return fields;
     }
 
@@ -399,9 +350,6 @@ public class DelimitedRecordChannel implements IOChannel {
         long numberOfFields = fields.length;
         final int fieldStartIndex = 0;
         final long secondLastFieldIndex = numberOfFields - 1;
-        if (log.isDebugEnabled()) {
-            log.debug(String.format("Number of fields to be composed %d", numberOfFields));
-        }
         for (int fieldCount = fieldStartIndex; fieldCount < numberOfFields; fieldCount++) {
             String currentFieldString = fields[fieldCount];
             if (currentFieldString.contains(getFieldSeparatorForWriting())) {
@@ -427,14 +375,7 @@ public class DelimitedRecordChannel implements IOChannel {
         final int writeOffset = 0;
         String record = composeRecord(fields);
         record = record + getRecordSeparatorForWriting();
-        if (log.isTraceEnabled()) {
-            log.trace(String.format("The record %d composed for writing, %s", numberOfRecordsWrittenToChannel, record));
-        }
         channel.write(record, writeOffset);
-        if (log.isDebugEnabled()) {
-            log.debug(String.format("Record %d written to the channel %d", numberOfRecordsReadThroughChannel,
-                    channel.hashCode()));
-        }
         numberOfRecordsWrittenToChannel++;
     }
 
