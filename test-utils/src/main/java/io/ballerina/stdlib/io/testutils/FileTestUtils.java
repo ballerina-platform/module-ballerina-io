@@ -18,8 +18,6 @@
 package io.ballerina.stdlib.io.testutils;
 
 import io.ballerina.runtime.api.values.BString;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -31,8 +29,7 @@ import java.nio.file.Paths;
  *
  */
 public class FileTestUtils {
-    private static final Logger log = LoggerFactory.getLogger(FileTestUtils.class);
-
+    
     private FileTestUtils() {
     }
 
@@ -42,7 +39,7 @@ public class FileTestUtils {
             try {
                 Files.createDirectory(directoryPath);
             } catch (IOException e) {
-                log.info(e.toString());
+                //Removed logs from here
             }
         }
     }
