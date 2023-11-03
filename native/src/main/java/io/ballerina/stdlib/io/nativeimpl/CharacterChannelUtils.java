@@ -33,8 +33,6 @@ import io.ballerina.stdlib.io.utils.BallerinaIOException;
 import io.ballerina.stdlib.io.utils.IOConstants;
 import io.ballerina.stdlib.io.utils.IOUtils;
 import io.ballerina.stdlib.io.utils.PropertyUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -52,7 +50,6 @@ import static io.ballerina.stdlib.io.utils.IOConstants.CHARACTER_CHANNEL_NAME;
  */
 public class CharacterChannelUtils {
 
-    private static final Logger log = LoggerFactory.getLogger(CharacterChannelUtils.class);
     private static final String BUFFERED_READER_ENTRY = "bufferedReader";
     private static final String NEW_LINE = "\n";
     private static final String IS_CLOSED = "isClosed";
@@ -75,7 +72,6 @@ public class CharacterChannelUtils {
             throw IOUtils.createError("Unsupported encoding type " + encoding.getValue());
         } catch (Exception e) {
             String message = "error occurred while converting byte channel to character channel: " + e.getMessage();
-            log.error(message, e);
             throw IOUtils.createError(message);
         }
     }
@@ -92,7 +88,6 @@ public class CharacterChannelUtils {
             try {
                 return StringUtils.fromString(characterChannel.read((int) numberOfCharacters));
             } catch (BallerinaIOException e) {
-                log.error("error occurred while reading characters.", e);
                 return IOUtils.createError(e);
             }
         }
@@ -169,7 +164,6 @@ public class CharacterChannelUtils {
             }
             return returnValue;
         } catch (BError e) {
-            log.error("unable to read json from character channel", e);
             return IOUtils.createError(e);
         }
     }

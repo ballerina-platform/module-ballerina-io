@@ -26,8 +26,6 @@ import io.ballerina.stdlib.io.channels.base.DataChannel;
 import io.ballerina.stdlib.io.channels.base.Representation;
 import io.ballerina.stdlib.io.utils.IOConstants;
 import io.ballerina.stdlib.io.utils.IOUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.ByteOrder;
@@ -41,7 +39,6 @@ import static io.ballerina.stdlib.io.utils.IOConstants.DATA_CHANNEL_NAME;
  */
 public class DataChannelUtils {
 
-    private static final Logger log = LoggerFactory.getLogger(DataChannelUtils.class);
     private static final String IS_CLOSED = "isClosed";
 
     private DataChannelUtils() {
@@ -73,7 +70,6 @@ public class DataChannelUtils {
             dataChannelObj.addNativeData(IS_CLOSED, false);
         } catch (Exception e) {
             String message = "error while creating data channel: " + e.getMessage();
-            log.error(message, e);
             throw IOUtils.createError(message);
         }
     }
@@ -86,7 +82,6 @@ public class DataChannelUtils {
         try {
             return channel.readLong(Representation.BIT_16).getValue();
         } catch (IOException e) {
-            log.error("error occurred while reading Int16", e);
             return IOUtils.createError(e);
         }
     }
@@ -99,7 +94,6 @@ public class DataChannelUtils {
         try {
             return channel.readLong(Representation.BIT_32).getValue();
         } catch (IOException e) {
-            log.error("error occurred while reading Int32", e);
             return IOUtils.createError(e);
         }
     }
@@ -112,7 +106,6 @@ public class DataChannelUtils {
         try {
             return channel.readLong(Representation.BIT_64).getValue();
         } catch (IOException e) {
-            log.error("error occurred while reading Int64", e);
             return IOUtils.createError(e);
         }
     }
@@ -125,7 +118,6 @@ public class DataChannelUtils {
         try {
             return channel.readDouble(Representation.BIT_32);
         } catch (IOException e) {
-            log.error("error occurred while reading Float32", e);
             return IOUtils.createError(e);
         }
     }
@@ -138,7 +130,6 @@ public class DataChannelUtils {
         try {
             return channel.readDouble(Representation.BIT_64);
         } catch (IOException e) {
-            log.error("error occurred while reading Float64", e);
             return IOUtils.createError(e);
         }
     }
@@ -151,7 +142,6 @@ public class DataChannelUtils {
         try {
             return channel.readBoolean();
         } catch (IOException e) {
-            log.error("error while reading boolean", e);
             return IOUtils.createError(e);
         }
     }
@@ -162,16 +152,12 @@ public class DataChannelUtils {
         }
         DataChannel channel = (DataChannel) dataChannelObj.getNativeData(DATA_CHANNEL_NAME);
         if (channel.hasReachedEnd()) {
-            if (log.isDebugEnabled()) {
-                log.debug(String.format("Channel %d reached it's end", channel.hashCode()));
-            }
             return IOUtils.createEoFError();
         } else {
             try {
                 return StringUtils.fromString(channel.readString((int) nBytes, encoding.getValue()));
             } catch (IOException e) {
                 String msg = "Error occurred while reading string: " + e.getMessage();
-                log.error(msg, e);
                 return IOUtils.createError(msg);
             }
         }
@@ -185,7 +171,6 @@ public class DataChannelUtils {
         try {
             return channel.readLong(Representation.VARIABLE).getValue();
         } catch (IOException e) {
-            log.error("Error occurred while reading VarInt", e);
             return IOUtils.createError(e);
         }
     }
@@ -212,7 +197,6 @@ public class DataChannelUtils {
             dataChannelObj.addNativeData(DATA_CHANNEL_NAME, dataChannel);
         } catch (Exception e) {
             String message = "error while creating data channel: " + e.getMessage();
-            log.error(message, e);
             throw IOUtils.createError(message);
         }
     }
@@ -225,7 +209,6 @@ public class DataChannelUtils {
         try {
             channel.writeLong(value, Representation.BIT_16);
         } catch (IOException e) {
-            log.error("Error occurred while writing int16.", e);
             return IOUtils.createError(e);
         }
         return null;
@@ -239,7 +222,6 @@ public class DataChannelUtils {
         try {
             channel.writeLong(value, Representation.BIT_32);
         } catch (IOException e) {
-            log.error("Error occurred while writing int32.", e);
             return IOUtils.createError(e);
         }
         return null;
@@ -253,7 +235,6 @@ public class DataChannelUtils {
         try {
             channel.writeLong(value, Representation.BIT_64);
         } catch (IOException e) {
-            log.error("Error occurred while writing int64.", e);
             return IOUtils.createError(e);
         }
         return null;
@@ -267,7 +248,6 @@ public class DataChannelUtils {
         try {
             channel.writeDouble(value, Representation.BIT_32);
         } catch (IOException e) {
-            log.error("Error occurred while writing float32.", e);
             return IOUtils.createError(e);
         }
         return null;
@@ -281,7 +261,6 @@ public class DataChannelUtils {
         try {
             channel.writeDouble(value, Representation.BIT_64);
         } catch (IOException e) {
-            log.error("Error occurred while writing float64.", e);
             return IOUtils.createError(e);
         }
         return null;
@@ -295,7 +274,6 @@ public class DataChannelUtils {
         try {
             channel.writeBoolean(value);
         } catch (IOException e) {
-            log.error("Error occurred while writing boolean.", e);
             return IOUtils.createError(e);
         }
         return null;
@@ -309,7 +287,6 @@ public class DataChannelUtils {
         try {
             channel.writeString(value.getValue(), encoding.getValue());
         } catch (IOException e) {
-            log.error("Error occurred while writing string.", e);
             return IOUtils.createError(e);
         }
         return null;
@@ -323,7 +300,6 @@ public class DataChannelUtils {
         try {
             channel.writeLong(value, Representation.VARIABLE);
         } catch (IOException e) {
-            log.error("Error occurred while writing VarInt.", e);
             return IOUtils.createError(e);
         }
         return null;

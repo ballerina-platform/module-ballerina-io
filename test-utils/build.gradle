@@ -24,7 +24,6 @@ description = 'Ballerina - IO Java Utils'
 dependencies {
     implementation group: 'org.ballerinalang', name: 'ballerina-lang', version: "${ballerinaLangVersion}"
     implementation group: 'org.ballerinalang', name: 'ballerina-runtime', version: "${ballerinaLangVersion}"
-    implementation group: 'org.slf4j', name: 'slf4j-jdk14', version: "${slf4jVersion}"
     implementation project(":io-native")
 
     checkstyle project(":checkstyle")

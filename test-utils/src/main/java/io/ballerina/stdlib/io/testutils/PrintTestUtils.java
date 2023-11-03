@@ -21,8 +21,6 @@ package io.ballerina.stdlib.io.testutils;
 import io.ballerina.runtime.api.utils.StringUtils;
 import io.ballerina.runtime.api.values.BString;
 import io.ballerina.stdlib.io.utils.Utils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -33,7 +31,6 @@ import java.nio.charset.Charset;
  */
 public class PrintTestUtils {
 
-    private static final Logger log = LoggerFactory.getLogger(PrintTestUtils.class);
     private static final Object outLock = new Object();
     private static final Object errLock = new Object();
     static ByteArrayOutputStream outContent;
