@@ -465,7 +465,7 @@ function testFileWriteLinesFromStreamWithAppend() returns Error? {
     test:assertEquals(i, 9);
 }
 
-@test:Config {}
+@test:Config {dependsOn: [testFileWriteStringWithAppend]}
 isolated function testFileChannelWriteStringWithByteChannel() returns Error? {
     string filePath = TEMP_DIR + "stringContent3.txt";
     string content = "The Big Bang Theory";
@@ -484,7 +484,7 @@ isolated function testFileChannelReadStringWithByteChannel() returns Error? {
     test:assertEquals(result, expectedString);
 }
 
-@test:Config {}
+@test:Config {dependsOn: [testFileChannelReadStringWithByteChannel]}
 isolated function testFileChannelWriteLinesWithByteChannel() returns Error? {
     string filePath = TEMP_DIR + "stringContent3.txt";
     string content = "The Big Bang Theory";

@@ -18,8 +18,6 @@
 
 package io.ballerina.stdlib.io.util;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.testng.ITestContext;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
@@ -31,14 +29,12 @@ import org.testng.ITestResult;
  */
 public class JBallerinaTestInitializer implements ITestListener {
 
-    private static Logger log = LoggerFactory.getLogger(JBallerinaTestInitializer.class);
     private static final String ENABLE_JBALLERINA_TESTS = "enableJBallerinaTests";
 
     @Override
     public void onStart(ITestContext context) {
         String property = context.getCurrentXmlTest().getParameter(ENABLE_JBALLERINA_TESTS);
         if (property != null && Boolean.valueOf(property)) {
-            log.info("JBallerina tests initialized...");
             System.setProperty(ENABLE_JBALLERINA_TESTS, "true");
         }
     }
@@ -47,7 +43,6 @@ public class JBallerinaTestInitializer implements ITestListener {
     public void onFinish(ITestContext context) {
         String property = context.getCurrentXmlTest().getParameter(ENABLE_JBALLERINA_TESTS);
         if (property != null && Boolean.valueOf(property)) {
-            log.info("JBallerina tests disabled...");
             System.clearProperty(ENABLE_JBALLERINA_TESTS);
         }
     }

@@ -32,8 +32,6 @@ import io.ballerina.stdlib.io.utils.BallerinaIOException;
 import io.ballerina.stdlib.io.utils.IOConstants;
 import io.ballerina.stdlib.io.utils.IOUtils;
 import io.ballerina.stdlib.io.utils.Utils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
@@ -57,7 +55,6 @@ import static io.ballerina.stdlib.io.utils.IOConstants.BYTE_CHANNEL_NAME;
  */
 public class ByteChannelUtils extends AbstractNativeChannel {
 
-    private static final Logger log = LoggerFactory.getLogger(ByteChannelUtils.class);
     private static final String STREAM_BLOCK_ENTRY = "value";
     private static final String IS_CLOSED = "isClosed";
 
@@ -80,7 +77,6 @@ public class ByteChannelUtils extends AbstractNativeChannel {
                 return IOUtils.createError("Byte channel is already closed.");
             } catch (Exception e) {
                 String msg = "error occurred while reading bytes from the channel. " + e.getMessage();
-                log.error(msg, e);
                 return IOUtils.createError(msg);
             }
         }
@@ -194,7 +190,6 @@ public class ByteChannelUtils extends AbstractNativeChannel {
             return IOUtils.createError(IOConstants.ErrorCode.GenericError,
             "Byte channel is already closed.");
         } catch (IOException e) {
-            log.error("Error occurred while writing to the channel.", e);
             return IOUtils.createError(e);
         }
     }

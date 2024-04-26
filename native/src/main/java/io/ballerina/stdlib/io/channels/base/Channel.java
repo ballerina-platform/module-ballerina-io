@@ -17,9 +17,6 @@
 
 package io.ballerina.stdlib.io.channels.base;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -54,8 +51,6 @@ public abstract class Channel implements IOChannel {
      * Specifies whether the channel is readable.
      */
     private boolean readable;
-
-    private static final Logger log = LoggerFactory.getLogger(Channel.class);
 
     /**
      * <p>
@@ -173,8 +168,6 @@ public abstract class Channel implements IOChannel {
     public void close() throws IOException {
         if (null != byteChannel) {
             byteChannel.close();
-        } else {
-            log.error("The channel has already being closed");
         }
     }
 

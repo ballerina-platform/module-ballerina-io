@@ -30,7 +30,9 @@ import io.ballerina.stdlib.io.utils.IOUtils;
  *
  * @since ballerina-0.970.0-alpha3
  */
-public class WriteXml {
+public final class WriteXml {
+
+    private WriteXml() {}
 
     public static Object writeXml(BObject characterChannelObj, BXml content) {
         try {
