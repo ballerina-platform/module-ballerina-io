@@ -4,12 +4,18 @@ This file contains all the notable changes done to the Ballerina I/O package thr
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [Unreleased]
+
+## [1.6.1] - 2024-08-06
+### Changed
+- [Make some of the Java classes proper utility classes](https://github.com/ballerina-platform/ballerina-standard-library/issues/4901)
+- [Remove Error logger in module-ballerina-io](https://github.com/ballerina-platform/ballerina-standard-library/issues/3083)
+- [Remove architecture diagram from the resources directory](https://github.com/ballerina-platform/ballerina-library/issues/6832)
+
+## [1.4.0] - 2023-02-20
 ### Changed
 - [Fixed the issue related to maintaining order in writing CSV records](https://github.com/ballerina-platform/ballerina-standard-library/issues/3399)
 - [Fixed the fileReadCsv and fileReadCsvAsStream APIs to maintain the order while reading CSV records](https://github.com/ballerina-platform/ballerina-standard-library/issues/3780)
 - [Fixed the issue related to expected type in CSV data mapping](https://github.com/ballerina-platform/ballerina-standard-library/issues/3669)
-- [Make some of the Java classes proper utility classes](https://github.com/ballerina-platform/ballerina-standard-library/issues/4901)
-- [Remove Error logger in module-ballerina-io](https://github.com/ballerina-platform/ballerina-standard-library/issues/3083)
 
 ## [1.3.1] - 2022-11-29
 ### Changed
