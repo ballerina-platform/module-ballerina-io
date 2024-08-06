@@ -8,6 +8,7 @@ repository = "https://github.com/ballerina-platform/module-ballerina-io"
 icon = "icon.png"
 license = ["Apache-2.0"]
 distribution = "2201.8.0"
+include = ["docs"]
 
 [platform.java17]
 graalvmCompatible = true
