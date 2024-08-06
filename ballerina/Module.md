@@ -4,7 +4,7 @@ This module provides file read/write APIs and console print/read APIs. The file 
 
 The following diagram depicts the overview architecture of the I/O package.
 
-![Overview](https://raw.githubusercontent.com/ballerina-platform/module-ballerina-io/master/ballerina/docs/architecture.svg)
+![Architecture Diagram](https://raw.githubusercontent.com/ballerina-platform/module-ballerina-io/master/ballerina/docs/architecture.svg)
 
 The file I/O operations can be categorized further based on the serialization and deserialization types such as:
 - Bytes I/O
