@@ -1,7 +1,7 @@
 [package]
 org = "ballerina"
 name = "io"
-version = "1.6.1"
+version = "1.6.2"
 authors = ["Ballerina"]
 keywords = ["io", "json", "xml", "csv", "file"]
 repository = "https://github.com/ballerina-platform/module-ballerina-io"
@@ -15,11 +15,11 @@ graalvmCompatible = true
 [[platform.java17.dependency]]
 groupId = "io.ballerina.stdlib"
 artifactId = "io-native"
-path = "../native/build/libs/io-native-1.6.1.jar"
-version = "1.6.1"
+path = "../native/build/libs/io-native-1.6.2-SNAPSHOT.jar"
+version = "1.6.2"
 
 
 [[platform.java17.dependency]]
-path = "../test-utils/build/libs/io-test-utils-1.6.1.jar"
+path = "../test-utils/build/libs/io-test-utils-1.6.2-SNAPSHOT.jar"
 scope = "testOnly"
-version = "1.6.1"
+version = "1.6.2-SNAPSHOT"
