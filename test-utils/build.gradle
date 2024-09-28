@@ -31,9 +31,12 @@ dependencies {
 }
 
 spotbugsMain {
+    def classLoader = plugins["com.github.spotbugs"].class.classLoader
+    def SpotBugsConfidence = classLoader.findLoadedClass("com.github.spotbugs.snom.Confidence")
+    def SpotBugsEffort = classLoader.findLoadedClass("com.github.spotbugs.snom.Effort")
     ignoreFailures = true
-    effort = "max"
-    reportLevel = "low"
+    effort = SpotBugsEffort.MAX
+    reportLevel = SpotBugsConfidence.LOW
     reportsDir = file("$project.buildDir/reports/spotbugs")
     def excludeFile = file("${rootDir}/build-config/spotbugs-exclude.xml")
     if (excludeFile.exists()) {
