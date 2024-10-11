@@ -43,13 +43,14 @@ public class ReadlnAny {
         if (result != null) {
             printStream.print(result);
         }
-        env.markAsync();
-        CompletableFuture<BString> future = new CompletableFuture<>();
-        Thread.startVirtualThread(() -> future.complete(StringUtils.fromString(sc.nextLine())));
-        try {
-            return future.get();
-        } catch (Throwable e) {
-            throw ErrorCreator.createError(e);
-        }
+        return env.yieldAndRun(() -> {
+            CompletableFuture<BString> future = new CompletableFuture<>();
+            Thread.startVirtualThread(() -> future.complete(StringUtils.fromString(sc.nextLine())));
+            try {
+                return future.get();
+            } catch (Throwable e) {
+                throw ErrorCreator.createError(e);
+            }
+        });
     }
 }
