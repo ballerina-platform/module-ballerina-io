@@ -14,16 +14,20 @@
 // specific language governing permissions and limitations
 // under the License.
 
+import ballerina/jballerina.java;
+
 # Represents IO module related errors.
 public type Error distinct error;
 
 # This will return when connection timed out happen when try to connect to a remote host.
+@java:ExternalDependency
 public type ConnectionTimedOutError distinct Error;
 
 # Represents generic IO error. The detail record contains the information related to the error.
 public type GenericError distinct Error;
 
 # This will get returned due to file permission issues.
+@java:ExternalDependency
 public type AccessDeniedError distinct Error;
 
 # This will get returned if the file is not available in the given file path.
