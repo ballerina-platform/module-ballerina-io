@@ -90,17 +90,17 @@ public class Utils {
     @SuppressWarnings("unchecked")
     public static Object encode(Object input, String charset, boolean isMimeSpecific) {
         switch (TypeUtils.getReferredType(TypeUtils.getType(input)).getTag()) {
-            case io.ballerina.runtime.api.TypeTags.ARRAY_TAG:
+            case io.ballerina.runtime.api.types.TypeTags.ARRAY_TAG:
                 return encodeBlob(((BArray) input).getBytes(), isMimeSpecific);
-            case io.ballerina.runtime.api.TypeTags.OBJECT_TYPE_TAG:
-            case io.ballerina.runtime.api.TypeTags.RECORD_TYPE_TAG:
+            case io.ballerina.runtime.api.types.TypeTags.OBJECT_TYPE_TAG:
+            case io.ballerina.runtime.api.types.TypeTags.RECORD_TYPE_TAG:
                 //TODO : recheck following casing
                 BObject byteChannel = (BObject) input;
                 if (STRUCT_TYPE.equals(TypeUtils.getType(byteChannel).getName())) {
                     return encodeByteChannel(byteChannel, isMimeSpecific);
                 }
                 return Utils.createBase64Error(ENCODING_ERROR, "incompatible object", isMimeSpecific);
-            case io.ballerina.runtime.api.TypeTags.STRING_TAG:
+            case io.ballerina.runtime.api.types.TypeTags.STRING_TAG:
                 return encodeString(input.toString(), charset, isMimeSpecific);
             default:
                 return Utils.createBase64Error(ENCODING_ERROR, "incompatible input", isMimeSpecific);
@@ -117,12 +117,12 @@ public class Utils {
      */
     public static Object decode(Object encodedInput, String charset, boolean isMimeSpecific) {
         switch (TypeUtils.getType(encodedInput).getTag()) {
-            case io.ballerina.runtime.api.TypeTags.ARRAY_TAG:
+            case io.ballerina.runtime.api.types.TypeTags.ARRAY_TAG:
                 return decodeBlob(((BArray) encodedInput).getBytes(), isMimeSpecific);
-            case io.ballerina.runtime.api.TypeTags.OBJECT_TYPE_TAG:
-            case io.ballerina.runtime.api.TypeTags.RECORD_TYPE_TAG:
+            case io.ballerina.runtime.api.types.TypeTags.OBJECT_TYPE_TAG:
+            case io.ballerina.runtime.api.types.TypeTags.RECORD_TYPE_TAG:
                 return decodeByteChannel((BObject) encodedInput, isMimeSpecific);
-            case io.ballerina.runtime.api.TypeTags.STRING_TAG:
+            case io.ballerina.runtime.api.types.TypeTags.STRING_TAG:
                 return decodeString(encodedInput, charset, isMimeSpecific);
             default:
                 return Utils.createBase64Error(DECODING_ERROR, "incompatible input", isMimeSpecific);
