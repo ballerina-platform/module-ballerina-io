@@ -20,7 +20,7 @@ import ballerina/jballerina.java;
 # An `io:WritableByteChannel` can only be obtained using the following method or by providing a native implementation.
 # It cannot be instantiated.
 # `io:openWritableFile("./files/sample.txt")` - used to obtain an `io:WritableByteChannel` from a given file path
-@java:ExternalDependency
+// @java:ExternalDependency
 public class WritableByteChannel {
 
     # Adding default init function to prevent object getting initialized from the user code.
