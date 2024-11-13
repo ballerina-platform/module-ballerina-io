@@ -16,7 +16,6 @@
 import ballerina/jballerina.java;
 
 # Represents a channel which will allow to read.
-@java:ExternalDependency
 public class ReadableTextRecordChannel {
 
     private ReadableCharacterChannel charChannel;

@@ -14,8 +14,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import ballerina/jballerina.java;
-
 # Represents the record separator of the CSV file.
 public const string CSV_RECORD_SEPARATOR = "\n";
 
@@ -26,7 +24,6 @@ public const string FS_COLON = ":";
 public const int MINIMUM_HEADER_COUNT = 0;
 
 # Represents a WritableCSVChannel, which could be used to write records from the CSV file.
-@java:ExternalDependency
 public class WritableCSVChannel {
     private WritableTextRecordChannel? dc;
 
