@@ -21,6 +21,7 @@ import ballerina/jballerina.java;
 #
 # `io:openReadableFile("./files/sample.txt")` - used to obtain an `io:ReadableByteChannel` from a given file path
 # `io:createReadableChannel(byteArray)` - used to obtain an `io:ReadableByteChannel` from a given `byte` array
+@java:ExternalDependency
 public class ReadableByteChannel {
 
     # Adding default init function to prevent object getting initialized from the user code.
