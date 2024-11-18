@@ -27,6 +27,7 @@ import io.ballerina.runtime.api.types.Type;
 import io.ballerina.runtime.api.types.TypeTags;
 import io.ballerina.runtime.api.types.UnionType;
 import io.ballerina.runtime.api.utils.StringUtils;
+import io.ballerina.runtime.api.utils.TypeUtils;
 import io.ballerina.runtime.api.values.BArray;
 import io.ballerina.runtime.api.values.BError;
 import io.ballerina.runtime.api.values.BObject;
@@ -87,7 +88,7 @@ public class ToTable {
             newTableType = TypeCreator.createTableType(describingType, key.getStringArray(), false);
         }
         BTable table = ValueCreator.createTableValue(newTableType);
-        StructureType structType = (StructureType) describingType;
+        StructureType structType = (StructureType) TypeUtils.getImpliedType(describingType);
         for (String[] fields : records) {
             final Map<String, Object> struct = getStruct(fields, structType);
             if (struct != null) {
