@@ -17,7 +17,7 @@
 import ballerina/jballerina.java;
 
 # The iterator for the stream returned in `readFileCsvAsStream` function.
-
+@java:ExternalDependency
 public class CsvIterator {
     private boolean isClosed = false;
     public isolated function next() returns record {|anydata value;|}|error? {

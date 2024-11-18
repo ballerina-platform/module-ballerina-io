@@ -7,7 +7,7 @@ keywords = ["io", "json", "xml", "csv", "file"]
 repository = "https://github.com/ballerina-platform/module-ballerina-io"
 icon = "icon.png"
 license = ["Apache-2.0"]
-distribution = "2201.8.0"
+distribution = "2201.11.0"
 
 [platform.java21]
 graalvmCompatible = true
