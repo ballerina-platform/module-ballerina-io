@@ -14,8 +14,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import ballerina/jballerina.java;
-
 # The format, which will be used to represent the CSV.
 #
 # DEFAULT - The default value is the format specified by the CSVChannel. Precedence will be given to the field
@@ -24,7 +22,6 @@ import ballerina/jballerina.java;
 # CSV - Field separator will be "," and the record separator will be a new line.
 #
 # TDF - Field separator will be a tab and the record separator will be a new line.
-@java:ExternalDependency
 public type Format DEFAULT|CSV|TDF;
 
 # The default value is the format specified by the CSVChannel. Precedence will be given to the field separator and record separator.
