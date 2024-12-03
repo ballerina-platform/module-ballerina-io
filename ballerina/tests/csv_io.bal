@@ -94,6 +94,14 @@ type Employee6 record {
     string age;
 };
 
+type Employee7 record {|
+    string name;
+    string designation;
+    string company;
+    string? age;
+    string? residence;
+|};
+
 type RefInt int;
 
 type RefStr string;
@@ -1998,5 +2006,69 @@ function testFileReadCsvRecordWithsingleHeaderLine() returns Error? {
         }
         i += 1;
     }
+    test:assertEquals(i, 3);
+}
+
+@test:Config {}
+function testFileReadCsvRecordWithEmptyFieldValues() returns Error? {
+    string resourceFilePath1 = TEST_RESOURCE_PATH + "csvResourceFileWithEmptyValues.csv";
+    Employee7[] readContent = check fileReadCsv(resourceFilePath1);
+    Employee7[] content1 = [{
+            name: "Anne Hamiltom",
+            designation: "Software Engineer",
+            company: "Microsoft",
+            age: (),
+            residence: "New York"
+        },
+        {
+            name: "John Thomson",
+            designation: "Software Architect",
+            company: "WSO2",
+            age: "38 years",
+            residence: "Colombo"
+        },
+        {
+            name: "Mary Thompson",
+            designation: "Banker",
+            company: "Sampath Bank",
+            age: "30 years",
+            residence: ()
+        }
+    ];
+    test:assertEquals(readContent.length(), 3);
+    test:assertEquals(readContent, content1);
+}
+
+@test:Config {}
+function testFileReadCsvRecordStreamWithEmptyFieldValues() returns Error? {
+    string resourceFilePath1 = TEST_RESOURCE_PATH + "csvResourceFileWithEmptyValues.csv";
+    stream<Employee7, Error?> readContent = check fileReadCsvAsStream(resourceFilePath1);
+    Employee7[] content1 = [{
+            name: "Anne Hamiltom",
+            designation: "Software Engineer",
+            company: "Microsoft",
+            age: (),
+            residence: "New York"
+        },
+        {
+            name: "John Thomson",
+            designation: "Software Architect",
+            company: "WSO2",
+            age: "38 years",
+            residence: "Colombo"
+        },
+        {
+            name: "Mary Thompson",
+            designation: "Banker",
+            company: "Sampath Bank",
+            age: "30 years",
+            residence: ()
+        }
+    ];
+    int i = 0;
+    check readContent.forEach(function(Employee7 recordVal) {
+        test:assertEquals(recordVal, content1[i]);
+        i = i + 1;
+    });
     test:assertEquals(i, 3);
 }
