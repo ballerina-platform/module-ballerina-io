@@ -159,9 +159,6 @@ public class RecordChannelUtils {
                         return returnStruct;
                     }
                     Map<String, Object> struct = (Map<String, Object>) returnStruct;
-                    if (record.length != structType.getFields().size()) {
-                        return IOUtils.createError("Record type and CSV file does not match.");
-                    }
                     outList.add(ValueCreator.createRecordValue(describingType.getPackage(),
                             describingType.getName(), struct));
 
@@ -225,10 +222,6 @@ public class RecordChannelUtils {
                     return returnStruct;
                 }
                 final Map<String, Object> struct = (Map<String, Object>) returnStruct;
-                if (record.length != structType.getFields().size()) {
-                    bufferedReader.close();
-                    return IOUtils.createError("Record type and CSV file does not match.");
-                }
                 return ValueCreator.createRecordValue(describingType.getPackage(), describingType.getName(),
                         struct);
             }
