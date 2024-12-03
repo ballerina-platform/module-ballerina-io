@@ -18,14 +18,14 @@
 package io.ballerina.stdlib.io.nativeimpl;
 
 import io.ballerina.runtime.api.Environment;
-import io.ballerina.runtime.api.Future;
+import io.ballerina.runtime.api.creators.ErrorCreator;
 import io.ballerina.runtime.api.utils.StringUtils;
+import io.ballerina.runtime.api.values.BString;
 
 import java.io.PrintStream;
 import java.nio.charset.Charset;
 import java.util.Scanner;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Extern function ballerina/io:readln.
@@ -36,15 +36,21 @@ public class ReadlnAny {
 
     private static final Scanner sc = new Scanner(System.in, Charset.defaultCharset().displayName());
     private static final PrintStream printStream = System.out;
-    private static final ExecutorService executor = Executors.newSingleThreadExecutor();
 
     private ReadlnAny() {}
 
-    public static void readln(Environment env, Object result) {
+    public static BString readln(Environment env, Object result) {
         if (result != null) {
             printStream.print(result);
         }
-        Future balFuture = env.markAsync();
-        executor.execute(() -> balFuture.complete(StringUtils.fromString(sc.nextLine())));
+        return env.yieldAndRun(() -> {
+            CompletableFuture<BString> future = new CompletableFuture<>();
+            Thread.startVirtualThread(() -> future.complete(StringUtils.fromString(sc.nextLine())));
+            try {
+                return future.get();
+            } catch (Throwable e) {
+                throw ErrorCreator.createError(e);
+            }
+        });
     }
 }
