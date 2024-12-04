@@ -15,11 +15,11 @@ graalvmCompatible = true
 [[platform.java17.dependency]]
 groupId = "io.ballerina.stdlib"
 artifactId = "io-native"
-path = "../native/build/libs/io-native-1.6.3-SNAPSHOT.jar"
+path = "../native/build/libs/io-native-1.6.3.jar"
 version = "1.6.3"
 
 
 [[platform.java17.dependency]]
-path = "../test-utils/build/libs/io-test-utils-1.6.3-SNAPSHOT.jar"
+path = "../test-utils/build/libs/io-test-utils-1.6.3.jar"
 scope = "testOnly"
-version = "1.6.3-SNAPSHOT"
+version = "1.6.3"
