@@ -102,6 +102,14 @@ type Employee7 record {|
     string? residence;
 |};
 
+type Employee8 record {|
+    string name;
+    string designation;
+    string company;
+    string age?;
+    string residence;
+|};
+
 type RefInt int;
 
 type RefStr string;
@@ -2072,3 +2080,103 @@ function testFileReadCsvRecordStreamWithEmptyFieldValues() returns Error? {
     });
     test:assertEquals(i, 3);
 }
+
+@test:Config {}
+function testFileReadCsvRecordWithNillableField() returns Error? {
+    string resourceFilePath1 = TEST_RESOURCE_PATH + "csvResourceFile1.csv";
+    stream<Employee7, Error?> readContent = check fileReadCsvAsStream(resourceFilePath1);
+    Employee7[] content1 = [{
+            name: "Anne Hamiltom",
+            designation: "Software Engineer",
+            company: "Microsoft",
+            age: "26 years",
+            residence: "New York"
+        },
+        {
+            name: "John Thomson",
+            designation: "Software Architect",
+            company: "WSO2",
+            age: "38 years",
+            residence: "Colombo"
+        },
+        {
+            name: "Mary Thompson",
+            designation: "Banker",
+            company: "Sampath Bank",
+            age: "30 years",
+            residence: "Colombo"
+        }
+    ];
+    int i = 0;
+    check readContent.forEach(function(Employee7 recordVal) {
+        test:assertEquals(recordVal, content1[i]);
+        i = i + 1;
+    });
+    test:assertEquals(i, 3);
+}
+
+@test:Config {}
+function testFileReadCsvRecordWithOptionalFields() returns Error? {
+    string resourceFilePath1 = TEST_RESOURCE_PATH + "csvResourceFileWithMissingFields.csv";
+    stream<Employee8, Error?> readContent = check fileReadCsvAsStream(resourceFilePath1);
+    Employee8[] content1 = [{
+            name: "Anne Hamiltom",
+            designation: "Software Engineer",
+            company: "Microsoft",
+            residence: "New York"
+        },
+        {
+            name: "John Thomson",
+            designation: "Software Architect",
+            company: "WSO2",
+            residence: "Colombo"
+        },
+        {
+            name: "Mary Thompson",
+            designation: "Banker",
+            company: "Sampath Bank",
+            residence: "Colombo"
+        }
+    ];
+    int i = 0;
+    check readContent.forEach(function(Employee8 recordVal) {
+        test:assertEquals(recordVal, content1[i]);
+        i = i + 1;
+    });
+    test:assertEquals(i, 3);
+}
+
+@test:Config {}
+function testFileReadCsvRecordWithOptionalFieldsHasValues() returns Error? {
+    string resourceFilePath1 = TEST_RESOURCE_PATH + "csvResourceFile1.csv";
+    stream<Employee8, Error?> readContent = check fileReadCsvAsStream(resourceFilePath1);
+    Employee8[] content1 = [{
+            name: "Anne Hamiltom",
+            designation: "Software Engineer",
+            company: "Microsoft",
+            age: "26 years",
+            residence: "New York"
+        },
+        {
+            name: "John Thomson",
+            designation: "Software Architect",
+            company: "WSO2",
+            age: "38 years",
+            residence: "Colombo"
+        },
+        {
+            name: "Mary Thompson",
+            designation: "Banker",
+            company: "Sampath Bank",
+            age: "30 years",
+            residence: "Colombo"
+        }
+    ];
+    int i = 0;
+    check readContent.forEach(function(Employee8 recordVal) {
+        test:assertEquals(recordVal, content1[i]);
+        i = i + 1;
+    });
+    test:assertEquals(i, 3);
+}
+
