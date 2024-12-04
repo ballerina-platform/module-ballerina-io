@@ -20,6 +20,8 @@ package io.ballerina.stdlib.io.nativeimpl;
 
 import io.ballerina.runtime.api.creators.TypeCreator;
 import io.ballerina.runtime.api.creators.ValueCreator;
+import io.ballerina.runtime.api.flags.SymbolFlags;
+import io.ballerina.runtime.api.types.Field;
 import io.ballerina.runtime.api.types.StructureType;
 import io.ballerina.runtime.api.types.Type;
 import io.ballerina.runtime.api.types.TypeTags;
@@ -158,9 +160,6 @@ public class RecordChannelUtils {
                         return returnStruct;
                     }
                     Map<String, Object> struct = (Map<String, Object>) returnStruct;
-                    if (record.length != structType.getFields().size()) {
-                        return IOUtils.createError("Record type and CSV file does not match.");
-                    }
                     outList.add(ValueCreator.createRecordValue(describingType.getPackage(),
                             describingType.getName(), struct));
 
@@ -224,10 +223,6 @@ public class RecordChannelUtils {
                     return returnStruct;
                 }
                 final Map<String, Object> struct = (Map<String, Object>) returnStruct;
-                if (record.length != structType.getFields().size()) {
-                    bufferedReader.close();
-                    return IOUtils.createError("Record type and CSV file does not match.");
-                }
                 return ValueCreator.createRecordValue(describingType.getPackage(), describingType.getName(),
                         struct);
             }
@@ -321,16 +316,20 @@ public class RecordChannelUtils {
     }
 
     private static void validateHeaders(ArrayList<String> headers, StructureType structType) {
-        if (headers.size() != structType.getFields().size()) {
-            throw IOUtils.createError(String.format("The CSV file content header count" +
-                            "(%s) doesn't match with ballerina record field count(%s). ",
-                    headers.size(), structType.getFields().size()));
-        }
-        for (String key : structType.getFields().keySet()) {
-            if (!headers.contains(key.trim())) {
-                throw IOUtils.createError(String.format("The Record does not contain the " +
-                        "field - %s. ", key.trim()));
+
+        structType.getFields().forEach((key, value) -> {
+            Field field = (Field) value;
+            if (!headers.contains(field.getFieldName().trim()) &&
+                    !SymbolFlags.isFlagOn(field.getFlags(), SymbolFlags.OPTIONAL)) {
+                throw IOUtils.createError(String.format("The csv file does not contain the " +
+                        "column - %s.", field.getFieldName().trim()));
             }
-        }
+        });
+
+        headers.forEach(header -> {
+            if (structType.getFields().get(header) == null) {
+                throw IOUtils.createError(String.format("The csv file contains an additional column - %s.", header));
+            }
+        });
     }
 }

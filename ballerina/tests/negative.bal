@@ -139,7 +139,7 @@ isolated function testFileCsvReadWithDefectiveRecords() returns Error? {
     string filePath = TEMP_DIR + "workers2.csv";
     Employee6[]|Error csvContent = fileReadCsv(filePath);
     test:assertTrue(csvContent is Error);
-    test:assertEquals((<Error>csvContent).message(), "The CSV file content header count(5) doesn't match with ballerina record field count(4). ");
+    test:assertEquals((<Error>csvContent).message(), "The csv file contains an additional column - residence.");
 }
 
 @test:Config {}
@@ -238,4 +238,18 @@ function readCsvFileWithUnsupportedMappingType() {
     string filePath = TEST_RESOURCE_PATH + "csvResourceFile1.csv";
     map<anydata>[]|Error out = fileReadCsv(filePath);
     test:assertEquals((<Error>out).message(), "Only 'string[]' and 'record{}' types are supported, but found 'map' ");
+}
+
+@test:Config {}
+function readCsvWithMissingColumnAndNillableField() {
+    string filePath = TEST_RESOURCE_PATH + "csvResourceFileWithMissingFields.csv";
+    Employee7[]|Error out = fileReadCsv(filePath);
+    test:assertEquals((<Error>out).message(), "The csv file does not contain the column - age.");
+}
+
+@test:Config {}
+function readCsvWithMissingValueAndOptionalField() {
+    string filePath = TEST_RESOURCE_PATH + "csvResourceFileWithEmptyValues.csv";
+    Employee8[]|Error out = fileReadCsv(filePath);
+    test:assertEquals((<Error>out).message(), "Field 'age' does not support nil value.");
 }
