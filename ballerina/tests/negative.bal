@@ -239,3 +239,17 @@ function readCsvFileWithUnsupportedMappingType() {
     map<anydata>[]|Error out = fileReadCsv(filePath);
     test:assertEquals((<Error>out).message(), "Only 'string[]' and 'record{}' types are supported, but found 'map' ");
 }
+
+@test:Config {}
+function readCsvWithMissingColumnAndNillableField() {
+    string filePath = TEST_RESOURCE_PATH + "csvResourceFileWithMissingFields.csv";
+    Employee7[]|Error out = fileReadCsv(filePath);
+    test:assertEquals((<Error>out).message(), "The csv file does not contain the column - age.");
+}
+
+@test:Config {}
+function readCsvWithMissingValueAndOptionalField() {
+    string filePath = TEST_RESOURCE_PATH + "csvResourceFileWithEmptyValues.csv";
+    Employee8[]|Error out = fileReadCsv(filePath);
+    test:assertEquals((<Error>out).message(), "Field 'age' does not support nil value.");
+}
