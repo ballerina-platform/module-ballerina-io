@@ -139,7 +139,7 @@ isolated function testFileCsvReadWithDefectiveRecords() returns Error? {
     string filePath = TEMP_DIR + "workers2.csv";
     Employee6[]|Error csvContent = fileReadCsv(filePath);
     test:assertTrue(csvContent is Error);
-    test:assertEquals((<Error>csvContent).message(), "The CSV file content header count(5) doesn't match with ballerina record field count(4). ");
+    test:assertEquals((<Error>csvContent).message(), "The csv file contains an additional column - residence.");
 }
 
 @test:Config {}

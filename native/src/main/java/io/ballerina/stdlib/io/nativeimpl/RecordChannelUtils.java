@@ -21,6 +21,8 @@ package io.ballerina.stdlib.io.nativeimpl;
 import io.ballerina.runtime.api.TypeTags;
 import io.ballerina.runtime.api.creators.TypeCreator;
 import io.ballerina.runtime.api.creators.ValueCreator;
+import io.ballerina.runtime.api.flags.SymbolFlags;
+import io.ballerina.runtime.api.types.Field;
 import io.ballerina.runtime.api.types.StructureType;
 import io.ballerina.runtime.api.types.Type;
 import io.ballerina.runtime.api.utils.StringUtils;
@@ -315,16 +317,20 @@ public class RecordChannelUtils {
     }
 
     private static void validateHeaders(ArrayList<String> headers, StructureType structType) {
-        if (headers.size() != structType.getFields().size()) {
-            throw IOUtils.createError(String.format("The CSV file content header count" +
-                            "(%s) doesn't match with ballerina record field count(%s). ",
-                    headers.size(), structType.getFields().size()));
-        }
-        for (String key : structType.getFields().keySet()) {
-            if (!headers.contains(key.trim())) {
-                throw IOUtils.createError(String.format("The Record does not contain the " +
-                        "field - %s. ", key.trim()));
+
+        structType.getFields().forEach((key, value) -> {
+            Field field = (Field) value;
+            if (!headers.contains(field.getFieldName().trim()) &&
+                    !SymbolFlags.isFlagOn(field.getFlags(), SymbolFlags.OPTIONAL)) {
+                throw IOUtils.createError(String.format("The csv file does not contain the " +
+                        "column - %s.", field.getFieldName().trim()));
             }
-        }
+        });
+
+        headers.forEach(header -> {
+            if (structType.getFields().get(header) == null) {
+                throw IOUtils.createError(String.format("The csv file contains an additional column - %s.", header));
+            }
+        });
     }
 }
