@@ -27,7 +27,7 @@ dependencies {
     implementation project(":io-native")
 
     checkstyle project(":checkstyle")
-    checkstyle "com.puppycrawl.tools:checkstyle:${puppycrawlCheckstyleVersion}"
+    checkstyle "com.puppycrawl.tools:checkstyle:${checkstyleToolVersion}"
 }
 
 spotbugsMain {

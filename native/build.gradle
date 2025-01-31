@@ -29,7 +29,7 @@ dependencies {
     implementation group: 'commons-codec', name: 'commons-codec', version: '1.9'
     implementation 'org.testng:testng:7.6.1'
     checkstyle project(":checkstyle")
-    checkstyle "com.puppycrawl.tools:checkstyle:${puppycrawlCheckstyleVersion}"
+    checkstyle "com.puppycrawl.tools:checkstyle:${checkstyleToolVersion}"
 }
 
 test {
