@@ -1,0 +1,7 @@
+[
+  {
+    "id":  1,
+    "kind": "VULNERABILITY",
+    "description": "I/O function calls should not be vulnerable to path injection attacks"
+  }
+]

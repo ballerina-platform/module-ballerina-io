@@ -18,5 +18,23 @@
 
 package io.ballerina.stdlib.io.compiler;
 
-public class IOCompilerPlugin {
+import io.ballerina.projects.plugins.CompilerPlugin;
+import io.ballerina.projects.plugins.CompilerPluginContext;
+import io.ballerina.scan.ScannerContext;
+import io.ballerina.stdlib.io.compiler.staticcodeanalyzer.IOCodeAnalyzer;
+
+import static io.ballerina.stdlib.io.compiler.Constants.SCANNER_CONTEXT;
+
+/**
+ * File compiler plugin.
+ */
+public class IOCompilerPlugin extends CompilerPlugin {
+
+    @Override
+    public void init(CompilerPluginContext context) {
+        Object object = context.userData().get(SCANNER_CONTEXT);
+        if (object instanceof ScannerContext scannerContext) {
+            context.addCodeAnalyzer(new IOCodeAnalyzer(scannerContext.getReporter()));
+        }
+    }
 }

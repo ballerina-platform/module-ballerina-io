@@ -1,0 +1,20 @@
+[ {
+  "location" : {
+    "filePath" : "main.bal",
+    "startLine" : 21,
+    "endLine" : 21,
+    "startColumn" : 28,
+    "endColumn" : 44,
+    "startOffset" : 762,
+    "length" : 16
+  },
+  "rule" : {
+    "id" : "ballerina/io:1",
+    "numericId" : 2,
+    "description" : "I/O function calls should not be vulnerable to path injection attacks",
+    "ruleKind" : "VULNERABILITY"
+  },
+  "source" : "BUILT_IN",
+  "fileName" : "rule2/main.bal",
+  "filePath" : "/Users/sachink/Desktop/module-ballerina-io/compiler-plugin-test/src/test/resources/static_code_analyzer/ballerina_packages/rule1/main.bal"
+} ]

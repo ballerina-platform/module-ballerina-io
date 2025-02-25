@@ -18,23 +18,37 @@
 
 package io.ballerina.stdlib.io.compiler.staticcodeanalyzer;
 
-import io.ballerina.compiler.syntax.tree.SyntaxKind;
-import io.ballerina.projects.plugins.CodeAnalysisContext;
-import io.ballerina.projects.plugins.CodeAnalyzer;
-import io.ballerina.scan.Reporter;
+import io.ballerina.scan.Rule;
+import io.ballerina.scan.RuleKind;
 
-/**
- * File code analyser.
- */
-public class IOCodeAnalyzer extends CodeAnalyzer {
-    private final Reporter reporter;
+public class RuleImpl implements Rule {
+    private final int id;
+    private final String description;
+    private final RuleKind kind;
 
-    public IOCodeAnalyzer(Reporter reporter) {
-        this.reporter = reporter;
+    RuleImpl(int id, String description, RuleKind kind) {
+        this.id = id;
+        this.description = description;
+        this.kind = kind;
     }
 
     @Override
-    public void init(CodeAnalysisContext codeAnalysisContext) {
-        codeAnalysisContext.addSyntaxNodeAnalysisTask(new IOPathInjectionAnalyzer(reporter), SyntaxKind.FUNCTION_CALL);
+    public String id() {
+        return Integer.toString(this.id);
+    }
+
+    @Override
+    public int numericId() {
+        return this.id;
+    }
+
+    @Override
+    public String description() {
+        return this.description;
+    }
+
+    @Override
+    public RuleKind kind() {
+        return this.kind;
     }
 }

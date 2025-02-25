@@ -18,5 +18,35 @@
 
 package io.ballerina.stdlib.io.compiler.staticcodeanalyzer;
 
-public class IORule {
+import io.ballerina.scan.Rule;
+
+import static io.ballerina.scan.RuleKind.VULNERABILITY;
+import static io.ballerina.stdlib.io.compiler.staticcodeanalyzer.RuleFactory.createRule;
+
+/**
+ * Represents static code rules specific to the Ballerina File package.
+ */
+public enum IORule {
+    AVOID_PATH_TRAVERSAL(createRule(1, "I/O function calls should not be vulnerable to path" +
+            " injection attacks", VULNERABILITY));
+
+    private final Rule rule;
+
+    IORule(Rule rule) {
+        this.rule = rule;
+    }
+
+    public int getId() {
+        return this.rule.numericId();
+    }
+
+    public Rule getRule() {
+        return this.rule;
+    }
+
+    @Override
+    public String toString() {
+        return "{\"id\":" + this.getId() + ", \"kind\":\"" + this.rule.kind() + "\"," +
+                " \"description\" : \"" + this.rule.description() + "\"}";
+    }
 }

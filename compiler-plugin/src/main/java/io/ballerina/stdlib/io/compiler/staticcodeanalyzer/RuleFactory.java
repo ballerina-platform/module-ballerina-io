@@ -16,10 +16,16 @@
  * under the License.
  */
 
-package io.ballerina.stdlib.io.compiler;
+package io.ballerina.stdlib.io.compiler.staticcodeanalyzer;
 
-public class Constants {
-    private Constants() {}
+import io.ballerina.scan.Rule;
+import io.ballerina.scan.RuleKind;
 
-    public static final String SCANNER_CONTEXT = "ScannerContext";
+/**
+ * {@code RuleFactory} contains the logic to create a {@link Rule}.
+ */
+public class RuleFactory {
+    public static Rule createRule(int id, String description, RuleKind kind) {
+        return new RuleImpl(id, description, kind);
+    }
 }
