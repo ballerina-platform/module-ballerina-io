@@ -18,8 +18,30 @@
 
 package io.ballerina.stdlib.io.compiler;
 
+import java.util.List;
+
 public class Constants {
     private Constants() {}
 
     public static final String SCANNER_CONTEXT = "ScannerContext";
+
+    public static final List<String> IO_FUNCTIONS = List.of(
+            "fileReadBytes",
+            "fileWriteBytes",
+            "fileReadBlocksAsStream",
+            "fileWriteBlocksFromStream",
+            "fileWriteString",
+            "fileReadString",
+            "fileWriteLines",
+            "fileReadLines",
+            "fileWriteLinesFromStream",
+            "fileWriteCsv",
+            "fileReadCsv",
+            "fileWriteCsvFromStream",
+            "fileReadCsvAsStream",
+            "fileWriteJson",
+            "fileReadJson",
+            "fileWriteXml",
+            "fileReadXml"
+    );
 }
