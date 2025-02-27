@@ -20,9 +20,15 @@ plugins {
     id 'java'
     id 'checkstyle'
     id 'com.github.spotbugs'
+    id 'jacoco'
 }
 
 description = 'Ballerina - IO Compiler Plugin Tests'
+
+jacoco {
+    toolVersion = "${jacocoVersion}"
+    reportsDirectory = file("$project.buildDir/reports/jacoco")
+}
 
 dependencies {
     checkstyle project(':checkstyle')
@@ -59,6 +65,15 @@ test {
             }
         }
     }
+    finalizedBy jacocoTestReport
+}
+
+jacocoTestReport {
+    dependsOn test
+    reports {
+        xml.required = true
+    }
+    sourceSets project(':io-compiler-plugin').sourceSets.main
 }
 
 spotbugsTest {
