@@ -95,10 +95,9 @@ public class IOPathInjectionAnalyzer implements AnalysisTask<SyntaxNodeAnalysisC
             return true;
         }
 
-        if (argument instanceof BinaryExpressionNode binaryExpression) {
-            if (binaryExpression.operator().kind() == SyntaxKind.PLUS_TOKEN) {
-                return false;
-            }
+        if (argument instanceof BinaryExpressionNode binaryExpression &&
+                binaryExpression.operator().kind() == SyntaxKind.PLUS_TOKEN) {
+            return false;
         }
 
         if (argument instanceof SimpleNameReferenceNode variableRef) {
@@ -123,28 +122,16 @@ public class IOPathInjectionAnalyzer implements AnalysisTask<SyntaxNodeAnalysisC
     private boolean isVariableDeclaredSafely(FunctionBodyBlockNode functionBody, String variableName,
                                              SimpleNameReferenceNode variableRef) {
         for (StatementNode statement : functionBody.statements()) {
-            if (!(statement instanceof VariableDeclarationNode varDecl)) {
-                continue;
-            }
-
-            if (!isMatchingVariable(varDecl, variableName)) {
-                continue;
-            }
-
-            ExpressionNode initializer = varDecl.initializer().orElse(null);
-            if (initializer == null) {
+            if (statement instanceof VariableDeclarationNode varDecl && isMatchingVariable(varDecl, variableName)) {
+                ExpressionNode initializer = varDecl.initializer().orElse(null);
+                if (initializer == null || isConcatenationAssignment(initializer)) {
+                    return isFunctionParameter(variableRef);
+                }
+                if (initializer instanceof SimpleNameReferenceNode refNode) {
+                    return isFunctionParameter(refNode);
+                }
                 return true;
             }
-
-            if (isConcatenationAssignment(initializer)) {
-                return isFunctionParameter(variableRef);
-            }
-
-            if (initializer instanceof SimpleNameReferenceNode refNode) {
-                return isFunctionParameter(refNode);
-            }
-
-            return true;
         }
         return true;
     }
@@ -219,15 +206,13 @@ public class IOPathInjectionAnalyzer implements AnalysisTask<SyntaxNodeAnalysisC
 
     private boolean isIndirectFunctionParameterFromBinary(BinaryExpressionNode binaryExpr,
                                                           RequiredParameterNode reqParam) {
-        if (binaryExpr.lhsExpr() instanceof SimpleNameReferenceNode leftRef) {
-            if (leftRef.name().text().equals(reqParam.paramName().get().text())) {
-                return true;
-            }
+        if (binaryExpr.lhsExpr() instanceof SimpleNameReferenceNode leftRef &&
+                leftRef.name().text().equals(reqParam.paramName().get().text())) {
+            return true;
         }
-        if (binaryExpr.rhsExpr() instanceof SimpleNameReferenceNode rightRef) {
-            if (rightRef.name().text().equals(reqParam.paramName().get().text())) {
-                return true;
-            }
+        if (binaryExpr.rhsExpr() instanceof SimpleNameReferenceNode rightRef &&
+                rightRef.name().text().equals(reqParam.paramName().get().text())) {
+            return true;
         }
         return false;
     }
