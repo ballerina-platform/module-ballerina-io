@@ -210,11 +210,8 @@ public class IOPathInjectionAnalyzer implements AnalysisTask<SyntaxNodeAnalysisC
                 leftRef.name().text().equals(reqParam.paramName().get().text())) {
             return true;
         }
-        if (binaryExpr.rhsExpr() instanceof SimpleNameReferenceNode rightRef &&
-                rightRef.name().text().equals(reqParam.paramName().get().text())) {
-            return true;
-        }
-        return false;
+        return binaryExpr.rhsExpr() instanceof SimpleNameReferenceNode rightRef &&
+                rightRef.name().text().equals(reqParam.paramName().get().text());
     }
 
     public static Document getDocument(SyntaxNodeAnalysisContext context) {
