@@ -62,7 +62,6 @@ public class IOPathInjectionAnalyzer implements AnalysisTask<SyntaxNodeAnalysisC
             return;
         }
 
-        // Get function name
         Optional<ExpressionNode> functionNameOpt = Optional.ofNullable(functionCall.functionName());
         if (functionNameOpt.isEmpty()) {
             return;
@@ -70,12 +69,10 @@ public class IOPathInjectionAnalyzer implements AnalysisTask<SyntaxNodeAnalysisC
 
         ExpressionNode functionName = functionNameOpt.get();
 
-        // Check if it's an `io` module function
         if (functionName instanceof QualifiedNameReferenceNode qualifiedName) {
             String moduleName = qualifiedName.modulePrefix().text();
             String functionNameStr = qualifiedName.identifier().text();
 
-            // Ensure it's an `io` module function
             if ("io".equals(moduleName) && IO_FUNCTIONS.contains(functionNameStr)) {
                 if (!isSafePath(functionCall, context)) {
                     Location location = functionCall.location();
@@ -86,10 +83,9 @@ public class IOPathInjectionAnalyzer implements AnalysisTask<SyntaxNodeAnalysisC
     }
 
     private boolean isSafePath(FunctionCallExpressionNode functionCall, SyntaxNodeAnalysisContext context) {
-        // Get function arguments
         NodeList<FunctionArgumentNode> arguments = functionCall.arguments();
         if (arguments.isEmpty()) {
-            return true; // No arguments, so nothing to analyze
+            return true;
         }
 
         FunctionArgumentNode firstArg = arguments.get(0);
@@ -101,18 +97,15 @@ public class IOPathInjectionAnalyzer implements AnalysisTask<SyntaxNodeAnalysisC
             return true;
         }
 
-        // 🔹 Detect direct concatenation using `+`
         if (argument instanceof BinaryExpressionNode binaryExpression) {
             if (binaryExpression.operator().kind() == SyntaxKind.PLUS_TOKEN) {
-                return false; // 🚨 Unsafe concatenation detected
+                return false;
             }
         }
 
-        // 🔹 Detect variables used as file paths
         if (argument instanceof SimpleNameReferenceNode variableRef) {
             return isVariableSafe(variableRef, context);
         }
-
         return true;
     }
 
