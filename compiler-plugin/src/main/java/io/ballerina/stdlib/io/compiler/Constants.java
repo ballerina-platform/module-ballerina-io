@@ -24,6 +24,7 @@ public class Constants {
     private Constants() {}
 
     public static final String SCANNER_CONTEXT = "ScannerContext";
+    public static final String IO = "io";
 
     public static final List<String> IO_FUNCTIONS = List.of(
             "fileReadBytes",

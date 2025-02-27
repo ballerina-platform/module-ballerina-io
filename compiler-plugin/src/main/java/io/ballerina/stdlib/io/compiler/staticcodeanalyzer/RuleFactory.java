@@ -25,6 +25,9 @@ import io.ballerina.scan.RuleKind;
  * {@code RuleFactory} contains the logic to create a {@link Rule}.
  */
 public class RuleFactory {
+
+    private RuleFactory() {}
+
     public static Rule createRule(int id, String description, RuleKind kind) {
         return new RuleImpl(id, description, kind);
     }
