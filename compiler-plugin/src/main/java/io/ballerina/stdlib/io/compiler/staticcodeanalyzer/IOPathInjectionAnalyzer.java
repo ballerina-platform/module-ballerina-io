@@ -74,7 +74,7 @@ public class IOPathInjectionAnalyzer implements AnalysisTask<SyntaxNodeAnalysisC
             String functionNameStr = qualifiedName.identifier().text();
 
             if ("io".equals(moduleName) && IO_FUNCTIONS.contains(functionNameStr)) {
-                if (!isSafePath(functionCall, context)) {
+                if (!isSafePath(functionCall)) {
                     Location location = functionCall.location();
                     this.reporter.reportIssue(getDocument(context), location, AVOID_PATH_TRAVERSAL.getId());
                 }
@@ -82,7 +82,7 @@ public class IOPathInjectionAnalyzer implements AnalysisTask<SyntaxNodeAnalysisC
         }
     }
 
-    private boolean isSafePath(FunctionCallExpressionNode functionCall, SyntaxNodeAnalysisContext context) {
+    private boolean isSafePath(FunctionCallExpressionNode functionCall) {
         NodeList<FunctionArgumentNode> arguments = functionCall.arguments();
         if (arguments.isEmpty()) {
             return true;
@@ -104,12 +104,12 @@ public class IOPathInjectionAnalyzer implements AnalysisTask<SyntaxNodeAnalysisC
         }
 
         if (argument instanceof SimpleNameReferenceNode variableRef) {
-            return isVariableSafe(variableRef, context);
+            return isVariableSafe(variableRef);
         }
         return true;
     }
 
-    private boolean isVariableSafe(SimpleNameReferenceNode variableRef, SyntaxNodeAnalysisContext context) {
+    private boolean isVariableSafe(SimpleNameReferenceNode variableRef) {
         String variableName = variableRef.name().text();
         Node currentNode = variableRef.parent();
         while (currentNode != null) {
@@ -178,7 +178,7 @@ public class IOPathInjectionAnalyzer implements AnalysisTask<SyntaxNodeAnalysisC
                         if (varDecl.typedBindingPattern().bindingPattern() instanceof
                                 CaptureBindingPatternNode bindingPattern) {
                             if (bindingPattern.variableName().text().equals(variableRef.name().text())) {
-                                // Now check if this variable is assigned to another variable
+                                // Check if the variable is assigned to another variable
                                 if (varDecl.initializer().isPresent()) {
                                     ExpressionNode initializer = varDecl.initializer().get();
                                     // If it's a reference to the function parameter, return true
@@ -187,7 +187,7 @@ public class IOPathInjectionAnalyzer implements AnalysisTask<SyntaxNodeAnalysisC
                                             return true;
                                         }
                                     }
-                                    // If it's a binary expression (like concatenation), recurse
+                                    // If it's a binary expression, recurse
                                     if (initializer instanceof BinaryExpressionNode binaryExpr) {
                                         if (binaryExpr.operator().kind() == SyntaxKind.PLUS_TOKEN) {
                                             // Recursively check both sides of the binary expression
