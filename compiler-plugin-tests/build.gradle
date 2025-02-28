@@ -30,6 +30,15 @@ jacoco {
     reportsDirectory = file("$project.buildDir/reports/jacoco")
 }
 
+jacocoTestReport {
+    reports {
+        xml.required = true
+        csv.required = false
+        html.required = false
+    }
+    sourceSets project(':io-compiler-plugin').sourceSets.main
+}
+
 dependencies {
     checkstyle project(':checkstyle')
     checkstyle "com.puppycrawl.tools:checkstyle:${checkstylePluginVersion}"
