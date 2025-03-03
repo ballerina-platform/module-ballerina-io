@@ -25,6 +25,9 @@ import io.ballerina.compiler.syntax.tree.FunctionArgumentNode;
 import io.ballerina.compiler.syntax.tree.FunctionBodyBlockNode;
 import io.ballerina.compiler.syntax.tree.FunctionCallExpressionNode;
 import io.ballerina.compiler.syntax.tree.FunctionDefinitionNode;
+import io.ballerina.compiler.syntax.tree.ImportOrgNameNode;
+import io.ballerina.compiler.syntax.tree.ImportPrefixNode;
+import io.ballerina.compiler.syntax.tree.ModulePartNode;
 import io.ballerina.compiler.syntax.tree.Node;
 import io.ballerina.compiler.syntax.tree.NodeList;
 import io.ballerina.compiler.syntax.tree.PositionalArgumentNode;
@@ -40,8 +43,11 @@ import io.ballerina.projects.plugins.SyntaxNodeAnalysisContext;
 import io.ballerina.scan.Reporter;
 import io.ballerina.tools.diagnostics.Location;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
+import static io.ballerina.stdlib.io.compiler.Constants.BALLERINA_ORG;
 import static io.ballerina.stdlib.io.compiler.Constants.IO;
 import static io.ballerina.stdlib.io.compiler.Constants.IO_FUNCTIONS;
 import static io.ballerina.stdlib.io.compiler.staticcodeanalyzer.IORule.AVOID_PATH_TRAVERSAL;
@@ -69,11 +75,28 @@ public class IOPathInjectionAnalyzer implements AnalysisTask<SyntaxNodeAnalysisC
 
         ExpressionNode functionName = functionNameOpt.get();
 
+        Document document = getDocument(context);
+        List<String> importPrefix = new ArrayList<>();
+        if (document.syntaxTree().rootNode() instanceof ModulePartNode modulePartNode) {
+            importPrefix = modulePartNode.imports().stream()
+                    .filter(importDeclarationNode -> {
+                        ImportOrgNameNode importOrgNameNode = importDeclarationNode.orgName().orElse(null);
+                        return importOrgNameNode != null && BALLERINA_ORG.equals(importOrgNameNode.orgName().text());
+                    })
+                    .filter(importDeclarationNode -> importDeclarationNode.moduleName().stream().anyMatch(
+                            moduleNameNode -> IO.equals(moduleNameNode.text())))
+                    .map(importDeclarationNode -> {
+                        ImportPrefixNode importPrefixNode = importDeclarationNode.prefix().orElse(null);
+                        return importPrefixNode != null ? importPrefixNode.prefix().text() : IO;
+                    }).toList();
+        }
+
         if (functionName instanceof QualifiedNameReferenceNode qualifiedName) {
             String moduleName = qualifiedName.modulePrefix().text();
             String functionNameStr = qualifiedName.identifier().text();
 
-            if (IO.equals(moduleName) && IO_FUNCTIONS.contains(functionNameStr) && !isSafePath(functionCall)) {
+            if (importPrefix.contains(moduleName) &&
+                    IO_FUNCTIONS.contains(functionNameStr) && !isSafePath(functionCall)) {
                 Location location = functionCall.location();
                 this.reporter.reportIssue(getDocument(context), location, AVOID_PATH_TRAVERSAL.getId());
             }

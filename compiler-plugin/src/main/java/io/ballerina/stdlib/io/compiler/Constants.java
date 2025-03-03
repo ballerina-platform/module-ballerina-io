@@ -25,6 +25,7 @@ public class Constants {
 
     public static final String SCANNER_CONTEXT = "ScannerContext";
     public static final String IO = "io";
+    public static final String BALLERINA_ORG = "ballerina";
 
     public static final List<String> IO_FUNCTIONS = List.of(
             "fileReadBytes",
