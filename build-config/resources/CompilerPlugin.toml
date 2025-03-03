@@ -1,0 +1,6 @@
+[plugin]
+id = "io-compiler-plugin"
+class = "io.ballerina.stdlib.io.compiler.IOCompilerPlugin"
+
+[[dependency]]
+path = "../compiler-plugin/build/libs/io-compiler-plugin-@project.version@.jar"

@@ -47,3 +47,5 @@ velocity.log*
 examples/**/Dependencies.toml
 load-tests/**/Dependencies.toml
 ballerina/Dependencies 2.toml
+
+compiler-plugin-tests/**/target
