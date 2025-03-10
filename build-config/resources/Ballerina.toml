@@ -18,11 +18,6 @@ artifactId = "io-native"
 path = "../native/build/libs/io-native-@project.version@.jar"
 version = "@toml.version@"
 
-[[platform.java21.dependency]]
-groupId = "io.ballerina.stdlib"
-artifactId = "io-compiler-plugin"
-version = "@toml.version@"
-path = "../compiler-plugin/build/libs/io-compiler-plugin-@project.version@.jar"
 
 [[platform.java21.dependency]]
 path = "../test-utils/build/libs/io-test-utils-@project.version@.jar"
