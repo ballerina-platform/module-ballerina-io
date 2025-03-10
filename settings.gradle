@@ -39,16 +39,12 @@ include ':io-native'
 include ':io-test-utils'
 include ':io-ballerina'
 include ':io-examples'
-include 'io-compiler-plugin'
-include 'io-compiler-plugin-tests'
 
 project(':checkstyle').projectDir = file("build-config${File.separator}checkstyle")
 project(':io-native').projectDir = file('native')
 project(':io-test-utils').projectDir = file('test-utils')
 project(':io-ballerina').projectDir = file('ballerina')
 project(':io-examples').projectDir = file('examples')
-project(':io-compiler-plugin').projectDir = file('compiler-plugin')
-project(':io-compiler-plugin-tests').projectDir = file('compiler-plugin-tests')
 
 gradleEnterprise {
     buildScan {

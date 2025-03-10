@@ -1,6 +1,0 @@
-[plugin]
-id = "io-compiler-plugin"
-class = "io.ballerina.stdlib.io.compiler.IOCompilerPlugin"
-
-[[dependency]]
-path = "../compiler-plugin/build/libs/io-compiler-plugin-1.8.0-SNAPSHOT.jar"
