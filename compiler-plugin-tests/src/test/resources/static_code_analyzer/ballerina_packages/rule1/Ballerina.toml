@@ -1,0 +1,8 @@
+[package]
+org = "sachink"
+name = "rule1"
+version = "0.1.0"
+distribution = "2201.11.0-20250127-101700-a4b67fe5"
+
+[build-options]
+observabilityIncluded = true
