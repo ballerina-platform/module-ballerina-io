@@ -17,6 +17,6 @@
     },
     "source": "BUILT_IN",
     "fileName": "rule1/main.bal",
-    "filePath": "/Users/sachink/Desktop/module-ballerina-io/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/main.bal"
+    "filePath": "**PATH_TO_MODULE_ROOT**/module-ballerina-io/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/main.bal"
   }
 ]
