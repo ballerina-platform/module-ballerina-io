@@ -42,7 +42,8 @@ isolated function testReadCharacters() returns Error? {
 isolated function testReadAllCharacters() returns Error? {
     string filePath = RESOURCES_BASE_PATH + "datafiles/io/text/fileThatExceeds2MB.txt";
     string result = "";
-    int expectedNumberOfChars = 2265223;
+    int expectedNumberOfCharsInWindows = 2297329;
+    int expectedNumberOfCharsInLinux = 2265223;
     int fixedSize = 500;
     boolean isDone = false;
 
@@ -61,7 +62,11 @@ isolated function testReadAllCharacters() returns Error? {
             }
         }
     }
-    test:assertEquals(result.length(), expectedNumberOfChars);
+    if isWindowsEnvironment() {
+        test:assertEquals(result.length(), expectedNumberOfCharsInWindows);
+    } else {
+        test:assertEquals(result.length(), expectedNumberOfCharsInLinux);
+    }
     check characterChannel.close();
 }
 
