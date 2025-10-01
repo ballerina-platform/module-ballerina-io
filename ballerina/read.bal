@@ -16,13 +16,14 @@
 
 import ballerina/jballerina.java;
 
-# Retrieves the input read from the STDIN.
+# Reads a line of input from the standard input (STDIN).
+# If an argument is provided, it will be printed as a prompt before reading the input.
 # ```ballerina
 # string choice = io:readln("Enter choice 1 - 5: ");
 # string choice = io:readln();
 # ```
 #
-# + a - Any value to be printed
+# + a - An optional value to be printed before reading the input
 # + return - Input read from the STDIN
 public function readln(any? a = ()) returns string = @java:Method {
     name: "readln",

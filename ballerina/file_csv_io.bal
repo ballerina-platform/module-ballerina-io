@@ -15,7 +15,7 @@
 // under the License.
 import ballerina/jballerina.java;
 
-# Read file content as a CSV.
+# Reads file content as a CSV.
 # When the expected data type is record[], the first entry of the csv file should contain matching headers.
 # ```ballerina
 # string[][]|io:Error content = io:fileReadCsv("./resources/myfile.csv");
@@ -30,9 +30,8 @@ public isolated function fileReadCsv(string path, int skipHeaders = 0, typedesc<
     'class: "io.ballerina.stdlib.io.nativeimpl.CsvChannelUtils"
 } external;
 
-# Read file content as a CSV.
-# When the expected data type is stream<record, io:Error?>,
-# the first entry of the csv file should contain matching headers.
+# Reads file content as a CSV.
+# When the expected data type is stream<record, io:Error?>, the first entry of the csv file should contain matching headers.
 # ```ballerina
 # stream<string[]|io:Error content = io:fileReadCsvAsStream("./resources/myfile.csv");
 # stream<record{}, io:Error?>|io:Error content = io:fileReadCsvAsStream("./resources/myfile.csv");
@@ -45,9 +44,9 @@ public isolated function fileReadCsvAsStream(string path, typedesc<string[]|map<
     'class: "io.ballerina.stdlib.io.nativeimpl.CsvChannelUtils"
 } external;
 
-# Write CSV content to a file.
-# When the input is a record[] type in `OVERWRITE`,  headers will be written to the CSV file by default.
-# For `APPEND`, order of the existing csv file is inferred using the headers and used as the order.
+# Writes CSV content to a file.
+# When the input is a record[] type in `OVERWRITE`, headers will be written to the CSV file.
+# For `APPEND`, order of the existing csv file is inferred using the headers.
 # ```ballerina
 # type Coord record {int x;int y;};
 # Coord[] contentRecord = [{x: 1,y: 2},{x: 1,y: 2}]
@@ -56,17 +55,17 @@ public isolated function fileReadCsvAsStream(string path, typedesc<string[]|map<
 # io:Error? resultRecord = io:fileWriteCsv("./resources/myfileRecord.csv", contentRecord);
 # ```
 # + path - The CSV file path
-# + content - CSV content as an array of string arrays or a array of Ballerina records
-# + option - To indicate whether to overwrite or append the given content
+# + content - CSV content as a two-dimensional string array or a Ballerina records array
+# + option - Indicate whether to overwrite or append the given content
 # + return - `()` when the writing was successful or an `io:Error`
 public isolated function fileWriteCsv(string path, string[][]|map<anydata>[] content, FileWriteOption option = OVERWRITE) returns
 Error? {
     return channelWriteCsv(path, option, content);
 }
 
-# Write CSV record stream to a file.
-# When the input is a `stream<record, io:Error?>` in `OVERWRITE`,  headers will be written to the CSV file by default.
-# For `APPEND`, order of the existing csv file is inferred using the headers and used as the order.
+# Writes CSV record stream to a file.
+# When the input is a `stream<record, io:Error?>` in `OVERWRITE`, headers will be written to the CSV file.
+# For `APPEND`, order of the existing csv file is inferred using the headers.
 # ```ballerina
 # type Coord record {int x;int y;};
 # Coord[] contentRecord = [{x: 1,y: 2},{x: 1,y: 2}]
@@ -78,7 +77,7 @@ Error? {
 # ```
 # + path - The CSV file path
 # + content - A CSV record stream to be written
-# + option - To indicate whether to overwrite or append the given content
+# + option - Indicate whether to overwrite or append the given content
 # + return - `()` when the writing was successful or an `io:Error`
 public isolated function fileWriteCsvFromStream(string path, stream<string[]|map<anydata>, Error?> content,
         FileWriteOption option = OVERWRITE) returns Error? {

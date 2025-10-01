@@ -15,18 +15,18 @@
 // under the License.
 import ballerina/jballerina.java;
 
-# Represents a channel which will allow to read.
+# Represents a readable record channel.
 public class ReadableTextRecordChannel {
 
     private ReadableCharacterChannel charChannel;
     private string rs;
     private string fs;
 
-    # Constructs a ReadableTextRecordChannel from a given ReadableCharacterChannel.
+    # Initializes a readable text record channel.
     #
-    # + charChannel - CharacterChannel which will point to the input/output resource
-    # + fs - Field separator (this could be a regex)
-    # + rs - Record separator (this could be a regex)
+    # + charChannel - The `io:ReadableCharacterChannel` which will point to the input/output resource
+    # + fs - The field separator (this could be a regex)
+    # + rs - The record separator (this could be a regex)
     public isolated function init(ReadableCharacterChannel charChannel, string fs = "", string rs = "",
                                 string fmt = "default") {
         self.charChannel = charChannel;
@@ -45,7 +45,7 @@ public class ReadableTextRecordChannel {
         return hasNextExtern(self);
     }
 
-    # Get the next record from the input/output resource.
+    # Reads the next record from the input/output resource.
     # ```ballerina
     # string[]|io:Error record = readableRecChannel.getNext();
     # ```

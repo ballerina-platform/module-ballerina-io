@@ -23,14 +23,14 @@ public const string FS_COLON = ":";
 # Represents the minimum number of headers, which will be included in the CSV.
 public const int MINIMUM_HEADER_COUNT = 0;
 
-# Represents a WritableCSVChannel, which could be used to write records from the CSV file.
+# Represents a writable CSV channel, which could be used to write records from the CSV file.
 public class WritableCSVChannel {
     private WritableTextRecordChannel? dc;
 
-    # Constructs a CSV channel from a `CharacterChannel` to read/write CSV records.
+    # Initializes a writable CSV channel.
     #
-    # + CharacterChannel - The `CharacterChannel`, which will represent the content in the CSV file
-    # + fs - Field separator, which will separate the records in the CSV
+    # + CharacterChannel - The `io:WritableCharacterChannel`, which will represent the content in the CSV file
+    # + fs - The field separator, which will separate the records in the CSV
     public isolated function init(WritableCharacterChannel characterChannel, Separator fs = ",") {
         if fs == TAB {
             self.dc = new WritableTextRecordChannel(characterChannel, fmt = "TDF");
@@ -58,7 +58,7 @@ public class WritableCSVChannel {
         return;
     }
 
-    # Closes the `io:WritableCSVChannel`.
+    # Closes the writable CSV channel.
     # After a channel is closed, any further writing operations will cause an error.
     # ```ballerina
     # io:Error? err = csvChannel.close();

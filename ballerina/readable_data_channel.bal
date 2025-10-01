@@ -18,10 +18,10 @@ import ballerina/jballerina.java;
 # Represents a data channel for reading data.
 public class ReadableDataChannel {
 
-    # Initializes the data channel.
+    # Initializes a readable data channel.
     #
-    # + byteChannel - The channel, which would represent the source to read/write data
-    # + bOrder - Network byte order
+    # + byteChannel - The `io:ReadableByteChannel` channel, which would represent the source to read/write data
+    # + bOrder - The byte order used for reading data. Defaults to `"BE"` (Big Endian)
     public isolated function init(ReadableByteChannel byteChannel, ByteOrder bOrder = "BE") {
         // Remove temp once this got fixed #19842
         string temp = bOrder;
@@ -83,7 +83,7 @@ public class ReadableDataChannel {
     # boolean|io:Error result = dataChannel.readBool();
     # ```
     #
-    # + return - Boolean value, which is read or else `io:Error` if any error occurred
+    # + return - The boolean value read from the data channel, or an `io:Error` if an error occurs
     public isolated function readBool() returns boolean|Error {
         return readBoolExtern(self);
     }
@@ -93,9 +93,9 @@ public class ReadableDataChannel {
     # string|io:Error string = dataChannel.readString(10, "UTF-8");
     # ```
     #
-    # + nBytes - Specifies the number of bytes, which represents the string
-    # + encoding - Specifies the char-set encoding of the string
-    # + return - The value of the string or else `io:Error` if any error occurred
+    # + nBytes - The number of bytes to read from the data channel to construct the string
+    # + encoding - The character encoding to use for decoding the bytes into a string (e.g., "UTF-8")
+    # + return - The string value read from the data channel, or an `io:Error` if an error occurs
     public isolated function readString(int nBytes, string encoding) returns string|Error {
         return readStringExtern(self, nBytes, encoding);
     }
@@ -105,7 +105,7 @@ public class ReadableDataChannel {
     # int|io:Error result = dataChannel.readVarInt();
     # ```
     #
-    # + return - The value of the integer which is read or else `io:Error` if any error occurred
+    # + return - The variable-length integer value read from the data channel, or an `io:Error` if an error occurs
     public isolated function readVarInt() returns int|Error {
         return readVarIntExtern(self);
     }

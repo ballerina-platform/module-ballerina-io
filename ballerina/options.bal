@@ -43,7 +43,7 @@ public type XmlDoctype record {|
     string? internalSubset = ();
 |};
 
-# The writing options of an XML.
+# Represents the writing options of an XML.
 #
 # + xmlEntityType - The entity type of the XML input (the default value is `DOCUMENT_ENTITY`)
 # + doctype - XML DOCTYPE value (the default value is `()`)

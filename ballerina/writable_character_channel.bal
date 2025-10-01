@@ -15,13 +15,13 @@
 // under the License.
 import ballerina/jballerina.java;
 
-# Represents a channel which could be used to write characters through a given WritableCharacterChannel.
+# Represents a writable character channel used for writing characters.
 public class WritableCharacterChannel {
 
     private WritableByteChannel bChannel;
     private string charset;
 
-    # Constructs an `io:WritableByteChannel` from a given `io:WritableByteChannel` and `Charset`.
+    # Initializes a writable character channel.
     #
     # + bChannel - The `io:WritableByteChannel`, which would be used to write the characters
     # + charset - The character set, which would be used to encode the given bytes to characters
@@ -31,24 +31,24 @@ public class WritableCharacterChannel {
         initWritableCharacterChannel(self, bChannel, charset);
     }
 
-    # Writes a given sequence of characters (string).
+    # Writes a sequence of characters (string) to the writable character channel.
     # ```ballerina
     # int|io:Error result = writableCharChannel.write("Content", 0);
     # ```
     #
-    # + content - Content to be written
-    # + startOffset - Number of characters to be offset when writing the content
-    # + return - Content length that written or else an `io:Error`
+    # + content - The string content to be written
+    # + startOffset - The number of characters to skip from the beginning of the content before writing
+    # + return - The number of characters written to the channel, or an `io:Error` if an error occurs
     public isolated function write(string content, int startOffset) returns int|Error {
         return writeExtern(self, content, startOffset);
     }
 
-    # Writes a string as a line with a following newline character `\n`.
+    # Writes a string as a line followed by a newline character (`\n`) to the writable character channel.
     # ```ballerina
     # io:Error? result = writableCharChannel.writeLine("Content");
     # ```
     #
-    # + content - Content to be written
+    # + content - The string content to be written
     # + return - `()` if the writing was successful or an `io:Error`
     public isolated function writeLine(string content) returns Error? {
         string lineContent = content + NEW_LINE;
@@ -59,24 +59,24 @@ public class WritableCharacterChannel {
         return;
     }
 
-    # Writes a given JSON to the given channel.
+    # Writes the provided JSON content to the writable character channel.
     # ```ballerina
     # io:Error? err = writableCharChannel.writeJson(inputJson, 0);
     # ```
     #
-    # + content - The JSON to be written
+    # + content - The JSON content to be written
     # + return - `()` if the writing was successful or an `io:Error`
     public isolated function writeJson(json content) returns Error? {
         return writeJsonExtern(self, content);
     }
 
-    # Writes a given XML to the channel.
+    # Writes the provided XML content to the writable character channel.
     # ```ballerina
     # io:Error? err = writableCharChannel.writeXml(inputXml, 0);
     # ```
     #
-    # + content - The XML to be written
-    # + xmlDoctype - Optional argument to specify the XML DOCTYPE configurations
+    # + content - The XML content to be written
+    # + xmlDoctype - An optional argument to specify the XML DOCTYPE configurations for the XML content
     # + return - `()` or else an `io:Error` if any error occurred
     public isolated function writeXml(xml content, XmlDoctype? xmlDoctype = ()) returns Error? {
         string doctype = "";
@@ -86,18 +86,18 @@ public class WritableCharacterChannel {
         return writeXmlExtern(self, content, doctype);
     }
 
-    # Writes a given key-valued pair `map<string>` to a property file.
+    # Writes a key-value pair map (`map<string>`) to a property file.
     # ```ballerina
     # io:Error? err = writableCharChannel.writeProperties(properties);
     # ```
     # + properties - The map<string> that contains keys and values
-    # + comment - Comment describing the property list
+    # + comment - A comment describing the property list to be included
     # + return - `()` or else an `io:Error` if any error occurred
     public isolated function writeProperties(map<string> properties, string comment) returns Error? {
         return writePropertiesExtern(self, properties, comment);
     }
 
-    # Closes the `io:WritableCharacterChannel`.
+    # Closes the character channel.
     # After a channel is closed, any further writing operations will cause an error.
     # ```ballerina
     # io:Error err = writableCharChannel.close();

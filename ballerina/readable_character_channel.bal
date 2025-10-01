@@ -21,7 +21,7 @@ public class ReadableCharacterChannel {
     private ReadableByteChannel byteChannel;
     private string charset;
 
-    # Constructs an `io:ReadableCharacterChannel` from a given `io:ReadableByteChannel` and `Charset`.
+    # Initializes a readable character channel.
     #
     # + byteChannel - The `io:ReadableByteChannel`, which would be used to read the characters
     # + charset - The character set, which is used to encode/decode the given bytes to characters
@@ -44,7 +44,7 @@ public class ReadableCharacterChannel {
         return readExtern(self, numberOfChars);
     }
 
-    # Read the entire channel content as a string.
+    # Reads the entire channel content as a string.
     # ```ballerina
     # string|io:Error content = readableCharChannel.readString();
     # ```
@@ -53,7 +53,7 @@ public class ReadableCharacterChannel {
         return readAllAsStringExtern(self);
     }
 
-    # Read the entire channel content as a list of lines.
+    # Reads the entire channel content as a list of lines.
     # ```ballerina
     # string[]|io:Error content = readableCharChannel.readAllLines();
     # ```
@@ -82,18 +82,19 @@ public class ReadableCharacterChannel {
         return readXmlExtern(self);
     }
 
-    # Reads a property from a .properties file with a default value.
+    # Reads the value of a specified property key from a properties file.
+    # If the key is not found, the provided default value is returned.
     # ```ballerina
     # string|io:Error result = readableCharChannel.readProperty(key, defaultValue);
     # ```
-    # + key - The property key, which needs to be read
-    # + defaultValue - The default value to be returned
+    # + key - The property key to look up in the properties file
+    # + defaultValue - The default value to return if the key is not found
     # + return - The property value related to the given key or else an `io:Error`
     public isolated function readProperty(string key, string defaultValue = "") returns string|Error {
         return readPropertyExtern(self, key, defaultValue);
     }
 
-    # Return a stream of lines that can be used to read all the lines in a file as a stream.
+    # Returns a stream of lines that can be used to read all the lines in a file as a stream.
     # ```ballerina
     # stream<string, io:Error>|io:Error? result = readableCharChannel.lineStream();
     # ```
@@ -104,7 +105,7 @@ public class ReadableCharacterChannel {
         return new stream<string, Error?>(lineStream);
     }
 
-    # Reads all properties from a .properties file.
+    # Reads all properties from a properties file.
     # ```ballerina
     # map<string>|io:Error result = readableCharChannel.readAllProperties();
     # ```

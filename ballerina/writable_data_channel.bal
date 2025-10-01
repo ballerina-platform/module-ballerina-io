@@ -28,104 +28,104 @@ public const BIG_ENDIAN = "BE";
 # Specifies the byte order to be the least significant byte first.
 public const LITTLE_ENDIAN = "LE";
 
-# Represents a WritableDataChannel for writing data.
+# Represents a writable data channel used for writing various types of data.
 public class WritableDataChannel {
 
-    # Initializes data channel.
+    # Initializes a writable data channel.
     #
-    # + byteChannel - Channel, which would represent the source to read/write data
-    # + bOrder - Network byte order
+    # + byteChannel - The `io:WritableByteChannel`, which would represent the source to read/write data
+    # + bOrder - The network byte order, which specifies the order of bytes (e.g., `io:BIG_ENDIAN` or `io:LITTLE_ENDIAN`)
     public isolated function init(WritableByteChannel byteChannel, ByteOrder bOrder = "BE") {
         // Remove temp once this got fixed #19842
         string temp = bOrder;
         initWritableDataChannel(self, byteChannel, temp);
     }
 
-    # Writes a 16 bit integer.
+    # Writes a 16 bit integer value to the writable data channel.
     # ```ballerina
     # io:Error? err = dataChannel.writeInt16(length);
     # ```
     #
-    # + value - The integer, which will be written
+    # + value - The 16-bit integer value to be written to the data channel
     # + return - `()` if the content is written successfully or else an `io:Error` if any error occurred
     public isolated function writeInt16(int value) returns Error? {
         return writeInt16Extern(self, value);
     }
 
-    # Writes a 32 bit integer.
+    # Writes a 32 bit integer value to the writable data channel.
     # ```ballerina
     # io:Error? err = dataChannel.writeInt32(length);
     # ```
     #
-    # + value - The integer, which will be written
+    # + value - The 32-bit integer value to be written to the data channel
     # + return - `()` if the content is written successfully or else an `io:Error` if any error occurred
     public isolated function writeInt32(int value) returns Error? {
         return writeInt32Extern(self, value);
     }
 
-    # Writes a 64 bit integer.
+    # Writes a 64 bit integer value to the writable data channel.
     # ```ballerina
     # io:Error? err = dataChannel.writeInt64(length);
     # ```
     #
-    # + value - The integer, which will be written
+    # + value - The 64-bit integer value to be written to the data channel
     # + return - `()` if the content is written successfully or else an `io:Error` if any error occurred
     public isolated function writeInt64(int value) returns Error? {
         return writeInt64Extern(self, value);
     }
 
-    # Writes a 32 bit float.
+    # Writes a 32 bit float value to the writable data channel.
     # ```ballerina
     # io:Error? err = dataChannel.writeFloat32(3.12);
     # ```
     #
-    # + value - The float, which will be written
+    # + value - The 32-bit float value to be written to the data channel
     # + return - `()` if the float is written successfully or else an `io:Error` if any error occurred
     public isolated function writeFloat32(float value) returns Error? {
         return writeFloat32Extern(self, value);
     }
 
-    # Writes a 64 bit float.
+    # Writes a 64 bit float value to the writable data channel.
     # ```ballerina
-    # io:Error? err = dataChannel.writeFloat32(3.12);
+    # io:Error? err = dataChannel.writeFloat64(3.12);
     # ```
     #
-    # + value - The float, which will be written
+    # + value - The 64-bit float value to be written to the data channel
     # + return - `()` if the float is written successfully or else an `io:Error` if any error occurred
     public isolated function writeFloat64(float value) returns Error? {
         return writeFloat64Extern(self, value);
     }
 
-    # Writes a boolean.
+    # Writes a boolean value to the writable data channel.
     # ```ballerina
     # io:Error? err = dataChannel.writeInt64(length);
     # ```
     #
-    # + value - The boolean, which will be written
+    # + value - The boolean value to be written to the data channel
     # + return - `()` if the content is written successfully or else an `io:Error` if any error occurred
     public isolated function writeBool(boolean value) returns Error? {
         return writeBoolExtern(self, value);
     }
 
-    # Writes a given string value to the respective channel.
+    # Writes a string value to the writable data channel.
     # ```ballerina
     # io:Error? err = dataChannel.writeString(record);
     # ```
     #
-    # + value - The value, which should be written
+    # + value - The string value to be written to the data channel
     # + encoding - The encoding, which will represent the value string
     # + return - `()` if the content is written successfully or else an `io:Error` if any error occurred
     public isolated function writeString(string value, string encoding) returns Error? {
         return writeStringExtern(self, value, encoding);
     }
 
-    # Writes a variable-length integer.
+    # Writes a variable-length integer to the writable data channel.
     # ```ballerina
     # io:Error? err = dataChannel.writeVarInt(length);
     # ```
     #
-    # + value - The int, which will be written
-    # + return - The value of the integer, which is written or else an `io:Error` if any error occurred
+    # + value - The variable-length integer value to be written to the data channel
+    # + return - `()` if the integer is written successfully, or an `io:Error` if an error occurs
     public isolated function writeVarInt(int value) returns Error? {
         return writeVarIntExtern(self, value);
     }

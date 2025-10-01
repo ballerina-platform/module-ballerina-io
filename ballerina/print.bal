@@ -36,7 +36,7 @@ public type PrintableRawTemplate object {
     public Printable[] insertions;
 };
 
-# Prints `any`, `error`, or string templates (such as `The respective int value is ${val}`) value(s) to the `STDOUT`.
+# Prints `any`, `error`, or string template value(s) to the standard output stream.
 # ```ballerina
 # io:print("Start processing the CSV file from ", srcFileName);
 # ```
@@ -50,8 +50,7 @@ public isolated function print(Printable... values) {
     externPrint(stdout, ...printables);
 }
 
-# Prints `any`, `error` or string templates(such as `The respective int value is ${val}`) value(s) to the STDOUT
-# followed by a new line.
+# Prints `any`, `error` or string templates value(s) to the standard output stream and terminates the line.
 # ```ballerina
 # io:println("Start processing the CSV file from ", srcFileName);
 # ```
@@ -65,8 +64,7 @@ public isolated function println(Printable... values) {
     externPrintln(stdout, ...printables);
 }
 
-# Prints `any`, `error`, or string templates(such as `The respective int value is ${val}`) value(s) to
-# a given stream(STDOUT or STDERR).
+# Prints `any`, `error`, or string templates value(s) to a given stream(STDOUT or STDERR).
 # ```ballerina
 # io:fprint(io:stderr, "Unexpected error occurred");
 # ```
@@ -80,8 +78,7 @@ public isolated function fprint(FileOutputStream fileOutputStream, Printable... 
     externPrint(fileOutputStream, ...printables);
 }
 
-# Prints `any`, `error`, or string templates(such as `The respective int value is ${val}`) value(s) to
-# a given stream(STDOUT or STDERR) followed by a new line.
+# Prints `any`, `error`, or string templates value(s) to a given stream(STDOUT or STDERR) and terminates the line.
 # ```ballerina
 # io:fprintln(io:stderr, "Unexpected error occurred");
 # ```

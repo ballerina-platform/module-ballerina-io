@@ -15,16 +15,16 @@
 // under the License.
 import ballerina/jballerina.java;
 
-# Represents a channel, which will allow to write records through a given WritableCharacterChannel.
+# Represents a writable text record channel that allows writing records.
 public class WritableTextRecordChannel {
     private WritableCharacterChannel characterChannel;
     private string fs;
     private string rs;
 
-    # Constructs a DelimitedTextRecordChannel from a given WritableCharacterChannel.
+    # Initializes a writable text record channel.
     # + characterChannel - The `io:WritableCharacterChannel`, which will point to the input/output resource
-    # + fs - Field separator (this could be a regex)
-    # + rs - Record separator (this could be a regex)
+    # + fs - The field separator (this could be a regex)
+    # + rs - The record separator (this could be a regex)
     # + fmt - The format, which will be used to represent the CSV (this could be 
     # "DEFAULT" (the format specified by the CSVChannel), 
     # "CSV" (Field separator would be "," and record separator would be a new line) or else

@@ -14,7 +14,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-# The format, which will be used to represent the CSV.
+# Specifies the format used to represent CSV data.
 #
 # DEFAULT - The default value is the format specified by the CSVChannel. Precedence will be given to the field
 # separator and record separator.

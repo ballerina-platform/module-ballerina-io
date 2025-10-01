@@ -15,25 +15,25 @@
 // under the License.
 import ballerina/jballerina.java;
 
-# Retrieves a `ReadableByteChannel` from a given file path.
+# Retrieves a readable byte channel from a given file path.
 # ```ballerina
 # io:ReadableByteChannel readableFieldResult = check io:openReadableFile("./files/sample.txt");
 # ```
 #
-# + path - Relative/absolute path string to locate the file
+# + path - The relative or absolute file path
 # + return - The `io:ReadableByteChannel` related to the given file or else an `io:Error` if there is an error while opening
 public isolated function openReadableFile(string path) returns ReadableByteChannel|Error = @java:Method {
     name: "openReadableFile",
     'class: "io.ballerina.stdlib.io.nativeimpl.ByteChannelUtils"
 } external;
 
-# Retrieves a `WritableByteChannel` from a given file path.
+# Retrieves a writable byte channel from a given file path.
 # ```ballerina
 # io:WritableByteChannel writableFileResult = check io:openWritableFile("./files/sampleResponse.txt");
 # ```
 #
-# + path - Relative/absolute path string to locate the file
-# + option - To indicate whether to overwrite or append the given content
+# + path - The relative or absolute file path
+# + option - Indicate whether to overwrite or append the given content
 # + return - The `io:WritableByteChannel` related to the given file or else an `io:Error` if any error occurred
 public isolated function openWritableFile(string path, FileWriteOption option = OVERWRITE) returns
 WritableByteChannel|Error = @java:Method {
@@ -46,7 +46,7 @@ WritableByteChannel|Error = @java:Method {
 # var byteChannel = io:createReadableChannel(content);
 # ```
 #
-# + content - Content, which should be exposed as a channel
+# + content - The content as a byte array, which should be exposed as a channel
 # + return - The `io:ReadableByteChannel` related to the given bytes or else an `io:Error` if any error occurred
 public isolated function createReadableChannel(byte[] content) returns ReadableByteChannel|Error = @java:Method {
     name: "createReadableChannel",
@@ -58,9 +58,9 @@ public isolated function createReadableChannel(byte[] content) returns ReadableB
 # io:ReadableCSVChannel rCsvChannel = check io:openReadableCsvFile(srcFileName);
 # ```
 #
-# + path - File path, which describes the location of the CSV
+# + path - The CSV file path
 # + fieldSeparator - CSV record separator (i.e., comma or tab)
-# + charset - Representation of the encoding characters in the file
+# + charset - The character encoding used to read the file
 # + skipHeaders - Number of headers, which should be skipped
 # + return - The `io:ReadableCSVChannel`, which could be used to iterate through the CSV records or else an `io:Error` if any error occurred
 public isolated function openReadableCsvFile(string path, Separator fieldSeparator = ",",
@@ -76,11 +76,11 @@ ReadableCSVChannel|Error {
 # io:WritableCSVChannel wCsvChannel = check io:openWritableCsvFile(srcFileName);
 # ```
 #
-# + path - File path, which describes the location of the CSV
+# + path - The CSV file path
 # + fieldSeparator - CSV record separator (i.e., comma or tab)
-# + charset - Representation of the encoding characters in the file
+# + charset - The character encoding used to read the file
 # + skipHeaders - Number of headers, which should be skipped
-# + option - To indicate whether to overwrite or append the given content
+# + option - Indicate whether to overwrite or append the given content
 # + return - The `io:WritableCSVChannel`, which could be used to write the CSV records or else an `io:Error` if any error occurred
 public isolated function openWritableCsvFile(string path, Separator fieldSeparator = ",",
                                             string charset = "UTF-8", int skipHeaders = 0,

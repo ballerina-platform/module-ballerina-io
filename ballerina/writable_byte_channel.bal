@@ -15,10 +15,9 @@
 // under the License.
 import ballerina/jballerina.java;
 
-# WritableByteChannel represents an output resource (i.e file) which could be used to sink bytes
+# Represents a writable byte channel that acts as an output resource (e.g., a file) for writing bytes.
 # A file path can be used to obtain an `io:WritableByteChannel`.
-# An `io:WritableByteChannel` can only be obtained using the following method or by providing a native implementation.
-# It cannot be instantiated.
+#
 # `io:openWritableFile("./files/sample.txt")` - used to obtain an `io:WritableByteChannel` from a given file path
 public class WritableByteChannel {
 
