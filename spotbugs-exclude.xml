@@ -20,4 +20,8 @@
     <Match>
         <Package name="io.ballerina.stdlib.io.utils"/>
     </Match>
+    <!-- Pre-existing issues surfaced by SpotBugs 4.9.x (bundled in plugin >= 6.2.0) -->
+    <Match>
+        <BugCode name="THROWS"/>
+    </Match>
 </FindBugsFilter>
