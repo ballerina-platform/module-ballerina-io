@@ -158,6 +158,7 @@ task patchBallerinaScripts(type: PatchBallerinaScriptsTask) {
 }
 
 build.dependsOn patchBallerinaScripts
+test.dependsOn patchBallerinaScripts
 
 updateTomlFiles.dependsOn unpackJballerinaTools
 
