@@ -232,6 +232,7 @@ public class RecordChannelUtils {
             try {
                 bufferedReader.close();
             } catch (IOException ignored) {
+                // Close failure is ignored; the original I/O error is returned to the caller
             }
             return IOUtils.createError(e);
         }
@@ -253,6 +254,7 @@ public class RecordChannelUtils {
             try {
                 bufferedReader.close();
             } catch (IOException ignored) {
+                // Close failure is ignored; the original I/O error is returned to the caller
             }
             return IOUtils.createError(e);
         }
