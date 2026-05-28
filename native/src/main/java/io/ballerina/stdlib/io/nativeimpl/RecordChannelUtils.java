@@ -229,6 +229,11 @@ public class RecordChannelUtils {
             String[] records = textRecordChannel.getFields(line);
             return StringUtils.fromStringArray(records);
         } catch (IOException e) {
+            try {
+                bufferedReader.close();
+            } catch (IOException ignored) {
+                // Close failure is ignored; the original I/O error is returned to the caller
+            }
             return IOUtils.createError(e);
         }
     }
@@ -246,6 +251,11 @@ public class RecordChannelUtils {
             String[] record = textRecordChannel.getFields(line);
             return StringUtils.fromStringArray(record);
         } catch (IOException e) {
+            try {
+                bufferedReader.close();
+            } catch (IOException ignored) {
+                // Close failure is ignored; the original I/O error is returned to the caller
+            }
             return IOUtils.createError(e);
         }
     }
