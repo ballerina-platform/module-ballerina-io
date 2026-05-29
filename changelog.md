@@ -4,6 +4,8 @@ This file contains all the notable changes done to the Ballerina I/O package thr
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [Unreleased]
+
+## [1.8.1] - 2026-05-29
 ### Fixed
 - [Fix resource leak in CSV stream/record channel on I/O error](https://github.com/ballerina-platform/ballerina-library/issues/8804)
 
