@@ -7,24 +7,24 @@ keywords = ["io", "json", "xml", "csv", "file"]
 repository = "https://github.com/ballerina-platform/module-ballerina-io"
 icon = "icon.png"
 license = ["Apache-2.0"]
-distribution = "2201.14.0"
+distribution = "2201.12.0"
 
-[platform.java25]
+[platform.java21]
 graalvmCompatible = true
 
-[[platform.java25.dependency]]
+[[platform.java21.dependency]]
 groupId = "io.ballerina.stdlib"
 artifactId = "io-native"
 path = "../native/build/libs/io-native-@project.version@.jar"
 version = "@toml.version@"
 
-[[platform.java25.dependency]]
+[[platform.java21.dependency]]
 groupId = "io.ballerina.stdlib"
 artifactId = "io-compiler-plugin"
 version = "@toml.version@"
 path = "../compiler-plugin/build/libs/io-compiler-plugin-@project.version@.jar"
 
-[[platform.java25.dependency]]
+[[platform.java21.dependency]]
 path = "../test-utils/build/libs/io-test-utils-@project.version@.jar"
 scope = "testOnly"
 version = "@project.version@"
