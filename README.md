@@ -8,24 +8,28 @@ Ballerina I/O Library
   [![GitHub Last Commit](https://img.shields.io/github/last-commit/ballerina-platform/module-ballerina-io.svg)](https://github.com/ballerina-platform/module-ballerina-io/commits/master)
   [![Github issues](https://img.shields.io/github/issues/ballerina-platform/ballerina-standard-library/module/io.svg?label=Open%20Issues)](https://github.com/ballerina-platform/ballerina-standard-library/labels/module%2Fio)
 
-## Overview
+Overview
+--------
 
 The io module provides file read/write and console I/O capabilities for working with common data formats. It supports bytes, text, CSV, JSON, and XML content through both streaming and non-streaming operations.
 
-## Key Features
+Key Features
+------------
 
 - Console I/O for reading from and writing to the console
 - File read/write APIs for bytes, text, CSV, JSON, and XML content
 - Streaming APIs for processing large files without loading them entirely into memory
 - Non-streaming APIs for simpler, complete-content read/write operations
 
-## Architecture
+Architecture
+------------
 
 The following diagram depicts the overview architecture of the I/O package.
 
 ![Overview](https://raw.githubusercontent.com/ballerina-platform/module-ballerina-io/master/ballerina/docs/architecture.svg)
 
-## Module Details
+Module Details
+--------------
 
 The file I/O operations can be categorized further based on the serialization and deserialization types such as:
 - Bytes I/O
@@ -104,44 +108,44 @@ This repository only contains the source code for the module.
 Execute the commands below to build from source.
 
 1. To build the library:
-   ```    
+   ```shell
    ./gradlew clean build
    ```
 
 1. To run the integration tests:
-   ```
+   ```shell
    ./gradlew clean test
    ```
 1. To build the module without the tests:
-   ```
+   ```shell
    ./gradlew clean build -x test
    ```
 1. To debug module implementation:
-   ```
+   ```shell
    ./gradlew clean build -Pdebug=<port>
    ./gradlew clean test -Pdebug=<port>
    ```
 1. To debug the module with Ballerina language:
-   ```
+   ```shell
    ./gradlew clean build -PbalJavaDebug=<port>
    ./gradlew clean test -PbalJavaDebug=<port>
    ```
 1. Publish ZIP artifact to the local `.m2` repository:
-   ```
+   ```shell
    ./gradlew clean build publishToMavenLocal
    ```
 1. Publish the generated artifacts to the local Ballerina central repository:
-   ```
+   ```shell
    ./gradlew clean build -PpublishToLocalCentral=true
    ```
 1. Publish the generated artifacts to the Ballerina central repository:
-   ```
+   ```shell
    ./gradlew clean build -PpublishToCentral=true
    ```
 
 ## Contribute to Ballerina
 
-As an open source project, Ballerina welcomes contributions from the community. 
+As an open-source project, Ballerina welcomes contributions from the community. 
 
 For more information, go to the [contribution guidelines](https://github.com/ballerina-platform/ballerina-lang/blob/master/CONTRIBUTING.md).
 
