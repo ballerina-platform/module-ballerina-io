@@ -1,5 +1,3 @@
-# Ballerina I/O Library
-
 ## Overview
 
 The io module provides file read/write and console I/O capabilities for working with common data formats. It supports bytes, text, CSV, JSON, and XML content through both streaming and non-streaming operations.
