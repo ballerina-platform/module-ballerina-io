@@ -1,5 +1,4 @@
-Ballerina I/O Library
-===================
+# Ballerina I/O Library
 
   [![Build](https://github.com/ballerina-platform/module-ballerina-io/actions/workflows/build-timestamped-master.yml/badge.svg)](https://github.com/ballerina-platform/module-ballerina-io/actions/workflows/build-timestamped-master.yml)
   [![codecov](https://codecov.io/gh/ballerina-platform/module-ballerina-io/branch/master/graph/badge.svg)](https://codecov.io/gh/ballerina-platform/module-ballerina-io)
@@ -8,28 +7,24 @@ Ballerina I/O Library
   [![GitHub Last Commit](https://img.shields.io/github/last-commit/ballerina-platform/module-ballerina-io.svg)](https://github.com/ballerina-platform/module-ballerina-io/commits/master)
   [![Github issues](https://img.shields.io/github/issues/ballerina-platform/ballerina-standard-library/module/io.svg?label=Open%20Issues)](https://github.com/ballerina-platform/ballerina-standard-library/labels/module%2Fio)
 
-Overview
---------
+## Overview
 
 The io module provides file read/write and console I/O capabilities for working with common data formats. It supports bytes, text, CSV, JSON, and XML content through both streaming and non-streaming operations.
 
-Key Features
-------------
+## Key Features
 
 - Console I/O for reading from and writing to the console
 - File read/write APIs for bytes, text, CSV, JSON, and XML content
 - Streaming APIs for processing large files without loading them entirely into memory
 - Non-streaming APIs for simpler, complete-content read/write operations
 
-Architecture
-------------
+## Architecture
 
 The following diagram depicts the overview architecture of the I/O package.
 
 ![Overview](https://raw.githubusercontent.com/ballerina-platform/module-ballerina-io/master/ballerina/docs/architecture.svg)
 
-Module Details
---------------
+## Module Details
 
 The file I/O operations can be categorized further based on the serialization and deserialization types such as:
 - Bytes I/O
