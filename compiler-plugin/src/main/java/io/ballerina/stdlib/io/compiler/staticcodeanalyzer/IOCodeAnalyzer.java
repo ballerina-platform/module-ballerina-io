@@ -35,6 +35,6 @@ public class IOCodeAnalyzer extends CodeAnalyzer {
 
     @Override
     public void init(CodeAnalysisContext codeAnalysisContext) {
-        codeAnalysisContext.addSyntaxNodeAnalysisTask(new IOPathInjectionAnalyzer(reporter), SyntaxKind.FUNCTION_CALL);
+        codeAnalysisContext.addSyntaxNodeAnalysisTask(new IoFunctionCallAnalyzer(reporter), SyntaxKind.FUNCTION_CALL);
     }
 }
