@@ -94,8 +94,13 @@ public class StaticCodeAnalyzerTest {
         int index;
         switch (rule) {
             case AVOID_PATH_TRAVERSAL:
-                Assert.assertEquals(issues.size(), 1);
-                Assertions.assertIssue(issues, 0, "ballerina/io:1", "main.bal", 23, 23, Source.BUILT_IN);
+                index = 0;
+                Assert.assertEquals(issues.size(), 2);
+                Assertions.assertIssue(issues, index++, "ballerina/io:1", "main.bal",
+                        23, 23, Source.BUILT_IN);
+                // The path is supplied by name, out of parameter order
+                Assertions.assertIssue(issues, index, "ballerina/io:1", "main.bal",
+                        32, 32, Source.BUILT_IN);
                 break;
             case AVOID_PRINTING_CONFIGURABLE_VARIABLES:
                 index = 0;

@@ -489,12 +489,23 @@ public function readUserFile(string fileName) returns string|error {
 
 ```ballerina
 public function readUserFile(string fileName) returns string|error {
-    if fileName != "report.txt" && fileName != "summary.txt" {
-        return error("unknown file");
+    string path;
+    match fileName {
+        "report" => {
+            path = "/var/data/report.txt";
+        }
+        "summary" => {
+            path = "/var/data/summary.txt";
+        }
+        _ => {
+            return error("unknown file");
+        }
     }
-    return check io:fileReadString("/var/data/" + fileName);
+    return check io:fileReadString(path);
 }
 ```
+
+The caller still selects the file, but the path itself is one the program wrote, so nothing the caller supplies reaches the filesystem.
 
 #### 8.1.4. Additional Resources
 
@@ -541,12 +552,13 @@ public function connect() {
 
 ```ballerina
 configurable string dbPassword = ?;
-configurable string dbHost = ?;
 
 public function connect() {
-    io:println(string `Connecting to ${dbHost}`);
+    io:println("Connecting to the configured database");
 }
 ```
+
+Every configurable is treated as sensitive, including one that holds no secret, so a compliant message names none of them.
 
 #### 8.2.4. Additional Resources
 

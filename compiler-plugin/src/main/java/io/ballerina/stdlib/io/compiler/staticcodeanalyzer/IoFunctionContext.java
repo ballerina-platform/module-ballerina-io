@@ -31,7 +31,9 @@ import io.ballerina.scan.Reporter;
 import io.ballerina.tools.diagnostics.Location;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -46,7 +48,8 @@ public class IoFunctionContext {
     private final List<SemanticModel> semanticModels;
     private final String functionName;
     private final Location functionLocation;
-    private final List<ExpressionNode> arguments;
+    private final List<ExpressionNode> positionalArguments;
+    private final Map<String, ExpressionNode> namedArguments;
 
     /**
      * Creates a context for the given IO module function call.
@@ -64,21 +67,28 @@ public class IoFunctionContext {
         this.semanticModels = List.copyOf(semanticModels);
         this.functionName = functionName;
         this.functionLocation = functionCall.location();
-        this.arguments = collectArguments(functionCall);
+        this.positionalArguments = collectPositionalArguments(functionCall);
+        this.namedArguments = collectNamedArguments(functionCall);
     }
 
-    private static List<ExpressionNode> collectArguments(FunctionCallExpressionNode functionCall) {
+    private static List<ExpressionNode> collectPositionalArguments(FunctionCallExpressionNode functionCall) {
         List<ExpressionNode> collected = new ArrayList<>();
         for (FunctionArgumentNode argument : functionCall.arguments()) {
-            switch (argument) {
-                case PositionalArgumentNode positionalArgument -> collected.add(positionalArgument.expression());
-                case NamedArgumentNode namedArgument -> collected.add(namedArgument.expression());
-                default -> {
-                    // A rest argument spreads a value that cannot be resolved without data-flow analysis
-                }
+            if (argument instanceof PositionalArgumentNode positionalArgument) {
+                collected.add(positionalArgument.expression());
             }
         }
         return List.copyOf(collected);
+    }
+
+    private static Map<String, ExpressionNode> collectNamedArguments(FunctionCallExpressionNode functionCall) {
+        Map<String, ExpressionNode> collected = new LinkedHashMap<>();
+        for (FunctionArgumentNode argument : functionCall.arguments()) {
+            if (argument instanceof NamedArgumentNode namedArgument) {
+                collected.put(namedArgument.argumentName().name().text(), namedArgument.expression());
+            }
+        }
+        return Map.copyOf(collected);
     }
 
     /**
@@ -100,23 +110,42 @@ public class IoFunctionContext {
     }
 
     /**
-     * Get an argument by position.
+     * Get an argument by position or by name.
+     * <p>
+     * Named arguments may appear in any order, so a rule that read them positionally would inspect whichever
+     * argument happened to be written first. Resolving by parameter name keeps the rule looking at the parameter
+     * it means.
+     *
+     * @param position      the zero-based position of the parameter
+     * @param parameterName the parameter's name
+     * @return the argument expression if supplied, empty otherwise
+     */
+    public Optional<ExpressionNode> getArgument(int position, String parameterName) {
+        ExpressionNode named = this.namedArguments.get(parameterName);
+        if (named != null) {
+            return Optional.of(named);
+        }
+        return getPositionalArgument(position);
+    }
+
+    /**
+     * Get a positional argument by its index.
      *
      * @param position the zero-based argument position
      * @return the argument expression if supplied, empty otherwise
      */
-    public Optional<ExpressionNode> getArgument(int position) {
-        return position >= 0 && position < this.arguments.size()
-                ? Optional.of(this.arguments.get(position)) : Optional.empty();
+    public Optional<ExpressionNode> getPositionalArgument(int position) {
+        return position >= 0 && position < this.positionalArguments.size()
+                ? Optional.of(this.positionalArguments.get(position)) : Optional.empty();
     }
 
     /**
-     * The number of arguments supplied at the call site.
+     * The number of positional arguments supplied at the call site.
      *
-     * @return the argument count
+     * @return the positional argument count
      */
-    public int getArgumentCount() {
-        return this.arguments.size();
+    public int getPositionalArgumentCount() {
+        return this.positionalArguments.size();
     }
 
     /**

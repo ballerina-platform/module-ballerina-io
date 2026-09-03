@@ -21,7 +21,6 @@ package io.ballerina.stdlib.io.compiler.staticcodeanalyzer.iorules;
 import io.ballerina.compiler.syntax.tree.ExpressionNode;
 import io.ballerina.compiler.syntax.tree.InterpolationNode;
 import io.ballerina.compiler.syntax.tree.Node;
-import io.ballerina.compiler.syntax.tree.SimpleNameReferenceNode;
 import io.ballerina.compiler.syntax.tree.TemplateExpressionNode;
 import io.ballerina.stdlib.io.compiler.staticcodeanalyzer.IoFunctionContext;
 
@@ -43,8 +42,9 @@ public class AvoidPrintingConfigurableVariablesRule implements IoFunctionRule {
 
     @Override
     public void analyze(IoFunctionContext context) {
-        for (int position = 0; position < context.getArgumentCount(); position++) {
-            context.getArgument(position).ifPresent(argument -> reportConfigurableValues(context, argument));
+        for (int position = 0; position < context.getPositionalArgumentCount(); position++) {
+            context.getPositionalArgument(position)
+                    .ifPresent(argument -> reportConfigurableValues(context, argument));
         }
     }
 
@@ -52,17 +52,17 @@ public class AvoidPrintingConfigurableVariablesRule implements IoFunctionRule {
      * Report a configurable reached either directly or through a string template interpolation.
      */
     private void reportConfigurableValues(IoFunctionContext context, ExpressionNode argument) {
-        if (argument instanceof SimpleNameReferenceNode) {
-            reportIfConfigurable(context, argument);
-            return;
-        }
         if (argument instanceof TemplateExpressionNode template) {
             for (Node content : template.content()) {
                 if (content instanceof InterpolationNode interpolation) {
                     reportIfConfigurable(context, interpolation.expression());
                 }
             }
+            return;
         }
+        // Any other expression is offered to the symbol lookup as it stands, so a reference qualified with a
+        // module prefix is read the same way as a plain one.
+        reportIfConfigurable(context, argument);
     }
 
     private void reportIfConfigurable(IoFunctionContext context, ExpressionNode expression) {

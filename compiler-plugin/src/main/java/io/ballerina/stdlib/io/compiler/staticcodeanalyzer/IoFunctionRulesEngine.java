@@ -46,7 +46,12 @@ public class IoFunctionRulesEngine {
     }
 
     public void addRule(IoFunctionRule rule) {
-        if (rule != null && !rules.contains(rule)) {
+        if (rule == null) {
+            return;
+        }
+        // The rules are stateless, so identity comparison would let two instances of one rule both register
+        // and report the same issue twice.
+        if (rules.stream().noneMatch(registered -> registered.getRuleId() == rule.getRuleId())) {
             rules.add(rule);
         }
     }

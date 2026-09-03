@@ -44,6 +44,9 @@ import static io.ballerina.stdlib.io.compiler.staticcodeanalyzer.IORule.AVOID_PA
  */
 public class AvoidPathTraversalRule implements IoFunctionRule {
 
+    private static final String PATH_PARAM = "path";
+    private static final int PATH_POSITION = 0;
+
     @Override
     public void analyze(IoFunctionContext context) {
         if (!isSafePath(context)) {
@@ -62,7 +65,7 @@ public class AvoidPathTraversalRule implements IoFunctionRule {
     }
 
     private boolean isSafePath(IoFunctionContext context) {
-        Optional<ExpressionNode> firstArgument = context.getArgument(0);
+        Optional<ExpressionNode> firstArgument = context.getArgument(PATH_POSITION, PATH_PARAM);
         if (firstArgument.isEmpty()) {
             return true;
         }
