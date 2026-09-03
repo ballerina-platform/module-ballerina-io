@@ -457,6 +457,13 @@ The following static code rules are applied to the I/O module.
 
 A file path built from untrusted input can be steered outside the directory the code intends to read from or write to.
 
+| Property              | Description |
+|-----------------------|-------------|
+| **Rule ID**           | ballerina/io:1 |
+| **Rule Kind**         | Vulnerability |
+| **CWE**               | [CWE-22](https://cwe.mitre.org/data/definitions/22.html) |
+| **OWASP Top 10:2025** | [A01 Broken Access Control](https://owasp.org/Top10/2025/A01_2025-Broken_Access_Control/) |
+
 #### 8.1.1. Why this is an issue?
 
 The I/O functions take a file path as a plain string and hand it to the filesystem as given. A path segment such as `../` is resolved by the filesystem rather than rejected, so a value the caller controls can climb out of the intended directory and name any file the process has permission to open. The code reads as though it were confined to one directory while the path decides otherwise at run time.
@@ -497,6 +504,13 @@ public function readUserFile(string fileName) returns string|error {
 ### 8.2. Potentially-sensitive configurable variables are printed to the console
 
 A configurable variable written to standard output ends up in the platform's log store.
+
+| Property              | Description |
+|-----------------------|-------------|
+| **Rule ID**           | ballerina/io:2 |
+| **Rule Kind**         | Vulnerability |
+| **CWE**               | [CWE-532](https://cwe.mitre.org/data/definitions/532.html) |
+| **OWASP Top 10:2025** | [A09 Security Logging and Alerting Failures](https://owasp.org/Top10/2025/A09_2025-Security_Logging_and_Alerting_Failures/) |
 
 #### 8.2.1. Why this is an issue?
 
