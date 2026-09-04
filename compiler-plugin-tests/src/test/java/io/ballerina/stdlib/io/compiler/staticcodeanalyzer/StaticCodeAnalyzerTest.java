@@ -153,7 +153,7 @@ public class StaticCodeAnalyzerTest {
                 .replaceAll("\\s*\\[\\s*", "[")
                 .replaceAll("\\s*]\\s*", "]")
                 .replaceAll("\n", "")
-                .replaceAll(":\".*module-ballerina-io", ":\"module-ballerina-io");
+                .replaceAll(":\"[^\"]*module-ballerina-io", ":\"module-ballerina-io");
         return isWindows() ? normalizedJson.replaceAll("/", "\\\\\\\\") : normalizedJson;
     }
 
