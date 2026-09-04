@@ -44,6 +44,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 public class StaticCodeAnalyzerTest {
     private static final Path RESOURCE_PACKAGES_DIRECTORY = Paths
             .get("src", "test", "resources", "static_code_analyzer", "ballerina_packages").toAbsolutePath();
@@ -64,36 +66,64 @@ public class StaticCodeAnalyzerTest {
     @Test
     public void testStaticCodeRulesWithAPI() throws IOException {
         ByteArrayOutputStream console = new ByteArrayOutputStream();
-        PrintStream printStream = new PrintStream(console);
+        PrintStream printStream = new PrintStream(console, true, UTF_8);
         for (IORule rule : IORule.values()) {
             String targetPackageName = "rule" + rule.getId();
             Path targetPackagePath = RESOURCE_PACKAGES_DIRECTORY.resolve(targetPackageName);
             Project project = BuildProject.load(getEnvironmentBuilder(), targetPackagePath);
-            TestOptions options = TestOptions.builder(project)
-                    .setOutputStream(printStream)
-                    .build();
+            TestOptions options = TestOptions.builder(project).setOutputStream(printStream).build();
             TestRunner testRunner = new TestRunner(options);
             testRunner.performScan();
 
-            // validate the IO rules
-            List<Rule> rules = testRunner.getRules();
-            Assertions.assertRule(
-                    rules,
-                    "ballerina/io:1",
-                    "I/O function calls should not be vulnerable to path injection attacks",
-                    RuleKind.VULNERABILITY);
+            validateRules(testRunner.getRules());
+            validateIssues(rule, testRunner.getIssues());
+            validateOutput(console, targetPackageName);
 
-            // validate the issues
-            List<Issue> issues = testRunner.getIssues();
-            Assert.assertEquals(issues.size(), 1);
-            Assertions.assertIssue(issues, 0, "ballerina/io:1", "main.bal", 23, 23, Source.BUILT_IN);
-
-            // validate the output
-            String output = console.toString();
-            String jsonOutput = extractJson(output);
-            String expectedOutput = Files.readString(EXPECTED_OUTPUT_DIRECTORY.resolve(targetPackageName + ".json"));
-            assertJsonEqual(jsonOutput, expectedOutput);
+            console.reset();
         }
+    }
+
+    private void validateRules(List<Rule> rules) {
+        for (IORule rule : IORule.values()) {
+            Assertions.assertRule(rules, "ballerina/io:" + rule.getId(), rule.getRule().description(),
+                    RuleKind.VULNERABILITY);
+        }
+    }
+
+    private void validateIssues(IORule rule, List<Issue> issues) {
+        int index;
+        switch (rule) {
+            case AVOID_PATH_TRAVERSAL:
+                index = 0;
+                Assert.assertEquals(issues.size(), 2);
+                Assertions.assertIssue(issues, index++, "ballerina/io:1", "main.bal",
+                        23, 23, Source.BUILT_IN);
+                // The path is supplied by name, out of parameter order
+                Assertions.assertIssue(issues, index, "ballerina/io:1", "main.bal",
+                        32, 32, Source.BUILT_IN);
+                break;
+            case AVOID_PRINTING_CONFIGURABLE_VARIABLES:
+                index = 0;
+                Assert.assertEquals(issues.size(), 4);
+                Assertions.assertIssue(issues, index++, "ballerina/io:2", "main.bal",
+                        24, 24, Source.BUILT_IN);
+                Assertions.assertIssue(issues, index++, "ballerina/io:2", "main.bal",
+                        29, 29, Source.BUILT_IN);
+                Assertions.assertIssue(issues, index++, "ballerina/io:2", "main.bal",
+                        34, 34, Source.BUILT_IN);
+                Assertions.assertIssue(issues, index, "ballerina/io:2", "main.bal",
+                        51, 51, Source.BUILT_IN);
+                break;
+            default:
+                Assert.fail("Unhandled rule in validateIssues: " + rule);
+                break;
+        }
+    }
+
+    private void validateOutput(ByteArrayOutputStream console, String targetPackageName) throws IOException {
+        String jsonOutput = extractJson(console.toString(UTF_8));
+        String expectedOutput = Files.readString(EXPECTED_OUTPUT_DIRECTORY.resolve(targetPackageName + ".json"));
+        assertJsonEqual(jsonOutput, expectedOutput);
     }
 
     private static ProjectEnvironmentBuilder getEnvironmentBuilder() {
@@ -123,7 +153,7 @@ public class StaticCodeAnalyzerTest {
                 .replaceAll("\\s*\\[\\s*", "[")
                 .replaceAll("\\s*]\\s*", "]")
                 .replaceAll("\n", "")
-                .replaceAll(":\".*module-ballerina-io", ":\"module-ballerina-io");
+                .replaceAll(":\"[^\"]*module-ballerina-io", ":\"module-ballerina-io");
         return isWindows() ? normalizedJson.replaceAll("/", "\\\\\\\\") : normalizedJson;
     }
 
