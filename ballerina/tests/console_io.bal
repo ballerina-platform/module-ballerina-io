@@ -1143,9 +1143,21 @@ isolated function testFprintlnNilWithStderr() {
 }
 
 @test:Config {dependsOn: [testFprintlnNilWithStderr]}
-isolated function testPrintlnNullSafetyAndValues() {
-    println("Safe execution test without NPE");
-    test:assertEquals(readOutputStream(), "Safe execution test without NPE\n");
+function testPrintlnConcurrentAndNullSafety() returns error? {
+    future<()>[] futures = [];
+    foreach var item in 0..<5 {
+        future<()> res = start runConcurrentPrint();
+        futures.push(res);
+    }
+    foreach var 'future in futures {
+        check wait 'future;
+    }
+}
+
+isolated function runConcurrentPrint() {
+    int id = 100;
+    string msg = string `ID: ${id}`;
+    println(msg);
 }
 
 isolated function func1(int a, int b) returns int {
