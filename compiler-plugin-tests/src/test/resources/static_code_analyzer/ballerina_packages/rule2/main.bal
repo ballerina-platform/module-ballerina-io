@@ -51,3 +51,13 @@ public function printLiteral() {
 public function printRetryCount() {
     io:println(retryCount);
 }
+
+// Reached through string concatenation
+public function printSecretConcatenated() {
+    io:println("Connecting with token: " + apiToken);
+}
+
+// Negative case - concatenation of two literals holds no configurable
+public function printConcatenatedLiteral() {
+    io:println("connection " + "established");
+}

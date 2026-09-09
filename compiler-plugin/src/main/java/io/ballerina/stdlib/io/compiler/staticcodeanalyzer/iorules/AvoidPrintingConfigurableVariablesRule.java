@@ -18,9 +18,11 @@
 
 package io.ballerina.stdlib.io.compiler.staticcodeanalyzer.iorules;
 
+import io.ballerina.compiler.syntax.tree.BinaryExpressionNode;
 import io.ballerina.compiler.syntax.tree.ExpressionNode;
 import io.ballerina.compiler.syntax.tree.InterpolationNode;
 import io.ballerina.compiler.syntax.tree.Node;
+import io.ballerina.compiler.syntax.tree.SyntaxKind;
 import io.ballerina.compiler.syntax.tree.TemplateExpressionNode;
 import io.ballerina.stdlib.io.compiler.staticcodeanalyzer.IoFunctionContext;
 
@@ -49,7 +51,7 @@ public class AvoidPrintingConfigurableVariablesRule implements IoFunctionRule {
     }
 
     /**
-     * Report a configurable reached either directly or through a string template interpolation.
+     * Report a configurable reached directly, through a string template interpolation, or through concatenation.
      */
     private void reportConfigurableValues(IoFunctionContext context, ExpressionNode argument) {
         if (argument instanceof TemplateExpressionNode template) {
@@ -60,9 +62,23 @@ public class AvoidPrintingConfigurableVariablesRule implements IoFunctionRule {
             }
             return;
         }
+        if (argument instanceof BinaryExpressionNode binaryExpression
+                && binaryExpression.operator().kind() == SyntaxKind.PLUS_TOKEN) {
+            // String concatenation builds the printed value from both operands, so each is checked in turn;
+            // this also unwinds a chain such as "a" + b + c, since its left operand is itself a BinaryExpressionNode.
+            reportConfigurableOperand(context, binaryExpression.lhsExpr());
+            reportConfigurableOperand(context, binaryExpression.rhsExpr());
+            return;
+        }
         // Any other expression is offered to the symbol lookup as it stands, so a reference qualified with a
         // module prefix is read the same way as a plain one.
         reportIfConfigurable(context, argument);
+    }
+
+    private void reportConfigurableOperand(IoFunctionContext context, Node operand) {
+        if (operand instanceof ExpressionNode expression) {
+            reportConfigurableValues(context, expression);
+        }
     }
 
     private void reportIfConfigurable(IoFunctionContext context, ExpressionNode expression) {

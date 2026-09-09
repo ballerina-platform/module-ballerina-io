@@ -122,6 +122,46 @@
   {
     "location": {
       "filePath": "main.bal",
+      "startLine": 55,
+      "endLine": 55,
+      "startColumn": 0,
+      "endColumn": 6,
+      "startOffset": 1689,
+      "length": 6
+    },
+    "rule": {
+      "id": "ballerina:3",
+      "numericId": 3,
+      "description": "Non isolated public function",
+      "ruleKind": "CODE_SMELL"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule2/main.bal",
+    "filePath": "module-ballerina-io/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule2/main.bal"
+  },
+  {
+    "location": {
+      "filePath": "main.bal",
+      "startLine": 60,
+      "endLine": 60,
+      "startColumn": 0,
+      "endColumn": 6,
+      "startOffset": 1861,
+      "length": 6
+    },
+    "rule": {
+      "id": "ballerina:3",
+      "numericId": 3,
+      "description": "Non isolated public function",
+      "ruleKind": "CODE_SMELL"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule2/main.bal",
+    "filePath": "module-ballerina-io/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule2/main.bal"
+  },
+  {
+    "location": {
+      "filePath": "main.bal",
       "startLine": 24,
       "endLine": 24,
       "startColumn": 15,
@@ -188,6 +228,26 @@
       "endColumn": 25,
       "startOffset": 1633,
       "length": 10
+    },
+    "rule": {
+      "id": "ballerina/io:2",
+      "numericId": 2,
+      "description": "Potentially-sensitive configurable variables are printed to the console",
+      "ruleKind": "VULNERABILITY"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule2/main.bal",
+    "filePath": "module-ballerina-io/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule2/main.bal"
+  },
+  {
+    "location": {
+      "filePath": "main.bal",
+      "startLine": 56,
+      "endLine": 56,
+      "startColumn": 43,
+      "endColumn": 51,
+      "startOffset": 1776,
+      "length": 8
     },
     "rule": {
       "id": "ballerina/io:2",
