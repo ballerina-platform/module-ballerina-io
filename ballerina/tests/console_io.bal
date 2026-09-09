@@ -1142,6 +1142,12 @@ isolated function testFprintlnNilWithStderr() {
     test:assertEquals(readErrorStream(), "\n");
 }
 
+@test:Config {dependsOn: [testFprintlnNilWithStderr]}
+isolated function testPrintlnNullSafetyAndValues() {
+    println("Safe execution test without NPE");
+    test:assertEquals(readOutputStream(), "Safe execution test without NPE\n");
+}
+
 isolated function func1(int a, int b) returns int {
     return (a + b);
 }
