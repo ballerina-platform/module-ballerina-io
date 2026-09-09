@@ -1,10 +1,19 @@
 ## Overview
 
-This module provides file read/write APIs and console print/read APIs. The file APIs allow read and write operations on different kinds of file types such as bytes, text, CSV, JSON, and XML. Further, these file APIs can be categorized as streaming and non-streaming APIs.
+The io module provides file read/write and console I/O capabilities for working with common data formats. It supports bytes, text, CSV, JSON, and XML content through both streaming and non-streaming operations.
+
+## Key Features
+
+- Console I/O for reading from and writing to the console
+- File read/write APIs for bytes, text, CSV, JSON, and XML content
+- Streaming APIs for processing large files without loading them entirely into memory
+- Non-streaming APIs for simpler, complete-content read/write operations
+
+## Architecture
 
 The following diagram depicts the overview architecture of the I/O package.
 
-![Architecture Diagram](https://raw.githubusercontent.com/ballerina-platform/module-ballerina-io/master/ballerina/docs/architecture.svg)
+![Overview](https://raw.githubusercontent.com/ballerina-platform/module-ballerina-io/master/ballerina/docs/architecture.svg)
 
 The file I/O operations can be categorized further based on the serialization and deserialization types such as:
 - Bytes I/O
