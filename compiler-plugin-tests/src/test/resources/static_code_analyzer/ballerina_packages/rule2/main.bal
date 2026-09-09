@@ -61,3 +61,8 @@ public function printSecretConcatenated() {
 public function printConcatenatedLiteral() {
     io:println("connection " + "established");
 }
+
+// Reached through concatenation nested inside a string template interpolation
+public function printSecretConcatenatedInTemplate() {
+    io:println(string `token=${"value=" + apiToken}`);
+}

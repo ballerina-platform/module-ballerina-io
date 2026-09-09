@@ -104,7 +104,7 @@ public class StaticCodeAnalyzerTest {
                 break;
             case AVOID_PRINTING_CONFIGURABLE_VARIABLES:
                 index = 0;
-                Assert.assertEquals(issues.size(), 5);
+                Assert.assertEquals(issues.size(), 6);
                 Assertions.assertIssue(issues, index++, "ballerina/io:2", "main.bal",
                         24, 24, Source.BUILT_IN);
                 Assertions.assertIssue(issues, index++, "ballerina/io:2", "main.bal",
@@ -113,8 +113,10 @@ public class StaticCodeAnalyzerTest {
                         34, 34, Source.BUILT_IN);
                 Assertions.assertIssue(issues, index++, "ballerina/io:2", "main.bal",
                         51, 51, Source.BUILT_IN);
-                Assertions.assertIssue(issues, index, "ballerina/io:2", "main.bal",
+                Assertions.assertIssue(issues, index++, "ballerina/io:2", "main.bal",
                         56, 56, Source.BUILT_IN);
+                Assertions.assertIssue(issues, index, "ballerina/io:2", "main.bal",
+                        66, 66, Source.BUILT_IN);
                 break;
             default:
                 Assert.fail("Unhandled rule in validateIssues: " + rule);

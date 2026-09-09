@@ -57,7 +57,7 @@ public class AvoidPrintingConfigurableVariablesRule implements IoFunctionRule {
         if (argument instanceof TemplateExpressionNode template) {
             for (Node content : template.content()) {
                 if (content instanceof InterpolationNode interpolation) {
-                    reportIfConfigurable(context, interpolation.expression());
+                    reportConfigurableValues(context, interpolation.expression());
                 }
             }
             return;
