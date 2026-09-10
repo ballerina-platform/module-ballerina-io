@@ -85,7 +85,7 @@ release {
     }
 }
 
-task build {
+tasks.named('build') {
     dependsOn('io-ballerina:build')
 }
 
