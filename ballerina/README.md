@@ -2,7 +2,7 @@
 
 The io module provides file read/write and console I/O capabilities for working with common data formats. It supports bytes, text, CSV, JSON, and XML content through both streaming and non-streaming operations.
 
-## Key Features
+### Key Features
 
 - Console I/O for reading from and writing to the console
 - File read/write APIs for bytes, text, CSV, JSON, and XML content
