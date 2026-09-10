@@ -27,7 +27,7 @@ description = 'Ballerina - IO Compiler Plugin Tests'
 
 jacoco {
     toolVersion = "${jacocoVersion}"
-    reportsDirectory = file("$project.buildDir/reports/jacoco")
+    reportsDirectory = layout.buildDirectory.dir("reports/jacoco")
 }
 
 jacocoTestReport {
@@ -57,7 +57,7 @@ tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
 }
 
-sourceCompatibility = JavaVersion.VERSION_21
+java.sourceCompatibility = JavaVersion.VERSION_21
 
 test {
     systemProperty "ballerina.offline.flag", "true"
@@ -94,7 +94,7 @@ spotbugsTest {
     ignoreFailures = true
     effort = SpotBugsEffort.MAX
     reportLevel = SpotBugsConfidence.LOW
-    reportsDir = file("$project.buildDir/reports/spotbugs")
+    reportsDir = layout.buildDirectory.dir("reports/spotbugs")
     def excludeFile = file("${rootDir}/build-config/spotbugs-exclude.xml")
     if (excludeFile.exists()) {
         it.excludeFilter = excludeFile
