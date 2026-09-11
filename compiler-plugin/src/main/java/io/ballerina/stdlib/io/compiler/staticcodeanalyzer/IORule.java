@@ -28,7 +28,9 @@ import static io.ballerina.stdlib.io.compiler.staticcodeanalyzer.RuleFactory.cre
  */
 public enum IORule {
     AVOID_PATH_TRAVERSAL(createRule(1, "I/O function calls should not be vulnerable to path" +
-            " injection attacks", VULNERABILITY));
+            " injection attacks", VULNERABILITY)),
+    AVOID_PRINTING_CONFIGURABLE_VARIABLES(createRule(2,
+            "Potentially-sensitive configurable variables are printed to the console", VULNERABILITY));
 
     private final Rule rule;
 

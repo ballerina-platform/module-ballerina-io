@@ -1,7 +1,12 @@
 [
   {
-    "id":  1,
+    "id": 1,
     "kind": "VULNERABILITY",
     "description": "I/O function calls should not be vulnerable to path injection attacks"
+  },
+  {
+    "id": 2,
+    "kind": "VULNERABILITY",
+    "description": "Potentially-sensitive configurable variables are printed to the console"
   }
 ]

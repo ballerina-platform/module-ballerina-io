@@ -25,3 +25,10 @@ service /fileService on new http:Listener(8080) {
         return content;
     }
 }
+
+// The path is supplied by name, out of parameter order, so reading the first
+// argument positionally would inspect the content instead
+public function writeUserFile(string userInput) returns error? {
+    string path = userInput;
+    check io:fileWriteString(content = "data", path = path);
+}

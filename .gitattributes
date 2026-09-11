@@ -1,2 +1,7 @@
 # Ensure all Java files use LF.
 *.java eol=lf
+
+# Ensure test fixtures and their expected output use LF, so the character offsets
+# recorded in the expected output do not depend on the checkout platform.
+*.bal eol=lf
+*.json eol=lf
