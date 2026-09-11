@@ -85,7 +85,15 @@ release {
     }
 }
 
-task build {
-    dependsOn('io-ballerina:build')
+if (tasks.names.contains('build')) {
+    tasks.named('build') {
+        dependsOn('io-ballerina:build')
+
+    }
+} else {
+    tasks.register('build') {
+        dependsOn('io-ballerina:build')
+
+    }
 }
 
