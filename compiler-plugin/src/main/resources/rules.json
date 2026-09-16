@@ -2,11 +2,48 @@
   {
     "id": 1,
     "kind": "VULNERABILITY",
-    "description": "I/O function calls should not be vulnerable to path injection attacks"
+    "name": "I/O function calls should not be vulnerable to path injection attacks",
+    "severity": "HIGH",
+    "description": "I/O function calls should not be vulnerable to path injection attacks",
+    "fullDescription": "A path passed to an I/O operation is built from user input, allowing access to unintended files. When user-controlled input is concatenated into a path passed to an I/O read or write, an attacker can supply traversal sequences such as `../` to reach files outside the intended location. Validate the input against an allow-list, or resolve the path and confirm it stays within the intended directory.",
+    "tags": [
+      "io",
+      "injection"
+    ],
+    "standards": {
+      "cwe": [
+        22
+      ],
+      "owasp": [
+        {
+          "year": 2025,
+          "categories": [1]
+        }
+      ]
+    }
   },
   {
     "id": 2,
     "kind": "VULNERABILITY",
-    "description": "Potentially-sensitive configurable variables are printed to the console"
+    "name": "Configurable variables should not be printed to the console",
+    "severity": "HIGH",
+    "description": "Potentially-sensitive configurable variables are printed to the console",
+    "fullDescription": "Configurable variables carry the values supplied at deployment, which is where credentials and connection secrets live. Standard output is collected by the container runtime and forwarded to whatever log aggregator the platform uses, so printing one puts it in a durable store that far more people can read than can read the deployment configuration. Avoid printing configurable variables directly; if a value must be surfaced for diagnostics, mask or redact the sensitive parts first.",
+    "tags": [
+      "io",
+      "logging"
+    ],
+    "standards": {
+      "cwe": [
+        532,
+        200
+      ],
+      "owasp": [
+        {
+          "year": 2025,
+          "categories": [9]
+        }
+      ]
+    }
   }
 ]

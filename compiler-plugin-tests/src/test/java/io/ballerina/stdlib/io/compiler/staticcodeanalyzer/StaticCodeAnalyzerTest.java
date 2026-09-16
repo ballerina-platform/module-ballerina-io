@@ -18,6 +18,10 @@
 
 package io.ballerina.stdlib.io.compiler.staticcodeanalyzer;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import io.ballerina.projects.Project;
 import io.ballerina.projects.ProjectEnvironmentBuilder;
 import io.ballerina.projects.directory.BuildProject;
@@ -39,10 +43,8 @@ import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
-import java.util.stream.Collectors;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -57,10 +59,46 @@ public class StaticCodeAnalyzerTest {
 
     @Test
     public void validateRulesJson() throws IOException {
-        String expectedRules = "[" + Arrays.stream(IORule.values())
-                .map(IORule::toString).collect(Collectors.joining(",")) + "]";
-        String actualRules = Files.readString(JSON_RULES_FILE_PATH);
-        assertJsonEqual(actualRules, expectedRules);
+        JsonArray rulesArray = new JsonParser().parse(Files.readString(JSON_RULES_FILE_PATH)).getAsJsonArray();
+        Assert.assertEquals(rulesArray.size(), IORule.values().length);
+        for (IORule rule : IORule.values()) {
+            JsonObject ruleNode = findRuleById(rulesArray, rule.getId());
+            Assert.assertNotNull(ruleNode, "Rule with id " + rule.getId() + " not found in rules.json");
+            Assert.assertEquals(ruleNode.get("kind").getAsString(), rule.getRule().kind().toString());
+            Assert.assertEquals(ruleNode.get("description").getAsString(), rule.getRule().description());
+            validateEnrichedRuleMetadata(ruleNode);
+        }
+    }
+
+    private void validateEnrichedRuleMetadata(JsonObject ruleNode) {
+        assertNonBlankText(ruleNode, "name");
+        assertNonBlankText(ruleNode, "severity");
+        assertNonBlankText(ruleNode, "fullDescription");
+
+        JsonElement tags = ruleNode.get("tags");
+        Assert.assertTrue(tags != null && tags.isJsonArray() && tags.getAsJsonArray().size() > 0,
+                "tags should be a non-empty array");
+
+        JsonElement standards = ruleNode.get("standards");
+        Assert.assertTrue(standards != null && standards.isJsonObject() && standards.getAsJsonObject().size() > 0,
+                "standards should be a non-empty object");
+    }
+
+    private void assertNonBlankText(JsonObject ruleNode, String field) {
+        JsonElement fieldNode = ruleNode.get(field);
+        Assert.assertTrue(fieldNode != null && fieldNode.isJsonPrimitive()
+                        && !fieldNode.getAsString().isBlank(),
+                field + " should be a non-blank string");
+    }
+
+    private JsonObject findRuleById(JsonArray rulesArray, int id) {
+        for (JsonElement ruleElement : rulesArray) {
+            JsonObject ruleNode = ruleElement.getAsJsonObject();
+            if (ruleNode.get("id").getAsInt() == id) {
+                return ruleNode;
+            }
+        }
+        return null;
     }
 
     @Test
