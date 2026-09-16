@@ -37,7 +37,7 @@ spotbugsMain {
     ignoreFailures = true
     effort = SpotBugsEffort.MAX
     reportLevel = SpotBugsConfidence.LOW
-    reportsDir = file("$project.buildDir/reports/spotbugs")
+    reportsDir = layout.buildDirectory.dir("reports/spotbugs")
     def excludeFile = file("${rootDir}/build-config/spotbugs-exclude.xml")
     if (excludeFile.exists()) {
         it.excludeFilter = excludeFile
