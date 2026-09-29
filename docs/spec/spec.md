@@ -451,7 +451,7 @@ The following static code rules are applied to the I/O module.
 | Id             | Kind          | Description                                                                                                                                           |
 |----------------|---------------|-------------------------------------------------------------------------------------------------------------------------------------------------------|
 | ballerina/io:1 | VULNERABILITY | [I/O function calls should not be vulnerable to path injection attacks](#81-io-function-calls-should-not-be-vulnerable-to-path-injection-attacks)      |
-| ballerina/io:2 | VULNERABILITY | [Potentially-sensitive configurable variables are printed to the console](#82-potentially-sensitive-configurable-variables-are-printed-to-the-console) |
+| ballerina/io:2 | VULNERABILITY | [Configurable variables should not be printed to the console](#82-configurable-variables-should-not-be-printed-to-the-console) |
 
 ### 8.1. I/O function calls should not be vulnerable to path injection attacks
 
@@ -512,7 +512,7 @@ The caller still selects the file, but the path itself is one the program wrote,
 - [CWE-22: Improper Limitation of a Pathname to a Restricted Directory](https://cwe.mitre.org/data/definitions/22.html)
 - [OWASP Top 10:2025 A01 Broken Access Control](https://owasp.org/Top10/2025/A01_2025-Broken_Access_Control/)
 
-### 8.2. Potentially-sensitive configurable variables are printed to the console
+### 8.2. Configurable variables should not be printed to the console
 
 A configurable variable written to standard output ends up in the platform's log store.
 
@@ -520,7 +520,7 @@ A configurable variable written to standard output ends up in the platform's log
 |-----------------------|-------------|
 | **Rule ID**           | ballerina/io:2 |
 | **Rule Kind**         | Vulnerability |
-| **CWE**               | [CWE-532](https://cwe.mitre.org/data/definitions/532.html) |
+| **CWE**               | [CWE-532](https://cwe.mitre.org/data/definitions/532.html), [CWE-200](https://cwe.mitre.org/data/definitions/200.html) |
 | **OWASP Top 10:2025** | [A09 Security Logging and Alerting Failures](https://owasp.org/Top10/2025/A09_2025-Security_Logging_and_Alerting_Failures/) |
 
 #### 8.2.1. Why this is an issue?
@@ -563,4 +563,5 @@ Every configurable is treated as sensitive, including one that holds no secret, 
 #### 8.2.4. Additional Resources
 
 - [CWE-532: Insertion of Sensitive Information into Log File](https://cwe.mitre.org/data/definitions/532.html)
+- [CWE-200: Exposure of Sensitive Information to an Unauthorized Actor](https://cwe.mitre.org/data/definitions/200.html)
 - [OWASP Top 10:2025 A09 Security Logging and Alerting Failures](https://owasp.org/Top10/2025/A09_2025-Security_Logging_and_Alerting_Failures/)

@@ -192,7 +192,7 @@
     "rule": {
       "id": "ballerina/io:2",
       "numericId": 2,
-      "description": "Potentially-sensitive configurable variables are printed to the console",
+      "description": "Configurable variables should not be printed to the console",
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
@@ -212,7 +212,7 @@
     "rule": {
       "id": "ballerina/io:2",
       "numericId": 2,
-      "description": "Potentially-sensitive configurable variables are printed to the console",
+      "description": "Configurable variables should not be printed to the console",
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
@@ -232,7 +232,7 @@
     "rule": {
       "id": "ballerina/io:2",
       "numericId": 2,
-      "description": "Potentially-sensitive configurable variables are printed to the console",
+      "description": "Configurable variables should not be printed to the console",
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
@@ -252,7 +252,7 @@
     "rule": {
       "id": "ballerina/io:2",
       "numericId": 2,
-      "description": "Potentially-sensitive configurable variables are printed to the console",
+      "description": "Configurable variables should not be printed to the console",
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
@@ -272,7 +272,7 @@
     "rule": {
       "id": "ballerina/io:2",
       "numericId": 2,
-      "description": "Potentially-sensitive configurable variables are printed to the console",
+      "description": "Configurable variables should not be printed to the console",
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
@@ -292,7 +292,7 @@
     "rule": {
       "id": "ballerina/io:2",
       "numericId": 2,
-      "description": "Potentially-sensitive configurable variables are printed to the console",
+      "description": "Configurable variables should not be printed to the console",
       "ruleKind": "VULNERABILITY"
     },
     "source": "BUILT_IN",
