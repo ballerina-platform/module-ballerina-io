@@ -27,9 +27,9 @@
     "id": 2,
     "kind": "VULNERABILITY",
     "name": "Configurable variables should not be printed to the console",
-    "helpUri": "https://ballerina.io/learn/scan-rules/#potentially-sensitive-configurable-variables-are-printed-to-the-console",
+    "helpUri": "https://ballerina.io/learn/scan-rules/#configurable-variables-should-not-be-printed-to-the-console",
     "severity": "HIGH",
-    "description": "Potentially-sensitive configurable variables are printed to the console",
+    "description": "Configurable variables should not be printed to the console",
     "fullDescription": "Configurable variables carry the values supplied at deployment, which is where credentials and connection secrets live. Standard output is collected by the container runtime and forwarded to whatever log aggregator the platform uses, so printing one puts it in a durable store that far more people can read than can read the deployment configuration. Avoid printing configurable variables directly; if a value must be surfaced for diagnostics, mask or redact the sensitive parts first.",
     "tags": [
       "io",
