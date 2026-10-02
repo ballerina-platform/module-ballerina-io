@@ -46,7 +46,12 @@ public class PrintUtils {
         }
         for (Object value : values) {
             if (value != null) {
-                out.print(StringUtils.getStringValue(value, null));
+                try {
+                    String strValue = StringUtils.getStringValue(value, null);
+                    out.print(strValue != null ? strValue : String.valueOf(value));
+                } catch (Exception e) {
+                    out.print(String.valueOf(value));
+                }
             }
         }
     }
@@ -66,7 +71,12 @@ public class PrintUtils {
         StringBuilder content = new StringBuilder();
         for (Object value : values) {
             if (value != null) {
-                content.append(StringUtils.getStringValue(value, null));
+                try {
+                    String strValue = StringUtils.getStringValue(value, null);
+                    content.append(strValue != null ? strValue : String.valueOf(value));
+                } catch (Exception e) {
+                    content.append(String.valueOf(value));
+                }
             }
         }
         out.println(content);
