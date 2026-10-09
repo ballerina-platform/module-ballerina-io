@@ -1142,6 +1142,24 @@ isolated function testFprintlnNilWithStderr() {
     test:assertEquals(readErrorStream(), "\n");
 }
 
+@test:Config {dependsOn: [testFprintlnNilWithStderr]}
+function testPrintlnConcurrentAndNullSafety() returns error? {
+    future<()>[] futures = [];
+    foreach var item in 0..<5 {
+        future<()> res = start runConcurrentPrint();
+        futures.push(res);
+    }
+    foreach var 'future in futures {
+        check wait 'future;
+    }
+}
+
+isolated function runConcurrentPrint() {
+    int id = 100;
+    string msg = string `ID: ${id}`;
+    println(msg);
+}
+
 isolated function func1(int a, int b) returns int {
     return (a + b);
 }
