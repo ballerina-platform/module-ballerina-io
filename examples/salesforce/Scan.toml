@@ -1,0 +1,4 @@
+# ballerina:14 is a false positive: the flagged `token: SF_TOKEN` passes `configurable string SF_TOKEN = ?;`, which has
+# no default in the source and must be supplied at deployment time. No credential is hardcoded.
+[rule]
+exclude = ["ballerina:14"]
