@@ -1,0 +1,4 @@
+# ballerina:14 matches the identifier names `token`/`lowerCaseToken`, which are the words of a text being tokenised for a
+# bag-of-words model, not authentication tokens. No credential is assigned a fixed value.
+[rule]
+exclude = ["ballerina:14"]
