@@ -14,7 +14,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import ballerinax/salesforce;
 import ballerinax/salesforce.bulk as sbulk;
 import ballerina/log;
 import ballerina/io;
@@ -28,9 +27,9 @@ configurable string BASE_URL = ?;
 configurable string SF_TOKEN = ?;
 
 public function main() returns error? {
-    salesforce:ConnectionConfig sfConfig = {
+    sbulk:ConnectionConfig sfConfig = {
         baseUrl: BASE_URL,
-        clientConfig: {
+        auth: {
             token: SF_TOKEN
         }
     };
